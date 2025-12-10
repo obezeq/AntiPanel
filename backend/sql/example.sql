@@ -2,8 +2,7 @@
 -- ANTIPANEL SMM - DATOS DE EJEMPLO PARA TESTING
 -- PostgreSQL 18
 -- ============================================================================
--- Autor: Ezequiel Ortega Bravo
--- Proyecto: AntiPanel - 2º DAW
+-- Proyecto: AntiPanel
 -- Descripción: Datos de prueba realistas para desarrollo y testing del backend
 -- ============================================================================
 -- IMPORTANTE: Ejecutar DESPUÉS de init.sql

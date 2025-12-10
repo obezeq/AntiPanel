@@ -3,7 +3,7 @@
 ## Memoria Técnica del Proyecto
 
 **Proyecto:** AntiPanel - SMM Panel  
-**Tecnologías:** Spring Boot + PostgreSQL + Angular  
+**Tecnologías:** Spring Boot 4 + PostgreSQL 18 + Angular 21
 
 ---
 
@@ -18,8 +18,9 @@
 7. [Claves Primarias y Foráneas](#7-claves-primarias-y-foráneas)
 8. [Índices](#8-índices)
 9. [Constraints CHECK](#9-constraints-check)
-10. [Justificación del Diseño](#10-justificación-del-diseño)
-11. [Script SQL Completo](#11-script-sql-completo)
+10. [Vistas de Base de Datos](#10-vistas-de-base-de-datos)
+11. [Justificación del Diseño](#11-justificación-del-diseño)
+12. [Script SQL Completo](#12-script-sql-completo)
 
 ---
 
@@ -90,14 +91,25 @@ Se utilizan tipos ENUM de PostgreSQL para campos de estado en lugar de VARCHAR:
 Se implementan validaciones a nivel de base de datos:
 
 - **Integridad Financiera:** Previene balances negativos y cantidades inválidas
+- **Validación de Formatos:** Verifica formatos de email, slugs y códigos de moneda
 - **Seguridad:** Evita datos corruptos que podrían causar problemas en el sistema
 - **Defensa en Profundidad:** Complementa las validaciones de la capa de aplicación
+
+### 2.5 Uso de TIMESTAMPTZ para Fechas
+
+Se utiliza `TIMESTAMPTZ` (timestamp with time zone) en lugar de `TIMESTAMP` para todos los campos de fecha:
+
+- **Consistencia Global:** Almacena fechas en UTC, evitando problemas de zonas horarias
+- **Mejor Práctica:** Recomendado por PostgreSQL para aplicaciones con usuarios internacionales
+- **Conversión Automática:** PostgreSQL convierte automáticamente a la zona horaria del cliente
 
 ---
 
 ## 3. Modelo Entidad-Relación
 
-![Diagrama E/R](images/antipanel-database-erd.png)
+
+[**Visualizar Diagrama E/R en PDF**](images/antipanel-database-erd.pdf)
+![Diagrama E/R](images/antipanel-database-erd.jpg)
 
 ---
 
@@ -117,10 +129,10 @@ Almacena la información de todos los usuarios del sistema, incluyendo administr
 | `balance` | `DECIMAL(12,4)` | `NOT NULL DEFAULT 0.0000` | Saldo disponible del usuario |
 | `is_banned` | `BOOLEAN` | `NOT NULL DEFAULT FALSE` | Indica si el usuario está baneado |
 | `banned_reason` | `TEXT` | `NULL` | Motivo del baneo |
-| `last_login_at` | `TIMESTAMP` | `NULL` | Fecha y hora del último inicio de sesión |
+| `last_login_at` | `TIMESTAMPTZ` | `NULL` | Fecha y hora del último inicio de sesión |
 | `login_count` | `INTEGER` | `NOT NULL DEFAULT 0` | Contador de inicios de sesión |
-| `created_at` | `TIMESTAMP` | `NOT NULL DEFAULT NOW()` | Fecha de registro |
-| `updated_at` | `TIMESTAMP` | `NOT NULL DEFAULT NOW()` | Última actualización del registro |
+| `created_at` | `TIMESTAMPTZ` | `NOT NULL DEFAULT NOW()` | Fecha de registro |
+| `updated_at` | `TIMESTAMPTZ` | `NOT NULL DEFAULT NOW()` | Última actualización del registro |
 
 ---
 
@@ -136,7 +148,7 @@ Define las categorías principales de servicios, correspondientes a las diferent
 | `icon_url` | `VARCHAR(500)` | `NULL` | URL del icono de la red social |
 | `sort_order` | `INTEGER` | `NOT NULL DEFAULT 0` | Orden de visualización en el catálogo |
 | `is_active` | `BOOLEAN` | `NOT NULL DEFAULT TRUE` | Indica si la categoría está visible |
-| `created_at` | `TIMESTAMP` | `NOT NULL DEFAULT NOW()` | Fecha de creación |
+| `created_at` | `TIMESTAMPTZ` | `NOT NULL DEFAULT NOW()` | Fecha de creación |
 
 ---
 
@@ -170,8 +182,8 @@ Almacena la información de los proveedores externos de servicios SMM.
 | `api_key` | `VARCHAR(255)` | `NOT NULL` | API Key para autenticación |
 | `is_active` | `BOOLEAN` | `NOT NULL DEFAULT TRUE` | Indica si el proveedor está activo |
 | `balance` | `DECIMAL(12,4)` | `NULL` | Balance actual con el proveedor |
-| `created_at` | `TIMESTAMP` | `NOT NULL DEFAULT NOW()` | Fecha de registro |
-| `updated_at` | `TIMESTAMP` | `NOT NULL DEFAULT NOW()` | Última actualización |
+| `created_at` | `TIMESTAMPTZ` | `NOT NULL DEFAULT NOW()` | Fecha de registro |
+| `updated_at` | `TIMESTAMPTZ` | `NOT NULL DEFAULT NOW()` | Última actualización |
 
 ---
 
@@ -190,7 +202,7 @@ Catálogo de servicios disponibles en cada proveedor externo.
 | `cost_per_k` | `DECIMAL(10,4)` | `NOT NULL` | Precio por cada 1000 unidades |
 | `refill_days` | `INTEGER` | `NOT NULL DEFAULT 0` | Días de garantía (0 = sin refill) |
 | `is_active` | `BOOLEAN` | `NOT NULL DEFAULT TRUE` | Indica si está disponible |
-| `last_synced_at` | `TIMESTAMP` | `NULL` | Última sincronización con la API |
+| `last_synced_at` | `TIMESTAMPTZ` | `NULL` | Última sincronización con la API |
 
 **Constraint único:** `UNIQUE(provider_id, provider_service_id)`
 
@@ -217,8 +229,8 @@ Catálogo público de servicios que se muestran a los usuarios.
 | `average_time` | `VARCHAR(50)` | `NULL` | Tiempo estimado de entrega (ej: "1-24 hours") |
 | `is_active` | `BOOLEAN` | `NOT NULL DEFAULT TRUE` | Visible en el catálogo |
 | `sort_order` | `INTEGER` | `NOT NULL DEFAULT 0` | Orden en el listado |
-| `created_at` | `TIMESTAMP` | `NOT NULL DEFAULT NOW()` | Fecha de creación |
-| `updated_at` | `TIMESTAMP` | `NOT NULL DEFAULT NOW()` | Última actualización |
+| `created_at` | `TIMESTAMPTZ` | `NOT NULL DEFAULT NOW()` | Fecha de creación |
+| `updated_at` | `TIMESTAMPTZ` | `NOT NULL DEFAULT NOW()` | Última actualización |
 
 ---
 
@@ -246,10 +258,10 @@ Registro de todas las órdenes realizadas por los usuarios.
 | `profit` | `DECIMAL(12,4)` | `NOT NULL` | Ganancia (total_charge - total_cost) |
 | `is_refillable` | `BOOLEAN` | `NOT NULL DEFAULT FALSE` | Indica si permite refill |
 | `refill_days` | `INTEGER` | `NOT NULL DEFAULT 0` | Días de garantía |
-| `refill_deadline` | `TIMESTAMP` | `NULL` | Fecha límite para solicitar refill |
-| `created_at` | `TIMESTAMP` | `NOT NULL DEFAULT NOW()` | Fecha de creación de la orden |
-| `completed_at` | `TIMESTAMP` | `NULL` | Fecha de completado de la orden |
-| `updated_at` | `TIMESTAMP` | `NOT NULL DEFAULT NOW()` | Última actualización |
+| `refill_deadline` | `TIMESTAMPTZ` | `NULL` | Fecha límite para solicitar refill |
+| `created_at` | `TIMESTAMPTZ` | `NOT NULL DEFAULT NOW()` | Fecha de creación de la orden |
+| `completed_at` | `TIMESTAMPTZ` | `NULL` | Fecha de completado de la orden |
+| `updated_at` | `TIMESTAMPTZ` | `NOT NULL DEFAULT NOW()` | Última actualización |
 
 ---
 
@@ -264,8 +276,8 @@ Registro de solicitudes de refill para órdenes completadas.
 | `provider_refill_id` | `VARCHAR(100)` | `NULL` | ID del refill en el proveedor |
 | `quantity` | `INTEGER` | `NOT NULL` | Cantidad a rellenar |
 | `status` | `refill_status_enum` | `NOT NULL DEFAULT 'pending'` | Estado del refill |
-| `created_at` | `TIMESTAMP` | `NOT NULL DEFAULT NOW()` | Fecha de solicitud |
-| `completed_at` | `TIMESTAMP` | `NULL` | Fecha de completado |
+| `created_at` | `TIMESTAMPTZ` | `NOT NULL DEFAULT NOW()` | Fecha de solicitud |
+| `completed_at` | `TIMESTAMPTZ` | `NULL` | Fecha de completado |
 
 ---
 
@@ -284,7 +296,7 @@ Configuración de los procesadores de pago disponibles.
 | `config_json` | `JSONB` | `NULL` | Configuración adicional en formato JSON |
 | `min_amount` | `DECIMAL(10,2)` | `NOT NULL DEFAULT 1.00` | Depósito mínimo permitido |
 | `max_amount` | `DECIMAL(10,2)` | `NULL` | Depósito máximo permitido |
-| `fee_percentage` | `DECIMAL(5,2)` | `NOT NULL DEFAULT 0.00` | Comisión porcentual |
+| `fee_percentage` | `DECIMAL(5,2)` | `NOT NULL DEFAULT 0.00` | Comisión porcentual (0-100) |
 | `fee_fixed` | `DECIMAL(10,2)` | `NOT NULL DEFAULT 0.00` | Comisión fija |
 | `is_active` | `BOOLEAN` | `NOT NULL DEFAULT TRUE` | Indica si está activo |
 | `sort_order` | `INTEGER` | `NOT NULL DEFAULT 0` | Orden de visualización |
@@ -304,12 +316,12 @@ Registro de facturas/depósitos de los usuarios.
 | `amount` | `DECIMAL(10,2)` | `NOT NULL` | Cantidad solicitada a depositar |
 | `fee` | `DECIMAL(10,2)` | `NOT NULL DEFAULT 0.00` | Comisión cobrada |
 | `net_amount` | `DECIMAL(10,2)` | `NOT NULL` | Cantidad neta a acreditar al usuario |
-| `currency` | `VARCHAR(3)` | `NOT NULL DEFAULT 'USD'` | Código de moneda |
+| `currency` | `VARCHAR(3)` | `NOT NULL DEFAULT 'USD'` | Código de moneda (ISO 4217) |
 | `status` | `invoice_status_enum` | `NOT NULL DEFAULT 'pending'` | Estado de la factura |
 | `payment_url` | `VARCHAR(500)` | `NULL` | URL de pago generada (si aplica) |
-| `paid_at` | `TIMESTAMP` | `NULL` | Fecha y hora del pago |
-| `created_at` | `TIMESTAMP` | `NOT NULL DEFAULT NOW()` | Fecha de creación |
-| `updated_at` | `TIMESTAMP` | `NOT NULL DEFAULT NOW()` | Última actualización |
+| `paid_at` | `TIMESTAMPTZ` | `NULL` | Fecha y hora del pago |
+| `created_at` | `TIMESTAMPTZ` | `NOT NULL DEFAULT NOW()` | Fecha de creación |
+| `updated_at` | `TIMESTAMPTZ` | `NOT NULL DEFAULT NOW()` | Última actualización |
 
 ---
 
@@ -328,7 +340,7 @@ Registro de todos los movimientos de balance de los usuarios para auditoría.
 | `reference_type` | `VARCHAR(50)` | `NULL` | Tipo de referencia ('invoice', 'order', etc.) |
 | `reference_id` | `BIGINT` | `NULL` | ID de la entidad relacionada |
 | `description` | `VARCHAR(255)` | `NULL` | Descripción del movimiento |
-| `created_at` | `TIMESTAMP` | `NOT NULL DEFAULT NOW()` | Fecha del movimiento |
+| `created_at` | `TIMESTAMPTZ` | `NOT NULL DEFAULT NOW()` | Fecha del movimiento |
 
 ---
 
@@ -601,7 +613,21 @@ CREATE INDEX idx_transactions_user ON transactions(user_id);
 -- users: búsqueda por email y filtrado por rol
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_role ON users(role);
+CREATE INDEX idx_users_created_at ON users(created_at DESC);
 CREATE INDEX idx_users_banned ON users(is_banned) WHERE is_banned = TRUE;
+
+-- categories: catálogo activo
+CREATE INDEX idx_categories_active ON categories(is_active) WHERE is_active = TRUE;
+CREATE INDEX idx_categories_sort ON categories(sort_order);
+
+-- service_types: tipos activos
+CREATE INDEX idx_service_types_active ON service_types(is_active) WHERE is_active = TRUE;
+
+-- providers: proveedores activos
+CREATE INDEX idx_providers_active ON providers(is_active) WHERE is_active = TRUE;
+
+-- provider_services: servicios activos del proveedor
+CREATE INDEX idx_provider_services_active ON provider_services(is_active) WHERE is_active = TRUE;
 
 -- services: catálogo público
 CREATE INDEX idx_services_active ON services(is_active) WHERE is_active = TRUE;
@@ -612,9 +638,18 @@ CREATE INDEX idx_orders_status ON orders(status);
 CREATE INDEX idx_orders_created ON orders(created_at DESC);
 CREATE INDEX idx_orders_provider_order ON orders(provider_order_id) WHERE provider_order_id IS NOT NULL;
 
+-- order_refills: estado de refills
+CREATE INDEX idx_order_refills_status ON order_refills(status);
+CREATE INDEX idx_order_refills_pending ON order_refills(status) WHERE status IN ('pending', 'processing');
+
 -- invoices: estado de pagos
 CREATE INDEX idx_invoices_status ON invoices(status);
 CREATE INDEX idx_invoices_created ON invoices(created_at DESC);
+CREATE INDEX idx_invoices_pending ON invoices(status, created_at) WHERE status = 'pending';
+
+-- transactions: tipo de transacción
+CREATE INDEX idx_transactions_type ON transactions(type);
+CREATE INDEX idx_transactions_created ON transactions(created_at DESC);
 ```
 
 ### 8.4 Índices Compuestos Estratégicos
@@ -623,21 +658,38 @@ CREATE INDEX idx_invoices_created ON invoices(created_at DESC);
 -- orders: listado de órdenes por usuario con estado
 CREATE INDEX idx_orders_user_status ON orders(user_id, status);
 
--- orders: órdenes pendientes de refill
+-- orders: órdenes pendientes de refill (solo completadas con refill activo)
 CREATE INDEX idx_orders_refill_deadline ON orders(refill_deadline) 
-    WHERE is_refillable = TRUE AND refill_deadline IS NOT NULL;
+    WHERE is_refillable = TRUE AND refill_deadline IS NOT NULL AND status = 'completed';
 
 -- orders: órdenes por usuario ordenadas por fecha
 CREATE INDEX idx_orders_user_created ON orders(user_id, created_at DESC);
 
+-- orders: reportes de profit (solo órdenes completadas)
+CREATE INDEX idx_orders_completed_at ON orders(completed_at DESC) WHERE status = 'completed';
+
 -- invoices: facturas por usuario y estado
 CREATE INDEX idx_invoices_user_status ON invoices(user_id, status);
+
+-- invoices: historial por usuario
+CREATE INDEX idx_invoices_user_created ON invoices(user_id, created_at DESC);
 
 -- transactions: historial por usuario
 CREATE INDEX idx_transactions_user_created ON transactions(user_id, created_at DESC);
 
+-- transactions: búsqueda por referencia
+CREATE INDEX idx_transactions_reference ON transactions(reference_type, reference_id) 
+    WHERE reference_type IS NOT NULL;
+
 -- services: filtrado completo del catálogo
 CREATE INDEX idx_services_catalog ON services(category_id, service_type_id, is_active);
+
+-- services: ordenamiento dentro de categoría
+CREATE INDEX idx_services_category_sort ON services(category_id, sort_order) WHERE is_active = TRUE;
+
+-- payment_processors: procesadores activos ordenados
+CREATE INDEX idx_payment_processors_active ON payment_processors(is_active, sort_order) 
+    WHERE is_active = TRUE;
 ```
 
 ### 8.5 Justificación de Índices
@@ -647,8 +699,13 @@ CREATE INDEX idx_services_catalog ON services(category_id, service_type_id, is_a
 | `idx_orders_user_status` | Acelera el dashboard del usuario (órdenes filtradas por estado) |
 | `idx_orders_refill_deadline` | Optimiza la búsqueda de órdenes elegibles para refill |
 | `idx_orders_created` | Mejora ordenamiento cronológico en listados |
+| `idx_orders_completed_at` | Acelera reportes de profit y estadísticas |
 | `idx_services_catalog` | Acelera el filtrado del catálogo público |
+| `idx_services_category_sort` | Optimiza ordenamiento de servicios en el catálogo |
 | `idx_invoices_user_status` | Optimiza consultas de pagos pendientes por usuario |
+| `idx_invoices_pending` | Acelera procesamiento de facturas pendientes |
+| `idx_transactions_reference` | Permite buscar transacciones por entidad relacionada |
+| `idx_order_refills_pending` | Optimiza procesamiento de refills pendientes |
 
 ---
 
@@ -660,35 +717,43 @@ Las constraints CHECK proporcionan validación a nivel de base de datos, complem
 
 ```sql
 -- El balance nunca puede ser negativo
-ALTER TABLE users ADD CONSTRAINT chk_users_balance_positive 
+ALTER TABLE users ADD CONSTRAINT chk_users_balance_non_negative 
     CHECK (balance >= 0);
 
 -- El contador de login no puede ser negativo
-ALTER TABLE users ADD CONSTRAINT chk_users_login_count_positive 
+ALTER TABLE users ADD CONSTRAINT chk_users_login_count_non_negative 
     CHECK (login_count >= 0);
+
+-- Validación de formato de email
+ALTER TABLE users ADD CONSTRAINT chk_users_email_format 
+    CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$');
 ```
 
-### 9.2 Constraints en `services`
+### 9.2 Constraints en `categories`
 
 ```sql
--- La cantidad mínima debe ser positiva
-ALTER TABLE services ADD CONSTRAINT chk_services_min_quantity_positive 
-    CHECK (min_quantity > 0);
-
--- La cantidad máxima debe ser mayor o igual a la mínima
-ALTER TABLE services ADD CONSTRAINT chk_services_max_gte_min 
-    CHECK (max_quantity >= min_quantity);
-
--- El precio debe ser positivo
-ALTER TABLE services ADD CONSTRAINT chk_services_price_positive 
-    CHECK (price_per_k > 0);
-
--- Los días de refill no pueden ser negativos
-ALTER TABLE services ADD CONSTRAINT chk_services_refill_days_positive 
-    CHECK (refill_days >= 0);
+-- El slug debe ser URL-friendly (solo minúsculas, números y guiones)
+ALTER TABLE categories ADD CONSTRAINT chk_categories_slug_format 
+    CHECK (slug ~* '^[a-z0-9-]+$');
 ```
 
-### 9.3 Constraints en `provider_services`
+### 9.3 Constraints en `service_types`
+
+```sql
+-- El slug debe ser URL-friendly
+ALTER TABLE service_types ADD CONSTRAINT chk_service_types_slug_format 
+    CHECK (slug ~* '^[a-z0-9-]+$');
+```
+
+### 9.4 Constraints en `providers`
+
+```sql
+-- El balance no puede ser negativo (si existe)
+ALTER TABLE providers ADD CONSTRAINT chk_providers_balance_non_negative 
+    CHECK (balance IS NULL OR balance >= 0);
+```
+
+### 9.5 Constraints en `provider_services`
 
 ```sql
 -- La cantidad mínima debe ser positiva
@@ -704,11 +769,31 @@ ALTER TABLE provider_services ADD CONSTRAINT chk_provider_services_cost_positive
     CHECK (cost_per_k > 0);
 
 -- Los días de refill no pueden ser negativos
-ALTER TABLE provider_services ADD CONSTRAINT chk_provider_services_refill_positive 
+ALTER TABLE provider_services ADD CONSTRAINT chk_provider_services_refill_non_negative 
     CHECK (refill_days >= 0);
 ```
 
-### 9.4 Constraints en `orders`
+### 9.6 Constraints en `services`
+
+```sql
+-- La cantidad mínima debe ser positiva
+ALTER TABLE services ADD CONSTRAINT chk_services_min_quantity_positive 
+    CHECK (min_quantity > 0);
+
+-- La cantidad máxima debe ser mayor o igual a la mínima
+ALTER TABLE services ADD CONSTRAINT chk_services_max_gte_min 
+    CHECK (max_quantity >= min_quantity);
+
+-- El precio debe ser positivo
+ALTER TABLE services ADD CONSTRAINT chk_services_price_positive 
+    CHECK (price_per_k > 0);
+
+-- Los días de refill no pueden ser negativos
+ALTER TABLE services ADD CONSTRAINT chk_services_refill_non_negative 
+    CHECK (refill_days >= 0);
+```
+
+### 9.7 Constraints en `orders`
 
 ```sql
 -- La cantidad debe ser positiva
@@ -716,7 +801,7 @@ ALTER TABLE orders ADD CONSTRAINT chk_orders_quantity_positive
     CHECK (quantity > 0);
 
 -- Remains no puede ser negativo
-ALTER TABLE orders ADD CONSTRAINT chk_orders_remains_positive 
+ALTER TABLE orders ADD CONSTRAINT chk_orders_remains_non_negative 
     CHECK (remains >= 0);
 
 -- Remains no puede exceder la cantidad original
@@ -727,16 +812,20 @@ ALTER TABLE orders ADD CONSTRAINT chk_orders_remains_lte_quantity
 ALTER TABLE orders ADD CONSTRAINT chk_orders_prices_positive 
     CHECK (price_per_k > 0 AND cost_per_k > 0);
 
--- Los totales deben ser positivos
-ALTER TABLE orders ADD CONSTRAINT chk_orders_totals_positive 
-    CHECK (total_charge > 0 AND total_cost >= 0);
+-- El total cobrado debe ser positivo
+ALTER TABLE orders ADD CONSTRAINT chk_orders_total_charge_positive 
+    CHECK (total_charge > 0);
+
+-- El costo total no puede ser negativo
+ALTER TABLE orders ADD CONSTRAINT chk_orders_total_cost_non_negative 
+    CHECK (total_cost >= 0);
 
 -- Los días de refill no pueden ser negativos
-ALTER TABLE orders ADD CONSTRAINT chk_orders_refill_days_positive 
+ALTER TABLE orders ADD CONSTRAINT chk_orders_refill_days_non_negative 
     CHECK (refill_days >= 0);
 ```
 
-### 9.5 Constraints en `order_refills`
+### 9.8 Constraints en `order_refills`
 
 ```sql
 -- La cantidad de refill debe ser positiva
@@ -744,27 +833,7 @@ ALTER TABLE order_refills ADD CONSTRAINT chk_order_refills_quantity_positive
     CHECK (quantity > 0);
 ```
 
-### 9.6 Constraints en `invoices`
-
-```sql
--- El monto debe ser positivo
-ALTER TABLE invoices ADD CONSTRAINT chk_invoices_amount_positive 
-    CHECK (amount > 0);
-
--- La comisión no puede ser negativa
-ALTER TABLE invoices ADD CONSTRAINT chk_invoices_fee_positive 
-    CHECK (fee >= 0);
-
--- El monto neto debe ser positivo
-ALTER TABLE invoices ADD CONSTRAINT chk_invoices_net_amount_positive 
-    CHECK (net_amount > 0);
-
--- El monto neto debe ser menor o igual al monto total
-ALTER TABLE invoices ADD CONSTRAINT chk_invoices_net_lte_amount 
-    CHECK (net_amount <= amount);
-```
-
-### 9.7 Constraints en `payment_processors`
+### 9.9 Constraints en `payment_processors`
 
 ```sql
 -- El monto mínimo debe ser positivo
@@ -775,16 +844,124 @@ ALTER TABLE payment_processors ADD CONSTRAINT chk_processors_min_positive
 ALTER TABLE payment_processors ADD CONSTRAINT chk_processors_max_gte_min 
     CHECK (max_amount IS NULL OR max_amount >= min_amount);
 
--- Las comisiones no pueden ser negativas
-ALTER TABLE payment_processors ADD CONSTRAINT chk_processors_fees_positive 
-    CHECK (fee_percentage >= 0 AND fee_fixed >= 0);
+-- El porcentaje de comisión debe estar entre 0 y 100
+ALTER TABLE payment_processors ADD CONSTRAINT chk_processors_fee_percentage_valid 
+    CHECK (fee_percentage >= 0 AND fee_percentage <= 100);
+
+-- La comisión fija no puede ser negativa
+ALTER TABLE payment_processors ADD CONSTRAINT chk_processors_fee_fixed_non_negative 
+    CHECK (fee_fixed >= 0);
+```
+
+### 9.10 Constraints en `invoices`
+
+```sql
+-- El monto debe ser positivo
+ALTER TABLE invoices ADD CONSTRAINT chk_invoices_amount_positive 
+    CHECK (amount > 0);
+
+-- La comisión no puede ser negativa
+ALTER TABLE invoices ADD CONSTRAINT chk_invoices_fee_non_negative 
+    CHECK (fee >= 0);
+
+-- El monto neto debe ser positivo
+ALTER TABLE invoices ADD CONSTRAINT chk_invoices_net_amount_positive 
+    CHECK (net_amount > 0);
+
+-- El monto neto debe ser menor o igual al monto total
+ALTER TABLE invoices ADD CONSTRAINT chk_invoices_net_lte_amount 
+    CHECK (net_amount <= amount);
+
+-- El código de moneda debe tener formato ISO 4217 (3 letras mayúsculas)
+ALTER TABLE invoices ADD CONSTRAINT chk_invoices_currency_format 
+    CHECK (currency ~* '^[A-Z]{3}$');
+```
+
+### 9.11 Constraints en `transactions`
+
+```sql
+-- Validación de consistencia de balance según tipo de transacción
+ALTER TABLE transactions ADD CONSTRAINT chk_transactions_balance_consistency 
+    CHECK (
+        (type = 'deposit' AND amount > 0 AND balance_after = balance_before + amount) OR
+        (type = 'order' AND amount < 0 AND balance_after = balance_before + amount) OR
+        (type = 'refund' AND amount > 0 AND balance_after = balance_before + amount) OR
+        (type = 'adjustment' AND balance_after = balance_before + amount)
+    );
 ```
 
 ---
 
-## 10. Justificación del Diseño
+## 10. Vistas de Base de Datos
 
-### 10.1 Separación de `categories` y `service_types`
+Las vistas proporcionan consultas predefinidas para casos de uso frecuentes, simplificando el código de la aplicación.
+
+### 10.1 Vista: `v_active_services`
+
+Vista del catálogo público con información completa de servicios activos.
+
+```sql
+CREATE OR REPLACE VIEW v_active_services AS
+SELECT 
+    s.id,
+    s.name,
+    s.description,
+    c.name AS category_name,
+    c.slug AS category_slug,
+    st.name AS service_type_name,
+    st.slug AS service_type_slug,
+    s.quality,
+    s.speed,
+    s.min_quantity,
+    s.max_quantity,
+    s.price_per_k,
+    s.refill_days,
+    s.average_time
+FROM services s
+INNER JOIN categories c ON s.category_id = c.id
+INNER JOIN service_types st ON s.service_type_id = st.id
+WHERE s.is_active = TRUE 
+  AND c.is_active = TRUE 
+  AND st.is_active = TRUE
+ORDER BY c.sort_order, st.sort_order, s.sort_order;
+```
+
+**Uso:** Catálogo público para usuarios. Filtra automáticamente servicios, categorías y tipos inactivos.
+
+### 10.2 Vista: `v_orders_summary`
+
+Vista de órdenes con información del usuario para el panel de administración.
+
+```sql
+CREATE OR REPLACE VIEW v_orders_summary AS
+SELECT 
+    o.id,
+    o.user_id,
+    u.email AS user_email,
+    o.service_name,
+    o.target,
+    o.quantity,
+    o.remains,
+    o.status,
+    o.total_charge,
+    o.total_cost,
+    o.profit,
+    o.is_refillable,
+    o.refill_deadline,
+    o.created_at,
+    o.completed_at
+FROM orders o
+INNER JOIN users u ON o.user_id = u.id
+ORDER BY o.created_at DESC;
+```
+
+**Uso:** Dashboard de administración para gestionar órdenes con información del usuario.
+
+---
+
+## 11. Justificación del Diseño
+
+### 11.1 Separación de `categories` y `service_types`
 
 **Problema:** Las diferentes redes sociales tienen distintos tipos de servicios (Instagram tiene Reels, TikTok tiene Duets, LinkedIn no tiene Stories).
 
@@ -794,7 +971,7 @@ ALTER TABLE payment_processors ADD CONSTRAINT chk_processors_fees_positive
 - Ordenar y organizar el catálogo de forma flexible
 - Cumplir con el objetivo de reducir la sobrecarga de opciones (Ley de Hick)
 
-### 10.2 Separación de `provider_services` y `services`
+### 11.2 Separación de `provider_services` y `services`
 
 **Problema:** Necesitamos mapear servicios externos de proveedores a nuestro catálogo público, manteniendo independencia.
 
@@ -804,7 +981,7 @@ ALTER TABLE payment_processors ADD CONSTRAINT chk_processors_fees_positive
 - **Múltiples servicios:** Un servicio del proveedor puede usarse en varios servicios públicos con diferentes configuraciones
 - **Sincronización:** Actualizar datos del proveedor sin afectar al catálogo público
 
-### 10.3 Tabla `transactions` para Auditoría
+### 11.3 Tabla `transactions` para Auditoría
 
 **Problema:** En sistemas financieros, es crítico tener un registro inmutable de todos los movimientos de dinero.
 
@@ -814,7 +991,7 @@ ALTER TABLE payment_processors ADD CONSTRAINT chk_processors_fees_positive
 - **Transparencia:** El usuario ve todos sus movimientos
 - **Compliance:** Facilita auditorías financieras y fiscales
 
-### 10.4 Almacenamiento de `profit` y Campos Calculados
+### 11.4 Almacenamiento de `profit` y Campos Calculados
 
 **Problema:** Calcular el profit en tiempo real requiere JOINs costosos sobre millones de filas.
 
@@ -824,7 +1001,7 @@ ALTER TABLE payment_processors ADD CONSTRAINT chk_processors_fees_positive
 - **Reportes rápidos:** Agregaciones sin recálculo
 - **Integridad temporal:** Si los precios cambian, las órdenes antiguas mantienen sus valores originales
 
-### 10.5 Uso de ENUMs para Estados
+### 11.5 Uso de ENUMs para Estados
 
 **Problema:** Los campos VARCHAR para estados permiten valores inválidos y son menos eficientes.
 
@@ -835,7 +1012,7 @@ ALTER TABLE payment_processors ADD CONSTRAINT chk_processors_fees_positive
 - **Prevención de errores:** Evita bugs como `status = 'Completed'` vs `status = 'completed'`
 - **Facilita migraciones:** Añadir nuevos estados es una operación controlada
 
-### 10.6 Sistema de Roles en `users`
+### 11.6 Sistema de Roles en `users`
 
 **Problema:** Separar admins y usuarios en tablas diferentes duplica lógica y complica el sistema.
 
@@ -845,7 +1022,7 @@ ALTER TABLE payment_processors ADD CONSTRAINT chk_processors_fees_positive
 - **Escalabilidad:** Fácil añadir roles futuros (support, reseller, moderator)
 - **Estándar de la industria:** Patrón RBAC (Role-Based Access Control)
 
-### 10.7 Constraints CHECK para Validaciones
+### 11.7 Constraints CHECK para Validaciones
 
 **Problema:** Las validaciones solo en la aplicación pueden ser bypasseadas o tener bugs.
 
@@ -855,7 +1032,7 @@ ALTER TABLE payment_processors ADD CONSTRAINT chk_processors_fees_positive
 - **Consistencia:** Las reglas se aplican independientemente de cómo se acceda a la BD
 - **Documentación:** Las reglas de negocio están documentadas en el schema
 
-### 10.8 Índices Estratégicos
+### 11.8 Índices Estratégicos
 
 **Problema:** Consultas lentas en tablas con millones de registros.
 
@@ -865,7 +1042,7 @@ ALTER TABLE payment_processors ADD CONSTRAINT chk_processors_fees_positive
 - **Índices parciales:** Para subconjuntos frecuentes (solo activos, solo refillables)
 - **Balance:** Solo indexar columnas frecuentes en WHERE/JOIN/ORDER BY
 
-### 10.9 Campo `completed_at` en Orders
+### 11.9 Campo `completed_at` en Orders
 
 **Problema:** Calcular tiempos promedio de entrega requiere conocer cuándo se completó cada orden.
 
@@ -875,10 +1052,55 @@ ALTER TABLE payment_processors ADD CONSTRAINT chk_processors_fees_positive
 - **Reportes:** Tiempo promedio por servicio/proveedor
 - **Mejora continua:** Datos para optimizar la selección de proveedores
 
+### 11.10 Uso de TIMESTAMPTZ
+
+**Problema:** `TIMESTAMP` sin zona horaria puede causar inconsistencias con usuarios de diferentes regiones.
+
+**Solución:** `TIMESTAMPTZ` proporciona:
+- **Almacenamiento UTC:** Todas las fechas se guardan en UTC
+- **Conversión automática:** PostgreSQL convierte a la zona horaria del cliente
+- **Consistencia global:** Evita problemas de comparación de fechas
+- **Mejor práctica:** Recomendado por la documentación de PostgreSQL
+
+### 11.11 Vistas de Base de Datos
+
+**Problema:** Consultas complejas repetidas en múltiples partes de la aplicación.
+
+**Solución:** Las vistas proporcionan:
+- **Reutilización:** Una sola definición para consultas frecuentes
+- **Simplicidad:** El código de aplicación usa consultas más simples
+- **Mantenimiento:** Cambios en la estructura se hacen en un solo lugar
+- **Seguridad:** Pueden ocultar columnas sensibles si es necesario
+
 ---
 
-## 11. Script SQL Completo
+## 12. Script SQL Completo
 
-- [**SCRIPT DE CREACIÓN DE BASE DE DATOS**](../sql/init.sql)
-- [**Anexo A: Datos de ejemplo**](../sql/example.sql)
+Los scripts SQL se encuentran en archivos separados para facilitar la ejecución y mantenimiento:
 
+- [**init.sql**](../sql/init.sql) - Script de creación de la base de datos
+- [**example.sql**](../sql/example.sql) - Datos de ejemplo para testing
+
+### Ejecución
+
+```bash
+# Crear la base de datos
+psql -U postgres -c "CREATE DATABASE antipanel;"
+
+# Ejecutar script de inicialización
+psql -U postgres -d antipanel -f sql/init.sql
+
+# Cargar datos de ejemplo (opcional, solo para desarrollo)
+psql -U postgres -d antipanel -f sql/example.sql
+```
+
+### Resumen de Objetos Creados
+
+| Tipo | Cantidad |
+|------|----------|
+| Tablas | 11 |
+| Tipos ENUM | 7 |
+| Índices | 40+ |
+| Constraints CHECK | 25+ |
+| Triggers | 5 |
+| Vistas | 2 |

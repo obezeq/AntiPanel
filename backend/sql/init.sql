@@ -1,6 +1,6 @@
 -- ============================================================================
 -- ANTIPANEL SMM - SCRIPT DE INICIALIZACIÓN DE BASE DE DATOS
--- PostgreSQL 18 (Latest Stable)
+-- PostgreSQL 18
 -- ============================================================================
 -- Proyecto: AntiPanel
 -- Descripción: Script idempotente para crear/recrear la base de datos completa
