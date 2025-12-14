@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -84,7 +86,8 @@ public class Order {
 
     @NotNull(message = "El estado no puede ser nulo")
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", columnDefinition = "order_status_enum", nullable = false)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @Column(name = "status", nullable = false)
     private OrderStatus status = OrderStatus.PENDING;
 
     @NotNull(message = "El precio por K no puede ser nulo")

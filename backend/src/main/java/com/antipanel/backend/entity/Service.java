@@ -6,7 +6,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -62,12 +64,14 @@ public class Service {
 
     @NotNull(message = "La calidad no puede ser nula")
     @Enumerated(EnumType.STRING)
-    @Column(name = "quality", columnDefinition = "service_quality_enum", nullable = false)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @Column(name = "quality", nullable = false)
     private ServiceQuality quality;
 
     @NotNull(message = "La velocidad no puede ser nula")
     @Enumerated(EnumType.STRING)
-    @Column(name = "speed", columnDefinition = "service_speed_enum", nullable = false)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @Column(name = "speed", nullable = false)
     private ServiceSpeed speed;
 
     @NotNull(message = "La cantidad mínima no puede ser nula")

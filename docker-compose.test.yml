@@ -1,0 +1,56 @@
+# ========================================
+# Docker Compose - Test Configuration
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.test.yml up backend-test --build --abort-on-container-exit
+# ========================================
+version: '3.8'
+
+services:
+  # ========================================
+  # Backend - Test Runner with Testcontainers
+  # ========================================
+  backend-test:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: tester
+
+    container_name: antipanel-backend-test
+    restart: no
+
+    environment:
+      # Test Profile
+      SPRING_PROFILES_ACTIVE: test
+
+      # JPA/Hibernate for tests
+      SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
+      SPRING_JPA_SHOW_SQL: "true"
+      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: "true"
+
+      # Test logging
+      LOGGING_LEVEL_ROOT: INFO
+      LOGGING_LEVEL_COM_ANTIPANEL: DEBUG
+      LOGGING_LEVEL_ORG_TESTCONTAINERS: INFO
+
+      # Testcontainers configuration
+      TESTCONTAINERS_RYUK_DISABLED: "false"
+      DOCKER_HOST: "unix:///var/run/docker.sock"
+
+    volumes:
+      # Mount Docker socket for Testcontainers to create PostgreSQL containers
+      - /var/run/docker.sock:/var/run/docker.sock
+      # Mount test reports to host for easy access
+      - ./backend/build/reports:/app/build/reports
+      - ./backend/build/test-results:/app/build/test-results
+
+    networks:
+      - antipanel-test-network
+
+    # Run tests (Testcontainers will manage PostgreSQL automatically)
+    command: sh -c "./gradlew test --no-daemon --info && echo 'All tests passed!'"
+
+# ========================================
+# Test Network
+# ========================================
+networks:
+  antipanel-test-network:
+    driver: bridge

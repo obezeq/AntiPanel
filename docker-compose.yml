@@ -1,0 +1,123 @@
+# ========================================
+# Docker Compose - Base Configuration
+# ========================================
+version: '3.8'
+
+services:
+  # ========================================
+  # PostgreSQL Database
+  # ========================================
+  postgres:
+    image: postgres:18-alpine
+    container_name: antipanel-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: antipanel
+      POSTGRES_USER: antipanel_user
+      POSTGRES_PASSWORD: antipanel_password
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      # Persistent data volume
+      - postgres_data:/var/lib/postgresql/data
+      # Init scripts (SQL initialization)
+      - ./backend/sql/init.sql:/docker-entrypoint-initdb.d/01-init.sql
+      - ./backend/sql/example.sql:/docker-entrypoint-initdb.d/02-example.sql
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U antipanel_user -d antipanel"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+    networks:
+      - antipanel-network
+
+  # ========================================
+  # Spring Boot Backend API
+  # ========================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+
+    container_name: antipanel-backend
+    restart: unless-stopped
+
+    environment:
+      # Spring Profile
+      SPRING_PROFILES_ACTIVE: docker
+
+      # Database Configuration
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/antipanel
+      SPRING_DATASOURCE_USERNAME: antipanel_user
+      SPRING_DATASOURCE_PASSWORD: antipanel_password
+
+      # JPA/Hibernate
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      SPRING_JPA_SHOW_SQL: "false"
+      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: "true"
+
+      # Server
+      SERVER_PORT: 8080
+
+      # CORS - Allow frontend access (will be configured when frontend is added)
+      SPRING_WEB_CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:4200}
+
+    ports:
+      - "8080:8080"
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    networks:
+      - antipanel-network
+
+  # ========================================
+  # Angular Frontend (Future - Not implemented yet)
+  # ========================================
+  # Uncomment when ready to add Angular frontend
+  #
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #     target: development  # or 'production'
+  #
+  #   container_name: antipanel-frontend
+  #   restart: unless-stopped
+  #
+  #   environment:
+  #     - NODE_ENV=development
+  #     - API_URL=http://backend:8080
+  #
+  #   ports:
+  #     - "4200:80"  # Angular dev server or nginx
+  #
+  #   volumes:
+  #     - ./frontend/src:/app/src  # Hot reload for development
+  #
+  #   depends_on:
+  #     - backend
+  #
+  #   networks:
+  #     - antipanel-network
+
+# ========================================
+# Volumes
+# ========================================
+volumes:
+  postgres_data:
+    driver: local
+
+# ========================================
+# Networks
+# ========================================
+networks:
+  antipanel-network:
+    driver: bridge

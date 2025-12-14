@@ -1,0 +1,140 @@
+# ========================================
+# Docker Compose - Development Override
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+# ========================================
+version: '3.8'
+
+services:
+  # ========================================
+  # PostgreSQL - Development Configuration
+  # ========================================
+  postgres:
+    environment:
+      # Development: Verbose logging
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=en_US.UTF-8"
+
+    # Development: Expose ports to host for direct access
+    ports:
+      - "5432:5432"
+
+  # ========================================
+  # Backend - Development Configuration
+  # ========================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      # Development: Disable build cache for fresh builds
+      # cache_from: []
+
+    environment:
+      # Development Profile
+      SPRING_PROFILES_ACTIVE: dev
+
+      # Development: Enable debug logging
+      LOGGING_LEVEL_ROOT: INFO
+      LOGGING_LEVEL_COM_ANTIPANEL: DEBUG
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_WEB: DEBUG
+      LOGGING_LEVEL_ORG_HIBERNATE_SQL: DEBUG
+      LOGGING_LEVEL_ORG_HIBERNATE_TYPE_DESCRIPTOR_SQL_BASICBINDER: TRACE
+
+      # Development: Show SQL queries
+      SPRING_JPA_SHOW_SQL: "true"
+      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: "true"
+
+      # Development: Auto-reload support (requires spring-boot-devtools)
+      SPRING_DEVTOOLS_RESTART_ENABLED: "true"
+
+      # Development: CORS enabled for Angular frontend
+      # Port 4200 = Angular dev server (ng serve)
+      # Port 3000 = Alternative dev server or React (future)
+      SPRING_WEB_CORS_ALLOWED_ORIGINS: "http://localhost:4200,http://localhost:3000,http://frontend:80"
+
+      # Development: Actuator endpoints
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "*"
+      MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS: always
+
+      # Development: Add debug JVM options
+      JAVA_OPTS: >-
+        -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+        -XX:+UseContainerSupport
+        -XX:MaxRAMPercentage=75.0
+        -XX:+UseG1GC
+        -Dspring.profiles.active=dev
+
+    # Development: Mount source code for hot reload (optional)
+    volumes:
+      # Uncomment if using spring-boot-devtools
+      # - ./backend/src:/app/src:ro
+
+      # Logs volume for easy access
+      - ./backend/logs:/app/logs
+
+    # Development: Expose debug port
+    ports:
+      - "8080:8080"  # API Server
+      - "5005:5005"  # Java Debug Port
+
+  # ========================================
+  # Angular Frontend - Development (Future - Not implemented yet)
+  # ========================================
+  # Uncomment when ready to add Angular frontend
+  #
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #     target: development
+  #
+  #   environment:
+  #     - NODE_ENV=development
+  #     - API_URL=http://localhost:8080/api
+  #     - CHOKIDAR_USEPOLLING=true  # For hot reload in Docker
+  #
+  #   ports:
+  #     - "4200:4200"  # Angular dev server
+  #
+  #   volumes:
+  #     # Hot reload - mount source code
+  #     - ./frontend/src:/app/src
+  #     - ./frontend/angular.json:/app/angular.json
+  #     - ./frontend/tsconfig.json:/app/tsconfig.json
+  #     # Prevent node_modules from being overwritten
+  #     - /app/node_modules
+  #
+  #   command: npm run start -- --host 0.0.0.0 --poll 2000
+  #
+  #   depends_on:
+  #     - backend
+
+  # ========================================
+  # pgAdmin - Database Management Tool (Optional)
+  # ========================================
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: antipanel-pgadmin
+    restart: unless-stopped
+
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@antipanel.local
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+
+    ports:
+      - "5050:80"
+
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+    networks:
+      - antipanel-network
+
+    depends_on:
+      - postgres
+
+# ========================================
+# Development Volumes
+# ========================================
+volumes:
+  pgadmin_data:
+    driver: local

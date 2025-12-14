@@ -1,0 +1,30 @@
+# ========================================
+# Spring Boot 4.0 Test Configuration
+# For @DataJpaTest with Testcontainers PostgreSQL
+# ========================================
+
+spring:
+  # ========================================
+  # JPA / Hibernate Configuration
+  # ========================================
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+        # PostgreSQL dialect (real database via Testcontainers)
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+# ========================================
+# Logging Configuration
+# ========================================
+logging:
+  level:
+    root: INFO
+    com.antipanel: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.testcontainers: INFO
+    com.github.dockerjava: WARN

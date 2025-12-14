@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -73,7 +75,8 @@ public class Invoice {
 
     @NotNull(message = "El estado no puede ser nulo")
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", columnDefinition = "invoice_status_enum", nullable = false)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @Column(name = "status", nullable = false)
     private InvoiceStatus status = InvoiceStatus.PENDING;
 
     @Size(max = 500, message = "La payment URL no puede exceder 500 caracteres")

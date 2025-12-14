@@ -1,3 +1,79 @@
-.idea
-.vscode
+# ========================================
+# AntiPanel - GitIgnore
+# ========================================
+
+# ========================================
+# Environment Files (SECURITY)
+# ========================================
 .env
+.env.local
+.env.*.local
+
+# ========================================
+# Docker
+# ========================================
+docker-compose.override.yml
+
+# ========================================
+# Logs
+# ========================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ========================================
+# OS
+# ========================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ========================================
+# IDE
+# ========================================
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.classpath
+.project
+.settings/
+bin/
+
+# ========================================
+# Backend (Java/Gradle)
+# ========================================
+backend/.gradle/
+backend/build/
+backend/out/
+backend/.gradle
+backend/gradle-app.setting
+backend/.gradletasknamecache
+backend/HELP.md
+
+# ========================================
+# Frontend (Angular) - Para el futuro
+# ========================================
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/.sass-cache/
+
+# ========================================
+# Testing
+# ========================================
+coverage/
+.nyc_output/
+junit/
+
+# ========================================
+# Temporary Files
+# ========================================
+*.tmp
+*.temp
+*.swp
+*.swo
+*~

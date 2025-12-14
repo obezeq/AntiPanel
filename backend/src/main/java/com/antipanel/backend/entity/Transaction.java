@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -40,7 +42,8 @@ public class Transaction {
 
     @NotNull(message = "El tipo no puede ser nulo")
     @Enumerated(EnumType.STRING)
-    @Column(name = "type", columnDefinition = "transaction_type_enum", nullable = false)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @Column(name = "type", nullable = false)
     private TransactionType type;
 
     @NotNull(message = "El monto no puede ser nulo")

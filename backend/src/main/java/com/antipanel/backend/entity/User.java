@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -46,7 +48,8 @@ public class User {
 
     @NotNull(message = "El rol no puede ser nulo")
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", columnDefinition = "user_role_enum", nullable = false)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @Column(name = "role", nullable = false)
     private UserRole role = UserRole.USER;
 
     @Size(max = 100, message = "El departamento no puede exceder 100 caracteres")

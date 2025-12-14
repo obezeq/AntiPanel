@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 
@@ -46,7 +48,8 @@ public class OrderRefill {
 
     @NotNull(message = "El estado no puede ser nulo")
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", columnDefinition = "refill_status_enum", nullable = false)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @Column(name = "status", nullable = false)
     private RefillStatus status = RefillStatus.PENDING;
 
     @Column(name = "created_at", nullable = false, updatable = false)
