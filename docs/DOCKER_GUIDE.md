@@ -12,8 +12,8 @@ Antes de comenzar, asegúrate de tener instalado:
   - Windows: [Descargar Docker Desktop](https://www.docker.com/products/docker-desktop)
   - Verificar: `docker --version`
 
-- ✅ **Docker Compose** (incluido en Docker Desktop)
-  - Verificar: `docker-compose --version`
+- ✅ **Docker Compose v2** (incluido en Docker Desktop)
+  - Verificar: `docker compose version`
 
 ---
 
@@ -26,7 +26,7 @@ Antes de comenzar, asegúrate de tener instalado:
 cd d:\ezequiel\INSTITUTO\AntiPanel
 
 # 2. Construir y levantar todos los servicios
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+docker compose -f docker compose.yml -f docker compose.dev.yml up --build
 
 # 3. Acceder a la aplicación
 # Backend:  http://localhost:8080
@@ -38,7 +38,7 @@ docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 
 ```bash
 # Levantar solo backend + database (sin pgAdmin)
-docker-compose up --build
+docker compose up --build
 ```
 
 ---
@@ -47,8 +47,8 @@ docker-compose up --build
 
 ```
 AntiPanel/
-├── docker-compose.yml          # Configuración base (producción)
-├── docker-compose.dev.yml      # Override para desarrollo
+├── docker compose.yml          # Configuración base (producción)
+├── docker compose.dev.yml      # Override para desarrollo
 ├── .env.example                # Variables de entorno de ejemplo
 ├── backend/
 │   ├── Dockerfile              # Imagen del backend
@@ -68,62 +68,62 @@ AntiPanel/
 
 ```bash
 # Desarrollo (con logs en consola)
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+docker compose -f docker compose.yml -f docker compose.dev.yml up
 
 # Desarrollo (en segundo plano)
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+docker compose -f docker compose.yml -f docker compose.dev.yml up -d
 
 # Producción básica
-docker-compose up -d
+docker compose up -d
 ```
 
 ### **Reconstruir Imágenes**
 
 ```bash
 # Reconstruir backend (después de cambios en código)
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build backend
+docker compose -f docker compose.yml -f docker compose.dev.yml up --build backend
 
 # Reconstruir todo
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+docker compose -f docker compose.yml -f docker compose.dev.yml up --build
 ```
 
 ### **Detener Servicios**
 
 ```bash
 # Detener servicios (mantiene datos)
-docker-compose down
+docker compose down
 
 # Detener y eliminar volúmenes (BORRA datos de BD)
-docker-compose down -v
+docker compose down -v
 
 # Detener servicios de desarrollo
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml down
+docker compose -f docker compose.yml -f docker compose.dev.yml down
 ```
 
 ### **Ver Logs**
 
 ```bash
 # Ver logs de todos los servicios
-docker-compose logs -f
+docker compose logs -f
 
 # Ver logs solo del backend
-docker-compose logs -f backend
+docker compose logs -f backend
 
 # Ver logs solo de la base de datos
-docker-compose logs -f postgres
+docker compose logs -f postgres
 
 # Ver últimas 100 líneas
-docker-compose logs --tail=100 backend
+docker compose logs --tail=100 backend
 ```
 
 ### **Reiniciar Servicios**
 
 ```bash
 # Reiniciar backend
-docker-compose restart backend
+docker compose restart backend
 
 # Reiniciar base de datos
-docker-compose restart postgres
+docker compose restart postgres
 ```
 
 ### **Ejecutar Comandos en Contenedores**
@@ -192,7 +192,7 @@ docker exec -i antipanel-postgres psql -U antipanel_user -d antipanel < backup.s
 
 ```bash
 # Ver estado de los contenedores
-docker-compose ps
+docker compose ps
 
 # Ver health status
 docker ps
@@ -224,13 +224,13 @@ docker network inspect antipanel_antipanel-network
 
 ```bash
 # Error de conexión a BD
-docker-compose logs postgres | grep -i error
+docker compose logs postgres | grep -i error
 
 # Error en el backend
-docker-compose logs backend | grep -i error
+docker compose logs backend | grep -i error
 
 # Ver logs de inicialización de BD
-docker-compose logs postgres | grep -i "database system is ready"
+docker compose logs postgres | grep -i "database system is ready"
 ```
 
 ---
@@ -246,13 +246,13 @@ Para habilitar hot reload con Spring Boot DevTools:
 developmentOnly 'org.springframework.boot:spring-boot-devtools'
 ```
 
-2. Descomentar volumen en `docker-compose.dev.yml`:
+2. Descomentar volumen en `docker compose.dev.yml`:
 ```yaml
 volumes:
   - ./backend/src:/app/src:ro
 ```
 
-3. Reconstruir: `docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build`
+3. Reconstruir: `docker compose -f docker compose.yml -f docker compose.dev.yml up --build`
 
 ### **Debug Remoto (Puerto 5005)**
 
@@ -301,7 +301,7 @@ AntiPanel incluye configuración completa para ejecutar tests de Spring Boot den
 
 ```bash
 # Ejecutar todos los tests con base de datos de test
-docker-compose -f docker-compose.yml -f docker-compose.test.yml up --build --abort-on-container-exit
+docker compose -f docker compose.yml -f docker compose.test.yml up --build --abort-on-container-exit
 
 # Ver reportes de tests generados
 # Los reportes HTML estarán en: backend/build/reports/tests/test/index.html
@@ -333,7 +333,7 @@ docker run --rm antipanel-tests sh -c "cat build/test-results/test/*.xml"
 
 ```bash
 # 1. Levantar solo base de datos de test
-docker-compose -f docker-compose.test.yml up -d postgres-test
+docker compose -f docker compose.test.yml up -d postgres-test
 
 # 2. Ejecutar tests localmente (requiere Java 25 instalado)
 cd backend
@@ -343,7 +343,7 @@ cd backend
 start build/reports/tests/test/index.html  # Windows
 
 # 4. Detener base de datos de test
-docker-compose -f docker-compose.test.yml down
+docker compose -f docker compose.test.yml down
 ```
 
 ### **Configuración de Tests**
@@ -442,19 +442,19 @@ class UserControllerTest {
 
 ```bash
 # Tests específicos
-docker-compose -f docker-compose.test.yml run --rm backend-test sh -c "./gradlew test --tests UserRepositoryTest"
+docker compose -f docker compose.test.yml run --rm backend-test sh -c "./gradlew test --tests UserRepositoryTest"
 
 # Tests con coverage
-docker-compose -f docker-compose.test.yml run --rm backend-test sh -c "./gradlew test jacocoTestReport"
+docker compose -f docker compose.test.yml run --rm backend-test sh -c "./gradlew test jacocoTestReport"
 
 # Tests en modo continuo (watch)
-docker-compose -f docker-compose.test.yml run --rm backend-test sh -c "./gradlew test --continuous"
+docker compose -f docker compose.test.yml run --rm backend-test sh -c "./gradlew test --continuous"
 
 # Limpiar reportes anteriores
 rm -rf backend/build/reports backend/build/test-results
 
 # Ver logs de tests en tiempo real
-docker-compose -f docker-compose.test.yml logs -f backend-test
+docker compose -f docker compose.test.yml logs -f backend-test
 ```
 
 ### **Troubleshooting de Tests**
@@ -462,10 +462,10 @@ docker-compose -f docker-compose.test.yml logs -f backend-test
 #### **Error: "Connection refused to postgres-test:5432"**
 ```bash
 # Verificar que postgres-test esté healthy
-docker-compose -f docker-compose.test.yml ps
+docker compose -f docker compose.test.yml ps
 
 # Ver logs de postgres-test
-docker-compose -f docker-compose.test.yml logs postgres-test
+docker compose -f docker compose.test.yml logs postgres-test
 ```
 
 #### **Error: "Tests failed" pero no ves los detalles**
@@ -478,7 +478,7 @@ cat backend/build/test-results/test/*.xml
 ```
 
 #### **Tests muy lentos**
-- Reducir logging: cambiar `LOGGING_LEVEL_ROOT` a `WARN` en `docker-compose.test.yml`
+- Reducir logging: cambiar `LOGGING_LEVEL_ROOT` a `WARN` en `docker compose.test.yml`
 - Usar `@Transactional` en tests para rollback automático
 - Evitar `@SpringBootTest` cuando `@DataJpaTest` o `@WebMvcTest` son suficientes
 
@@ -494,7 +494,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Run tests
-        run: docker-compose -f docker-compose.yml -f docker-compose.test.yml up --build --abort-on-container-exit
+        run: docker compose -f docker compose.yml -f docker compose.test.yml up --build --abort-on-container-exit
       - name: Upload test results
         uses: actions/upload-artifact@v3
         with:
@@ -510,13 +510,13 @@ jobs:
 
 ```bash
 # Eliminar contenedores detenidos
-docker-compose down
+docker compose down
 
 # Eliminar contenedores e imágenes
-docker-compose down --rmi all
+docker compose down --rmi all
 
 # Eliminar todo (contenedores, redes, volúmenes, imágenes)
-docker-compose down -v --rmi all
+docker compose down -v --rmi all
 ```
 
 ### **Limpiar Sistema Docker**
@@ -539,7 +539,7 @@ docker system prune -a --volumes
 
 ```bash
 # 1. Detener y eliminar todo
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml down -v --rmi all
+docker compose -f docker compose.yml -f docker compose.dev.yml down -v --rmi all
 
 # 2. Limpiar cache de Gradle (opcional)
 cd backend
@@ -547,7 +547,7 @@ cd backend
 
 # 3. Reconstruir
 cd ..
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+docker compose -f docker compose.yml -f docker compose.dev.yml up --build
 ```
 
 ---
@@ -598,7 +598,7 @@ Usuario ─▶ localhost:4200 (Frontend) ─▶ localhost:8080/api (Backend)
 netstat -ano | findstr :8080   # Windows
 lsof -i :8080                  # Linux/Mac
 
-# Detener el proceso o cambiar puerto en docker-compose.yml
+# Detener el proceso o cambiar puerto en docker compose.yml
 ports:
   - "8081:8080"  # Mapear a otro puerto
 ```
@@ -607,10 +607,10 @@ ports:
 
 ```bash
 # Verificar que postgres esté healthy
-docker-compose ps
+docker compose ps
 
 # Ver logs de postgres
-docker-compose logs postgres
+docker compose logs postgres
 
 # Verificar conexión
 docker exec antipanel-postgres pg_isready -U antipanel_user -d antipanel
@@ -625,20 +625,20 @@ cd backend
 
 # Reconstruir imagen
 cd ..
-docker-compose build --no-cache backend
+docker compose build --no-cache backend
 ```
 
 ### **Backend no inicia después de cambios**
 
 ```bash
 # 1. Detener servicios
-docker-compose down
+docker compose down
 
 # 2. Eliminar volúmenes (si hay problemas con datos)
-docker-compose down -v
+docker compose down -v
 
 # 3. Reconstruir imagen
-docker-compose up --build backend
+docker compose up --build backend
 ```
 
 ### **Base de datos vacía después de reiniciar**
@@ -647,8 +647,8 @@ Los scripts SQL solo se ejecutan cuando el volumen es **nuevo**:
 
 ```bash
 # Eliminar volumen y recrear
-docker-compose down -v
-docker-compose up
+docker compose down -v
+docker compose up
 ```
 
 ---
@@ -658,11 +658,11 @@ docker-compose up
 Después de levantar los servicios, verifica:
 
 - [ ] Backend está corriendo: `curl http://localhost:8080/actuator/health`
-- [ ] PostgreSQL está healthy: `docker-compose ps`
+- [ ] PostgreSQL está healthy: `docker compose ps`
 - [ ] Base de datos tiene tablas: `docker exec -it antipanel-postgres psql -U antipanel_user -d antipanel -c "\dt"`
 - [ ] Datos de ejemplo cargados: `docker exec -it antipanel-postgres psql -U antipanel_user -d antipanel -c "SELECT COUNT(*) FROM users;"`
 - [ ] pgAdmin accesible (dev): `http://localhost:5050`
-- [ ] Logs sin errores críticos: `docker-compose logs backend | grep ERROR`
+- [ ] Logs sin errores críticos: `docker compose logs backend | grep ERROR`
 
 ---
 
@@ -690,7 +690,7 @@ Después de levantar los servicios, verifica:
 
 ## 📝 **Notas Importantes**
 
-- ⚠️ **Nunca uses `docker-compose down -v` en producción** (elimina datos)
+- ⚠️ **Nunca uses `docker compose down -v` en producción** (elimina datos)
 - ⚠️ Las credenciales en este ejemplo son para **desarrollo local únicamente**
 - ⚠️ Cambia las contraseñas en producción
 - ⚠️ Los logs de SQL en desarrollo pueden afectar el rendimiento
@@ -701,8 +701,8 @@ Después de levantar los servicios, verifica:
 
 Si encuentras problemas:
 
-1. Revisar logs: `docker-compose logs -f`
-2. Verificar health: `docker-compose ps`
+1. Revisar logs: `docker compose logs -f`
+2. Verificar health: `docker compose ps`
 3. Consultar esta guía
 4. Buscar en documentación oficial de Docker/Spring Boot
 

@@ -30,7 +30,8 @@
 ### Dependencies
 - **Lombok:** Code generation (@Data, @Builder, etc.)
 - **Jakarta Validation:** DTO validation
-- **Spring Security:** Authentication & authorization (planned)
+- **Spring Security:** JWT authentication & authorization
+- **Swagger/OpenAPI:** API documentation
 
 ---
 
@@ -45,9 +46,11 @@ backend/
 │   │   │   ├── enums/            # Enum types (7 files)
 │   │   │   ├── dto/              # Data Transfer Objects (43 files)
 │   │   │   ├── repository/       # Spring Data JPA Repositories (11 files)
-│   │   │   ├── service/          # Business logic (planned)
-│   │   │   ├── controller/       # REST endpoints (planned)
-│   │   │   └── config/           # Configuration (planned)
+│   │   │   ├── service/          # Business logic (13 services)
+│   │   │   ├── controller/       # REST endpoints (13 controllers)
+│   │   │   ├── mapper/           # Entity ↔ DTO mappers (10 files)
+│   │   │   ├── security/         # JWT, filters, auth config
+│   │   │   └── config/           # Application configuration
 │   │   └── resources/
 │   │       ├── application.yml                # Default config
 │   │       ├── application-dev.yml            # Development profile
@@ -214,6 +217,7 @@ cd AntiPanel/backend
 1. Start services: `docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build`
 2. View logs: `docker compose logs -f backend`
 3. Access pgAdmin: http://localhost:5050
+4. Access Swagger UI: http://localhost:8080/swagger-ui.html
 
 ### Testing
 1. Run all tests: `./gradlew test`
@@ -272,11 +276,11 @@ Common issues and solutions:
 
 ## Next Steps
 
-- [ ] Implement service layer
-- [ ] Create REST controllers
-- [ ] Add Spring Security
-- [ ] Implement authentication/authorization
-- [ ] Add API documentation (Swagger/OpenAPI)
+- [x] ~~Implement service layer~~ (13 services)
+- [x] ~~Create REST controllers~~ (13 controllers)
+- [x] ~~Add Spring Security~~ (JWT + Rate Limiting)
+- [x] ~~Implement authentication/authorization~~
+- [x] ~~Add API documentation~~ (Swagger/OpenAPI)
 - [ ] Implement caching (Redis)
 - [ ] Add monitoring (Actuator + Prometheus)
 

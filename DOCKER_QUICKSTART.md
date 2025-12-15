@@ -7,7 +7,7 @@
 cd ~\AntiPanel
 
 # 2. Levantar servicios en modo desarrollo
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+docker compose -f docker compose.yml -f docker compose.dev.yml up --build
 
 # 3. Acceder a la aplicación
 # Backend:  http://localhost:8080
@@ -19,7 +19,7 @@ docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 
 ```bash
 # Ejecutar tests en Docker con base de datos aislada
-docker-compose -f docker-compose.yml -f docker-compose.test.yml up --build --abort-on-container-exit
+docker compose -f docker compose.yml -f docker compose.test.yml up --build --abort-on-container-exit
 
 # Ver reportes HTML generados
 start backend/build/reports/tests/test/index.html
@@ -38,16 +38,16 @@ start backend/build/reports/tests/test/index.html
 
 ```bash
 # Ver logs
-docker-compose logs -f backend
+docker compose logs -f backend
 
 # Reiniciar backend
-docker-compose restart backend
+docker compose restart backend
 
 # Detener todo
-docker-compose down
+docker compose down
 
 # Eliminar todo (incluye datos de BD)
-docker-compose down -v
+docker compose down -v
 ```
 
 ## 📚 Documentación Completa
@@ -56,4 +56,4 @@ Ver [docs/DOCKER_GUIDE.md](docs/DOCKER_GUIDE.md) para la guía completa.
 
 ---
 
-**¿Problemas?** Revisa los logs: `docker-compose logs -f`
+**¿Problemas?** Revisa los logs: `docker compose logs -f`
