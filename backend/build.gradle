@@ -36,14 +36,32 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// MapStruct - Entity/DTO mapping (Spring Boot 4 compatible)
+	implementation 'org.mapstruct:mapstruct:1.6.3'
+
+	// JWT Authentication (jjwt 0.12.6+)
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+
+	// OpenAPI Documentation (Swagger UI)
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
+
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
+
+	// Annotation Processors - ORDER MATTERS: Lombok must be before MapStruct
 	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 
 	// Testing dependencies - Spring Boot 4.0 Best Practices (2025)
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
-	testImplementation 'org.springframework.security:spring-security-test'
+
+	// Spring Boot 4: Required for @WithMockUser and security tests
+	testImplementation 'org.springframework.boot:spring-boot-starter-security-test'
 
 	// CRITICAL for Spring Boot 4.0: Required for @ServiceConnection with PostgreSQL
 	// See: https://github.com/spring-projects/spring-boot/issues/48234
@@ -54,9 +72,11 @@ dependencies {
 	testImplementation 'org.testcontainers:postgresql'
 	testImplementation 'org.testcontainers:junit-jupiter'
 
-	// Lombok and runtime dependencies
+	// Lombok and runtime dependencies for tests
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+	testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	testRuntimeOnly 'org.postgresql:postgresql'
 }
