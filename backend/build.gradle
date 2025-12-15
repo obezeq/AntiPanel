@@ -24,6 +24,13 @@ repositories {
 	mavenCentral()
 }
 
+dependencyManagement {
+	imports {
+		// Testcontainers BOM for version management
+		mavenBom 'org.testcontainers:testcontainers-bom:1.20.4'
+	}
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -32,10 +39,26 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	// Testing dependencies - Spring Boot 4.0 Best Practices (2025)
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
-	testImplementation 'org.springframework.boot:spring-boot-starter-security-test'
-	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+
+	// CRITICAL for Spring Boot 4.0: Required for @ServiceConnection with PostgreSQL
+	// See: https://github.com/spring-projects/spring-boot/issues/48234
+	testImplementation 'org.springframework.boot:spring-boot-starter-jdbc'
+
+	// Testcontainers - Real PostgreSQL for tests (Spring Boot 4.0 Best Practice)
+	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+	testImplementation 'org.testcontainers:postgresql'
+	testImplementation 'org.testcontainers:junit-jupiter'
+
+	// Lombok and runtime dependencies
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testRuntimeOnly 'org.postgresql:postgresql'
 }
 
 tasks.named('test') {
