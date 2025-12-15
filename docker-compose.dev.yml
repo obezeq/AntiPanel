@@ -75,6 +75,14 @@ services:
       - "8080:8080"  # API Server
       - "5005:5005"  # Java Debug Port
 
+    # Health check using Spring Boot Actuator
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
   # ========================================
   # Angular 21 Frontend - Development (Bun)
   # ========================================
@@ -82,6 +90,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      target: development
 
     container_name: antipanel-frontend
     restart: unless-stopped
@@ -115,9 +124,9 @@ services:
     networks:
       - antipanel-network
 
-    # Health check for frontend
+    # Health check for frontend (using curl, more reliable than BusyBox wget)
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:4200"]
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:4200"]
       interval: 30s
       timeout: 10s
       retries: 3
