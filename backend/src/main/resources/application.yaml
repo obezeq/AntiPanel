@@ -30,19 +30,19 @@ spring:
         order_updates: true
     open-in-view: false
 
+  # JWT Configuration (under spring.jwt for @ConfigurationProperties)
+  jwt:
+    secret: ${JWT_SECRET:dGhpc19pc19hX3ZlcnlfbG9uZ19zZWNyZXRfa2V5X2Zvcl9qd3RfYXV0aGVudGljYXRpb25fMjU2X2JpdHM=}
+    access-token-expiration: 900000      # 15 minutes in milliseconds
+    refresh-token-expiration: 604800000  # 7 days in milliseconds
+    issuer: antipanel-api
+
 # Configuración del servidor
 server:
   port: 8080
   error:
     include-message: always
     include-stacktrace: on_param
-
-# JWT Configuration
-jwt:
-  secret: ${JWT_SECRET:dGhpc19pc19hX3ZlcnlfbG9uZ19zZWNyZXRfa2V5X2Zvcl9qd3RfYXV0aGVudGljYXRpb25fMjU2X2JpdHM=}
-  access-token-expiration: 900000      # 15 minutes in milliseconds
-  refresh-token-expiration: 604800000  # 7 days in milliseconds
-  issuer: antipanel-api
 
 # OpenAPI/Swagger Configuration
 springdoc:
