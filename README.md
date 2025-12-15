@@ -109,11 +109,17 @@ docker-compose -f docker-compose.yml -f docker-compose.test.yml up --build --abo
 
 ## 📚 Documentación
 
+### Backend (Spring Boot 4)
+- [📖 Backend Documentation](backend/docs/README.md) - **Entry Point**
+- [📦 Setup Guide](backend/docs/SETUP.md) - Java 25, Gradle, PostgreSQL
+- [🧪 Testing Guide](backend/docs/TESTING.md) - Spring Boot 4.0 testing
+- [🗄️ Data Model](backend/docs/modelo_de_datos.md) - Database schema
+
+### Docker
 - [📋 Quick Start](DOCKER_QUICKSTART.md)
-- [📖 Guía Docker Completa](docs/DOCKER_GUIDE.md)
-- [🧪 Testing Guide](TESTING.md)
-- [⚠️ Spring Boot 4.0 Testing Best Practices](SPRING_BOOT_4_TESTING.md) - **¡IMPORTANTE!**
-- [🗄️ Modelo de Datos](backend/docs/modelo_de_datos.md)
+- [📖 Docker Guide](docs/DOCKER_GUIDE.md)
+
+### General
 - [🎯 Entender el Problema](entender_el_problema_real.md)
 
 ---
@@ -129,12 +135,6 @@ docker-compose -f docker-compose.yml -f docker-compose.test.yml up --build --abo
 ### Configuración Local
 
 Ver [docs/DOCKER_GUIDE.md](docs/DOCKER_GUIDE.md) para instrucciones detalladas.
-
----
-
-## 📄 Licencia
-
-Proyecto educativo - 2º DAW (Diseño de Interfaces Web)
 
 ---
 

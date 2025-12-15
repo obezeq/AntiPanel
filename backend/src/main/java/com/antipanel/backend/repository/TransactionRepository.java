@@ -125,13 +125,12 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
     /**
      * Get latest transaction for user (for balance verification)
+     * Uses Spring Data derived query method (JPQL doesn't support LIMIT)
      *
      * @param userId User ID
      * @return Optional transaction
      */
-    @Query("SELECT t FROM Transaction t WHERE t.user.id = :userId " +
-           "ORDER BY t.createdAt DESC LIMIT 1")
-    Optional<Transaction> findLatestByUserId(@Param("userId") Long userId);
+    Optional<Transaction> findFirstByUserIdOrderByCreatedAtDesc(Long userId);
 
     /**
      * Get user balance history over time
@@ -198,16 +197,18 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     /**
      * Get daily transaction summary within date range
      * Returns Object[] with [LocalDate date, TransactionType type, Long count, BigDecimal totalAmount]
+     * Uses native query because CAST(... AS DATE) is PostgreSQL-specific syntax
      *
      * @param start Start timestamp
      * @param end   End timestamp
      * @return List of daily summaries
      */
-    @Query("SELECT CAST(t.createdAt AS date), t.type, COUNT(t), SUM(t.amount) " +
-           "FROM Transaction t " +
-           "WHERE t.createdAt BETWEEN :start AND :end " +
-           "GROUP BY CAST(t.createdAt AS date), t.type " +
-           "ORDER BY CAST(t.createdAt AS date) DESC, t.type")
+    @Query(value = "SELECT CAST(t.created_at AS DATE) as tx_date, t.type, COUNT(*), SUM(t.amount) " +
+           "FROM transactions t " +
+           "WHERE t.created_at BETWEEN :start AND :end " +
+           "GROUP BY CAST(t.created_at AS DATE), t.type " +
+           "ORDER BY tx_date DESC, t.type",
+           nativeQuery = true)
     List<Object[]> getDailyTransactionSummary(
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end);

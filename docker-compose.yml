@@ -1,7 +1,7 @@
 # ========================================
 # Docker Compose - Base Configuration
 # ========================================
-version: '3.8'
+# Note: 'version' field is obsolete in modern Docker Compose
 
 services:
   # ========================================

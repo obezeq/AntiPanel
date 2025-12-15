@@ -17,6 +17,9 @@ COPY gradle gradle
 COPY build.gradle .
 COPY settings.gradle .
 
+# Ensure gradlew is executable (required for Linux/Unix)
+RUN chmod +x gradlew
+
 # Download dependencies (cached layer)
 RUN ./gradlew dependencies --no-daemon
 
@@ -41,6 +44,9 @@ COPY gradle gradle
 COPY build.gradle .
 COPY settings.gradle .
 
+# Ensure gradlew is executable (required for Linux/Unix)
+RUN chmod +x gradlew
+
 # Download dependencies (cached layer)
 RUN ./gradlew dependencies --no-daemon
 
@@ -63,6 +69,10 @@ LABEL version="1.0.0"
 
 # Set working directory
 WORKDIR /app
+
+# Install curl for health checks (minimal addition ~3MB)
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user for security
 RUN groupadd -r spring && useradd -r -g spring spring

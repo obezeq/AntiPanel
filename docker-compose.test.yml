@@ -1,8 +1,8 @@
 # ========================================
 # Docker Compose - Test Configuration
-# Usage: docker-compose -f docker-compose.yml -f docker-compose.test.yml up backend-test --build --abort-on-container-exit
+# Usage: docker compose -f docker-compose.yml -f docker-compose.test.yml up backend-test --build --abort-on-container-exit
 # ========================================
-version: '3.8'
+# Note: 'version' field is obsolete in modern Docker Compose
 
 services:
   # ========================================
@@ -33,11 +33,13 @@ services:
 
       # Testcontainers configuration
       TESTCONTAINERS_RYUK_DISABLED: "false"
-      DOCKER_HOST: "unix:///var/run/docker.sock"
+      # Docker host is auto-detected by Testcontainers, no need to specify
 
     volumes:
       # Mount Docker socket for Testcontainers to create PostgreSQL containers
-      - /var/run/docker.sock:/var/run/docker.sock
+      # Linux/macOS: /var/run/docker.sock
+      # Windows: //var/run/docker.sock (Docker Desktop translates this)
+      - ${DOCKER_SOCK_PATH:-/var/run/docker.sock}:/var/run/docker.sock
       # Mount test reports to host for easy access
       - ./backend/build/reports:/app/build/reports
       - ./backend/build/test-results:/app/build/test-results

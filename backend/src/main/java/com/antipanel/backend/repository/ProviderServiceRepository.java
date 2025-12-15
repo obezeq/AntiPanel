@@ -93,12 +93,14 @@ public interface ProviderServiceRepository extends JpaRepository<ProviderService
 
     /**
      * Find provider services that need synchronization (last synced before threshold)
+     * Uses native query because NULLS FIRST is PostgreSQL-specific (not supported in JPQL)
      *
      * @param before Threshold timestamp
-     * @return List of provider services needing sync
+     * @return List of provider services needing sync (nulls first, then oldest)
      */
-    @Query("SELECT ps FROM ProviderService ps WHERE ps.lastSyncedAt < :before " +
-           "OR ps.lastSyncedAt IS NULL ORDER BY ps.lastSyncedAt ASC NULLS FIRST")
+    @Query(value = "SELECT * FROM provider_services ps WHERE ps.last_synced_at < :before " +
+           "OR ps.last_synced_at IS NULL ORDER BY ps.last_synced_at ASC NULLS FIRST",
+           nativeQuery = true)
     List<ProviderService> findServicesNeedingSync(@Param("before") LocalDateTime before);
 
     // ============ STATISTICS ============
