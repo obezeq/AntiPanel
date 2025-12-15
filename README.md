@@ -10,11 +10,11 @@ Panel de marketing para redes sociales con enfoque en UX/UI minimalista y alto r
 
 ```bash
 # Clonar repositorio
-git clone <repo-url>
+git clone https://github.com/obezeq/AntiPanel/
 cd AntiPanel
 
 # Iniciar en modo desarrollo
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 
 # Acceder a los servicios
 # Backend:  http://localhost:8080
@@ -53,6 +53,12 @@ AntiPanel/
 - ✅ **11 Entidades** con relaciones JPA
 - ✅ **43 DTOs** con validación Jakarta
 - ✅ **11 Repositories** con 150+ queries personalizadas
+- ✅ **13 Controllers** (Auth, User, Orders, Admin...)
+- ✅ **13 Services** con lógica de negocio
+- ✅ **10 Mappers** (Entity ↔ DTO)
+- ✅ **Seguridad:** JWT + Rate Limiting
+- ✅ **44 Tests** (Controllers, Services, Mappers)
+- ✅ **API Docs:** Swagger/OpenAPI
 - ✅ **PostgreSQL 18** con tipos ENUM y constraints
 - ✅ **Docker** multi-stage con mejores prácticas
 
@@ -81,6 +87,7 @@ AntiPanel/
 | Servicio | Puerto | URL |
 |----------|--------|-----|
 | Backend (Spring Boot) | 8080 | http://localhost:8080 |
+| Swagger UI | 8080 | http://localhost:8080/swagger-ui.html |
 | PostgreSQL | 5432 | localhost:5432 |
 | pgAdmin (dev) | 5050 | http://localhost:5050 |
 
@@ -88,19 +95,19 @@ AntiPanel/
 
 ```bash
 # Iniciar servicios
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up
 
 # Ver logs
-docker-compose logs -f backend
+docker compose logs -f backend
 
 # Detener servicios
-docker-compose down
+docker compose down
 
 # Limpiar todo
-docker-compose down -v
+docker compose down -v
 
 # Ejecutar tests
-docker-compose -f docker-compose.yml -f docker-compose.test.yml up --build --abort-on-container-exit
+docker compose -f docker-compose.yml -f docker-compose.test.yml up --build --abort-on-container-exit
 ```
 
 **Helper script para Windows:** `docker-dev.bat`
@@ -130,7 +137,7 @@ docker-compose -f docker-compose.yml -f docker-compose.test.yml up --build --abo
 - Docker Desktop 20.10+
 - (Opcional) Java 25 JDK para desarrollo local
 - (Opcional) PostgreSQL 18 para desarrollo local
-- (Opcional) Node.js 20+ para frontend
+- (Opcional) Node.js 24+ para frontend
 
 ### Configuración Local
 
