@@ -115,6 +115,14 @@ services:
     networks:
       - antipanel-network
 
+    # Health check for frontend
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:4200"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
   # ========================================
   # pgAdmin - Database Management Tool (Optional)
   # ========================================

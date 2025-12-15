@@ -1,314 +1,292 @@
-# 🅰️ Guía: Agregar Angular al Docker Setup
+# Angular 21 + Bun - Docker Setup Guide
 
-**NOTA:** Esta guía es para el **futuro** cuando estés listo para dockerizar el frontend Angular.
+## Descripción
 
----
+Este proyecto usa **Docker Puro** para el frontend Angular 21. No necesitas instalar Node.js, Angular CLI ni Bun localmente - Docker maneja todo.
 
-## 📋 **Pre-requisitos**
+## Tecnologías
 
-Antes de continuar, asegúrate de tener:
+- **Node.js:** 24 LTS (Krypton - soporte hasta Abril 2028)
+- **Angular:** 21.0.5 (última versión estable)
+- **Package Manager:** Bun 1.3.4 (5-10x más rápido que npm)
+- **Runtime:** Docker
 
-- ✅ Proyecto Angular 21 creado en `frontend/`
-- ✅ Backend funcionando en Docker
-- ✅ Docker Desktop instalado y corriendo
-
----
-
-## 🚀 **Paso 1: Crear Dockerfile para Angular**
-
-Crea el archivo `frontend/Dockerfile`:
-
-```dockerfile
-# ========================================
-# Multi-stage Dockerfile for Angular 21
-# ========================================
-
-# ========================================
-# Stage 1: Build Stage
-# ========================================
-FROM node:20-alpine AS builder
-
-WORKDIR /app
-
-# Copy package files
-COPY package*.json ./
-
-# Install dependencies
-RUN npm ci --only=production
-
-# Copy source code
-COPY . .
-
-# Build Angular app for production
-RUN npm run build -- --configuration production
-
-# ========================================
-# Stage 2: Development Stage (for ng serve)
-# ========================================
-FROM node:20-alpine AS development
-
-WORKDIR /app
-
-# Copy package files
-COPY package*.json ./
-
-# Install ALL dependencies (including dev)
-RUN npm install
-
-# Copy source code
-COPY . .
-
-# Expose Angular dev server port
-EXPOSE 4200
-
-# Start development server
-CMD ["npm", "run", "start", "--", "--host", "0.0.0.0", "--poll", "2000"]
-
-# ========================================
-# Stage 3: Production Stage (nginx)
-# ========================================
-FROM nginx:alpine AS production
-
-# Copy built app from builder stage
-COPY --from=builder /app/dist/antipanel-frontend /usr/share/nginx/html
-
-# Copy custom nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Expose nginx port
-EXPOSE 80
-
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
-```
-
----
-
-## 🚀 **Paso 2: Crear .dockerignore para Angular**
-
-Crea el archivo `frontend/.dockerignore`:
+## Arquitectura
 
 ```
-# Dependencies
-node_modules
-npm-debug.log*
-
-# Build output
-dist
-.angular
-
-# IDE
-.vscode
-.idea
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Environment
-.env
-.env.local
-
-# Testing
-coverage
-.nyc_output
-
-# Misc
-*.log
+┌─────────────────────────────────────────┐
+│        Docker Multi-Stage Build         │
+├─────────────────────────────────────────┤
+│ 1. Base (Node 24 LTS + Bun 1.3.4)      │
+│ 2. Dependencies (bun install)           │
+│ 3. Development (ng serve + hot reload)  │
+│ 4. Builder (ng build --prod)            │
+│ 5. Production (Nginx)                   │
+└─────────────────────────────────────────┘
 ```
 
----
+## Inicialización (Primera Vez)
 
-## 🚀 **Paso 3: Crear nginx.conf**
-
-Crea el archivo `frontend/nginx.conf`:
-
-```nginx
-server {
-    listen 80;
-    server_name localhost;
-    root /usr/share/nginx/html;
-    index index.html;
-
-    # Enable gzip compression
-    gzip on;
-    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
-
-    # SPA fallback - redirect all requests to index.html
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
-
-    # API proxy (opcional - si quieres que nginx maneje el proxy al backend)
-    location /api {
-        proxy_pass http://backend:8080;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-    }
-
-    # Cache static assets
-    location ~* \.(jpg|jpeg|png|gif|ico|css|js|svg|woff|woff2|ttf|eot)$ {
-        expires 1y;
-        add_header Cache-Control "public, immutable";
-    }
-}
-```
-
----
-
-## 🚀 **Paso 4: Descomentar servicio frontend en docker-compose**
-
-En `docker-compose.yml` y `docker-compose.dev.yml`, descomenta las secciones marcadas:
-
-```yaml
-# ========================================
-# Angular Frontend (Future - Not implemented yet)
-# ========================================
-# QUITAR COMENTARIOS DE ESTAS LÍNEAS ↓↓↓
-```
-
----
-
-## 🚀 **Paso 5: Configurar environment de Angular**
-
-Actualiza `frontend/src/environments/environment.ts`:
-
-```typescript
-export const environment = {
-  production: false,
-  apiUrl: 'http://localhost:8080/api'
-};
-```
-
-Y `frontend/src/environments/environment.docker.ts`:
-
-```typescript
-export const environment = {
-  production: false,
-  apiUrl: 'http://backend:8080/api'  // Usa nombre del servicio Docker
-};
-```
-
----
-
-## 🚀 **Paso 6: Actualizar package.json**
-
-Añade scripts útiles en `frontend/package.json`:
-
-```json
-{
-  "scripts": {
-    "start": "ng serve",
-    "start:docker": "ng serve --host 0.0.0.0 --poll 2000",
-    "build": "ng build",
-    "build:prod": "ng build --configuration production",
-    "build:docker": "ng build --configuration docker"
-  }
-}
-```
-
----
-
-## 🚀 **Paso 7: Levantar todo junto**
+### Paso 1: Ejecutar script de inicialización
 
 ```bash
-# Reconstruir todo
+# Desde el directorio raíz del proyecto
+./init-frontend.sh
+```
+
+**¿Qué hace este script?**
+1. Usa un contenedor temporal de Docker con Node.js 24 LTS
+2. Instala Bun 1.3.4 y Angular CLI 21 en el contenedor
+3. Crea el proyecto Angular con `ng new`
+4. Configura `package.json` para Docker
+5. Limpia el contenedor temporal
+
+**Tiempo estimado:** 3-5 minutos
+
+### Paso 2: Levantar los servicios
+
+```bash
+# Modo foreground (ver logs)
 docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 
-# Acceder:
-# Frontend: http://localhost:4200
-# Backend:  http://localhost:8080
+# Modo background (detached)
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
 ```
 
----
+### Paso 3: Acceder a la aplicación
 
-## 📊 **Arquitectura Final**
+- **Frontend:** http://localhost:4200
+- **Backend API:** http://localhost:8080/api
+- **Swagger UI:** http://localhost:8080/swagger-ui.html
+- **pgAdmin:** http://localhost:5050
 
-```
-┌──────────────────────────────────────────────────┐
-│              Navegador del Usuario               │
-└──────────────────┬───────────────────────────────┘
-                   │
-                   ▼
-         http://localhost:4200
-                   │
-┌──────────────────┴───────────────────────────────┐
-│              Docker Network                      │
-│                                                  │
-│  ┌─────────────────┐                            │
-│  │    Frontend     │                            │
-│  │    (Angular)    │                            │
-│  │   Container     │                            │
-│  │   Port: 4200    │                            │
-│  └────────┬────────┘                            │
-│           │                                      │
-│           │ HTTP Requests                        │
-│           │ /api/*                               │
-│           ▼                                      │
-│  ┌─────────────────┐       ┌─────────────────┐ │
-│  │     Backend     │       │   PostgreSQL    │ │
-│  │  (Spring Boot)  │──────▶│   Database      │ │
-│  │   Container     │       │   Container     │ │
-│  │   Port: 8080    │       │   Port: 5432    │ │
-│  └─────────────────┘       └─────────────────┘ │
-│                                                  │
-└──────────────────────────────────────────────────┘
-```
+## Desarrollo Diario
 
----
-
-## 🔧 **Comandos Útiles**
+### Levantar servicios
 
 ```bash
-# Ver logs del frontend
-docker-compose logs -f frontend
-
-# Reiniciar solo frontend
-docker-compose restart frontend
-
-# Acceder al contenedor del frontend
-docker exec -it antipanel-frontend sh
-
-# Reconstruir solo frontend
-docker-compose up --build frontend
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
 ```
 
----
+### Detener servicios
 
-## ⚡ **Hot Reload (Desarrollo)**
+```bash
+# Graceful stop
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml down
 
-El hot reload ya está configurado en `docker-compose.dev.yml`:
+# Con limpieza de volúmenes
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml down -v
+```
 
+### Ver logs
+
+```bash
+# Todos los servicios
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs -f
+
+# Solo frontend
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs -f frontend
+
+# Solo backend
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs -f backend
+```
+
+### Reconstruir solo frontend
+
+```bash
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build frontend
+```
+
+### Entrar al contenedor
+
+```bash
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml exec frontend sh
+
+# Dentro del contenedor puedes:
+bun --version
+node --version
+ng version
+ls -la
+```
+
+## Hot Reload
+
+El hot reload está configurado y funciona automáticamente:
+
+1. Edita archivos en `frontend/src/`
+2. Los cambios se sincronizan con el contenedor (volúmenes Docker)
+3. Angular dev server detecta cambios (polling habilitado)
+4. El navegador se recarga automáticamente
+
+**Archivos monitoreados:**
+- `frontend/src/**/*`
+- `frontend/public/**/*`
+- `frontend/angular.json`
+- `frontend/tsconfig*.json`
+
+**Archivos NO sincronizados (protegidos):**
+- `node_modules/` (se usa la versión del contenedor)
+- `.angular/` (caché de Angular)
+
+## Comandos Útiles
+
+### Instalar nueva dependencia
+
+```bash
+# Opción 1: Desde el host (requiere editar package.json)
+# 1. Editar frontend/package.json manualmente
+# 2. Reconstruir contenedor:
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build frontend
+
+# Opción 2: Desde dentro del contenedor
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml exec frontend bun add <package>
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml exec frontend bun add -D <package-dev>
+```
+
+### Generar componentes/servicios
+
+```bash
+# Entrar al contenedor
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml exec frontend sh
+
+# Generar componente
+ng generate component components/nombre
+
+# Generar servicio
+ng generate service services/nombre
+
+# Generar guard
+ng generate guard guards/nombre
+```
+
+### Ejecutar tests
+
+```bash
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml exec frontend bun test
+```
+
+### Ejecutar linter
+
+```bash
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml exec frontend bun run lint
+```
+
+## Troubleshooting
+
+### Hot reload no funciona
+
+**Síntomas:** Cambios no se reflejan en el navegador
+
+**Solución:**
+```bash
+# 1. Verificar que polling está habilitado
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml exec frontend env | grep POLL
+
+# Debe mostrar:
+# WATCHPACK_POLLING=true
+# CHOKIDAR_USEPOLLING=true
+
+# 2. Verificar volúmenes montados
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml exec frontend ls -la /app/src
+
+# 3. Reconstruir contenedor
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build frontend
+```
+
+### Error de permisos
+
+**Síntomas:** `EACCES: permission denied`
+
+**Solución:**
+```bash
+# Reconstruir sin caché
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml build --no-cache frontend
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d frontend
+```
+
+### Puerto 4200 en uso
+
+**Síntomas:** `Error: listen EADDRINUSE: address already in use :::4200`
+
+**Solución 1:** Cambiar puerto en `docker-compose.dev.yml`
 ```yaml
-volumes:
-  - ./frontend/src:/app/src
-  - /app/node_modules  # Prevent overwriting
+ports:
+  - "4201:4200"  # Ahora accede por localhost:4201
 ```
 
-Cualquier cambio en `frontend/src` se reflejará automáticamente.
+**Solución 2:** Detener el proceso que usa el puerto
+```bash
+# Linux/Mac
+lsof -ti:4200 | xargs kill -9
+
+# O detener todos los contenedores
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml down
+```
+
+### CORS errors
+
+**Síntomas:** `Access to XMLHttpRequest at 'http://localhost:8080/api/...' from origin 'http://localhost:4200' has been blocked by CORS policy`
+
+**Solución:** Verificar que el backend está configurado correctamente
+
+1. Verificar que el backend está corriendo:
+   ```bash
+   docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs backend | grep "Started"
+   ```
+
+2. Verificar CORS en `backend/src/main/resources/application-dev.yml`:
+   ```yaml
+   spring:
+     web:
+       cors:
+         allowed-origins: http://localhost:4200,http://frontend:4200
+   ```
+
+3. Reiniciar backend:
+   ```bash
+   docker-compose -f docker-compose.yml -f docker-compose.dev.yml restart backend
+   ```
+
+## Mejores Prácticas Implementadas
+
+### Docker Best Practices
+
+1. **Multi-stage builds** - Optimización de capas y tamaño de imagen
+2. **Alpine base images** - Imágenes mínimas (Node 24 Alpine ~55MB vs ~900MB)
+3. **Layer caching** - Dependencias separadas del código fuente
+4. **Non-root user** - Seguridad (futuro en producción)
+5. **Healthchecks** - Monitoreo automático de contenedores
+6. **.dockerignore** - Excluir archivos innecesarios del build
+7. **Specific versions** - Node 24 LTS, Angular 21, Bun 1.3.4 (reproducibilidad)
+
+### Angular + Bun Best Practices
+
+1. **Bun 1.3.4 package manager** - 5-10x más rápido que npm
+2. **Node.js 24 LTS (Krypton)** - Soporte a largo plazo hasta Abril 2028
+3. **Angular 21.0.5** - Última versión estable
+4. **Hot reload con polling** - Compatible con Docker volumes
+5. **SCSS preprocessor** - Mejor que CSS puro
+6. **Routing habilitado** - Aplicaciones SPA modernas
+
+## Flujo de Trabajo Rápido
+
+```bash
+# 1. Inicializar proyecto
+./init-frontend.sh
+
+# 2. Levantar servicios
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+
+# 3. Abrir http://localhost:4200
+```
+
+## Recursos
+
+- [Angular 21 Documentation](https://angular.dev)
+- [Bun Documentation](https://bun.sh/docs)
+- [Docker Best Practices](https://docs.docker.com/develop/dev-best-practices/)
+- [Node.js 24 LTS](https://nodejs.org/en/blog/release/v24.11.0)
 
 ---
 
-## 🎯 **Siguiente Paso**
-
-Cuando implementes Angular:
-
-1. Crea el proyecto Angular en `frontend/`
-2. Crea los archivos mencionados arriba
-3. Descomenta las secciones frontend en docker-compose
-4. Ejecuta: `docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build`
-
----
-
-## 📚 **Recursos**
-
-- [Angular Docker Guide](https://angular.io/guide/deployment#docker)
-- [Multi-stage Builds](https://docs.docker.com/build/building/multi-stage/)
-- [Nginx Configuration](https://nginx.org/en/docs/)
-
----
-
-**Última actualización:** 2025-01-13
+**Última actualización:** 2025-12-15
