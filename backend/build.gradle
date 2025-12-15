@@ -59,6 +59,7 @@ dependencies {
 	// Testing dependencies - Spring Boot 4.0 Best Practices (2025)
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
 
 	// Spring Boot 4: Required for @WithMockUser and security tests
 	testImplementation 'org.springframework.boot:spring-boot-starter-security-test'
