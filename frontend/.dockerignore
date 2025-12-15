@@ -1,0 +1,37 @@
+# Dependencies
+node_modules
+
+# Build outputs
+dist
+.angular
+
+# Version control
+.git
+.gitignore
+
+# Documentation
+*.md
+
+# Test coverage
+coverage
+
+# Environment files
+.env*
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs
+
+# Docker files (no need to copy these into container)
+Dockerfile
+.dockerignore

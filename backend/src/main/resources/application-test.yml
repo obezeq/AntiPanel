@@ -1,0 +1,85 @@
+# ========================================
+# Spring Boot Configuration - Test Profile
+# Active with: SPRING_PROFILES_ACTIVE=test
+# ========================================
+
+spring:
+  # ========================================
+  # Application Info
+  # ========================================
+  application:
+    name: antipanel-backend-test
+
+  # ========================================
+  # DataSource Configuration
+  # ========================================
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/antipanel_test}
+    username: ${SPRING_DATASOURCE_USERNAME:antipanel_test_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:antipanel_test_password}
+    driver-class-name: org.postgresql.Driver
+
+    # HikariCP - Optimized for tests (smaller pool)
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 2
+      connection-timeout: 20000
+      idle-timeout: 300000
+      max-lifetime: 1200000
+      pool-name: AntiPanelTestHikariPool
+
+  # ========================================
+  # JPA / Hibernate Configuration
+  # ========================================
+  jpa:
+    # Create-drop schema for each test run
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:create-drop}
+
+    # Show SQL queries
+    show-sql: ${SPRING_JPA_SHOW_SQL:true}
+
+    properties:
+      hibernate:
+        # Format SQL for readability
+        format_sql: ${SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL:true}
+
+        # Use PostgreSQL dialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+        # Test optimizations
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+
+# ========================================
+# Logging Configuration
+# ========================================
+logging:
+  level:
+    root: ${LOGGING_LEVEL_ROOT:INFO}
+    com.antipanel: ${LOGGING_LEVEL_COM_ANTIPANEL:DEBUG}
+    org.springframework.test: ${LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_TEST:DEBUG}
+    org.springframework.web: ${LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_WEB:INFO}
+    org.hibernate.SQL: ${LOGGING_LEVEL_ORG_HIBERNATE_SQL:DEBUG}
+    org.hibernate.type.descriptor.sql.BasicBinder: ${LOGGING_LEVEL_ORG_HIBERNATE_TYPE_DESCRIPTOR_SQL_BASICBINDER:TRACE}
+
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %logger{36} - %msg%n"
+
+# ========================================
+# Server Configuration
+# ========================================
+server:
+  port: ${SERVER_PORT:8080}
+  error:
+    include-message: always
+    include-stacktrace: always
+
+# ========================================
+# Management / Actuator (Disabled for tests)
+# ========================================
+management:
+  endpoints:
+    enabled-by-default: false

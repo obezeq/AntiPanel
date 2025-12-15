@@ -1,0 +1,50 @@
+# ========================================
+# .dockerignore - Exclude unnecessary files from Docker context
+# ========================================
+
+# Gradle
+.gradle
+build
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+# IDE
+.idea
+.vscode
+*.iml
+*.ipr
+*.iws
+.classpath
+.project
+.settings
+bin
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Logs
+*.log
+logs
+
+# Test coverage
+coverage
+.nyc_output
+
+# Documentation (already in image if needed)
+docs
+README.md
+
+# Docker files (don't need these inside the image)
+Dockerfile
+.dockerignore
+
+# Environment files (use docker-compose env instead)
+.env
+.env.local
+.env.*.local
