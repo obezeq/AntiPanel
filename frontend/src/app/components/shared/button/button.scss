@@ -1,0 +1,156 @@
+@use '../../../styles/01-tools/mixins' as *;
+
+// ==========================================================================
+// BUTTON COMPONENT
+// ==========================================================================
+// Reusable button with variants, sizes, and states.
+// ==========================================================================
+
+.button {
+  @include button-base;
+
+  // Default styles (will be overridden by variant modifiers)
+  background-color: var(--color-success);
+  color: var(--color-background);
+}
+
+// ---------------------------------------------------------------------------
+// VARIANTS
+// ---------------------------------------------------------------------------
+
+.button--primary {
+  background-color: var(--color-success);
+  color: var(--color-background);
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-high-contrast);
+    color: var(--color-background);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+}
+
+.button--secondary {
+  background-color: transparent;
+  color: var(--color-text);
+  border: var(--border-width-medium) solid var(--color-text);
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-text);
+    color: var(--color-background);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+}
+
+.button--ghost {
+  background-color: transparent;
+  color: var(--color-text);
+  border: var(--border-width-medium) solid var(--color-secondary);
+
+  &:hover:not(:disabled) {
+    border-color: var(--color-text);
+    background-color: var(--color-tiny-info);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+}
+
+.button--danger {
+  background-color: var(--color-error);
+  color: var(--color-high-contrast);
+
+  &:hover:not(:disabled) {
+    background-color: #cc3636; // Darker red
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// SIZES
+// ---------------------------------------------------------------------------
+
+.button--sm {
+  padding: var(--spacing-2) var(--spacing-4);
+  font-size: var(--font-size-small);
+  border-radius: var(--radius-md);
+}
+
+.button--md {
+  padding: var(--spacing-3) var(--spacing-6);
+  font-size: var(--font-size-caption);
+  border-radius: var(--radius-lg);
+}
+
+.button--lg {
+  padding: var(--spacing-4) var(--spacing-8);
+  font-size: var(--font-size-body);
+  border-radius: var(--radius-lg);
+}
+
+// ---------------------------------------------------------------------------
+// MODIFIERS
+// ---------------------------------------------------------------------------
+
+.button--full-width {
+  width: 100%;
+}
+
+.button--loading {
+  cursor: wait;
+  position: relative;
+}
+
+// ---------------------------------------------------------------------------
+// CONTENT
+// ---------------------------------------------------------------------------
+
+.button__content {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  transition: opacity var(--transition-fast);
+}
+
+.button__content--hidden {
+  opacity: 0;
+}
+
+// ---------------------------------------------------------------------------
+// SPINNER
+// ---------------------------------------------------------------------------
+
+.button__spinner {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: button-spin 0.8s linear infinite;
+}
+
+@keyframes button-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// DISABLED STATE
+// ---------------------------------------------------------------------------
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
