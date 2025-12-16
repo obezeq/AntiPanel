@@ -1,0 +1,213 @@
+// ==========================================================================
+// RECENT ORDER CARD
+// ==========================================================================
+// Simplified order card for dashboard display.
+// Based on Figma design: "Recent Order" component
+// ==========================================================================
+
+@use '../../../../styles/01-tools/mixins' as *;
+
+.recent-order-card {
+  @include flex-between;
+  position: relative;
+  min-height: var(--spacing-32); // 128px
+  padding: var(--spacing-4) var(--spacing-8); // 16px 32px
+  border: var(--border-width-thick) solid var(--color-information);
+  border-radius: var(--radius-2xl); // 32px
+  background-color: var(--color-background);
+  transition: var(--transition-colors), var(--transition-shadow);
+
+  // ---------------------------------------------------------------------------
+  // ORDER AGAIN BUTTON (Hidden by default)
+  // ---------------------------------------------------------------------------
+
+  &__order-again {
+    @include reset-button;
+    @include typography('h5', 'semibold', 'primary');
+    display: none; // Hidden by default
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-2) var(--spacing-3); // 8px 12px
+    border-radius: var(--radius-md); // 8px
+    background-color: var(--color-secondary);
+    color: var(--color-high-contrast);
+    white-space: nowrap;
+    transition: var(--transition-colors);
+
+    &:hover {
+      background-color: var(--color-foreground);
+    }
+
+    @include focus-visible(var(--color-text));
+  }
+
+  // ---------------------------------------------------------------------------
+  // INTERACTIVE STATE
+  // ---------------------------------------------------------------------------
+
+  &--interactive {
+    cursor: pointer;
+
+    &:hover,
+    &:focus-within {
+      background-color: var(--color-information);
+      border-color: var(--color-text);
+
+      // Show ORDER AGAIN button on hover or focus
+      .recent-order-card__order-again {
+        display: flex;
+      }
+    }
+
+    &:active {
+      transform: scale(0.995);
+    }
+
+    @include focus-visible;
+  }
+
+  // ---------------------------------------------------------------------------
+  // LEFT SIDE: SERVICE INFO
+  // ---------------------------------------------------------------------------
+
+  &__info {
+    @include flex-column;
+    justify-content: center;
+    gap: var(--spacing-1);
+  }
+
+  &__service-name {
+    @include typography('h4', 'semibold', 'primary');
+    color: var(--color-text);
+    margin: 0;
+    @include truncate;
+    max-width: 100%;
+
+    // Responsive
+    @include respond-below('lg') {
+      font-size: var(--font-size-h5);
+    }
+
+    @include respond-below('md') {
+      font-size: var(--font-size-h6);
+    }
+  }
+
+  &__details {
+    @include flex-center;
+    gap: var(--spacing-6);
+    margin: 0;
+    @include typography('h5', 'regular', 'primary');
+    color: var(--color-text);
+
+    // Responsive
+    @include respond-below('lg') {
+      font-size: var(--font-size-h6);
+      gap: var(--spacing-4);
+    }
+
+    @include respond-below('md') {
+      font-size: var(--font-size-body);
+      gap: var(--spacing-3);
+    }
+  }
+
+  &__order-id,
+  &__quantity {
+    white-space: nowrap;
+  }
+
+  &__separator {
+    @include typography('h5', 'bold', 'primary');
+
+    @include respond-below('md') {
+      font-size: var(--font-size-body);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // RIGHT SIDE: PRICE AND STATUS
+  // ---------------------------------------------------------------------------
+
+  &__meta {
+    @include flex-column;
+    align-items: flex-end;
+    justify-content: center;
+    gap: var(--spacing-1);
+    text-align: right;
+  }
+
+  &__price {
+    @include typography('h4', 'semibold', 'primary');
+    color: var(--color-text);
+    white-space: nowrap;
+
+    // Responsive
+    @include respond-below('lg') {
+      font-size: var(--font-size-h5);
+    }
+
+    @include respond-below('md') {
+      font-size: var(--font-size-h6);
+    }
+  }
+
+  &__status {
+    @include typography('h5', 'regular', 'primary');
+    white-space: nowrap;
+    text-transform: uppercase;
+
+    // Responsive
+    @include respond-below('lg') {
+      font-size: var(--font-size-h6);
+    }
+
+    @include respond-below('md') {
+      font-size: var(--font-size-body);
+    }
+
+    // -------------------------------------------------------------------------
+    // STATUS COLOR MODIFIERS
+    // -------------------------------------------------------------------------
+
+    &--pending {
+      color: var(--color-status-yellow);
+    }
+
+    &--processing {
+      color: var(--color-stats-blue);
+    }
+
+    &--completed {
+      color: var(--color-success);
+    }
+
+    &--cancelled {
+      color: var(--color-error);
+    }
+
+    &--partial {
+      color: var(--color-foreground);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // RESPONSIVE LAYOUT
+  // ---------------------------------------------------------------------------
+
+  @include respond-below('sm') {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-4);
+    min-height: auto;
+    padding: var(--spacing-4);
+
+    &__meta {
+      align-items: flex-start;
+      text-align: left;
+      width: 100%;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+}

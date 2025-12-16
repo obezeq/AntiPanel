@@ -3,12 +3,61 @@
 // ==========================================================================
 // AUTH FORM COMPONENT
 // ==========================================================================
-// Login and registration form with semantic structure.
+// Login and registration form matching Figma design.
+// Maintains accessibility with visually hidden legend and labels.
 // ==========================================================================
+
+// ---------------------------------------------------------------------------
+// HEADER (fuera del form)
+// ---------------------------------------------------------------------------
+
+.auth-form__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 2rem;
+  text-align: center;
+
+  @include respond-to('md') {
+    margin-bottom: 4rem; // 64px gap entre header y form según Figma
+  }
+}
+
+.auth-form__title {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h1); // 96px en móvil
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  line-height: 1.15;
+  margin: 0;
+  letter-spacing: 0;
+
+  @include respond-to('md') {
+    font-size: var(--font-size-title); // 128px en desktop según Figma
+  }
+}
+
+.auth-form__subtitle {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-h5); // 24px en móvil
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-foreground);
+  line-height: 1.15;
+  margin: 0;
+
+  @include respond-to('md') {
+    font-size: var(--font-size-h4); // 32px según Figma
+  }
+}
+
+// ---------------------------------------------------------------------------
+// FORM
+// ---------------------------------------------------------------------------
 
 .auth-form {
   width: 100%;
-  max-width: 400px;
+  max-width: 43.5625rem; // 697px según Figma
   margin-inline: auto;
 }
 
@@ -19,20 +68,22 @@
 .auth-form__fieldset {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-6);
-  padding: var(--spacing-8);
+  gap: 1.5rem;
+  padding: 2rem;
   background-color: var(--color-background);
-  border: var(--border-width-heavy) solid var(--color-information);
-  border-radius: var(--radius-xl);
+  border: 0.25rem solid var(--color-secondary); // 4px border
+  border-radius: 1.5rem;
+
+  @include respond-to('md') {
+    gap: 2rem; // 32px (base-8)
+    padding: 3.5rem 7.5rem; // 56px 120px (base-8)
+    border-radius: 2rem; // 32px border-radius
+  }
 }
 
 .auth-form__legend {
-  font-family: var(--font-primary);
-  font-size: var(--font-size-h3);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text);
-  text-align: center;
-  padding: 0 var(--spacing-2);
+  // Ocultar visualmente pero mantener en DOM para accesibilidad
+  @include visually-hidden;
 }
 
 // ---------------------------------------------------------------------------
@@ -44,7 +95,7 @@
   font-family: var(--font-secondary);
   font-size: var(--font-size-caption);
   color: var(--color-error);
-  background-color: rgba(255, 68, 68, 0.1);
+  background-color: rgba(var(--color-error-rgb), 0.1);
   border: var(--border-width-thin) solid var(--color-error);
   border-radius: var(--radius-md);
   text-align: center;
@@ -58,7 +109,50 @@
 .auth-form__fields {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-4);
+  gap: 1rem;
+
+  @include respond-to('md') {
+    gap: 2rem; // 32px (base-8)
+  }
+
+  // Sobrescribir estilos de form-input para coincidir con Figma
+  ::ng-deep .form-input__field {
+    background-color: var(--color-information); // #393939
+    border: none;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    font-family: var(--font-secondary);
+    font-size: 1rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+    text-transform: uppercase;
+    letter-spacing: 0.125rem; // 2px (base-8)
+    width: 100%;
+
+    @include respond-to('md') {
+      border-radius: 1rem; // 16px
+      padding: 1rem 2rem; // 16px 32px
+      font-size: 1.5rem; // 24px
+    }
+
+    &::placeholder {
+      color: var(--color-text);
+      text-transform: uppercase;
+      letter-spacing: 0.125rem; // 2px (base-8)
+    }
+
+    &:focus {
+      border: none;
+      outline: 2px solid var(--color-text);
+      outline-offset: 2px;
+      background-color: var(--color-information);
+    }
+
+    &:focus-visible {
+      outline: var(--focus-ring-width) solid var(--focus-ring-color);
+      outline-offset: var(--focus-ring-offset);
+    }
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -69,20 +163,40 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-4);
-  margin-top: var(--spacing-2);
+  gap: 1rem;
+  margin-top: 0;
+
+  @include respond-to('md') {
+    gap: 2rem; // 32px (base-8)
+  }
 }
 
 .auth-form__submit {
-  @include button-base;
+  @include reset-button;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
   width: 100%;
-  padding: var(--spacing-4) var(--spacing-6);
-  background-color: var(--color-success);
-  color: var(--color-background);
+  padding: 0.75rem 1.5rem;
+  background-color: var(--color-information);
+  border-radius: 0.75rem;
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  line-height: 1.15;
+  transition: var(--transition-colors);
+
+  @include respond-to('md') {
+    gap: 2rem; // 32px gap según Figma
+    padding: 1rem 2rem; // 16px 32px
+    border-radius: 1rem; // 16px
+    font-size: 1.5rem; // 24px
+  }
 
   &:hover:not(:disabled) {
-    background-color: var(--color-high-contrast);
-    color: var(--color-background);
+    background-color: var(--color-secondary);
   }
 
   &:active:not(:disabled) {
@@ -93,13 +207,26 @@
     opacity: 0.7;
     cursor: wait;
   }
+
+  @include focus-visible;
+}
+
+.auth-form__submit-icon {
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+
+  @include respond-to('md') {
+    width: 2rem; // 32px
+    height: 2rem;
+  }
 }
 
 // Loading spinner
 .auth-form__spinner {
   display: inline-block;
-  width: 16px;
-  height: 16px;
+  width: 1rem;
+  height: 1rem;
   border: 2px solid transparent;
   border-top-color: currentColor;
   border-radius: 50%;
@@ -117,15 +244,35 @@
 // ---------------------------------------------------------------------------
 
 .auth-form__switch {
-  font-family: var(--font-secondary);
-  font-size: var(--font-size-caption);
-  color: var(--color-foreground);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  line-height: 1.15;
   margin: 0;
+  text-align: center;
+
+  @include respond-to('md') {
+    gap: 2rem; // 32px gap según Figma
+    padding: 0.5rem 2rem; // 8px 32px
+    font-size: 1.5rem; // 24px
+  }
+}
+
+.auth-form__switch-text {
+  // Hereda estilos del padre
 }
 
 .auth-form__switch-link {
+  font-family: var(--font-primary);
+  font-weight: var(--font-weight-bold);
   color: var(--color-text);
-  font-weight: var(--font-weight-medium);
   text-decoration: none;
   transition: var(--transition-colors);
 

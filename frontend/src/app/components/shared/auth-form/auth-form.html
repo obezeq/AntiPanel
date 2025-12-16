@@ -1,3 +1,9 @@
+<!-- Header fuera del form -->
+<header class="auth-form__header">
+  <h1 class="auth-form__title">{{ headerTitle() }}</h1>
+  <p class="auth-form__subtitle">{{ headerSubtitle() }}</p>
+</header>
+
 <form
   class="auth-form"
   [formGroup]="form"
@@ -5,6 +11,7 @@
   novalidate
 >
   <fieldset class="auth-form__fieldset">
+    <!-- Legend oculto visualmente pero presente para accesibilidad -->
     <legend class="auth-form__legend">{{ formTitle() }}</legend>
 
     @if (serverError()) {
@@ -17,9 +24,10 @@
       <app-form-input
         label="Email"
         type="email"
-        placeholder="Enter your email"
+        placeholder="EMAIL"
         autocomplete="email"
         [required]="true"
+        [hideLabel]="true"
         [errorMessage]="emailError()"
         formControlName="email"
       />
@@ -27,10 +35,10 @@
       <app-form-input
         label="Password"
         type="password"
-        placeholder="Enter your password"
+        placeholder="PASSWORD"
         [autocomplete]="isRegisterMode() ? 'new-password' : 'current-password'"
         [required]="true"
-        [hint]="isRegisterMode() ? 'Minimum 8 characters' : ''"
+        [hideLabel]="true"
         [errorMessage]="passwordError()"
         formControlName="password"
       />
@@ -39,9 +47,10 @@
         <app-form-input
           label="Confirm Password"
           type="password"
-          placeholder="Confirm your password"
+          placeholder="CONFIRM PASSWORD"
           autocomplete="new-password"
           [required]="true"
+          [hideLabel]="true"
           [errorMessage]="confirmPasswordError()"
           formControlName="confirmPassword"
         />
@@ -58,12 +67,15 @@
           <span class="auth-form__spinner" aria-hidden="true"></span>
           <span>Processing...</span>
         } @else {
-          {{ submitButtonText() }}
+          <svg class="auth-form__submit-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+          <span>{{ submitButtonText() }}</span>
         }
       </button>
 
       <p class="auth-form__switch">
-        {{ switchModeText() }}
+        <span class="auth-form__switch-text">{{ switchModeText() }}</span>
         <a [routerLink]="switchModeRoute()" class="auth-form__switch-link">
           {{ switchModeLink() }}
         </a>

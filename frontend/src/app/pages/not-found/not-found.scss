@@ -1,0 +1,217 @@
+// ==========================================================================
+// 404 NOT FOUND PAGE
+// ==========================================================================
+// Full-screen 404 error page with grid background effect.
+// Based on Figma design.
+// ==========================================================================
+
+@use '../../../styles/01-tools/mixins' as *;
+
+// ---------------------------------------------------------------------------
+// MAIN CONTAINER
+// ---------------------------------------------------------------------------
+
+.not-found {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: 100dvh;
+  padding: var(--spacing-8);
+  background-color: var(--color-background);
+  border: var(--border-width-heavy) solid var(--color-text);
+  overflow: hidden;
+}
+
+// ---------------------------------------------------------------------------
+// BACKGROUND EFFECTS
+// ---------------------------------------------------------------------------
+// Layered effects to create the "cyber void" aesthetic from Figma:
+// 1. Blue radial glow from bottom center
+// 2. Blue grid pattern with edge fade mask
+// ---------------------------------------------------------------------------
+
+.not-found__background {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+// Blue glow effect - large elliptical glow from bottom center
+.not-found__glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 100% 60% at 50% 100%,
+    rgba(var(--color-stats-blue-rgb), 0.4) 0%,
+    rgba(var(--color-stats-blue-rgb), 0.2) 25%,
+    rgba(var(--color-stats-blue-rgb), 0.08) 50%,
+    transparent 75%
+  );
+}
+
+// Grid pattern overlay with radial mask for edge fade
+.not-found__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to bottom, rgba(var(--color-stats-blue-rgb), 0.5) 1px, transparent 1px),
+    linear-gradient(to right, rgba(var(--color-stats-blue-rgb), 0.5) 1px, transparent 1px);
+  background-size: 4.5rem 4.5rem; // ~72px grid cells to match Figma
+  mask-image: radial-gradient(
+    ellipse 90% 80% at 50% 50%,
+    black 0%,
+    black 20%,
+    var(--overlay-dark) 50%,
+    transparent 85%
+  );
+}
+
+// ---------------------------------------------------------------------------
+// CONTENT
+// ---------------------------------------------------------------------------
+
+.not-found__content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-8);
+  text-align: center;
+  max-inline-size: 66.875rem; // ~1070px from Figma
+}
+
+// ---------------------------------------------------------------------------
+// TYPOGRAPHY
+// ---------------------------------------------------------------------------
+
+// Large 404 title
+.not-found__title {
+  font-family: var(--font-primary);
+  font-size: 16rem; // 256px
+  font-weight: var(--font-weight-extrabold);
+  line-height: 1;
+  color: var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.075em;
+  margin: 0;
+
+  @include respond-below('lg') {
+    font-size: 10rem; // 160px
+  }
+
+  @include respond-below('md') {
+    font-size: 6rem; // 96px
+  }
+
+  @include respond-below('sm') {
+    font-size: 4rem; // 64px
+  }
+}
+
+// Blue subtitle
+.not-found__subtitle {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h2); // 64px / 4rem
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  color: var(--color-stats-blue);
+  margin: 0;
+
+  @include respond-below('lg') {
+    font-size: var(--font-size-h3); // 48px
+  }
+
+  @include respond-below('md') {
+    font-size: var(--font-size-h4); // 32px
+  }
+
+  @include respond-below('sm') {
+    font-size: var(--font-size-h5); // 24px
+  }
+}
+
+// ---------------------------------------------------------------------------
+// EXPLORE SECTION
+// ---------------------------------------------------------------------------
+
+.not-found__explore {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-8);
+}
+
+.not-found__description {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h4); // 32px / 2rem
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  color: var(--color-text);
+  margin: 0;
+
+  @include respond-below('lg') {
+    font-size: var(--font-size-h5); // 24px
+  }
+
+  @include respond-below('md') {
+    font-size: var(--font-size-h6); // 20px
+  }
+
+  @include respond-below('sm') {
+    font-size: var(--font-size-body); // 16px
+  }
+}
+
+// ---------------------------------------------------------------------------
+// NAVIGATION PILL
+// ---------------------------------------------------------------------------
+
+.not-found__nav {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  padding: var(--spacing-4) var(--spacing-8);
+  border: var(--border-width-thick) solid var(--color-text);
+  border-radius: var(--radius-2xl);
+
+  @include respond-below('md') {
+    gap: var(--spacing-6);
+    padding: var(--spacing-3) var(--spacing-6);
+  }
+
+  @include respond-below('sm') {
+    flex-direction: column;
+    gap: var(--spacing-4);
+    padding: var(--spacing-4) var(--spacing-6);
+  }
+}
+
+.not-found__link {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h4); // 32px / 2rem
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  color: var(--color-text);
+  text-decoration: none;
+  transition: var(--transition-colors);
+
+  &:hover {
+    color: var(--color-stats-blue);
+  }
+
+  @include focus-visible;
+
+  @include respond-below('lg') {
+    font-size: var(--font-size-h5); // 24px
+  }
+
+  @include respond-below('md') {
+    font-size: var(--font-size-h6); // 20px
+  }
+
+  @include respond-below('sm') {
+    font-size: var(--font-size-body); // 16px
+  }
+}

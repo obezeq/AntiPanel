@@ -8,22 +8,13 @@
   (keydown.space)="onClick()"
 >
   <figure class="service-card__icon" aria-hidden="true">
-    @if (service().icon) {
-      <!-- Icon will be replaced with ngicons -->
-      <span class="service-card__icon-placeholder">
-        {{ service().name.charAt(0) }}
-      </span>
-    } @else {
-      <span class="service-card__icon-placeholder">
-        {{ service().name.charAt(0) }}
-      </span>
-    }
+    <ng-icon [name]="service().icon" size="48" />
   </figure>
 
   <h3 class="service-card__name">{{ service().name }}</h3>
 
   <p class="service-card__count">
     <span class="service-card__count-number">{{ service().serviceCount }}</span>
-    <span class="service-card__count-label">services</span>
+    <span class="service-card__count-label">SERVICES</span>
   </p>
 </article>

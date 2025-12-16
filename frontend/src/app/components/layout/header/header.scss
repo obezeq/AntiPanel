@@ -3,22 +3,31 @@
 // ==========================================================================
 // HEADER COMPONENT
 // ==========================================================================
-// Main site header with logo, navigation, and user actions.
-// Responsive with mobile hamburger menu.
+// Main site header with multiple variants matching Figma design:
+// - home/login/register: Full logo + ACCESS/REGISTER/LOGIN button
+// - dashboard/loggedIn: Logo icon + nav + WALLET + Profile dropdown
+// - admin: Logo icon + Panel Name + Admin info + Profile
 // ==========================================================================
 
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--spacing-4) var(--spacing-6);
+  gap: var(--spacing-8);
+  min-height: var(--header-height, 8rem);
+  padding-inline: var(--spacing-6);
   background-color: var(--color-background);
-  border-bottom: var(--border-width-thin) solid var(--color-information);
+  border-block-end: var(--border-width-thin) solid var(--color-information);
   position: relative;
 
   @include respond-to('lg') {
-    padding: var(--spacing-4) var(--spacing-8);
+    padding-inline: var(--spacing-8);
   }
+}
+
+// Admin variant specific layout
+.header--admin {
+  justify-content: space-between;
 }
 
 // ---------------------------------------------------------------------------
@@ -28,19 +37,50 @@
 .header__logo {
   display: flex;
   align-items: center;
+  gap: var(--spacing-8);
   text-decoration: none;
   z-index: calc(var(--z-fixed) + 1);
+  flex-shrink: 0;
 
   @include focus-visible;
 }
 
+.header__logo-icon {
+  display: block;
+  color: var(--color-high-contrast);
+  flex-shrink: 0;
+}
+
 .header__logo-text {
   font-family: var(--font-primary);
-  font-size: var(--font-size-h5);
+  font-size: var(--font-size-h2);
   font-weight: var(--font-weight-bold);
-  color: var(--color-text);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  color: var(--color-high-contrast);
+  line-height: 1.15;
+  white-space: nowrap;
+
+  @include respond-below('md') {
+    font-size: var(--font-size-h3);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// PANEL BRAND (Admin variant)
+// ---------------------------------------------------------------------------
+
+.header__panel-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+}
+
+.header__panel-name {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-high-contrast);
+  line-height: 1.15;
+  white-space: nowrap;
 }
 
 // ---------------------------------------------------------------------------
@@ -48,75 +88,80 @@
 // ---------------------------------------------------------------------------
 
 .header__nav {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  justify-content: center;
+
   @include respond-below('lg') {
     position: fixed;
-    top: 0;
-    right: 0;
-    width: 280px;
-    height: 100vh;
-    height: 100dvh;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    inline-size: 17.5rem;
+    block-size: 100vh;
+    block-size: 100dvh;
     background-color: var(--color-background);
-    border-left: var(--border-width-thin) solid var(--color-information);
-    padding: var(--spacing-20) var(--spacing-6) var(--spacing-6);
+    border-inline-start: var(--border-width-thin) solid var(--color-information);
+    padding-block: var(--spacing-20) var(--spacing-6);
+    padding-inline: var(--spacing-6);
     transform: translateX(100%);
     transition: transform var(--transition-base);
     z-index: var(--z-fixed);
     overflow-y: auto;
+    flex-direction: column;
+    justify-content: flex-start;
 
     &.header__nav--open {
       transform: translateX(0);
     }
   }
-
-  @include respond-to('lg') {
-    position: static;
-    width: auto;
-    height: auto;
-    background: none;
-    border: none;
-    padding: 0;
-    transform: none;
-  }
 }
 
 .header__nav-list {
   display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2);
+  align-items: center;
+  gap: var(--spacing-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 
-  @include respond-to('lg') {
-    flex-direction: row;
-    align-items: center;
-    gap: var(--spacing-8);
+  @include respond-below('lg') {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-2);
+    inline-size: 100%;
   }
 }
 
 .header__nav-item {
+  display: flex;
+  align-items: center;
   list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .header__nav-link {
-  display: block;
+  display: flex;
+  align-items: center;
   padding: var(--spacing-3) var(--spacing-2);
   font-family: var(--font-primary);
-  font-size: var(--font-size-body);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-foreground);
+  font-size: var(--font-size-h5);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.15;
+  color: var(--color-high-contrast);
   text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
   transition: var(--transition-colors);
   border-radius: var(--radius-md);
 
-  @include respond-to('lg') {
-    padding: var(--spacing-2);
-  }
-
   &:hover {
-    color: var(--color-text);
+    color: var(--color-foreground);
   }
 
   &.header__nav-link--active {
     color: var(--color-text);
-    font-weight: var(--font-weight-semibold);
   }
 
   @include focus-visible;
@@ -129,82 +174,191 @@
 .header__actions {
   display: flex;
   align-items: center;
-  gap: var(--spacing-4);
+  gap: var(--spacing-8);
   z-index: calc(var(--z-fixed) + 1);
+  flex-shrink: 0;
 }
 
-// ACCESS Button (Unauthenticated)
+// ACCESS Button (Unauthenticated - home/login/register)
 .header__access {
-  @include button-base;
-  background-color: var(--color-success);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 9.375rem;
+  padding: var(--spacing-3) var(--spacing-6);
+  background-color: var(--color-high-contrast);
   color: var(--color-background);
-  padding: var(--spacing-2) var(--spacing-6);
-  font-size: var(--font-size-caption);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h5);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.15;
+  text-decoration: none;
+  text-transform: uppercase;
+  border-radius: var(--radius-lg);
+  transition: var(--transition-colors), transform var(--transition-fast);
 
   &:hover {
-    background-color: var(--color-high-contrast);
-    color: var(--color-background);
+    background-color: var(--color-text);
   }
 
   &:active {
     transform: scale(0.98);
   }
+
+  @include focus-visible;
 }
 
-// Wallet Button (Authenticated)
+// ---------------------------------------------------------------------------
+// WALLET BUTTON (Authenticated)
+// ---------------------------------------------------------------------------
+
 .header__wallet {
   @include reset-button;
   display: flex;
   align-items: center;
-  gap: var(--spacing-2);
-  padding: var(--spacing-2) var(--spacing-4);
-  background-color: var(--color-tiny-info);
-  border: var(--border-width-thin) solid var(--color-information);
-  border-radius: var(--radius-lg);
+  justify-content: center;
+  padding: var(--spacing-2) var(--spacing-3);
+  background-color: var(--color-text);
+  border-radius: var(--radius-md);
   transition: var(--transition-colors);
 
   &:hover {
-    border-color: var(--color-secondary);
+    background-color: var(--color-high-contrast);
   }
 
   @include focus-visible;
 }
 
-.header__wallet-icon {
-  display: flex;
-  color: var(--color-success);
+.header__wallet-text {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h5);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-background);
+  line-height: 1.15;
+  text-transform: uppercase;
 }
 
-.header__wallet-balance {
-  font-family: var(--font-secondary);
-  font-size: var(--font-size-caption);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text);
+// ---------------------------------------------------------------------------
+// PROFILE BUTTON & DROPDOWN
+// ---------------------------------------------------------------------------
+
+.header__profile-container {
+  position: relative;
 }
 
-// Profile Button (Authenticated)
 .header__profile {
   @include reset-button;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  background-color: var(--color-tiny-info);
-  border: var(--border-width-thin) solid var(--color-information);
+  inline-size: 4rem;
+  block-size: 4rem;
   border-radius: var(--radius-full);
   transition: var(--transition-colors);
+  cursor: pointer;
 
-  &:hover {
-    border-color: var(--color-secondary);
+  &:hover .header__profile-icon {
+    color: var(--color-foreground);
   }
 
   @include focus-visible;
 }
 
+.header__profile--admin {
+  // Same styling for admin variant
+}
+
 .header__profile-icon {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  color: var(--color-text);
+  transition: var(--transition-colors);
+}
+
+// Profile Dropdown Menu
+.header__dropdown {
+  position: absolute;
+  inset-block-start: calc(100% + var(--spacing-4));
+  inset-inline-end: 0;
   display: flex;
-  color: var(--color-foreground);
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-6);
+  inline-size: 15rem; // 240px (base-8)
+  padding: var(--spacing-8) var(--spacing-12);
+  background-color: var(--color-background);
+  border: var(--border-width-thin) solid var(--color-information);
+  border-block-start: none;
+  z-index: var(--z-dropdown);
+  animation: slideDown var(--transition-fast) ease-out;
+}
+
+.header__dropdown-item {
+  @include reset-button;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h5);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: var(--transition-colors);
+
+  &:hover {
+    color: var(--color-foreground);
+  }
+
+  @include focus-visible;
+}
+
+.header__dropdown-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--z-dropdown) - 1);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// ADMIN INFO
+// ---------------------------------------------------------------------------
+
+.header__admin-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--spacing-1);
+}
+
+.header__admin-name {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h5);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-high-contrast);
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.header__admin-department {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h5);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-high-contrast);
+  line-height: 1.15;
+  text-transform: uppercase;
 }
 
 // ---------------------------------------------------------------------------
@@ -216,8 +370,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
   z-index: calc(var(--z-fixed) + 1);
 
   @include focus-visible;
@@ -227,22 +381,22 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 5px;
-  width: 24px;
-  height: 24px;
+  gap: 0.25rem; // 4px (base-8)
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
 }
 
 .header__menu-bar {
   display: block;
-  width: 100%;
-  height: 2px;
+  inline-size: 100%;
+  block-size: 0.125rem;
   background-color: var(--color-text);
   border-radius: var(--radius-full);
   transition: transform var(--transition-fast), opacity var(--transition-fast);
 
   .header__menu-toggle--open & {
     &:nth-child(1) {
-      transform: translateY(7px) rotate(45deg);
+      transform: translateY(0.5rem) rotate(45deg); // 8px (base-8)
     }
 
     &:nth-child(2) {
@@ -250,7 +404,7 @@
     }
 
     &:nth-child(3) {
-      transform: translateY(-7px) rotate(-45deg);
+      transform: translateY(-0.5rem) rotate(-45deg); // -8px (base-8)
     }
   }
 }
@@ -262,7 +416,7 @@
 .header__overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: var(--overlay-dark);
   z-index: calc(var(--z-fixed) - 1);
   animation: fadeIn var(--transition-fast) ease-out;
 }

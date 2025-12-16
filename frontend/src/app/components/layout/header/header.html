@@ -1,95 +1,206 @@
-<header class="header">
+<header class="header" [class.header--admin]="variant() === 'admin'">
+  <!-- Logo Section -->
   <a routerLink="/" class="header__logo" aria-label="AntiPanel Home">
-    <span class="header__logo-text">ANTIPANEL</span>
+    <!-- Logo Icon SVG -->
+    <svg
+      class="header__logo-icon"
+      width="71"
+      height="52"
+      viewBox="0 0 115 89"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <path
+        d="M3.22559 83.2567L106.226 11.0391L76.1155 85.5253M4.00002 11.0919C29.0401 5.33544 78.5008 12.452 76.0226 84.0417L4.00002 83.3096V11.0919Z"
+        stroke="currentColor"
+        stroke-width="8"
+      />
+    </svg>
+    <!-- Full logo text for home/login/register -->
+    @if (showFullLogo()) {
+      <span class="header__logo-text">AntiPanel</span>
+    }
   </a>
 
-  <nav class="header__nav" [class.header__nav--open]="isMobileMenuOpen()" aria-label="Main navigation">
-    <ul class="header__nav-list" role="list">
-      @for (item of navItems(); track item.path) {
-        <li class="header__nav-item">
-          @if (item.external) {
-            <a
-              [href]="item.path"
-              class="header__nav-link"
-              target="_blank"
-              rel="noopener noreferrer"
-              (click)="closeMobileMenu()"
-            >
-              {{ item.label }}
-            </a>
-          } @else {
+  <!-- Admin Panel Brand (only for admin variant) -->
+  @if (variant() === 'admin') {
+    <div class="header__panel-brand">
+      <span class="header__panel-name">{{ panelName() }}</span>
+    </div>
+  }
+
+  <!-- Navigation (dashboard and loggedIn variants) -->
+  @if (showNavigation()) {
+    <nav
+      class="header__nav"
+      [class.header__nav--open]="isMobileMenuOpen()"
+      aria-label="Main navigation"
+    >
+      <ul class="header__nav-list" role="list">
+        @for (item of navItems(); track item.path) {
+          <li class="header__nav-item">
             <a
               [routerLink]="item.path"
               routerLinkActive="header__nav-link--active"
-              [routerLinkActiveOptions]="{ exact: item.path === '/' || item.path === '/admin' }"
+              [routerLinkActiveOptions]="{ exact: item.path === '/dashboard' }"
               class="header__nav-link"
               (click)="closeMobileMenu()"
             >
               {{ item.label }}
             </a>
-          }
-        </li>
-      }
-    </ul>
-  </nav>
+          </li>
+        }
+      </ul>
+    </nav>
+  }
 
+  <!-- Actions Section -->
   <section class="header__actions">
-    @if (isAuthenticated()) {
+    <!-- Authenticated: Wallet + Profile (dashboard/loggedIn) -->
+    @if (isAuthenticated() && variant() !== 'admin') {
       <button
         type="button"
         class="header__wallet"
         (click)="onWalletClick()"
-        aria-label="Wallet balance"
+        aria-label="Wallet balance: {{ walletBalance() }}"
       >
-        <span class="header__wallet-icon" aria-hidden="true">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 4H3a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Z"/>
-            <path d="M16 12a2 2 0 1 0 4 0 2 2 0 0 0-4 0Z"/>
-          </svg>
-        </span>
-        <span class="header__wallet-balance">{{ walletBalance() }}</span>
+        <span class="header__wallet-text">WALLET</span>
       </button>
+
+      <div class="header__profile-container">
+        <button
+          type="button"
+          class="header__profile"
+          (click)="onProfileClick()"
+          [attr.aria-expanded]="isProfileDropdownOpen()"
+          aria-haspopup="menu"
+          aria-label="User profile menu"
+        >
+          <!-- Profile Circle Icon -->
+          <svg
+            class="header__profile-icon"
+            width="64"
+            height="64"
+            viewBox="0 0 64 64"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <circle cx="32" cy="32" r="26" stroke="currentColor" stroke-width="2.5" fill="none" />
+            <circle cx="32" cy="24" r="8" stroke="currentColor" stroke-width="2.5" fill="none" />
+            <path
+              d="M16 52C16 44 23 38 32 38C41 38 48 44 48 52"
+              stroke="currentColor"
+              stroke-width="2.5"
+              fill="none"
+            />
+          </svg>
+        </button>
+
+        <!-- Profile Dropdown Menu -->
+        @if (isProfileDropdownOpen()) {
+          <nav class="header__dropdown" role="menu" aria-label="Profile menu">
+            <a
+              routerLink="/orders"
+              class="header__dropdown-item"
+              role="menuitem"
+              (click)="onOrdersClick()"
+            >
+              ORDERS
+            </a>
+            <button
+              type="button"
+              class="header__dropdown-item"
+              role="menuitem"
+              (click)="onLogoutClick()"
+            >
+              LOG OUT
+            </button>
+          </nav>
+        }
+      </div>
+    }
+
+    <!-- Admin: Admin Info + Profile -->
+    @if (variant() === 'admin') {
+      <div class="header__admin-info">
+        <span class="header__admin-name">{{ adminName() }}</span>
+        <span class="header__admin-department">{{ adminDepartment() }}</span>
+      </div>
 
       <button
         type="button"
-        class="header__profile"
+        class="header__profile header__profile--admin"
         (click)="onProfileClick()"
-        aria-label="User profile"
+        aria-label="Admin profile"
       >
-        <span class="header__profile-icon" aria-hidden="true">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="8" r="4"/>
-            <path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>
-          </svg>
-        </span>
+        <svg
+          class="header__profile-icon"
+          width="64"
+          height="64"
+          viewBox="0 0 64 64"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <circle cx="32" cy="32" r="26" stroke="currentColor" stroke-width="2.5" fill="none" />
+          <circle cx="32" cy="24" r="8" stroke="currentColor" stroke-width="2.5" fill="none" />
+          <path
+            d="M16 52C16 44 23 38 32 38C41 38 48 44 48 52"
+            stroke="currentColor"
+            stroke-width="2.5"
+            fill="none"
+          />
+        </svg>
       </button>
-    } @else {
-      <a routerLink="/login" class="header__access" (click)="closeMobileMenu()">
-        ACCESS
+    }
+
+    <!-- Unauthenticated: Access Button (home/login/register) -->
+    @if (!isAuthenticated()) {
+      <a
+        [routerLink]="accessButtonLink()"
+        class="header__access"
+        (click)="closeMobileMenu()"
+      >
+        {{ accessButtonText() }}
       </a>
     }
 
-    <button
-      type="button"
-      class="header__menu-toggle hide-desktop"
-      [class.header__menu-toggle--open]="isMobileMenuOpen()"
-      (click)="toggleMobileMenu()"
-      [attr.aria-expanded]="isMobileMenuOpen()"
-      aria-controls="mobile-menu"
-      aria-label="Toggle navigation menu"
-    >
-      <span class="header__menu-icon" aria-hidden="true">
-        <span class="header__menu-bar"></span>
-        <span class="header__menu-bar"></span>
-        <span class="header__menu-bar"></span>
-      </span>
-    </button>
+    <!-- Mobile Menu Toggle (only for variants with navigation) -->
+    @if (showNavigation()) {
+      <button
+        type="button"
+        class="header__menu-toggle hide-desktop"
+        [class.header__menu-toggle--open]="isMobileMenuOpen()"
+        (click)="toggleMobileMenu()"
+        [attr.aria-expanded]="isMobileMenuOpen()"
+        aria-controls="mobile-menu"
+        aria-label="Toggle navigation menu"
+      >
+        <span class="header__menu-icon" aria-hidden="true">
+          <span class="header__menu-bar"></span>
+          <span class="header__menu-bar"></span>
+          <span class="header__menu-bar"></span>
+        </span>
+      </button>
+    }
   </section>
 
+  <!-- Mobile Overlay -->
   @if (isMobileMenuOpen()) {
     <div
       class="header__overlay hide-desktop"
       (click)="closeMobileMenu()"
+      aria-hidden="true"
+    ></div>
+  }
+
+  <!-- Profile Dropdown Overlay (click outside to close) -->
+  @if (isProfileDropdownOpen()) {
+    <div
+      class="header__dropdown-overlay"
+      (click)="closeProfileDropdown()"
       aria-hidden="true"
     ></div>
   }

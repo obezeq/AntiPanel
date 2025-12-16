@@ -4,6 +4,19 @@
     subtitle="Visual documentation of AntiPanel's design system components"
   />
 
+  <!-- Theme Toggle -->
+  <section class="style-guide__theme-toggle">
+    <button
+      class="style-guide__theme-button"
+      type="button"
+      (click)="toggleTheme()"
+      [attr.aria-label]="isDarkMode() ? 'Switch to light mode' : 'Switch to dark mode'"
+    >
+      <ng-icon [name]="isDarkMode() ? 'matLightMode' : 'matDarkMode'" size="24" />
+      {{ isDarkMode() ? 'Light Mode' : 'Dark Mode' }}
+    </button>
+  </section>
+
   <!-- Colors Section -->
   <section class="style-guide__section">
     <h2 class="style-guide__section-title">Colors</h2>
@@ -146,18 +159,40 @@
     <p class="style-guide__section-desc">Content containers</p>
 
     <article class="style-guide__row">
-      <h3 class="style-guide__subtitle">Service Card</h3>
-      <section class="style-guide__cards">
-        <app-service-card [service]="serviceDemo" />
+      <h3 class="style-guide__subtitle">Service Cards (8 plataformas)</h3>
+      <section class="style-guide__cards style-guide__cards--grid">
+        @for (service of serviceDemos; track service.id) {
+          <app-service-card [service]="service" />
+        }
       </section>
     </article>
 
     <article class="style-guide__row">
-      <h3 class="style-guide__subtitle">Stats Cards</h3>
-      <section class="style-guide__cards style-guide__cards--wide">
-        <app-stats-card [stats]="statsDemo" />
-        <app-stats-card [stats]="{ value: '$1,234', label: 'Revenue', change: -5.2 }" variant="info" />
-        <app-stats-card [stats]="{ value: '98%', label: 'Success Rate' }" variant="success" />
+      <h3 class="style-guide__subtitle">Stats Cards (4 variantes según Figma)</h3>
+      <section class="style-guide__cards style-guide__cards--stats">
+        <app-stats-card [stats]="statsDemos[0]" />
+        <app-stats-card [stats]="statsDemos[1]" variant="warning" />
+        <app-stats-card [stats]="statsDemos[2]" variant="success" />
+        <app-stats-card [stats]="statsDemos[3]" variant="info" />
+      </section>
+    </article>
+  </section>
+
+  <!-- Service Item Cards Section -->
+  <section class="style-guide__section">
+    <h2 class="style-guide__section-title">Service Item Cards</h2>
+    <p class="style-guide__section-desc">Individual service cards with pricing. Hover to see Quick Order button.</p>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Service Items (Hover to see button)</h3>
+      <section class="style-guide__service-items">
+        @for (service of serviceItemDemos; track service.id) {
+          <app-service-item-card
+            [service]="service"
+            (quickOrder)="onServiceItemQuickOrder($event)"
+            (cardClick)="onServiceItemClick($event)"
+          />
+        }
       </section>
     </article>
   </section>
@@ -173,6 +208,36 @@
         (submitOrder)="onOrderSubmit($event)"
       />
     </section>
+  </section>
+
+  <!-- Order Ready Section -->
+  <section class="style-guide__section">
+    <h2 class="style-guide__section-title">Order Ready</h2>
+    <p class="style-guide__section-desc">Order result card with service information</p>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Default Mode</h3>
+      <section class="style-guide__order-ready-preview">
+        <app-order-ready
+          [data]="orderReadyDemo"
+          (exploreMore)="onExploreMore()"
+          (morePlatform)="onMorePlatform($event)"
+          (placeOrder)="onPlaceOrder($event)"
+        />
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">With Target Mode</h3>
+      <section class="style-guide__order-ready-preview">
+        <app-order-ready
+          [data]="orderReadyWithTargetDemo"
+          (exploreMore)="onExploreMore()"
+          (morePlatform)="onMorePlatform($event)"
+          (placeOrder)="onPlaceOrder($event)"
+        />
+      </section>
+    </article>
   </section>
 
   <!-- Icons Section -->
@@ -235,19 +300,48 @@
     <p class="style-guide__section-desc">Header, Footer, Sidebar, and MainContent components</p>
 
     <article class="style-guide__row">
-      <h3 class="style-guide__subtitle">Header (Home variant)</h3>
+      <h3 class="style-guide__subtitle">Header - Home variant (Logo + Text + ACCESS)</h3>
       <section class="style-guide__layout-preview">
         <app-header variant="home" />
       </section>
     </article>
 
     <article class="style-guide__row">
-      <h3 class="style-guide__subtitle">Header (Dashboard variant - Authenticated)</h3>
+      <h3 class="style-guide__subtitle">Header - Login variant (Logo + Text + REGISTER)</h3>
+      <section class="style-guide__layout-preview">
+        <app-header variant="login" />
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Header - Register variant (Logo + Text + LOGIN)</h3>
+      <section class="style-guide__layout-preview">
+        <app-header variant="register" />
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Header - Dashboard variant (Logo icon + Nav + WALLET + Profile)</h3>
+      <section class="style-guide__layout-preview">
+        <app-header variant="dashboard" walletBalance="$125.50" />
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Header - Logged In variant (Logo icon + DASHBOARD + Nav + WALLET + Profile)</h3>
+      <section class="style-guide__layout-preview">
+        <app-header variant="loggedIn" walletBalance="$89.00" />
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Header - Admin variant (Logo icon + Panel Name + Admin Info + Profile)</h3>
       <section class="style-guide__layout-preview">
         <app-header
-          variant="dashboard"
-          [isAuthenticated]="true"
-          walletBalance="$125.50"
+          variant="admin"
+          panelName="PANEL NAME"
+          adminName="ADMIN"
+          adminDepartment="DEPARTMENT"
         />
       </section>
     </article>
@@ -306,6 +400,7 @@
         <app-button variant="secondary" (buttonClick)="openModal('sm')">Open Small Modal</app-button>
         <app-button variant="secondary" (buttonClick)="openModal('md')">Open Medium Modal</app-button>
         <app-button variant="secondary" (buttonClick)="openModal('lg')">Open Large Modal</app-button>
+        <app-button variant="primary" (buttonClick)="openOrderPlacedModal()">Place Order (Success)</app-button>
       </section>
     </article>
 
@@ -322,6 +417,12 @@
         <app-button variant="primary" (buttonClick)="closeModal()">Confirm</app-button>
       </section>
     </app-modal>
+
+    <!-- Order Placed Success Modal -->
+    <app-order-placed
+      [isOpen]="isOrderPlacedOpen()"
+      (continueClick)="closeOrderPlacedModal()"
+    />
   </section>
 
   <!-- Auth Form Section -->
@@ -350,18 +451,65 @@
     </article>
   </section>
 
-  <!-- User Order Row Section -->
+  <!-- Admin Order Table Section -->
   <section class="style-guide__section">
-    <h2 class="style-guide__section-title">User Order Row</h2>
-    <p class="style-guide__section-desc">Order rows with different status states</p>
+    <h2 class="style-guide__section-title">Admin Order Table</h2>
+    <p class="style-guide__section-desc">Admin order table with expandable rows (click eye icon to expand)</p>
 
     <article class="style-guide__row">
-      <h3 class="style-guide__subtitle">Order Status Variants</h3>
-      <section class="style-guide__orders">
-        @for (order of userOrders; track order.id) {
-          <app-user-order-row
+      <h3 class="style-guide__subtitle">Expandable Admin Orders</h3>
+      <section class="style-guide__admin-order-table">
+        <app-admin-order-table
+          [orders]="adminOrderTableData"
+          (orderClick)="onAdminOrderClick($event)"
+        />
+      </section>
+    </article>
+  </section>
+
+  <!-- Order Cards Section (New Components from Figma) -->
+  <section class="style-guide__section">
+    <h2 class="style-guide__section-title">Order Cards</h2>
+    <p class="style-guide__section-desc">New order card components based on Figma designs</p>
+
+    <!-- Dashboard Section Header -->
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Dashboard Section Header</h3>
+      <section class="style-guide__dashboard-header-demo">
+        <app-dashboard-section-header
+          title="RECENT"
+          subtitle="Your latest orders and their status"
+        />
+      </section>
+    </article>
+
+    <!-- Recent Order Cards (Dashboard) -->
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Recent Order Cards (Dashboard View)</h3>
+      <p class="style-guide__desc">Simplified order cards for dashboard display with status colors</p>
+      <section class="style-guide__recent-orders">
+        @for (order of recentOrders; track order.id) {
+          <app-recent-order-card
             [order]="order"
-            (orderClick)="onOrderRowClick($event)"
+            (orderClick)="onRecentOrderClick($event)"
+            (orderAgain)="onRecentOrderAgain($event)"
+          />
+        }
+      </section>
+    </article>
+
+    <!-- Full Order Cards (Orders Page) -->
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Full Order Cards (Orders Page View)</h3>
+      <p class="style-guide__desc">Complete order cards with all details and action buttons</p>
+      <section class="style-guide__full-orders">
+        @for (order of fullOrders; track order.id) {
+          <app-order-card
+            [order]="order"
+            [showActions]="true"
+            (orderAgain)="onOrderAgain($event)"
+            (refill)="onRefill($event)"
+            (cardClick)="onOrderCardClick($event)"
           />
         }
       </section>

@@ -52,7 +52,7 @@ export class FormSelect implements ControlValueAccessor {
   readonly hint = input<string>('');
 
   /** Unique ID for the select */
-  readonly selectId = input<string>(`select-${Math.random().toString(36).slice(2, 9)}`);
+  readonly selectId = input<string>(`select-${crypto.randomUUID().slice(0, 8)}`);
 
   /** Current value */
   protected readonly value = signal<string>('');

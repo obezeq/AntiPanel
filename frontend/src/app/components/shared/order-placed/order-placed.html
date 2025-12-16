@@ -1,0 +1,21 @@
+<dialog
+  #dialogRef
+  class="order-placed-modal"
+  aria-modal="true"
+  aria-labelledby="order-placed-title"
+  (click)="onOverlayClick($event)"
+  (keydown)="onKeydown($event)"
+>
+  <article class="order-placed" (click)="$event.stopPropagation()">
+    <h2 id="order-placed-title" class="order-placed__title">SUCCESS</h2>
+    <p class="order-placed__message">YOUR ORDER WAS PLACED SUCCESSFULLY</p>
+    <button
+      type="button"
+      class="order-placed__continue"
+      aria-label="Continue to dashboard"
+      (click)="continueClick.emit()"
+    >
+      CONTINUE
+    </button>
+  </article>
+</dialog>

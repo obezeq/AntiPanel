@@ -3,33 +3,16 @@
   [class.stats-card--success]="variant() === 'success'"
   [class.stats-card--info]="variant() === 'info'"
   [class.stats-card--warning]="variant() === 'warning'"
-  [class.stats-card--error]="variant() === 'error'"
 >
-  <p class="stats-card__value">{{ stats().value }}</p>
+  <header class="stats-card__header">
+    <figure class="stats-card__icon" aria-hidden="true">
+      <ng-icon [name]="stats().icon" size="32" />
+    </figure>
+    <h3 class="stats-card__title">{{ stats().title }}</h3>
+  </header>
 
-  <p class="stats-card__label">{{ stats().label }}</p>
-
-  @if (showChange() && stats().change !== undefined) {
-    <p
-      class="stats-card__change"
-      [class.stats-card__change--positive]="isPositiveChange()"
-      [class.stats-card__change--negative]="isNegativeChange()"
-    >
-      <span class="stats-card__change-icon" aria-hidden="true">
-        @if (isPositiveChange()) {
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-            <path d="M12 19V5M5 12l7-7 7 7"/>
-          </svg>
-        } @else if (isNegativeChange()) {
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-            <path d="M12 5v14M5 12l7 7 7-7"/>
-          </svg>
-        }
-      </span>
-      <span class="stats-card__change-value">{{ formattedChange() }}</span>
-      @if (stats().changeLabel) {
-        <span class="stats-card__change-label">{{ stats().changeLabel }}</span>
-      }
-    </p>
-  }
+  <section class="stats-card__info">
+    <p class="stats-card__value">{{ stats().value }}</p>
+    <p class="stats-card__label">{{ stats().label }}</p>
+  </section>
 </article>

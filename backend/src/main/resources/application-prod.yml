@@ -1,0 +1,107 @@
+# ========================================
+# Spring Boot Configuration - Production Profile
+# ========================================
+spring:
+  application:
+    name: antipanel-backend
+
+  # ========================================
+  # Database Configuration
+  # ========================================
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+    # Production Connection Pool (HikariCP)
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      leak-detection-threshold: 60000
+
+  # ========================================
+  # JPA / Hibernate Configuration
+  # ========================================
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate  # NEVER auto-create in production
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        use_sql_comments: false
+        jdbc:
+          batch_size: 25
+        order_inserts: true
+        order_updates: true
+        query:
+          plan_cache_max_size: 2048
+          in_clause_parameter_padding: true
+
+  # ========================================
+  # CORS Configuration (Production domains only)
+  # ========================================
+  web:
+    cors:
+      allowed-origins: ${SPRING_WEB_CORS_ALLOWED_ORIGINS:https://antipanel.tech}
+      allowed-methods: GET,POST,PUT,DELETE,PATCH,OPTIONS
+      allowed-headers: Authorization,Content-Type,Accept,Origin,X-Requested-With
+      allow-credentials: true
+      max-age: 3600
+
+# ========================================
+# Server Configuration
+# ========================================
+server:
+  port: 8080
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain
+  error:
+    include-message: never
+    include-binding-errors: never
+    include-stacktrace: never
+  # Tomcat optimizations
+  tomcat:
+    threads:
+      max: 200
+      min-spare: 25
+    accept-count: 100
+
+# ========================================
+# Logging Configuration (Minimal in production)
+# ========================================
+logging:
+  level:
+    root: WARN
+    com.antipanel: INFO
+    org.springframework: WARN
+    org.hibernate: WARN
+    org.hibernate.SQL: WARN
+  pattern:
+    console: "%d{ISO8601} [%thread] %-5level %logger{36} - %msg%n"
+
+# ========================================
+# Actuator Configuration (Secured)
+# ========================================
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: when-authorized
+      probes:
+        enabled: true
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true

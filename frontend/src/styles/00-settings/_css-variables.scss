@@ -38,9 +38,21 @@
 
   // Semantic colors
   --color-success: #00dc33;           // Success states, CTAs, positive
+  --color-success-dark: #00c42e;      // Success hover state
   --color-error: #ff4444;             // Error states, destructive actions
+  --color-error-dark: #cc3636;        // Error hover state
   --color-status-yellow: #f0b100;     // Warning, pending states
   --color-stats-blue: #00a5ff;        // Statistics, informational
+
+  // RGB versions for rgba() usage
+  --color-success-rgb: 0, 220, 51;
+  --color-error-rgb: 255, 68, 68;
+  --color-status-yellow-rgb: 240, 177, 0;
+  --color-stats-blue-rgb: 0, 165, 255;
+
+  // Overlay colors
+  --overlay-dark: rgba(0, 0, 0, 0.6);
+  --overlay-dark-heavy: rgba(0, 0, 0, 0.7);
 
   // -------------------------------------------------------------------------
   // TYPOGRAPHY TOKENS
@@ -202,6 +214,16 @@
   --color-error: #dc2626;               // Slightly darker red for contrast
   --color-status-yellow: #ca9800;       // Slightly darker yellow for contrast
   --color-stats-blue: #0284c7;          // Slightly darker blue for contrast
+
+  // RGB versions for rgba() usage (light mode values)
+  --color-success-rgb: 0, 184, 43;
+  --color-error-rgb: 220, 38, 38;
+  --color-status-yellow-rgb: 202, 152, 0;
+  --color-stats-blue-rgb: 2, 132, 199;
+
+  // Overlay colors (lighter for light mode)
+  --overlay-dark: rgba(0, 0, 0, 0.4);
+  --overlay-dark-heavy: rgba(0, 0, 0, 0.5);
 
   // -------------------------------------------------------------------------
   // SHADOW TOKENS - Light Mode

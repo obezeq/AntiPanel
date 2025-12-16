@@ -1,32 +1,77 @@
 <article
-  class="user-order-row"
-  [class.user-order-row--clickable]="clickable()"
+  class="order-row"
+  [class.order-row--clickable]="clickable()"
+  [class.order-row--admin]="isAdminVariant()"
   [attr.role]="clickable() ? 'button' : null"
   [attr.tabindex]="clickable() ? 0 : null"
+  [attr.aria-label]="'Order ' + order().id + ': ' + order().serviceName + ', Status: ' + getStatusLabel(order().status)"
   (click)="onClick()"
   (keydown.enter)="onClick()"
-  (keydown.space)="onClick()"
+  (keydown.space)="onClick(); $event.preventDefault()"
 >
-  <section class="user-order-row__main">
-    <h4 class="user-order-row__service">{{ order().serviceName }}</h4>
-    <p class="user-order-row__meta">
-      <span class="user-order-row__id">Order #{{ order().id }}</span>
-      <span class="user-order-row__separator" aria-hidden="true">•</span>
-      <span class="user-order-row__quantity">{{ order().quantity | number }}</span>
-    </p>
-  </section>
+  <!-- User Variant Layout -->
+  @if (!isAdminVariant()) {
+    <section class="order-row__main">
+      <h4 class="order-row__service">{{ order().serviceName }}</h4>
+      <p class="order-row__meta">
+        <span class="order-row__id">Order #{{ order().id }}</span>
+        <span class="order-row__separator" aria-hidden="true">•</span>
+        <span class="order-row__quantity">{{ order().quantity | number }}</span>
+      </p>
+    </section>
 
-  <section class="user-order-row__details">
-    <p class="user-order-row__price">{{ order().price }}</p>
-    <p
-      class="user-order-row__status"
-      [class.user-order-row__status--pending]="order().status === 'pending'"
-      [class.user-order-row__status--processing]="order().status === 'processing'"
-      [class.user-order-row__status--completed]="order().status === 'completed'"
-      [class.user-order-row__status--cancelled]="order().status === 'cancelled'"
-      [class.user-order-row__status--partial]="order().status === 'partial'"
+    <section class="order-row__details">
+      <p class="order-row__price">{{ order().price }}</p>
+      <p
+        class="order-row__status"
+        [class.order-row__status--pending]="order().status === 'pending'"
+        [class.order-row__status--processing]="order().status === 'processing'"
+        [class.order-row__status--completed]="order().status === 'completed'"
+        [class.order-row__status--cancelled]="order().status === 'cancelled'"
+        [class.order-row__status--partial]="order().status === 'partial'"
+      >
+        {{ getStatusLabel(order().status) }}
+      </p>
+    </section>
+  }
+
+  <!-- Admin Variant Layout - Table-like grid -->
+  @if (isAdminVariant()) {
+    <span class="order-row__cell order-row__cell--id">{{ order().id }}</span>
+    <span class="order-row__cell order-row__cell--user">{{ order().username ?? '-' }}</span>
+    <span class="order-row__cell order-row__cell--service">{{ order().serviceName }}</span>
+    <span class="order-row__cell order-row__cell--link" [title]="order().link ?? ''">
+      @if (order().link) {
+        <a
+          [href]="order().link"
+          class="order-row__link"
+          target="_blank"
+          rel="noopener noreferrer"
+          (click)="$event.stopPropagation()"
+          aria-label="Open link in new tab"
+        >
+          {{ order().link }}
+        </a>
+      } @else {
+        -
+      }
+    </span>
+    <span class="order-row__cell order-row__cell--quantity">{{ order().quantity | number }}</span>
+    <span class="order-row__cell order-row__cell--start">{{ (order().startCount ?? 0) | number }}</span>
+    <span class="order-row__cell order-row__cell--remains">{{ (order().remains ?? 0) | number }}</span>
+    <span
+      class="order-row__cell order-row__cell--status"
+      [class.order-row__status--pending]="order().status === 'pending'"
+      [class.order-row__status--processing]="order().status === 'processing'"
+      [class.order-row__status--completed]="order().status === 'completed'"
+      [class.order-row__status--cancelled]="order().status === 'cancelled'"
+      [class.order-row__status--partial]="order().status === 'partial'"
     >
       {{ getStatusLabel(order().status) }}
-    </p>
-  </section>
+    </span>
+    <span class="order-row__cell order-row__cell--price">{{ order().price }}</span>
+    <span class="order-row__cell order-row__cell--date">
+      {{ order().createdAt | date:'MMM d, y' }}
+    </span>
+  }
 </article>

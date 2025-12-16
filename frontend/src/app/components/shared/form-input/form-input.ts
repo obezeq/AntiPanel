@@ -47,11 +47,14 @@ export class FormInput implements ControlValueAccessor {
   /** Hint text displayed below the input */
   readonly hint = input<string>('');
 
+  /** Whether to hide the label visually (keeps it in DOM for accessibility) */
+  readonly hideLabel = input<boolean>(false);
+
   /** Autocomplete attribute */
   readonly autocomplete = input<string>('off');
 
   /** Unique ID for the input (auto-generated if not provided) */
-  readonly inputId = input<string>(`input-${Math.random().toString(36).slice(2, 9)}`);
+  readonly inputId = input<string>(`input-${crypto.randomUUID().slice(0, 8)}`);
 
   /** Current input value */
   protected readonly value = signal<string>('');

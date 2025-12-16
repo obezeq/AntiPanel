@@ -21,6 +21,47 @@
 }
 
 // ---------------------------------------------------------------------------
+// THEME TOGGLE
+// ---------------------------------------------------------------------------
+
+.style-guide__theme-toggle {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--spacing-8);
+  padding-bottom: var(--spacing-6);
+  border-bottom: var(--border-width-thin) solid var(--color-information);
+}
+
+.style-guide__theme-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-4);
+  background-color: var(--color-tiny-info);
+  border: var(--border-width-thin) solid var(--color-information);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: var(--transition-colors);
+
+  &:hover {
+    background-color: var(--color-information);
+  }
+
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  ng-icon {
+    color: var(--color-status-yellow);
+  }
+}
+
+// ---------------------------------------------------------------------------
 // SECTIONS
 // ---------------------------------------------------------------------------
 
@@ -187,7 +228,19 @@
 
 .style-guide__cards--wide {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(12.5rem, 1fr));
+}
+
+.style-guide__cards--grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13.875rem, 1fr)); // 222px service card width
+  gap: var(--spacing-4);
+}
+
+.style-guide__cards--stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-4);
 }
 
 // ---------------------------------------------------------------------------
@@ -195,7 +248,7 @@
 // ---------------------------------------------------------------------------
 
 .style-guide__order-input {
-  max-width: 600px;
+  max-width: 56.25rem; // 900px según Figma
 }
 
 // ---------------------------------------------------------------------------
@@ -294,20 +347,162 @@
 // ---------------------------------------------------------------------------
 
 .style-guide__auth-preview {
-  max-width: 400px;
-  padding: var(--spacing-6);
-  background-color: var(--color-tiny-info);
-  border: var(--border-width-thin) solid var(--color-information);
-  border-radius: var(--radius-lg);
+  // Contenedor neutral - auth-form tiene sus propios estilos de borde y padding
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  // Sin background, border, ni max-width restrictivo - el auth-form define su propia apariencia
 }
 
 // ---------------------------------------------------------------------------
-// USER ORDERS
+// ORDER ROWS
 // ---------------------------------------------------------------------------
 
 .style-guide__orders {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-2);
-  max-width: 800px;
+  background-color: var(--color-tiny-info);
+  border: var(--border-width-thin) solid var(--color-information);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  max-inline-size: 50rem;
+}
+
+.style-guide__orders--admin {
+  max-inline-size: 100%;
+  overflow-x: auto;
+}
+
+.style-guide__orders-header {
+  display: grid;
+  grid-template-columns:
+    minmax(5rem, 0.8fr)     // ID
+    minmax(6rem, 1fr)       // User
+    minmax(8rem, 2fr)       // Service
+    minmax(8rem, 2fr)       // Link
+    minmax(4rem, 0.6fr)     // Quantity
+    minmax(4rem, 0.6fr)     // Start
+    minmax(4rem, 0.6fr)     // Remains
+    minmax(5rem, 0.8fr)     // Status
+    minmax(4rem, 0.6fr)     // Price
+    minmax(6rem, 1fr);      // Date
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-4);
+  background-color: var(--color-information);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  span {
+    @include truncate;
+  }
+
+  span:nth-child(5),
+  span:nth-child(6),
+  span:nth-child(7),
+  span:nth-child(9) {
+    text-align: end;
+  }
+
+  span:nth-child(10) {
+    text-align: end;
+  }
+
+  @include respond-below('xl') {
+    grid-template-columns:
+      minmax(4rem, 0.6fr)   // ID
+      minmax(8rem, 2fr)     // Service
+      minmax(4rem, 0.5fr)   // Quantity
+      minmax(5rem, 0.7fr)   // Status
+      minmax(4rem, 0.5fr);  // Price
+
+    span:nth-child(2),
+    span:nth-child(4),
+    span:nth-child(6),
+    span:nth-child(7),
+    span:nth-child(10) {
+      display: none;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// ORDER CARDS (New components from Figma)
+// ---------------------------------------------------------------------------
+
+// Dashboard section header demo
+.style-guide__dashboard-header-demo {
+  padding: var(--spacing-8);
+  background-color: var(--color-tiny-info);
+  border: var(--border-width-thin) solid var(--color-information);
+  border-radius: var(--radius-lg);
+}
+
+// Description text for subsections
+.style-guide__desc {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-caption);
+  color: var(--color-foreground);
+  margin: 0 0 var(--spacing-4);
+}
+
+// Recent order cards container
+.style-guide__recent-orders {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-10);
+  max-width: 58.375rem; // ~934px from Figma
+}
+
+// Full order cards container
+.style-guide__full-orders {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+// ---------------------------------------------------------------------------
+// ORDER READY
+// ---------------------------------------------------------------------------
+
+.style-guide__order-ready-preview {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+// ---------------------------------------------------------------------------
+// ORDER PLACED
+// ---------------------------------------------------------------------------
+
+.style-guide__order-placed-preview {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+// ---------------------------------------------------------------------------
+// SERVICE ITEM CARDS
+// ---------------------------------------------------------------------------
+
+.style-guide__service-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  max-width: 56.25rem; // 900px
+}
+
+// ---------------------------------------------------------------------------
+// ADMIN ORDER TABLE
+// ---------------------------------------------------------------------------
+
+.style-guide__admin-order-table {
+  overflow-x: auto;
+  border: var(--border-width-thin) solid var(--color-information);
+  border-radius: var(--radius-lg);
 }

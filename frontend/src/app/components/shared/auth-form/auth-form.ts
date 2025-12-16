@@ -44,26 +44,36 @@ export class AuthForm {
   /** Whether we're in register mode */
   protected readonly isRegisterMode = computed(() => this.mode() === 'register');
 
-  /** Form title based on mode */
+  /** Header title based on mode */
+  protected readonly headerTitle = computed(() =>
+    this.isRegisterMode() ? 'JOIN' : 'ACCESS'
+  );
+
+  /** Header subtitle based on mode */
+  protected readonly headerSubtitle = computed(() =>
+    this.isRegisterMode()
+      ? 'Create your AntiPanel account'
+      : 'Welcome back to AntiPanel'
+  );
+
+  /** Form title (legend text - visually hidden but accessible) */
   protected readonly formTitle = computed(() =>
-    this.isRegisterMode() ? 'Create Account' : 'Welcome Back'
+    this.isRegisterMode() ? 'Registration Form' : 'Login Form'
   );
 
   /** Submit button text */
-  protected readonly submitButtonText = computed(() =>
-    this.isRegisterMode() ? 'CREATE ACCOUNT' : 'LOGIN'
-  );
+  protected readonly submitButtonText = computed(() => 'ACCESS');
 
   /** Link text for mode switch */
   protected readonly switchModeText = computed(() =>
     this.isRegisterMode()
       ? 'Already have an account?'
-      : "Don't have an account?"
+      : 'Need an account?'
   );
 
   /** Link label for mode switch */
   protected readonly switchModeLink = computed(() =>
-    this.isRegisterMode() ? 'Login' : 'Register'
+    this.isRegisterMode() ? 'LOGIN' : 'JOIN ANTIPANEL'
   );
 
   /** Route for mode switch */

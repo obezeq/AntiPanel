@@ -25,7 +25,15 @@ import {
   matArrowBack,
   matArrowForward,
   matRefresh,
-  matAccountBalanceWallet
+  matAccountBalanceWallet,
+  // Stats card icons
+  matShowChart,
+  matSchedule,
+  matCheckCircle,
+  matQueryStats,
+  // Theme toggle icons
+  matLightMode,
+  matDarkMode
 } from '@ng-icons/material-icons/baseline';
 import {
   iconoirInstagram,
@@ -35,8 +43,10 @@ import {
   iconoirFacebook,
   iconoirSpotify,
   iconoirTelegram,
-  iconoirDiscord
+  iconoirDiscord,
+  iconoirLinkedin
 } from '@ng-icons/iconoir';
+import { simpleSnapchat } from '@ng-icons/simple-icons';
 
 import { routes } from './app.routes';
 
@@ -45,7 +55,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideIcons({
-      // Material Icons
+      // Material Icons - Navigation & UI
       matHome,
       matDashboard,
       matShoppingCart,
@@ -70,6 +80,14 @@ export const appConfig: ApplicationConfig = {
       matArrowForward,
       matRefresh,
       matAccountBalanceWallet,
+      // Material Icons - Stats Cards
+      matShowChart,
+      matSchedule,
+      matCheckCircle,
+      matQueryStats,
+      // Material Icons - Theme Toggle
+      matLightMode,
+      matDarkMode,
       // Iconoir - Social Media
       iconoirInstagram,
       iconoirTiktok,
@@ -78,7 +96,10 @@ export const appConfig: ApplicationConfig = {
       iconoirFacebook,
       iconoirSpotify,
       iconoirTelegram,
-      iconoirDiscord
+      iconoirDiscord,
+      iconoirLinkedin,
+      // Simple Icons - Brand logos
+      simpleSnapchat
     })
   ]
 };

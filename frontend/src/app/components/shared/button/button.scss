@@ -67,7 +67,7 @@
   color: var(--color-high-contrast);
 
   &:hover:not(:disabled) {
-    background-color: #cc3636; // Darker red
+    background-color: var(--color-error-dark);
   }
 
   &:active:not(:disabled) {
@@ -131,8 +131,8 @@
 
 .button__spinner {
   position: absolute;
-  width: 16px;
-  height: 16px;
+  width: 1rem;
+  height: 1rem;
   border: 2px solid transparent;
   border-top-color: currentColor;
   border-radius: 50%;

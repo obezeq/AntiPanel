@@ -76,7 +76,35 @@ AntiPanel/
 
 ## 🎨 Frontend (Angular 21)
 
-*Próximamente...*
+### Arquitectura
+- ✅ **24 Componentes** reutilizables con BEM
+- ✅ **Sistema ITCSS** (5 capas CSS organizadas)
+- ✅ **Design Tokens** con CSS Custom Properties
+- ✅ **22 Mixins SCSS** para responsive y utilidades
+- ✅ **Sistema de Temas** Dark/Light mode preparado
+- ✅ **Style Guide** en `/style-guide` con todos los componentes
+- ✅ **Accesibilidad WCAG AA** (focus visible, ARIA, reduced motion)
+- ✅ **9 Animaciones @keyframes** optimizadas
+- ✅ **Mobile-first** con 5 breakpoints
+
+### Tecnologías
+- Angular 21 (Standalone components, Signals, Control Flow)
+- TypeScript 5.7
+- SCSS con arquitectura ITCSS + BEM
+- ng-icons (Material Icons + Iconoir)
+- Reactive Forms con ControlValueAccessor
+
+### Componentes Principales
+| Categoría | Componentes |
+|-----------|-------------|
+| Layout | Header (6 variantes), Footer, MainContent, Sidebar |
+| Forms | FormInput, FormTextarea, FormSelect, AuthForm |
+| UI | Button, Alert, Modal, Badge |
+| Cards | ServiceCard, StatsCard, ServiceItemCard, OrderCard, RecentOrderCard |
+| Orders | OrderInput, OrderReady, OrderPlaced, AdminOrderTable, UserOrderRow |
+| Dashboard | DashboardHeader, DashboardSectionHeader |
+
+**Ver documentación completa:** [📖 Frontend Design Docs](frontend/docs/design/DOCUMENTACION.md)
 
 ---
 
@@ -115,6 +143,16 @@ docker compose -f docker-compose.yml -f docker-compose.test.yml up --build --abo
 ---
 
 ## 📚 Documentación
+
+### Frontend (Angular 21)
+- [📖 Documentación de Diseño](frontend/docs/design/DOCUMENTACION.md) - **Arquitectura CSS, Componentes, Accesibilidad**
+  - Sección 1: Arquitectura CSS (ITCSS + BEM + Design Tokens)
+  - Sección 2: HTML Semántico y Estructura
+  - Sección 3: Sistema de Componentes UI (24 componentes)
+  - Sección 4: Estrategia Responsive (Mobile-first)
+  - Sección 5: Optimización Multimedia
+  - Sección 6: Sistema de Temas (Dark/Light)
+  - Sección 7: Informe de Accesibilidad (WCAG AA)
 
 ### Backend (Spring Boot 4)
 - [📖 Backend Documentation](backend/docs/README.md) - **Entry Point**

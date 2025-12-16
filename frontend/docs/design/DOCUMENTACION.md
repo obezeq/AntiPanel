@@ -724,26 +724,63 @@ En esta seccion documento los componentes UI reutilizables que implemente en Ant
 
 ### 3.1 Componentes Implementados
 
-He creado los siguientes componentes:
+He creado los siguientes componentes organizados por categoria:
+
+**Componentes de Layout:**
 
 | Componente | Ubicacion | Descripcion |
 |------------|-----------|-------------|
-| `Button` | `shared/button/` | Boton con variantes primary, secondary, ghost, danger |
-| `Alert` | `shared/alert/` | Notificaciones success, error, warning, info |
-| `FormInput` | `shared/form-input/` | Input con label, validacion y estados |
-| `FormTextarea` | `shared/form-textarea/` | Textarea con contador de caracteres |
+| `Header` | `layout/header/` | Cabecera con 6 variantes (home, login, register, dashboard, loggedIn, admin) y menu hamburguesa responsive |
+| `Footer` | `layout/footer/` | Pie de pagina con links y boton "Back to Top" |
+| `MainContent` | `layout/main-content/` | Contenedor principal con variantes narrow, default, wide, fluid |
+| `Sidebar` | `layout/sidebar/` | Barra lateral para admin con navegacion sticky |
+
+**Componentes de Formulario:**
+
+| Componente | Ubicacion | Descripcion |
+|------------|-----------|-------------|
+| `FormInput` | `shared/form-input/` | Input con label, validacion, hint y estados (ControlValueAccessor) |
+| `FormTextarea` | `shared/form-textarea/` | Textarea con contador de caracteres y validacion |
 | `FormSelect` | `shared/form-select/` | Select dropdown con opciones dinamicas |
-| `ServiceCard` | `shared/service-card/` | Tarjeta de servicio con icono y contador |
-| `StatsCard` | `shared/stats-card/` | Tarjeta de estadisticas con cambio porcentual |
-| `Modal` | `shared/modal/` | Dialogo modal accesible con backdrop |
-| `OrderInput` | `shared/order-input/` | Input de orden en lenguaje natural |
-| `DashboardHeader` | `shared/dashboard-header/` | Header grande para dashboards |
-| `UserOrderRow` | `shared/user-order-row/` | Fila de orden para listados |
-| `Header` | `layout/header/` | Cabecera con navegacion responsive |
-| `Footer` | `layout/footer/` | Pie de pagina con links |
-| `MainContent` | `layout/main-content/` | Contenedor principal |
-| `Sidebar` | `layout/sidebar/` | Barra lateral para admin |
-| `AuthForm` | `shared/auth-form/` | Formulario login/registro |
+| `AuthForm` | `shared/auth-form/` | Formulario login/registro con validacion reactiva |
+
+**Componentes de UI:**
+
+| Componente | Ubicacion | Descripcion |
+|------------|-----------|-------------|
+| `Button` | `shared/button/` | Boton con variantes (primary, secondary, ghost, danger), tamanos (sm, md, lg), loading y disabled |
+| `Alert` | `shared/alert/` | Notificaciones con variantes success, error, warning, info y opcion dismissible |
+| `Modal` | `shared/modal/` | Dialogo modal accesible con focus trap, cierre ESC/overlay, tamanos sm/md/lg |
+| `Badge` | `shared/badge/` | Indicador de estado con 5 variantes de color |
+
+**Componentes de Cards:**
+
+| Componente | Ubicacion | Descripcion |
+|------------|-----------|-------------|
+| `ServiceCard` | `shared/service-card/` | Tarjeta de servicio (8 plataformas) con icono y contador |
+| `StatsCard` | `shared/stats-card/` | Tarjeta de estadisticas con 4 variantes de color segun Figma |
+| `ServiceItemCard` | `shared/service-item-card/` | Item de servicio con precio y boton Quick Order en hover |
+| `OrderCard` | `shared/order-card/` | Tarjeta de orden completa con acciones (Order Again, Refill) |
+| `RecentOrderCard` | `shared/recent-order-card/` | Tarjeta de orden simplificada para dashboard |
+
+**Componentes de Orders:**
+
+| Componente | Ubicacion | Descripcion |
+|------------|-----------|-------------|
+| `OrderInput` | `shared/order-input/` | Input de orden en lenguaje natural con placeholder dinamico |
+| `OrderReady` | `shared/order-ready/` | Resultado de orden con precio, cantidad y botones de accion |
+| `OrderPlaced` | `shared/order-placed/` | Modal de confirmacion de orden exitosa con focus trap |
+| `AdminOrderTable` | `shared/admin-order-table/` | Tabla de ordenes admin con filas expandibles |
+| `UserOrderRow` | `shared/user-order-row/` | Fila de orden para listados de usuario |
+
+**Componentes de Dashboard:**
+
+| Componente | Ubicacion | Descripcion |
+|------------|-----------|-------------|
+| `DashboardHeader` | `shared/dashboard-header/` | Header grande para paginas de dashboard |
+| `DashboardSectionHeader` | `shared/dashboard-section-header/` | Encabezado de seccion con titulo y subtitulo |
+
+**Total: 24 componentes reutilizables**
 
 ### 3.2 Nomenclatura BEM
 
@@ -919,23 +956,90 @@ export const appConfig: ApplicationConfig = {
 
 ### 3.5 Style Guide
 
-Cree una pagina de Style Guide en `/style-guide` que muestra:
+Cree una pagina de Style Guide en `/style-guide` que documenta visualmente todos los componentes del sistema de diseno:
 
-- Paleta de colores completa
-- Escala tipografica
-- Todos los variantes de botones
-- Tipos de alertas
-- Elementos de formulario
-- Tarjetas y cards
-- Iconos disponibles
-- Componentes de layout (Header, Footer, Sidebar, MainContent)
-- Modal con diferentes tamanos
-- Formulario de autenticacion (login/register)
-- Filas de ordenes de usuario con todos los estados
+**Secciones incluidas:**
+- Paleta de colores completa (dark mode)
+- Escala tipografica (11 tamanos)
+- Botones (4 variantes x 3 tamanos + estados)
+- Alertas (4 tipos + dismissible)
+- Formularios (Input, Textarea, Select)
+- Cards (ServiceCard, StatsCard, ServiceItemCard, OrderCard, RecentOrderCard)
+- Iconos (Material Icons + Iconoir)
+- Layout (Header con 6 variantes, Footer, Sidebar, MainContent)
+- Modal (3 tamanos + OrderPlaced)
+- Auth Form (login/register)
+- Order Components (OrderInput, OrderReady, AdminOrderTable)
+- Dashboard Components (DashboardHeader, DashboardSectionHeader)
 
-Para acceder: `http://localhost:4200/style-guide`
+**Theme Toggle:**
+Implemente un boton de toggle de tema en la parte superior del Style Guide que permite cambiar entre dark y light mode para visualizar todos los componentes en ambos temas. El tema seleccionado se persiste en localStorage.
 
-### 3.6 Estructura de Archivos de Componentes
+**Acceso:** `http://localhost:4200/style-guide`
+
+### 3.6 Animaciones CSS (@keyframes)
+
+Implemente 9 animaciones CSS para mejorar la experiencia de usuario:
+
+| Animacion | Componente | Descripcion | Propiedades Optimizadas |
+|-----------|------------|-------------|------------------------|
+| `slideDown` | Header | Menu hamburguesa desplegable | `transform`, `opacity` |
+| `fadeIn` | Header | Dropdown de navegacion | `opacity` |
+| `alertSlideIn` | Alert | Entrada de alertas | `transform`, `opacity` |
+| `button-spin` | Button | Spinner de carga | `transform` (rotate) |
+| `orderPlacedFadeIn` | OrderPlaced | Modal de confirmacion | `transform`, `opacity` |
+| `orderPlacedBackdropFadeIn` | OrderPlaced | Backdrop del modal | `opacity` |
+| `modalFadeIn` | Modal | Entrada del modal generico | `transform`, `opacity` |
+| `backdropFadeIn` | Modal | Backdrop del modal | `opacity` |
+| `spin` | AuthForm | Spinner de envio | `transform` (rotate) |
+
+**Ejemplo de animacion optimizada:**
+
+```scss
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modal[open] {
+  animation: modalFadeIn var(--transition-base) ease-out;
+}
+```
+
+**Transiciones en componentes:**
+
+Todos los componentes interactivos tienen transiciones suaves:
+
+```scss
+// Variables de transicion
+--transition-fast: 150ms ease-in-out;
+--transition-base: 300ms ease-in-out;
+--transition-slow: 500ms ease-in-out;
+--transition-colors: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+
+// Uso tipico
+.button {
+  transition: var(--transition-colors), transform var(--transition-fast);
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+```
+
+**Micro-interacciones:**
+- Hover en botones: elevacion con `translateY(-2px)`
+- Focus en inputs: cambio de borde con transicion
+- Cards: efecto hover con sombra
+- Iconos: rotacion en menu desplegable
+
+### 3.7 Estructura de Archivos de Componentes
 
 Organice los componentes de esta forma:
 
@@ -1297,7 +1401,36 @@ sharp input.jpg --resize 800 --format webp -o output-800w.webp
 sharp input.jpg --resize 1200 --format webp -o output-1200w.webp
 ```
 
-### 5.6 Accesibilidad de Imagenes
+### 5.6 Resultados de Optimizacion
+
+Aunque actualmente AntiPanel no utiliza imagenes de contenido (solo iconos SVG), aqui documento los resultados esperados de la estrategia de optimizacion que implementare:
+
+**Tabla de Optimizacion - Proyecciones Tipicas:**
+
+| Tipo de Imagen | Formato Original | Formato Optimizado | Tamano Antes | Tamano Despues | Ahorro |
+|----------------|------------------|-------------------|--------------|----------------|--------|
+| Fotografia hero | JPEG | AVIF | 150KB | 30KB | **80%** |
+| Fotografia hero | JPEG | WebP | 150KB | 45KB | **70%** |
+| Icono UI | PNG | SVG | 12KB | 2KB | **83%** |
+| Logo | PNG | SVG | 25KB | 4KB | **84%** |
+| Screenshot | PNG | WebP | 500KB | 125KB | **75%** |
+| Avatar usuario | JPEG | WebP | 50KB | 15KB | **70%** |
+
+**Iconos Actuales (SVG via ng-icons):**
+
+| Libreria | Cantidad | Tamano Total | Optimizado |
+|----------|----------|--------------|------------|
+| Material Icons | 32 iconos | ~15KB | Tree-shaking activo |
+| Iconoir | 9 iconos | ~5KB | Tree-shaking activo |
+| Simple Icons | 1 icono | ~1KB | Tree-shaking activo |
+
+**Beneficios Obtenidos:**
+- SVG permite escalado infinito sin perdida
+- Tree-shaking elimina iconos no usados del bundle
+- Iconos se renderizan inline (sin peticiones HTTP adicionales)
+- Soporte completo de colores via CSS (`currentColor`)
+
+### 5.7 Accesibilidad de Imagenes
 
 **Alt Text Descriptivo:**
 
@@ -1328,7 +1461,7 @@ Me asegurare de escribir buenos textos alternativos:
 <div class="hero" style="background-image: url(hero.jpg);" role="img" aria-label="Vista panoramica de la ciudad"></div>
 ```
 
-### 5.7 Tabla Comparativa de Formatos
+### 5.8 Tabla Comparativa de Formatos
 
 | Caracteristica | AVIF | WebP | PNG | JPG | SVG |
 |---------------|------|------|-----|-----|-----|
@@ -1340,7 +1473,7 @@ Me asegurare de escribir buenos textos alternativos:
 | Tamano tipico (foto 1MP) | ~50KB | ~80KB | ~500KB | ~100KB | N/A |
 | Soporte navegadores | 93% | 97% | 100% | 100% | 100% |
 
-### 5.8 Estrategia de Responsive Images
+### 5.9 Estrategia de Responsive Images
 
 **Breakpoints de Imagen:**
 
@@ -1486,9 +1619,69 @@ El atributo `data-theme` en `<html>` permite cambio manual de tema:
 }
 ```
 
-### 6.7 Como Activar Light Mode en el Futuro
+### 6.7 Theme Toggle Implementado en Style Guide
 
-Para habilitar el tema claro, se pueden usar tres enfoques:
+He implementado un toggle de tema funcional en la pagina `/style-guide` que permite cambiar entre dark y light mode:
+
+**Implementacion en TypeScript:**
+
+```typescript
+export class StyleGuide implements OnInit {
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
+
+  protected readonly isDarkMode = signal<boolean>(true);
+
+  ngOnInit(): void {
+    if (this.isBrowser) {
+      const savedTheme = localStorage.getItem('antipanel-theme');
+      if (savedTheme === 'light') {
+        this.isDarkMode.set(false);
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    }
+  }
+
+  protected toggleTheme(): void {
+    if (!this.isBrowser) return;
+    const newIsDark = !this.isDarkMode();
+    this.isDarkMode.set(newIsDark);
+
+    if (newIsDark) {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('antipanel-theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      localStorage.setItem('antipanel-theme', 'light');
+    }
+  }
+}
+```
+
+**Componente de Toggle en HTML:**
+
+```html
+<button
+  class="style-guide__theme-button"
+  type="button"
+  (click)="toggleTheme()"
+  [attr.aria-label]="isDarkMode() ? 'Switch to light mode' : 'Switch to dark mode'"
+>
+  <ng-icon [name]="isDarkMode() ? 'matLightMode' : 'matDarkMode'" size="24" />
+  {{ isDarkMode() ? 'Light Mode' : 'Dark Mode' }}
+</button>
+```
+
+**Caracteristicas:**
+- Persistencia en `localStorage` con key `antipanel-theme`
+- Compatible con SSR (usa `isPlatformBrowser`)
+- Iconos dinamicos que cambian segun el tema
+- ARIA label actualizado para accesibilidad
+- Transiciones suaves al cambiar tema
+
+### 6.8 Como Activar Light Mode en el Futuro
+
+Para habilitar el tema claro en toda la aplicacion, se pueden usar tres enfoques:
 
 **1. Respetando preferencia del sistema:**
 

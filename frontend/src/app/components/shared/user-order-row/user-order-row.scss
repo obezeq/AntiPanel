@@ -1,26 +1,32 @@
 @use '../../../../styles/01-tools/mixins' as *;
 
 // ==========================================================================
-// USER ORDER ROW COMPONENT
+// ORDER ROW COMPONENT
 // ==========================================================================
-// Row displaying order information for user dashboard.
+// Row displaying order information with two variants:
+// - user: Simple flex layout with service name, quantity, price, status
+// - admin: Grid layout with extended columns (ID, user, link, start, remains, etc.)
 // ==========================================================================
 
-.user-order-row {
+// ---------------------------------------------------------------------------
+// USER VARIANT (Default)
+// ---------------------------------------------------------------------------
+
+.order-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: var(--spacing-4);
   padding: var(--spacing-4);
-  border-bottom: var(--border-width-thin) solid var(--color-information);
+  border-block-end: var(--border-width-thin) solid var(--color-information);
   transition: var(--transition-colors);
 
   &:last-child {
-    border-bottom: none;
+    border-block-end: none;
   }
 }
 
-.user-order-row--clickable {
+.order-row--clickable {
   cursor: pointer;
 
   &:hover {
@@ -31,17 +37,17 @@
 }
 
 // ---------------------------------------------------------------------------
-// MAIN INFO
+// USER VARIANT - MAIN INFO
 // ---------------------------------------------------------------------------
 
-.user-order-row__main {
+.order-row__main {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-1);
-  min-width: 0;
+  min-inline-size: 0;
 }
 
-.user-order-row__service {
+.order-row__service {
   font-family: var(--font-primary);
   font-size: var(--font-size-body);
   font-weight: var(--font-weight-semibold);
@@ -51,7 +57,7 @@
   @include truncate;
 }
 
-.user-order-row__meta {
+.order-row__meta {
   display: flex;
   align-items: center;
   gap: var(--spacing-2);
@@ -61,15 +67,15 @@
   margin: 0;
 }
 
-.user-order-row__separator {
+.order-row__separator {
   color: var(--color-secondary);
 }
 
 // ---------------------------------------------------------------------------
-// DETAILS
+// USER VARIANT - DETAILS
 // ---------------------------------------------------------------------------
 
-.user-order-row__details {
+.order-row__details {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -77,7 +83,7 @@
   flex-shrink: 0;
 }
 
-.user-order-row__price {
+.order-row__price {
   font-family: var(--font-secondary);
   font-size: var(--font-size-body);
   font-weight: var(--font-weight-semibold);
@@ -86,10 +92,10 @@
 }
 
 // ---------------------------------------------------------------------------
-// STATUS
+// STATUS (Shared between variants)
 // ---------------------------------------------------------------------------
 
-.user-order-row__status {
+.order-row__status {
   font-family: var(--font-secondary);
   font-size: var(--font-size-small);
   font-weight: var(--font-weight-medium);
@@ -98,22 +104,129 @@
   margin: 0;
 }
 
-.user-order-row__status--pending {
+.order-row__status--pending {
   color: var(--color-status-yellow);
 }
 
-.user-order-row__status--processing {
+.order-row__status--processing {
   color: var(--color-stats-blue);
 }
 
-.user-order-row__status--completed {
+.order-row__status--completed {
   color: var(--color-success);
 }
 
-.user-order-row__status--cancelled {
+.order-row__status--cancelled {
   color: var(--color-error);
 }
 
-.user-order-row__status--partial {
+.order-row__status--partial {
   color: var(--color-foreground);
+}
+
+// ---------------------------------------------------------------------------
+// ADMIN VARIANT - GRID LAYOUT
+// ---------------------------------------------------------------------------
+
+.order-row--admin {
+  display: grid;
+  grid-template-columns:
+    minmax(5rem, 0.8fr)     // ID
+    minmax(6rem, 1fr)       // User
+    minmax(8rem, 2fr)       // Service
+    minmax(8rem, 2fr)       // Link
+    minmax(4rem, 0.6fr)     // Quantity
+    minmax(4rem, 0.6fr)     // Start
+    minmax(4rem, 0.6fr)     // Remains
+    minmax(5rem, 0.8fr)     // Status
+    minmax(4rem, 0.6fr)     // Price
+    minmax(6rem, 1fr);      // Date
+  align-items: center;
+  gap: var(--spacing-3);
+  padding-block: var(--spacing-3);
+  padding-inline: var(--spacing-4);
+
+  @include respond-below('xl') {
+    grid-template-columns:
+      minmax(4rem, 0.6fr)   // ID
+      minmax(8rem, 2fr)     // Service
+      minmax(4rem, 0.5fr)   // Quantity
+      minmax(5rem, 0.7fr)   // Status
+      minmax(4rem, 0.5fr);  // Price
+
+    .order-row__cell--user,
+    .order-row__cell--link,
+    .order-row__cell--start,
+    .order-row__cell--remains,
+    .order-row__cell--date {
+      display: none;
+    }
+  }
+}
+
+.order-row__cell {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-caption);
+  color: var(--color-text);
+  min-inline-size: 0;
+
+  @include truncate;
+}
+
+.order-row__cell--id {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-foreground);
+}
+
+.order-row__cell--user {
+  font-weight: var(--font-weight-medium);
+}
+
+.order-row__cell--service {
+  font-family: var(--font-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.order-row__cell--link {
+  color: var(--color-foreground);
+}
+
+.order-row__link {
+  color: var(--color-stats-blue);
+  text-decoration: none;
+  transition: var(--transition-colors);
+
+  &:hover {
+    color: var(--color-text);
+    text-decoration: underline;
+  }
+
+  @include focus-visible;
+  @include truncate;
+
+  display: block;
+}
+
+.order-row__cell--quantity,
+.order-row__cell--start,
+.order-row__cell--remains {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.order-row__cell--status {
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.order-row__cell--price {
+  font-weight: var(--font-weight-semibold);
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.order-row__cell--date {
+  color: var(--color-foreground);
+  text-align: end;
 }

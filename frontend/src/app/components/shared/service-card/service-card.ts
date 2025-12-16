@@ -1,10 +1,12 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { NgIcon } from '@ng-icons/core';
 
 export interface ServiceCardData {
   id: string;
   name: string;
-  icon?: string;
+  /** Nombre del icono ngicons (ej: 'iconoirInstagram') */
+  icon: string;
   serviceCount: number;
   slug: string;
 }
@@ -14,7 +16,7 @@ export interface ServiceCardData {
   templateUrl: './service-card.html',
   styleUrl: './service-card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink]
+  imports: [RouterLink, NgIcon]
 })
 export class ServiceCard {
   /** Service data */

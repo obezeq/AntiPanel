@@ -4,6 +4,8 @@
   [class.modal--sm]="size() === 'sm'"
   [class.modal--md]="size() === 'md'"
   [class.modal--lg]="size() === 'lg'"
+  aria-modal="true"
+  [attr.aria-labelledby]="title() ? 'modal-title' : null"
   (click)="onOverlayClick($event)"
   (keydown)="onKeydown($event)"
 >
@@ -11,7 +13,7 @@
     @if (title() || showCloseButton()) {
       <header class="modal__header">
         @if (title()) {
-          <h2 class="modal__title">{{ title() }}</h2>
+          <h2 id="modal-title" class="modal__title">{{ title() }}</h2>
         }
 
         @if (showCloseButton()) {

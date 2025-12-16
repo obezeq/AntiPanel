@@ -11,8 +11,9 @@
   @include flex-column;
   align-items: center;
   text-align: center;
-  gap: var(--spacing-4);
-  padding: var(--spacing-6);
+  gap: var(--spacing-3);
+  width: 14rem; // 224px (base-8)
+  padding: var(--spacing-5);
 }
 
 .service-card--interactive {
@@ -35,19 +36,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 64px;
-  height: 64px;
-  background-color: var(--color-tiny-info);
-  border-radius: var(--radius-lg);
+  width: 3rem; // 48px
+  height: 3rem;
   margin: 0;
-}
-
-.service-card__icon-placeholder {
-  font-family: var(--font-primary);
-  font-size: var(--font-size-h3);
-  font-weight: var(--font-weight-bold);
   color: var(--color-text);
-  text-transform: uppercase;
 }
 
 // ---------------------------------------------------------------------------
@@ -68,23 +60,20 @@
 
 .service-card__count {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: var(--spacing-1);
   margin: 0;
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-foreground);
+  letter-spacing: 0.05em;
 }
 
 .service-card__count-number {
-  font-family: var(--font-secondary);
-  font-size: var(--font-size-h4);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-success);
+  // Hereda estilos del padre
 }
 
 .service-card__count-label {
-  font-family: var(--font-secondary);
-  font-size: var(--font-size-small);
-  font-weight: var(--font-weight-regular);
-  color: var(--color-foreground);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  // Hereda estilos del padre
 }

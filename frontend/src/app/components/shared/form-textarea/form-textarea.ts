@@ -49,7 +49,7 @@ export class FormTextarea implements ControlValueAccessor {
   readonly maxLength = input<number | null>(null);
 
   /** Unique ID for the textarea */
-  readonly textareaId = input<string>(`textarea-${Math.random().toString(36).slice(2, 9)}`);
+  readonly textareaId = input<string>(`textarea-${crypto.randomUUID().slice(0, 8)}`);
 
   /** Current value */
   protected readonly value = signal<string>('');

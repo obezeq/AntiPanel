@@ -7,6 +7,7 @@
   <label
     [for]="inputId()"
     class="form-input__label"
+    [class.form-input__label--hidden]="hideLabel()"
   >
     {{ label() }}
     @if (required()) {

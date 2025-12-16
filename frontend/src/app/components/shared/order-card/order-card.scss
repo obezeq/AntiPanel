@@ -1,0 +1,248 @@
+// ==========================================================================
+// ORDER CARD
+// ==========================================================================
+// Full order card for Orders page display.
+// Based on Figma design: "Order" component (node 1094:1973)
+// ==========================================================================
+
+@use '../../../../styles/01-tools/mixins' as *;
+
+.order-card {
+  @include flex-column;
+  gap: var(--spacing-4);
+  padding: var(--spacing-6) var(--spacing-8);
+  border: var(--border-width-medium) solid var(--color-information);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-background);
+  transition: var(--transition-colors);
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--color-secondary);
+  }
+
+  @include focus-visible;
+
+  // ---------------------------------------------------------------------------
+  // HEADER ROW (Status, ID, Service, URL)
+  // ---------------------------------------------------------------------------
+
+  &__header {
+    @include flex-between;
+    flex-wrap: wrap;
+    gap: var(--spacing-4);
+    width: 100%;
+  }
+
+  // Status Badge
+  &__status {
+    @include typography('h6', 'bold', 'primary');
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-1) var(--spacing-3);
+    border-radius: var(--radius-md);
+    background-color: var(--color-information);
+    color: var(--color-text);
+    text-transform: uppercase;
+    white-space: nowrap;
+    flex-shrink: 0;
+
+    // Status color modifiers
+    &--pending {
+      background-color: var(--color-status-yellow);
+      color: var(--color-background);
+    }
+
+    &--processing {
+      background-color: var(--color-stats-blue);
+      color: var(--color-background);
+    }
+
+    &--completed {
+      background-color: var(--color-success);
+      color: var(--color-background);
+    }
+
+    &--cancelled {
+      background-color: var(--color-error);
+      color: var(--color-high-contrast);
+    }
+
+    &--partial {
+      background-color: var(--color-foreground);
+      color: var(--color-background);
+    }
+  }
+
+  // Order ID
+  &__id {
+    @include typography('h6', 'medium', 'primary');
+    color: var(--color-text);
+    white-space: nowrap;
+  }
+
+  // Service Name
+  &__service {
+    @include typography('body', 'semibold', 'primary');
+    color: var(--color-text);
+    flex: 1;
+    min-width: 0;
+    @include truncate;
+  }
+
+  // Target URL
+  &__url {
+    @include typography('body', 'medium', 'primary');
+    color: var(--color-text);
+    @include truncate;
+    max-width: 25%;
+    flex-shrink: 0;
+  }
+
+  // ---------------------------------------------------------------------------
+  // FOOTER ROW (Date, Charge, Quantity, Remains, Actions)
+  // ---------------------------------------------------------------------------
+
+  &__footer {
+    @include flex-between;
+    flex-wrap: wrap;
+    gap: var(--spacing-4);
+    width: 100%;
+  }
+
+  // Common label style
+  &__label {
+    @include typography('body', 'medium', 'primary');
+    color: var(--color-text);
+  }
+
+  // Date
+  &__date {
+    @include typography('body', 'medium', 'primary');
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-1);
+    color: var(--color-text);
+    white-space: nowrap;
+  }
+
+  // Charge / Price
+  &__charge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    white-space: nowrap;
+  }
+
+  &__price-value {
+    @include typography('body', 'medium', 'secondary');
+    color: var(--color-text);
+    letter-spacing: 0.075em;
+    text-transform: uppercase;
+  }
+
+  // Quantity
+  &__quantity {
+    @include typography('body', 'medium', 'primary');
+    color: var(--color-text);
+    white-space: nowrap;
+  }
+
+  // Remains
+  &__remains {
+    @include typography('body', 'medium', 'primary');
+    color: var(--color-text);
+    white-space: nowrap;
+  }
+
+  // ---------------------------------------------------------------------------
+  // ACTION BUTTONS
+  // ---------------------------------------------------------------------------
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--spacing-4);
+    flex-shrink: 0;
+  }
+
+  // Screen reader only (accessibility)
+  .sr-only {
+    @include visually-hidden;
+  }
+
+  &__action {
+    @include reset-button;
+    @include typography('body', 'bold', 'primary');
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-1) var(--spacing-2);
+    border-radius: var(--radius-md);
+    background-color: var(--color-information);
+    color: var(--color-text);
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: var(--transition-colors), var(--transition-transform);
+
+    &:hover {
+      background-color: var(--color-text);
+      color: var(--color-background);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    @include focus-visible(var(--color-success));
+  }
+
+  // ---------------------------------------------------------------------------
+  // RESPONSIVE LAYOUT
+  // ---------------------------------------------------------------------------
+
+  @include respond-below('lg') {
+    padding: var(--spacing-4) var(--spacing-6);
+
+    &__header,
+    &__footer {
+      gap: var(--spacing-3);
+    }
+
+    &__url {
+      max-width: 20%;
+    }
+  }
+
+  @include respond-below('md') {
+    gap: var(--spacing-6);
+
+    &__header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--spacing-2);
+    }
+
+    &__service {
+      max-width: 100%;
+    }
+
+    &__url {
+      max-width: 100%;
+    }
+
+    &__footer {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--spacing-2);
+    }
+
+    &__actions {
+      width: 100%;
+      justify-content: flex-start;
+      margin-top: var(--spacing-2);
+    }
+  }
+}
