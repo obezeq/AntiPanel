@@ -1,0 +1,96 @@
+<header class="header">
+  <a routerLink="/" class="header__logo" aria-label="AntiPanel Home">
+    <span class="header__logo-text">ANTIPANEL</span>
+  </a>
+
+  <nav class="header__nav" [class.header__nav--open]="isMobileMenuOpen()" aria-label="Main navigation">
+    <ul class="header__nav-list" role="list">
+      @for (item of navItems(); track item.path) {
+        <li class="header__nav-item">
+          @if (item.external) {
+            <a
+              [href]="item.path"
+              class="header__nav-link"
+              target="_blank"
+              rel="noopener noreferrer"
+              (click)="closeMobileMenu()"
+            >
+              {{ item.label }}
+            </a>
+          } @else {
+            <a
+              [routerLink]="item.path"
+              routerLinkActive="header__nav-link--active"
+              [routerLinkActiveOptions]="{ exact: item.path === '/' || item.path === '/admin' }"
+              class="header__nav-link"
+              (click)="closeMobileMenu()"
+            >
+              {{ item.label }}
+            </a>
+          }
+        </li>
+      }
+    </ul>
+  </nav>
+
+  <section class="header__actions">
+    @if (isAuthenticated()) {
+      <button
+        type="button"
+        class="header__wallet"
+        (click)="onWalletClick()"
+        aria-label="Wallet balance"
+      >
+        <span class="header__wallet-icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 4H3a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Z"/>
+            <path d="M16 12a2 2 0 1 0 4 0 2 2 0 0 0-4 0Z"/>
+          </svg>
+        </span>
+        <span class="header__wallet-balance">{{ walletBalance() }}</span>
+      </button>
+
+      <button
+        type="button"
+        class="header__profile"
+        (click)="onProfileClick()"
+        aria-label="User profile"
+      >
+        <span class="header__profile-icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>
+          </svg>
+        </span>
+      </button>
+    } @else {
+      <a routerLink="/login" class="header__access" (click)="closeMobileMenu()">
+        ACCESS
+      </a>
+    }
+
+    <button
+      type="button"
+      class="header__menu-toggle hide-desktop"
+      [class.header__menu-toggle--open]="isMobileMenuOpen()"
+      (click)="toggleMobileMenu()"
+      [attr.aria-expanded]="isMobileMenuOpen()"
+      aria-controls="mobile-menu"
+      aria-label="Toggle navigation menu"
+    >
+      <span class="header__menu-icon" aria-hidden="true">
+        <span class="header__menu-bar"></span>
+        <span class="header__menu-bar"></span>
+        <span class="header__menu-bar"></span>
+      </span>
+    </button>
+  </section>
+
+  @if (isMobileMenuOpen()) {
+    <div
+      class="header__overlay hide-desktop"
+      (click)="closeMobileMenu()"
+      aria-hidden="true"
+    ></div>
+  }
+</header>
