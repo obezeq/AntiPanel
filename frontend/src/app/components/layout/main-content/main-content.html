@@ -1,0 +1,9 @@
+<main
+  class="main-content"
+  [class.main-content--narrow]="variant() === 'narrow'"
+  [class.main-content--wide]="variant() === 'wide'"
+  [class.main-content--fluid]="variant() === 'fluid'"
+  [class.main-content--padded]="padded()"
+>
+  <ng-content />
+</main>
