@@ -1,0 +1,58 @@
+<fieldset
+  class="form-textarea"
+  [class.form-textarea--focused]="isFocused()"
+  [class.form-textarea--error]="showError()"
+  [class.form-textarea--disabled]="isDisabled()"
+>
+  <label
+    [for]="textareaId()"
+    class="form-textarea__label"
+  >
+    {{ label() }}
+    @if (required()) {
+      <span class="form-textarea__required" aria-hidden="true">*</span>
+      <span class="sr-only">(required)</span>
+    }
+  </label>
+
+  <textarea
+    [id]="textareaId()"
+    [placeholder]="placeholder()"
+    [value]="value()"
+    [disabled]="isDisabled()"
+    [required]="required()"
+    [rows]="rows()"
+    [maxlength]="maxLength()"
+    [attr.aria-invalid]="showError()"
+    [attr.aria-describedby]="showError() ? textareaId() + '-error' : hint() ? textareaId() + '-hint' : null"
+    class="form-textarea__field"
+    (input)="onInput($event)"
+    (focus)="onFocus()"
+    (blur)="onBlur()"
+  ></textarea>
+
+  <footer class="form-textarea__footer">
+    @if (showError()) {
+      <p
+        [id]="textareaId() + '-error'"
+        class="form-textarea__error"
+        role="alert"
+      >
+        {{ errorMessage() }}
+      </p>
+    } @else if (hint()) {
+      <p
+        [id]="textareaId() + '-hint'"
+        class="form-textarea__hint"
+      >
+        {{ hint() }}
+      </p>
+    }
+
+    @if (maxLength()) {
+      <p class="form-textarea__count">
+        {{ charCount() }} / {{ maxLength() }}
+      </p>
+    }
+  </footer>
+</fieldset>

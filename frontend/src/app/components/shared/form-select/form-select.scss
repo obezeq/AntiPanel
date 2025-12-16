@@ -1,0 +1,158 @@
+@use '../../../styles/01-tools/mixins' as *;
+
+// ==========================================================================
+// FORM SELECT COMPONENT
+// ==========================================================================
+// Reusable select dropdown with label and validation states.
+// ==========================================================================
+
+.form-select {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+// ---------------------------------------------------------------------------
+// LABEL
+// ---------------------------------------------------------------------------
+
+.form-select__label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  margin-bottom: 0;
+
+  .form-select--error & {
+    color: var(--color-error);
+  }
+}
+
+.form-select__required {
+  color: var(--color-error);
+  font-weight: var(--font-weight-bold);
+}
+
+// ---------------------------------------------------------------------------
+// WRAPPER (for custom icon positioning)
+// ---------------------------------------------------------------------------
+
+.form-select__wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+// ---------------------------------------------------------------------------
+// SELECT FIELD
+// ---------------------------------------------------------------------------
+
+.form-select__field {
+  width: 100%;
+  padding: var(--spacing-3) var(--spacing-4);
+  padding-right: var(--spacing-10);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text);
+  background-color: var(--color-background);
+  border: var(--border-width-medium) solid var(--color-secondary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  appearance: none;
+  transition: var(--transition-colors);
+
+  &:hover:not(:disabled) {
+    border-color: var(--color-foreground);
+  }
+
+  &:focus {
+    border-color: var(--color-text);
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: var(--color-tiny-info);
+  }
+
+  .form-select--error & {
+    border-color: var(--color-error);
+
+    &:focus {
+      border-color: var(--color-error);
+    }
+
+    &:focus-visible {
+      outline-color: var(--color-error);
+    }
+  }
+
+  // Placeholder option styling
+  option[value=""][disabled] {
+    color: var(--color-foreground);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// CUSTOM DROPDOWN ICON
+// ---------------------------------------------------------------------------
+
+.form-select__icon {
+  position: absolute;
+  right: var(--spacing-3);
+  display: flex;
+  align-items: center;
+  color: var(--color-foreground);
+  pointer-events: none;
+  transition: var(--transition-colors);
+
+  .form-select__wrapper:hover & {
+    color: var(--color-text);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// ERROR MESSAGE
+// ---------------------------------------------------------------------------
+
+.form-select__error {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-small);
+  color: var(--color-error);
+  margin: 0;
+}
+
+// ---------------------------------------------------------------------------
+// HINT TEXT
+// ---------------------------------------------------------------------------
+
+.form-select__hint {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-small);
+  color: var(--color-foreground);
+  margin: 0;
+}
+
+// ---------------------------------------------------------------------------
+// SCREEN READER ONLY
+// ---------------------------------------------------------------------------
+
+.sr-only {
+  @include visually-hidden;
+}
