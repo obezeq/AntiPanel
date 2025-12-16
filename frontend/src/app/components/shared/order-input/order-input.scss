@@ -1,0 +1,104 @@
+@use '../../../styles/01-tools/mixins' as *;
+
+// ==========================================================================
+// ORDER INPUT COMPONENT
+// ==========================================================================
+// Natural language order input with target icon.
+// ==========================================================================
+
+.order-input {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4) var(--spacing-6);
+  background-color: var(--color-background);
+  border: var(--border-width-heavy) solid var(--color-secondary);
+  border-radius: var(--radius-xl);
+  transition: var(--transition-colors);
+  margin: 0;
+
+  &:hover:not(.order-input--disabled) {
+    border-color: var(--color-foreground);
+  }
+
+  &.order-input--focused {
+    border-color: var(--color-text);
+  }
+
+  &.order-input--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// ICON
+// ---------------------------------------------------------------------------
+
+.order-input__icon {
+  display: flex;
+  flex-shrink: 0;
+  color: var(--color-success);
+}
+
+// ---------------------------------------------------------------------------
+// INPUT FIELD
+// ---------------------------------------------------------------------------
+
+.order-input__field {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text);
+  background: none;
+  border: none;
+  outline: none;
+
+  &::placeholder {
+    color: var(--color-foreground);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  @include respond-to('md') {
+    font-size: var(--font-size-h6);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// SUBMIT BUTTON
+// ---------------------------------------------------------------------------
+
+.order-input__submit {
+  @include reset-button;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  background-color: var(--color-success);
+  color: var(--color-background);
+  border-radius: var(--radius-full);
+  transition: var(--transition-colors), var(--transition-transform);
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-high-contrast);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  @include focus-visible;
+}
