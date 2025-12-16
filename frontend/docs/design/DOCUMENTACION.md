@@ -14,27 +14,27 @@
 
 ## 1. Arquitectura CSS y Comunicacion Visual
 
-Esta seccion documenta los fundamentos del sistema de diseno de AntiPanel, incluyendo la metodologia CSS, los design tokens y las herramientas SCSS.
+En esta seccion documento los fundamentos del sistema de diseno que he creado para AntiPanel, incluyendo la metodologia CSS que elegi, los design tokens y las herramientas SCSS que desarrolle.
 
 ### 1.1 Principios de Comunicacion Visual
 
-El diseno de AntiPanel sigue una filosofia minimalista aplicando los 5 principios fundamentales de comunicacion visual:
+Para el diseno de AntiPanel segui una filosofia minimalista aplicando los 5 principios fundamentales de comunicacion visual:
 
 #### Jerarquia Visual
 
-La jerarquia visual guia la atencion del usuario a traves de la interfaz mediante:
-- Uso de tamanos tipograficos con escala definida (128px - 10px)
+Implemente la jerarquia visual para guiar la atencion del usuario a traves de la interfaz mediante:
+- Uso de tamanos tipograficos con una escala que defini (128px - 10px)
 - Contraste alto entre texto y fondo (#FAFAFA sobre #0A0A0A)
-- Espaciado consistente basado en sistema de 8px
+- Espaciado consistente basado en un sistema de 8px que estableci como base
 
 <!-- SCREENSHOT: Captura del Dashboard mostrando jerarquia de titulos (h1 grande, h2 mediano, texto body) -->
 > **Placeholder Screenshot:** Dashboard con jerarquia tipografica visible (titulo 96px, subtitulo 24px, texto 16px)
 
 #### Contraste
 
-El contraste asegura legibilidad y distincion visual:
+Asegure la legibilidad y distincion visual mediante el contraste:
 - Texto principal (#FAFAFA) sobre fondo oscuro (#0A0A0A) - Ratio 19.4:1
-- Colores semanticos distinguibles: verde exito, rojo error, amarillo warning
+- Colores semanticos que elegi para distinguir estados: verde exito, rojo error, amarillo warning
 - Bordes sutiles (#393939) para separar elementos
 
 <!-- SCREENSHOT: Captura de alertas o botones mostrando contraste de colores -->
@@ -42,17 +42,17 @@ El contraste asegura legibilidad y distincion visual:
 
 #### Alineacion
 
-La alineacion crea orden y conexion visual:
-- Grid de 8px como base para todo el espaciado
-- Elementos alineados consistentemente al grid
-- Margenes y paddings siguiendo la escala de espaciado
+Cree orden y conexion visual a traves de la alineacion:
+- Defini un grid de 8px como base para todo el espaciado
+- Alinee los elementos consistentemente al grid
+- Estableci margenes y paddings siguiendo la escala de espaciado
 
 <!-- SCREENSHOT: Captura del Style Guide mostrando grid y alineacion de componentes -->
 > **Placeholder Screenshot:** Vista del Style Guide con componentes alineados al grid de 8px
 
 #### Proximidad
 
-La proximidad agrupa elementos relacionados:
+Agrupe elementos relacionados usando el principio de proximidad:
 - Campos de formulario con sus labels cercanos
 - Botones de accion agrupados
 - Secciones separadas por espaciado mayor
@@ -62,9 +62,9 @@ La proximidad agrupa elementos relacionados:
 
 #### Repeticion
 
-La repeticion crea consistencia y reconocimiento:
+Busque crear consistencia y reconocimiento a traves de la repeticion:
 - Mismos colores semanticos en toda la app
-- Tipografia consistente (Montserrat headings, IBM Plex Mono datos)
+- Tipografia consistente (Montserrat para headings, IBM Plex Mono para datos)
 - Patrones de componentes repetidos (cards, buttons, inputs)
 
 <!-- SCREENSHOT: Captura de multiples cards o componentes mostrando consistencia -->
@@ -73,6 +73,8 @@ La repeticion crea consistencia y reconocimiento:
 ---
 
 **Paleta de Colores (Dark Mode)**
+
+Defini la siguiente paleta de colores para el modo oscuro:
 
 | Token | Valor | Uso |
 |-------|-------|-----|
@@ -90,8 +92,11 @@ La repeticion crea consistencia y reconocimiento:
 
 **Tipografia**
 
+Elegi las siguientes fuentes para el proyecto:
 - **Fuente Primaria**: Montserrat (headings, UI elements)
 - **Fuente Secundaria**: IBM Plex Mono (code, data, inputs)
+
+Estableci la siguiente escala tipografica:
 
 | Tamano | Pixeles | Uso |
 |--------|---------|-----|
@@ -109,11 +114,11 @@ La repeticion crea consistencia y reconocimiento:
 
 ### 1.2 Metodologia CSS: ITCSS + BEM + Angular Emulated
 
-AntiPanel utiliza una metodologia hibrida que combina lo mejor de tres enfoques:
+Decidi utilizar una metodologia hibrida que combina lo mejor de tres enfoques:
 
 **ITCSS (Inverted Triangle CSS)**
 
-Arquitectura de capas ordenadas por especificidad creciente:
+Opte por esta arquitectura de capas ordenadas por especificidad creciente porque me permite organizar los estilos de forma escalable:
 
 ```
 src/styles/
@@ -126,7 +131,7 @@ src/styles/
 
 **BEM (Block Element Modifier)**
 
-Convencion de nomenclatura para clases CSS:
+Elegi la convencion BEM para nombrar las clases CSS porque facilita la mantenibilidad:
 
 ```scss
 // Block
@@ -144,7 +149,7 @@ Convencion de nomenclatura para clases CSS:
 
 **Angular Emulated ViewEncapsulation**
 
-Los componentes Angular usan encapsulacion emulada por defecto:
+Mantuve la encapsulacion emulada que Angular ofrece por defecto porque me permite tener estilos aislados por componente:
 
 ```typescript
 @Component({
@@ -158,6 +163,8 @@ Los componentes Angular usan encapsulacion emulada por defecto:
 ### 1.3 Organizacion de Archivos
 
 **Estructura ITCSS**
+
+Organice los archivos de estilos siguiendo el patron ITCSS:
 
 ```
 src/styles/
@@ -182,6 +189,8 @@ src/styles/
 
 **Entry Point (styles.scss)**
 
+Configure el archivo principal para importar las capas en orden:
+
 ```scss
 // ==========================================================================
 // MAIN STYLESHEET - ITCSS ARCHITECTURE
@@ -205,11 +214,11 @@ src/styles/
 
 ### 1.4 Sistema de Design Tokens
 
-Los design tokens se dividen en dos tipos:
+Dividi los design tokens en dos tipos:
 
 **Variables SCSS** (`_variables.scss`)
 
-Usadas para calculos y mixins (no accesibles en runtime):
+Las utilizo para calculos y mixins (no son accesibles en runtime):
 
 ```scss
 // Breakpoints
@@ -239,7 +248,7 @@ $font-sizes: (
 
 **CSS Custom Properties** (`_css-variables.scss`)
 
-Accesibles en runtime para theming dinamico:
+Estas son accesibles en runtime, lo que me permite hacer theming dinamico:
 
 ```scss
 :root {
@@ -271,7 +280,7 @@ Accesibles en runtime para theming dinamico:
 
 ### 1.5 Mixins y Funciones
 
-El archivo `_mixins.scss` proporciona herramientas reutilizables:
+Cree el archivo `_mixins.scss` con herramientas reutilizables:
 
 **Responsive Breakpoints**
 
@@ -398,9 +407,9 @@ El archivo `_mixins.scss` proporciona herramientas reutilizables:
 
 ### 1.6 ViewEncapsulation en Angular
 
-Angular ofrece tres modos de encapsulacion de estilos:
+Angular ofrece tres modos de encapsulacion de estilos. Aqui explico cada uno y por que elegi el que uso:
 
-**Emulated (Default - Usado en AntiPanel)**
+**Emulated (Default - Lo que uso en AntiPanel)**
 
 ```typescript
 @Component({
@@ -410,7 +419,7 @@ Angular ofrece tres modos de encapsulacion de estilos:
 
 - Emula Shadow DOM usando atributos unicos (`_ngcontent-xxx`)
 - Los estilos del componente no afectan a otros componentes
-- Permite usar variables CSS globales
+- Me permite usar variables CSS globales
 
 **None**
 
@@ -422,7 +431,7 @@ Angular ofrece tres modos de encapsulacion de estilos:
 
 - Los estilos son globales
 - Util para estilos que deben afectar a toda la aplicacion
-- Usar con cuidado para evitar conflictos
+- Hay que usarlo con cuidado para evitar conflictos
 
 **ShadowDom**
 
@@ -436,7 +445,7 @@ Angular ofrece tres modos de encapsulacion de estilos:
 - Aislamiento completo de estilos
 - Las variables CSS funcionan a traves del shadow boundary
 
-**Estrategia de AntiPanel**
+**Mi Estrategia en AntiPanel**
 
 1. **Estilos globales** (ITCSS) en `src/styles/`
    - Reset, elementos base, layout utilities
@@ -444,7 +453,7 @@ Angular ofrece tres modos de encapsulacion de estilos:
 
 2. **Estilos de componente** (Emulated) en cada componente
    - Estilos especificos del componente
-   - Usan BEM para nomenclatura
+   - Uso BEM para nomenclatura
    - Acceden a CSS Custom Properties globales
 
 ```scss
@@ -473,11 +482,11 @@ Angular ofrece tres modos de encapsulacion de estilos:
 
 ## 2. HTML Semantico y Estructura
 
-Esta seccion documenta el uso de HTML semantico y la estructura de componentes de layout en AntiPanel.
+En esta seccion documento el uso de HTML semantico y la estructura de componentes de layout que implemente en AntiPanel.
 
 ### 2.1 Elementos Semanticos Utilizados
 
-AntiPanel utiliza elementos HTML semanticos para mejorar la accesibilidad y el SEO:
+Utilice elementos HTML semanticos para mejorar la accesibilidad y el SEO:
 
 | Elemento | Uso | Componente |
 |----------|-----|------------|
@@ -496,6 +505,8 @@ AntiPanel utiliza elementos HTML semanticos para mejorar la accesibilidad y el S
 
 **Header Component**
 
+Estructure el header de la siguiente manera:
+
 ```
 <header class="header">
   <a class="header__logo">Logo</a>
@@ -510,7 +521,7 @@ AntiPanel utiliza elementos HTML semanticos para mejorar la accesibilidad y el S
 </header>
 ```
 
-Caracteristicas:
+Caracteristicas que implemente:
 - Logo con enlace a home
 - Navegacion principal con lista semantica
 - Acciones de usuario (login/wallet/profile)
@@ -518,6 +529,8 @@ Caracteristicas:
 - Variantes: `home`, `dashboard`, `admin`
 
 **Footer Component**
+
+Para el footer opte por esta estructura:
 
 ```
 <footer class="footer">
@@ -547,7 +560,7 @@ Caracteristicas:
 </main>
 ```
 
-Variantes:
+Cree las siguientes variantes:
 - `default` - Max-width 1440px
 - `narrow` - Max-width 960px (formularios, articulos)
 - `wide` - Max-width 1600px (dashboards)
@@ -568,14 +581,14 @@ Variantes:
 </aside>
 ```
 
-Caracteristicas:
+Caracteristicas que incorpore:
 - Navegacion sticky en desktop
 - Panel deslizante en mobile
 - Indicador visual de ruta activa
 
 ### 2.3 Jerarquia de Headings
 
-AntiPanel sigue una jerarquia de headings consistente:
+Mantuve una jerarquia de headings consistente:
 
 ```
 h1 - Titulo principal de la pagina (uno por pagina)
@@ -605,6 +618,8 @@ Ejemplo en una pagina de dashboard:
 
 **Form Input Component**
 
+Disene los inputs de formulario con esta estructura:
+
 ```
 <fieldset class="form-input">
   <label for="email" class="form-input__label">
@@ -624,7 +639,7 @@ Ejemplo en una pagina de dashboard:
 </fieldset>
 ```
 
-Caracteristicas de accesibilidad:
+Caracteristicas de accesibilidad que implemente:
 - Labels asociados via `for/id`
 - `aria-describedby` para mensajes de error
 - `aria-invalid` para estado de validacion
@@ -651,7 +666,7 @@ Caracteristicas de accesibilidad:
 </form>
 ```
 
-Modos:
+Cree dos modos:
 - `login` - Email + Password
 - `register` - Email + Password + Confirm Password
 
@@ -670,7 +685,7 @@ Todos los elementos interactivos tienen estilos de focus visibles:
 
 **Skip Link**
 
-El reset CSS incluye un skip link para navegacion por teclado:
+Incluyo un skip link en el reset CSS para navegacion por teclado:
 
 ```html
 <a href="#main-content" class="skip-link">
@@ -680,6 +695,7 @@ El reset CSS incluye un skip link para navegacion por teclado:
 
 **ARIA Attributes**
 
+Utilizo los siguientes atributos ARIA:
 - `aria-label` en navegacion y botones sin texto visible
 - `aria-expanded` en menus desplegables
 - `aria-controls` vinculando toggles con contenido
@@ -687,7 +703,7 @@ El reset CSS incluye un skip link para navegacion por teclado:
 
 **Reduced Motion**
 
-Respeto a preferencias de usuario:
+Respeto las preferencias de usuario:
 
 ```scss
 @media (prefers-reduced-motion: reduce) {
@@ -704,9 +720,11 @@ Respeto a preferencias de usuario:
 
 ## 3. Sistema de Componentes UI
 
-Esta seccion documenta los componentes UI reutilizables implementados en AntiPanel.
+En esta seccion documento los componentes UI reutilizables que implemente en AntiPanel.
 
 ### 3.1 Componentes Implementados
+
+He creado los siguientes componentes:
 
 | Componente | Ubicacion | Descripcion |
 |------------|-----------|-------------|
@@ -729,7 +747,7 @@ Esta seccion documenta los componentes UI reutilizables implementados en AntiPan
 
 ### 3.2 Nomenclatura BEM
 
-Todos los componentes siguen la convencion BEM:
+Todos los componentes siguen la convencion BEM que adopte:
 
 ```scss
 // Block
@@ -747,7 +765,7 @@ Todos los componentes siguen la convencion BEM:
 .button--loading { }
 ```
 
-**Ejemplos de BEM en componentes:**
+**Ejemplos de BEM en mis componentes:**
 
 ```scss
 // Service Card
@@ -783,6 +801,8 @@ Todos los componentes siguen la convencion BEM:
 
 **Inputs y Outputs con Signals:**
 
+Utilizo la nueva API de signals para inputs y outputs:
+
 ```typescript
 @Component({
   selector: 'app-button',
@@ -809,6 +829,8 @@ export class Button {
 ```
 
 **Control Flow en Templates:**
+
+Uso el nuevo control flow de Angular:
 
 ```html
 <!-- @if -->
@@ -839,6 +861,8 @@ export class Button {
 
 **ControlValueAccessor para Forms:**
 
+Implemento ControlValueAccessor para integrar mis componentes con reactive forms:
+
 ```typescript
 @Component({
   providers: [
@@ -865,7 +889,7 @@ export class FormInput implements ControlValueAccessor {
 
 ### 3.4 Sistema de Iconos (ngicons)
 
-AntiPanel usa `@ng-icons` con Material Icons e Iconoir:
+Elegi `@ng-icons` con Material Icons e Iconoir para los iconos:
 
 **Configuracion en app.config.ts:**
 
@@ -895,7 +919,7 @@ export const appConfig: ApplicationConfig = {
 
 ### 3.5 Style Guide
 
-El proyecto incluye una pagina de Style Guide en `/style-guide` que muestra:
+Cree una pagina de Style Guide en `/style-guide` que muestra:
 
 - Paleta de colores completa
 - Escala tipografica
@@ -904,10 +928,16 @@ El proyecto incluye una pagina de Style Guide en `/style-guide` que muestra:
 - Elementos de formulario
 - Tarjetas y cards
 - Iconos disponibles
+- Componentes de layout (Header, Footer, Sidebar, MainContent)
+- Modal con diferentes tamanos
+- Formulario de autenticacion (login/register)
+- Filas de ordenes de usuario con todos los estados
 
 Para acceder: `http://localhost:4200/style-guide`
 
 ### 3.6 Estructura de Archivos de Componentes
+
+Organice los componentes de esta forma:
 
 ```
 src/app/components/
@@ -941,11 +971,11 @@ src/app/components/
 
 ## 4. Estrategia Responsive
 
-Esta seccion documenta la estrategia de diseno responsive de AntiPanel, basada en un enfoque mobile-first con breakpoints definidos.
+En esta seccion documento la estrategia de diseno responsive que implemente en AntiPanel, basada en un enfoque mobile-first con breakpoints definidos.
 
 ### 4.1 Sistema de Breakpoints
 
-AntiPanel utiliza un sistema de 5 breakpoints basado en anchos de dispositivo comunes:
+Defini un sistema de 5 breakpoints basado en anchos de dispositivo comunes:
 
 | Breakpoint | Ancho | Dispositivos Objetivo |
 |------------|-------|----------------------|
@@ -975,7 +1005,7 @@ $breakpoints: (
 
 ### 4.2 Enfoque Mobile-First
 
-Todos los estilos base estan disenados para moviles, y los estilos para pantallas mas grandes se anaden mediante media queries `min-width`:
+Todos los estilos base los disene para moviles, y los estilos para pantallas mas grandes los anado mediante media queries `min-width`:
 
 ```scss
 .component {
@@ -1123,13 +1153,15 @@ Todos los estilos base estan disenados para moviles, y los estilos para pantalla
 
 ## 5. Optimizacion Multimedia
 
-Esta seccion documenta las mejores practicas para la gestion de imagenes y recursos multimedia en AntiPanel, siguiendo los estandares de 2025.
+En esta seccion documento las mejores practicas para la gestion de imagenes y recursos multimedia que planeo implementar en AntiPanel.
 
-> **Nota:** Actualmente la aplicacion no utiliza imagenes. Esta seccion documenta la estrategia a implementar cuando se anadan recursos multimedia.
+> **Nota:** Actualmente la aplicacion no utiliza imagenes. Esta seccion documenta la estrategia que implementare cuando anada recursos multimedia.
 
 ### 5.1 Formatos de Imagen Modernos
 
-| Formato | Uso Recomendado | Soporte | Compresion |
+He estudiado los siguientes formatos para cuando los necesite:
+
+| Formato | Uso que le dare | Soporte | Compresion |
 |---------|----------------|---------|------------|
 | **AVIF** | Fotografias, imagenes complejas | Chrome, Firefox, Safari 16+ | Mejor (30-50% menos que WebP) |
 | **WebP** | Imagenes generales, fallback de AVIF | Universal (97%+ navegadores) | Excelente |
@@ -1137,11 +1169,11 @@ Esta seccion documenta las mejores practicas para la gestion de imagenes y recur
 | **PNG** | Transparencias complejas, capturas | Universal | Sin perdida |
 | **JPG** | Fallback legacy, fotografias | Universal | Con perdida |
 
-**Recomendacion:** Usar AVIF como formato principal, WebP como fallback, y JPG/PNG para navegadores legacy.
+Planeo usar AVIF como formato principal, WebP como fallback, y JPG/PNG para navegadores legacy.
 
 ### 5.2 Elemento Picture con Srcset
 
-El elemento `<picture>` permite servir diferentes formatos e imagenes segun el dispositivo:
+Cuando implemente imagenes, usare el elemento `<picture>` para servir diferentes formatos:
 
 ```html
 <picture>
@@ -1187,7 +1219,7 @@ El elemento `<picture>` permite servir diferentes formatos e imagenes segun el d
 
 ### 5.3 Lazy Loading Nativo
 
-HTML5 proporciona lazy loading nativo sin JavaScript:
+Aprovechare el lazy loading nativo de HTML5:
 
 ```html
 <img
@@ -1198,14 +1230,14 @@ HTML5 proporciona lazy loading nativo sin JavaScript:
 />
 ```
 
-**Atributos importantes:**
+**Atributos importantes que usare:**
 - `loading="lazy"` - Carga la imagen solo cuando esta cerca del viewport
 - `decoding="async"` - Decodifica la imagen en un hilo separado
 - `fetchpriority="high"` - Para imagenes above-the-fold criticas
 
 ### 5.4 NgOptimizedImage de Angular
 
-Angular proporciona la directiva `NgOptimizedImage` para optimizacion automatica:
+Angular proporciona la directiva `NgOptimizedImage` que planeo usar:
 
 ```typescript
 import { NgOptimizedImage } from '@angular/common';
@@ -1225,7 +1257,7 @@ import { NgOptimizedImage } from '@angular/common';
 export class HeroComponent {}
 ```
 
-**Beneficios:**
+**Beneficios que obtendre:**
 - Lazy loading automatico (excepto con `priority`)
 - Preconnect automatico a CDNs de imagenes
 - Validacion de width/height para evitar CLS
@@ -1246,6 +1278,8 @@ export const appConfig: ApplicationConfig = {
 
 ### 5.5 Herramientas de Optimizacion
 
+Estas son las herramientas que usare:
+
 | Herramienta | Uso | URL |
 |-------------|-----|-----|
 | **Squoosh** | Compresion manual de imagenes, comparacion de formatos | https://squoosh.app/ |
@@ -1254,7 +1288,7 @@ export const appConfig: ApplicationConfig = {
 | **ImageMagick** | Conversion y procesamiento batch | https://imagemagick.org/ |
 | **TinyPNG** | Compresion online de PNG/JPG | https://tinypng.com/ |
 
-**Pipeline de Build Recomendado:**
+**Pipeline de Build que implementare:**
 
 ```bash
 # Ejemplo con Sharp para generar multiples tamanos
@@ -1267,6 +1301,8 @@ sharp input.jpg --resize 1200 --format webp -o output-1200w.webp
 
 **Alt Text Descriptivo:**
 
+Me asegurare de escribir buenos textos alternativos:
+
 ```html
 <!-- Mal -->
 <img src="chart.png" alt="grafico" />
@@ -1275,7 +1311,7 @@ sharp input.jpg --resize 1200 --format webp -o output-1200w.webp
 <img src="chart.png" alt="Grafico de barras mostrando el crecimiento de usuarios: Enero 1000, Febrero 1500, Marzo 2200" />
 ```
 
-**Reglas para Alt Text:**
+**Reglas que seguire para Alt Text:**
 1. Describir el contenido y proposito de la imagen
 2. Evitar "imagen de..." o "foto de..."
 3. Incluir texto relevante que aparezca en la imagen
@@ -1334,11 +1370,11 @@ $image-sizes: (
 
 ## 6. Sistema de Temas
 
-Esta seccion documenta la arquitectura del sistema de temas de AntiPanel basado en CSS Custom Properties.
+En esta seccion documento la arquitectura del sistema de temas que cree para AntiPanel basado en CSS Custom Properties.
 
 ### 6.1 Arquitectura de CSS Custom Properties
 
-AntiPanel utiliza CSS Custom Properties (variables nativas) para todos los valores de tema, permitiendo cambio de tema en tiempo de ejecucion sin recompilacion:
+Decidi utilizar CSS Custom Properties (variables nativas) para todos los valores de tema porque me permite cambiar el tema en tiempo de ejecucion sin recompilacion:
 
 ```scss
 :root {
@@ -1349,7 +1385,7 @@ AntiPanel utiliza CSS Custom Properties (variables nativas) para todos los valor
 }
 ```
 
-**Ventajas:**
+**Ventajas de esta decision:**
 - Cambio de tema instantaneo via JavaScript
 - Sin necesidad de recargar CSS
 - Soporte nativo del navegador
@@ -1375,7 +1411,7 @@ El tema oscuro es el tema principal y activo por defecto:
 
 ### 6.3 Paleta Light Mode (Preparada)
 
-El tema claro esta preparado pero no activo por defecto:
+Prepare el tema claro aunque no esta activo por defecto:
 
 | Token | Valor Dark | Valor Light |
 |-------|------------|-------------|
@@ -1411,7 +1447,7 @@ La propiedad `color-scheme` indica al navegador que tema usar para elementos nat
 
 ### 6.5 prefers-color-scheme Media Query
 
-AntiPanel detecta la preferencia del sistema pero actualmente fuerza modo oscuro:
+Mi implementacion detecta la preferencia del sistema pero actualmente fuerza modo oscuro:
 
 ```scss
 // Detecta preferencia del sistema
@@ -1520,17 +1556,17 @@ export class ThemeToggle {
 
 ## 7. Informe de Accesibilidad
 
-Esta seccion documenta las practicas de accesibilidad implementadas en AntiPanel siguiendo las pautas WCAG 2.1.
+En esta seccion documento las practicas de accesibilidad que implemente en AntiPanel siguiendo las pautas WCAG 2.1.
 
 ### 7.1 Nivel de Conformidad WCAG
 
-AntiPanel apunta a conformidad **WCAG 2.1 Nivel AA**, que incluye:
+Mi objetivo es alcanzar conformidad **WCAG 2.1 Nivel AA**, que incluye:
 
 - Todos los criterios de Nivel A
 - Todos los criterios de Nivel AA
 - Criterios seleccionados de Nivel AAA donde sea practico
 
-**Criterios clave implementados:**
+**Criterios clave que he implementado:**
 - 1.1.1 Contenido no textual (Nivel A)
 - 1.3.1 Informacion y relaciones (Nivel A)
 - 1.4.3 Contraste minimo (Nivel AA)
@@ -1540,16 +1576,16 @@ AntiPanel apunta a conformidad **WCAG 2.1 Nivel AA**, que incluye:
 
 ### 7.2 Contraste de Colores
 
-Todos los colores de texto cumplen con los ratios WCAG AA:
+Todos los colores de texto que elegi cumplen con los ratios WCAG AA:
 
 | Combinacion | Ratio | Requisito AA | Estado |
 |-------------|-------|--------------|--------|
-| Text (#FAFAFA) sobre Background (#0A0A0A) | 19.4:1 | 4.5:1 | ✓ Pasa |
-| Foreground (#A1A1A1) sobre Background | 8.5:1 | 4.5:1 | ✓ Pasa |
-| Success (#00DC33) sobre Background | 8.2:1 | 4.5:1 | ✓ Pasa |
-| Error (#FF4444) sobre Background | 5.3:1 | 4.5:1 | ✓ Pasa |
+| Text (#FAFAFA) sobre Background (#0A0A0A) | 19.4:1 | 4.5:1 | Pasa |
+| Foreground (#A1A1A1) sobre Background | 8.5:1 | 4.5:1 | Pasa |
+| Success (#00DC33) sobre Background | 8.2:1 | 4.5:1 | Pasa |
+| Error (#FF4444) sobre Background | 5.3:1 | 4.5:1 | Pasa |
 
-**Herramientas de verificacion:**
+**Herramientas que uso para verificar:**
 - [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/)
 - [Colour Contrast Analyser](https://www.tpgi.com/color-contrast-checker/)
 - Chrome DevTools > Accessibility panel
@@ -1575,6 +1611,8 @@ Todos los elementos interactivos son accesibles via teclado:
 ### 7.4 Focus Visible y Skip Links
 
 **Focus Ring:**
+
+Implemente el siguiente mixin para focus visible:
 
 ```scss
 @mixin focus-visible($color: var(--focus-ring-color)) {
@@ -1657,7 +1695,7 @@ Todos los elementos interactivos son accesibles via teclado:
 
 ### 7.6 Reduced Motion Support
 
-AntiPanel respeta la preferencia de movimiento reducido:
+Respeto la preferencia de movimiento reducido con este codigo:
 
 ```scss
 @media (prefers-reduced-motion: reduce) {
@@ -1684,7 +1722,7 @@ html {
 
 ### 7.7 Semantic HTML Landmarks
 
-AntiPanel utiliza elementos semanticos HTML5:
+Utilizo elementos semanticos HTML5:
 
 | Elemento | Proposito | Cantidad Maxima |
 |----------|-----------|-----------------|
@@ -1699,6 +1737,8 @@ AntiPanel utiliza elementos semanticos HTML5:
 ### 7.8 Formularios Accesibles
 
 **Estructura de Form Input:**
+
+Disene los formularios con esta estructura accesible:
 
 ```html
 <fieldset class="form-input">
@@ -1727,7 +1767,7 @@ AntiPanel utiliza elementos semanticos HTML5:
 </fieldset>
 ```
 
-**Patrones clave:**
+**Patrones clave que sigo:**
 - Labels asociados via `for`/`id`
 - `aria-invalid` para estado de validacion
 - `aria-describedby` para errores y hints
@@ -1736,7 +1776,7 @@ AntiPanel utiliza elementos semanticos HTML5:
 
 ### 7.9 Checklist de Accesibilidad
 
-**Antes de cada release, verificar:**
+**Antes de cada release, verifico:**
 
 - [ ] Todos los elementos interactivos son accesibles via teclado
 - [ ] Focus visible en todos los elementos focusables
@@ -1751,7 +1791,7 @@ AntiPanel utiliza elementos semanticos HTML5:
 - [ ] Modales atrapan el foco correctamente
 - [ ] No hay contenido que parpadee > 3 veces/segundo
 
-**Herramientas de Testing:**
+**Herramientas de Testing que utilizo:**
 - axe DevTools (extension Chrome/Firefox)
 - Lighthouse Accessibility audit
 - WAVE Web Accessibility Evaluator
@@ -1761,14 +1801,14 @@ AntiPanel utiliza elementos semanticos HTML5:
 
 ## Resumen
 
-AntiPanel Frontend implementa un sistema de diseno completo con:
+En este proyecto he implementado un sistema de diseno completo que incluye:
 
-1. **Arquitectura CSS ITCSS** con design tokens
+1. **Arquitectura CSS ITCSS** con design tokens que defini
 2. **HTML Semantico** para accesibilidad
 3. **Componentes Angular 21** con signals y control flow moderno
-4. **BEM** para nomenclatura de clases
+4. **BEM** como convencion de nomenclatura de clases
 5. **ngicons** para iconografia
-6. **Style Guide** para documentacion visual
+6. **Style Guide** para documentacion visual de todos los componentes
 7. **Responsive Design** mobile-first con 5 breakpoints
 8. **Sistema de Temas** preparado para dark/light mode
 9. **Accesibilidad WCAG AA** con soporte completo de teclado
