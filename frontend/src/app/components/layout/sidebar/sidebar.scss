@@ -1,0 +1,129 @@
+@use '../../../styles/01-tools/mixins' as *;
+
+// ==========================================================================
+// SIDEBAR COMPONENT
+// ==========================================================================
+// Admin sidebar navigation with responsive behavior.
+// Fixed on mobile, sticky on desktop.
+// ==========================================================================
+
+.sidebar {
+  background-color: var(--color-background);
+  border-right: var(--border-width-thin) solid var(--color-information);
+  padding: var(--spacing-6);
+  height: 100%;
+
+  @include respond-below('lg') {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    height: 100dvh;
+    z-index: var(--z-fixed);
+    transform: translateX(-100%);
+    transition: transform var(--transition-base);
+    overflow-y: auto;
+
+    &.sidebar--open {
+      transform: translateX(0);
+    }
+  }
+
+  @include respond-to('lg') {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    overflow-y: auto;
+  }
+
+  @include custom-scrollbar;
+}
+
+// ---------------------------------------------------------------------------
+// HEADER
+// ---------------------------------------------------------------------------
+
+.sidebar__header {
+  margin-bottom: var(--spacing-8);
+  padding-bottom: var(--spacing-4);
+  border-bottom: var(--border-width-thin) solid var(--color-information);
+}
+
+.sidebar__title {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h5);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+// ---------------------------------------------------------------------------
+// NAVIGATION
+// ---------------------------------------------------------------------------
+
+.sidebar__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.sidebar__item {
+  list-style: none;
+}
+
+.sidebar__link {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-4);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-foreground);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  transition: var(--transition-colors), background-color var(--transition-fast);
+
+  &:hover {
+    color: var(--color-text);
+    background-color: var(--color-tiny-info);
+  }
+
+  &.sidebar__link--active {
+    color: var(--color-text);
+    background-color: var(--color-tiny-info);
+    font-weight: var(--font-weight-semibold);
+
+    // Left accent bar
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: var(--spacing-2);
+      bottom: var(--spacing-2);
+      width: 3px;
+      background-color: var(--color-success);
+      border-radius: var(--radius-full);
+    }
+  }
+
+  @include focus-visible;
+}
+
+.sidebar__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: currentColor;
+}
+
+.sidebar__label {
+  flex: 1;
+}
