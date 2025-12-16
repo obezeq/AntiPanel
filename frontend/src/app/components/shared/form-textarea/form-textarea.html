@@ -22,7 +22,7 @@
     [disabled]="isDisabled()"
     [required]="required()"
     [rows]="rows()"
-    [maxlength]="maxLength()"
+    [attr.maxlength]="maxLength()"
     [attr.aria-invalid]="showError()"
     [attr.aria-describedby]="showError() ? textareaId() + '-error' : hint() ? textareaId() + '-hint' : null"
     class="form-textarea__field"

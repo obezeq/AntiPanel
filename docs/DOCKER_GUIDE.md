@@ -26,7 +26,7 @@ Antes de comenzar, asegúrate de tener instalado:
 cd d:\ezequiel\INSTITUTO\AntiPanel
 
 # 2. Construir y levantar todos los servicios
-docker compose -f docker compose.yml -f docker compose.dev.yml up --build
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 
 # 3. Acceder a la aplicación
 # Backend:  http://localhost:8080
