@@ -228,3 +228,86 @@
     color: var(--color-foreground);
   }
 }
+
+// ---------------------------------------------------------------------------
+// LAYOUT COMPONENTS
+// ---------------------------------------------------------------------------
+
+.style-guide__layout-preview {
+  border: var(--border-width-thin) solid var(--color-information);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background-color: var(--color-tiny-info);
+}
+
+.style-guide__layout-preview--sidebar {
+  max-width: 280px;
+  height: 300px;
+}
+
+.style-guide__main-variants {
+  display: grid;
+  gap: var(--spacing-6);
+
+  @include respond-to('lg') {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.style-guide__main-variant {
+  margin: 0;
+
+  figcaption {
+    margin-top: var(--spacing-2);
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-small);
+    color: var(--color-foreground);
+    text-align: center;
+  }
+}
+
+.style-guide__placeholder {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-caption);
+  color: var(--color-foreground);
+  text-align: center;
+  padding: var(--spacing-8);
+  background-color: var(--color-tiny-info);
+  border: var(--border-width-thin) dashed var(--color-information);
+  border-radius: var(--radius-md);
+  margin: 0;
+}
+
+// ---------------------------------------------------------------------------
+// MODAL
+// ---------------------------------------------------------------------------
+
+.style-guide__modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-3);
+  margin-top: var(--spacing-6);
+}
+
+// ---------------------------------------------------------------------------
+// AUTH FORM
+// ---------------------------------------------------------------------------
+
+.style-guide__auth-preview {
+  max-width: 400px;
+  padding: var(--spacing-6);
+  background-color: var(--color-tiny-info);
+  border: var(--border-width-thin) solid var(--color-information);
+  border-radius: var(--radius-lg);
+}
+
+// ---------------------------------------------------------------------------
+// USER ORDERS
+// ---------------------------------------------------------------------------
+
+.style-guide__orders {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  max-width: 800px;
+}

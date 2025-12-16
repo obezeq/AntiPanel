@@ -228,4 +228,143 @@
       </section>
     </article>
   </section>
+
+  <!-- Layout Components Section -->
+  <section class="style-guide__section">
+    <h2 class="style-guide__section-title">Layout Components</h2>
+    <p class="style-guide__section-desc">Header, Footer, Sidebar, and MainContent components</p>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Header (Home variant)</h3>
+      <section class="style-guide__layout-preview">
+        <app-header variant="home" />
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Header (Dashboard variant - Authenticated)</h3>
+      <section class="style-guide__layout-preview">
+        <app-header
+          variant="dashboard"
+          [isAuthenticated]="true"
+          walletBalance="$125.50"
+        />
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Sidebar</h3>
+      <section class="style-guide__layout-preview style-guide__layout-preview--sidebar">
+        <app-sidebar
+          title="ADMIN"
+          [items]="sidebarItems"
+          [isOpen]="true"
+        />
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Footer</h3>
+      <section class="style-guide__layout-preview">
+        <app-footer />
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">MainContent Variants</h3>
+      <section class="style-guide__main-variants">
+        <figure class="style-guide__main-variant">
+          <app-main-content variant="narrow" [padded]="true">
+            <p class="style-guide__placeholder">Narrow (max-width: 960px)</p>
+          </app-main-content>
+          <figcaption>Narrow</figcaption>
+        </figure>
+        <figure class="style-guide__main-variant">
+          <app-main-content variant="default" [padded]="true">
+            <p class="style-guide__placeholder">Default (max-width: 1440px)</p>
+          </app-main-content>
+          <figcaption>Default</figcaption>
+        </figure>
+        <figure class="style-guide__main-variant">
+          <app-main-content variant="wide" [padded]="true">
+            <p class="style-guide__placeholder">Wide (max-width: 1600px)</p>
+          </app-main-content>
+          <figcaption>Wide</figcaption>
+        </figure>
+      </section>
+    </article>
+  </section>
+
+  <!-- Modal Section -->
+  <section class="style-guide__section">
+    <h2 class="style-guide__section-title">Modal</h2>
+    <p class="style-guide__section-desc">Dialog modal with multiple sizes</p>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Modal Sizes</h3>
+      <section class="style-guide__buttons">
+        <app-button variant="secondary" (buttonClick)="openModal('sm')">Open Small Modal</app-button>
+        <app-button variant="secondary" (buttonClick)="openModal('md')">Open Medium Modal</app-button>
+        <app-button variant="secondary" (buttonClick)="openModal('lg')">Open Large Modal</app-button>
+      </section>
+    </article>
+
+    <app-modal
+      [isOpen]="isModalOpen()"
+      [size]="modalSize()"
+      title="Modal Demo"
+      (closeRequest)="closeModal()"
+    >
+      <p>This is a {{ modalSize() }} size modal.</p>
+      <p>Click the X button, press ESC, or click outside to close.</p>
+      <section class="style-guide__modal-actions">
+        <app-button variant="ghost" (buttonClick)="closeModal()">Cancel</app-button>
+        <app-button variant="primary" (buttonClick)="closeModal()">Confirm</app-button>
+      </section>
+    </app-modal>
+  </section>
+
+  <!-- Auth Form Section -->
+  <section class="style-guide__section">
+    <h2 class="style-guide__section-title">Auth Form</h2>
+    <p class="style-guide__section-desc">Login and Registration forms</p>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Login Mode</h3>
+      <section class="style-guide__auth-preview">
+        <app-auth-form
+          mode="login"
+          (formSubmit)="onAuthSubmit($event)"
+        />
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Register Mode</h3>
+      <section class="style-guide__auth-preview">
+        <app-auth-form
+          mode="register"
+          (formSubmit)="onAuthSubmit($event)"
+        />
+      </section>
+    </article>
+  </section>
+
+  <!-- User Order Row Section -->
+  <section class="style-guide__section">
+    <h2 class="style-guide__section-title">User Order Row</h2>
+    <p class="style-guide__section-desc">Order rows with different status states</p>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Order Status Variants</h3>
+      <section class="style-guide__orders">
+        @for (order of userOrders; track order.id) {
+          <app-user-order-row
+            [order]="order"
+            (orderClick)="onOrderRowClick($event)"
+          />
+        }
+      </section>
+    </article>
+  </section>
 </main>
