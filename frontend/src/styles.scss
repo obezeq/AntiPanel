@@ -1,1 +1,41 @@
-/* You can add global styles to this file, and also import other style files */
+// ==========================================================================
+// ANTIPANEL - MAIN STYLESHEET
+// ==========================================================================
+// Architecture: ITCSS (Inverted Triangle CSS)
+// Methodology: BEM + Angular Emulated Encapsulation
+//
+// ITCSS layers (from generic to specific):
+// 1. Settings    - Variables, config (no CSS output)
+// 2. Tools       - Mixins, functions (no CSS output)
+// 3. Generic     - Reset, normalize (first CSS output)
+// 4. Elements    - Bare HTML elements (type selectors)
+// 5. Layout      - Layout patterns, grid system
+//
+// Note: Components (Objects, Components, Utilities) are handled by
+// Angular's component-scoped styles with Emulated encapsulation.
+// ==========================================================================
+
+// ---------------------------------------------------------------------------
+// 1. SETTINGS - Global variables and configuration
+// ---------------------------------------------------------------------------
+@use 'styles/00-settings' as settings;
+
+// ---------------------------------------------------------------------------
+// 2. TOOLS - Mixins and functions
+// ---------------------------------------------------------------------------
+@use 'styles/01-tools' as tools;
+
+// ---------------------------------------------------------------------------
+// 3. GENERIC - Reset and normalize
+// ---------------------------------------------------------------------------
+@use 'styles/02-generic';
+
+// ---------------------------------------------------------------------------
+// 4. ELEMENTS - Base HTML element styles
+// ---------------------------------------------------------------------------
+@use 'styles/03-elements';
+
+// ---------------------------------------------------------------------------
+// 5. LAYOUT - Grid system and layout utilities
+// ---------------------------------------------------------------------------
+@use 'styles/04-layout';

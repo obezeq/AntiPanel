@@ -1,0 +1,12 @@
+// ==========================================================================
+// SETTINGS
+// ==========================================================================
+// Global variables, config switches, brand colors, etc.
+// No CSS output - only SCSS variables and CSS custom properties.
+// ==========================================================================
+
+// SCSS Variables (for calculations, mixins, and maps)
+@forward 'variables';
+
+// CSS Custom Properties (native CSS variables in :root)
+@forward 'css-variables';
