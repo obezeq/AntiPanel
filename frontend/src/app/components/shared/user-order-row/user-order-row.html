@@ -1,0 +1,32 @@
+<article
+  class="user-order-row"
+  [class.user-order-row--clickable]="clickable()"
+  [attr.role]="clickable() ? 'button' : null"
+  [attr.tabindex]="clickable() ? 0 : null"
+  (click)="onClick()"
+  (keydown.enter)="onClick()"
+  (keydown.space)="onClick()"
+>
+  <section class="user-order-row__main">
+    <h4 class="user-order-row__service">{{ order().serviceName }}</h4>
+    <p class="user-order-row__meta">
+      <span class="user-order-row__id">Order #{{ order().id }}</span>
+      <span class="user-order-row__separator" aria-hidden="true">•</span>
+      <span class="user-order-row__quantity">{{ order().quantity | number }}</span>
+    </p>
+  </section>
+
+  <section class="user-order-row__details">
+    <p class="user-order-row__price">{{ order().price }}</p>
+    <p
+      class="user-order-row__status"
+      [class.user-order-row__status--pending]="order().status === 'pending'"
+      [class.user-order-row__status--processing]="order().status === 'processing'"
+      [class.user-order-row__status--completed]="order().status === 'completed'"
+      [class.user-order-row__status--cancelled]="order().status === 'cancelled'"
+      [class.user-order-row__status--partial]="order().status === 'partial'"
+    >
+      {{ getStatusLabel(order().status) }}
+    </p>
+  </section>
+</article>

@@ -1,0 +1,119 @@
+@use '../../../styles/01-tools/mixins' as *;
+
+// ==========================================================================
+// USER ORDER ROW COMPONENT
+// ==========================================================================
+// Row displaying order information for user dashboard.
+// ==========================================================================
+
+.user-order-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-4);
+  padding: var(--spacing-4);
+  border-bottom: var(--border-width-thin) solid var(--color-information);
+  transition: var(--transition-colors);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.user-order-row--clickable {
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--color-tiny-info);
+  }
+
+  @include focus-visible;
+}
+
+// ---------------------------------------------------------------------------
+// MAIN INFO
+// ---------------------------------------------------------------------------
+
+.user-order-row__main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  min-width: 0;
+}
+
+.user-order-row__service {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  margin: 0;
+
+  @include truncate;
+}
+
+.user-order-row__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-small);
+  color: var(--color-foreground);
+  margin: 0;
+}
+
+.user-order-row__separator {
+  color: var(--color-secondary);
+}
+
+// ---------------------------------------------------------------------------
+// DETAILS
+// ---------------------------------------------------------------------------
+
+.user-order-row__details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--spacing-1);
+  flex-shrink: 0;
+}
+
+.user-order-row__price {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  margin: 0;
+}
+
+// ---------------------------------------------------------------------------
+// STATUS
+// ---------------------------------------------------------------------------
+
+.user-order-row__status {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.user-order-row__status--pending {
+  color: var(--color-status-yellow);
+}
+
+.user-order-row__status--processing {
+  color: var(--color-stats-blue);
+}
+
+.user-order-row__status--completed {
+  color: var(--color-success);
+}
+
+.user-order-row__status--cancelled {
+  color: var(--color-error);
+}
+
+.user-order-row__status--partial {
+  color: var(--color-foreground);
+}
