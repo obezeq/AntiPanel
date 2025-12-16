@@ -1,7 +1,471 @@
 // ==========================================================================
-// LAYOUT
+// LAYOUT SYSTEM
 // ==========================================================================
 // Grid system, containers, and layout utilities.
+// Uses CSS Grid and Flexbox for modern, flexible layouts.
 // ==========================================================================
 
-// Placeholder - will be populated in commit 1.6
+@use '../01-tools/mixins' as *;
+
+// ---------------------------------------------------------------------------
+// CONTAINER
+// ---------------------------------------------------------------------------
+// Centered container with max-width and responsive padding.
+
+.container {
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin-inline: auto;
+  padding-inline: var(--spacing-4);
+
+  @include respond-to('md') {
+    padding-inline: var(--spacing-6);
+  }
+
+  @include respond-to('xl') {
+    padding-inline: var(--spacing-8);
+  }
+}
+
+// Fluid container (no max-width)
+.container--fluid {
+  max-width: none;
+}
+
+// Narrow container for content-focused layouts
+.container--narrow {
+  max-width: 960px;
+}
+
+// Wide container for dashboards
+.container--wide {
+  max-width: 1600px;
+}
+
+// ---------------------------------------------------------------------------
+// CSS GRID SYSTEM
+// ---------------------------------------------------------------------------
+// Flexible grid using CSS Grid.
+
+.grid {
+  display: grid;
+  gap: var(--spacing-4);
+}
+
+// Column configurations
+.grid--cols-1 {
+  grid-template-columns: repeat(1, 1fr);
+}
+
+.grid--cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid--cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.grid--cols-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.grid--cols-6 {
+  grid-template-columns: repeat(6, 1fr);
+}
+
+.grid--cols-12 {
+  grid-template-columns: repeat(12, 1fr);
+}
+
+// Auto-fill grid (responsive without media queries)
+.grid--auto-fill {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+}
+
+// Auto-fit grid
+.grid--auto-fit {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+}
+
+// Service cards grid (4 columns on desktop, as per design)
+.grid--services {
+  grid-template-columns: repeat(2, 1fr);
+
+  @include respond-to('md') {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @include respond-to('lg') {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+// Gap modifiers
+.grid--gap-0 {
+  gap: 0;
+}
+
+.grid--gap-2 {
+  gap: var(--spacing-2);
+}
+
+.grid--gap-4 {
+  gap: var(--spacing-4);
+}
+
+.grid--gap-6 {
+  gap: var(--spacing-6);
+}
+
+.grid--gap-8 {
+  gap: var(--spacing-8);
+}
+
+.grid--gap-16 {
+  gap: var(--spacing-16);
+}
+
+// ---------------------------------------------------------------------------
+// FLEXBOX UTILITIES
+// ---------------------------------------------------------------------------
+
+.flex {
+  display: flex;
+}
+
+.flex--inline {
+  display: inline-flex;
+}
+
+// Direction
+.flex--row {
+  flex-direction: row;
+}
+
+.flex--row-reverse {
+  flex-direction: row-reverse;
+}
+
+.flex--column {
+  flex-direction: column;
+}
+
+.flex--column-reverse {
+  flex-direction: column-reverse;
+}
+
+// Wrap
+.flex--wrap {
+  flex-wrap: wrap;
+}
+
+.flex--nowrap {
+  flex-wrap: nowrap;
+}
+
+// Justify content
+.flex--justify-start {
+  justify-content: flex-start;
+}
+
+.flex--justify-end {
+  justify-content: flex-end;
+}
+
+.flex--justify-center {
+  justify-content: center;
+}
+
+.flex--justify-between {
+  justify-content: space-between;
+}
+
+.flex--justify-around {
+  justify-content: space-around;
+}
+
+.flex--justify-evenly {
+  justify-content: space-evenly;
+}
+
+// Align items
+.flex--align-start {
+  align-items: flex-start;
+}
+
+.flex--align-end {
+  align-items: flex-end;
+}
+
+.flex--align-center {
+  align-items: center;
+}
+
+.flex--align-baseline {
+  align-items: baseline;
+}
+
+.flex--align-stretch {
+  align-items: stretch;
+}
+
+// Combined center
+.flex--center {
+  justify-content: center;
+  align-items: center;
+}
+
+// Gap
+.flex--gap-2 {
+  gap: var(--spacing-2);
+}
+
+.flex--gap-4 {
+  gap: var(--spacing-4);
+}
+
+.flex--gap-6 {
+  gap: var(--spacing-6);
+}
+
+.flex--gap-8 {
+  gap: var(--spacing-8);
+}
+
+.flex--gap-16 {
+  gap: var(--spacing-16);
+}
+
+// ---------------------------------------------------------------------------
+// LAYOUT PATTERNS
+// ---------------------------------------------------------------------------
+
+// Stack layout (vertical spacing)
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.stack--sm {
+  gap: var(--spacing-2);
+}
+
+.stack--md {
+  gap: var(--spacing-4);
+}
+
+.stack--lg {
+  gap: var(--spacing-8);
+}
+
+.stack--xl {
+  gap: var(--spacing-16);
+}
+
+// Cluster layout (horizontal wrapping)
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-4);
+  align-items: center;
+}
+
+// Sidebar layout (side + main content)
+.sidebar-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-6);
+
+  > :first-child {
+    flex-basis: 280px;
+    flex-grow: 1;
+  }
+
+  > :last-child {
+    flex-basis: 0;
+    flex-grow: 999;
+    min-width: 50%;
+  }
+}
+
+// Split layout (equal columns)
+.split {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-4);
+
+  > * {
+    flex: 1 1 0;
+    min-width: min(100%, 300px);
+  }
+}
+
+// Center layout (centered content with max-width)
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 65ch;
+  margin-inline: auto;
+}
+
+// ---------------------------------------------------------------------------
+// SECTION SPACING
+// ---------------------------------------------------------------------------
+// Consistent vertical spacing for page sections.
+
+.section {
+  padding-block: var(--spacing-16);
+
+  @include respond-to('md') {
+    padding-block: var(--spacing-20);
+  }
+
+  @include respond-to('lg') {
+    padding-block: var(--spacing-24);
+  }
+}
+
+.section--sm {
+  padding-block: var(--spacing-8);
+
+  @include respond-to('md') {
+    padding-block: var(--spacing-12);
+  }
+}
+
+.section--lg {
+  padding-block: var(--spacing-24);
+
+  @include respond-to('md') {
+    padding-block: var(--spacing-32);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// MAIN LAYOUT STRUCTURE
+// ---------------------------------------------------------------------------
+// Common page layout patterns.
+
+// Full-height layout with sticky header/footer
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.layout__header {
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+}
+
+.layout__main {
+  flex: 1 0 auto;
+}
+
+.layout__footer {
+  flex-shrink: 0;
+  margin-top: auto;
+}
+
+// Admin layout with sidebar
+.layout--admin {
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  @include respond-to('lg') {
+    grid-template-columns: 280px 1fr;
+  }
+}
+
+.layout__sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100dvh;
+  overflow-y: auto;
+
+  @include respond-below('lg') {
+    position: fixed;
+    left: 0;
+    width: 280px;
+    z-index: var(--z-fixed);
+    transform: translateX(-100%);
+    transition: transform var(--transition-base);
+
+    &.is-open {
+      transform: translateX(0);
+    }
+  }
+}
+
+.layout__content {
+  min-width: 0; // Prevent grid blowout
+}
+
+// ---------------------------------------------------------------------------
+// SPACING UTILITIES
+// ---------------------------------------------------------------------------
+// Quick spacing helpers (use sparingly - prefer component styles).
+
+// Margin top
+.mt-0 { margin-top: 0; }
+.mt-2 { margin-top: var(--spacing-2); }
+.mt-4 { margin-top: var(--spacing-4); }
+.mt-6 { margin-top: var(--spacing-6); }
+.mt-8 { margin-top: var(--spacing-8); }
+.mt-auto { margin-top: auto; }
+
+// Margin bottom
+.mb-0 { margin-bottom: 0; }
+.mb-2 { margin-bottom: var(--spacing-2); }
+.mb-4 { margin-bottom: var(--spacing-4); }
+.mb-6 { margin-bottom: var(--spacing-6); }
+.mb-8 { margin-bottom: var(--spacing-8); }
+
+// Margin inline (horizontal)
+.mx-auto { margin-inline: auto; }
+
+// Padding
+.p-0 { padding: 0; }
+.p-2 { padding: var(--spacing-2); }
+.p-4 { padding: var(--spacing-4); }
+.p-6 { padding: var(--spacing-6); }
+.p-8 { padding: var(--spacing-8); }
+
+// ---------------------------------------------------------------------------
+// VISIBILITY UTILITIES
+// ---------------------------------------------------------------------------
+
+// Screen reader only
+.sr-only {
+  @include visually-hidden;
+}
+
+// Hide on specific breakpoints
+.hide-mobile {
+  @include respond-below('md') {
+    display: none !important;
+  }
+}
+
+.hide-desktop {
+  @include respond-to('md') {
+    display: none !important;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// TEXT ALIGNMENT
+// ---------------------------------------------------------------------------
+
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
