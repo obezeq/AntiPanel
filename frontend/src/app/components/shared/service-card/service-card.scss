@@ -1,0 +1,90 @@
+@use '../../../styles/01-tools/mixins' as *;
+
+// ==========================================================================
+// SERVICE CARD COMPONENT
+// ==========================================================================
+// Card displaying a service platform with icon, name, and service count.
+// ==========================================================================
+
+.service-card {
+  @include card-base;
+  @include flex-column;
+  align-items: center;
+  text-align: center;
+  gap: var(--spacing-4);
+  padding: var(--spacing-6);
+}
+
+.service-card--interactive {
+  cursor: pointer;
+
+  @include card-hover;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  @include focus-visible;
+}
+
+// ---------------------------------------------------------------------------
+// ICON
+// ---------------------------------------------------------------------------
+
+.service-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background-color: var(--color-tiny-info);
+  border-radius: var(--radius-lg);
+  margin: 0;
+}
+
+.service-card__icon-placeholder {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  text-transform: uppercase;
+}
+
+// ---------------------------------------------------------------------------
+// NAME
+// ---------------------------------------------------------------------------
+
+.service-card__name {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h5);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  margin: 0;
+}
+
+// ---------------------------------------------------------------------------
+// COUNT
+// ---------------------------------------------------------------------------
+
+.service-card__count {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  margin: 0;
+}
+
+.service-card__count-number {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-success);
+}
+
+.service-card__count-label {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
