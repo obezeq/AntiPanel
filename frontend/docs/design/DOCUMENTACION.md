@@ -3,7 +3,7 @@
 ## Indice
 
 1. [Arquitectura CSS y Comunicacion Visual](#1-arquitectura-css-y-comunicacion-visual)
-2. HTML Semantico y Estructura (Fase 2)
+2. [HTML Semantico y Estructura](#2-html-semantico-y-estructura)
 3. Sistema de Componentes UI (Fase 3)
 
 ---
@@ -420,7 +420,237 @@ Angular ofrece tres modos de encapsulacion de estilos:
 
 ---
 
+## 2. HTML Semantico y Estructura
+
+Esta seccion documenta el uso de HTML semantico y la estructura de componentes de layout en AntiPanel.
+
+### 2.1 Elementos Semanticos Utilizados
+
+AntiPanel utiliza elementos HTML semanticos para mejorar la accesibilidad y el SEO:
+
+| Elemento | Uso | Componente |
+|----------|-----|------------|
+| `<header>` | Cabecera del sitio | `Header` |
+| `<nav>` | Navegacion principal y secundaria | `Header`, `Footer`, `Sidebar` |
+| `<main>` | Contenido principal de la pagina | `MainContent` |
+| `<aside>` | Navegacion lateral (admin) | `Sidebar` |
+| `<footer>` | Pie de pagina | `Footer` |
+| `<article>` | Contenido independiente | Brand section en Footer |
+| `<section>` | Secciones de contenido | Agrupaciones logicas |
+| `<form>` | Formularios | `AuthForm` |
+| `<fieldset>` | Agrupacion de campos | `FormInput`, `AuthForm` |
+| `<legend>` | Titulo de fieldset | `AuthForm` |
+
+### 2.2 Estructura de Componentes de Layout
+
+**Header Component**
+
+```
+<header class="header">
+  <a class="header__logo">Logo</a>
+  <nav class="header__nav">
+    <ul role="list">
+      <li><a>Link</a></li>
+    </ul>
+  </nav>
+  <section class="header__actions">
+    <a class="header__access">ACCESS</a>
+  </section>
+</header>
+```
+
+Caracteristicas:
+- Logo con enlace a home
+- Navegacion principal con lista semantica
+- Acciones de usuario (login/wallet/profile)
+- Menu hamburguesa responsive
+- Variantes: `home`, `dashboard`, `admin`
+
+**Footer Component**
+
+```
+<footer class="footer">
+  <section class="footer__content">
+    <article class="footer__brand">
+      <a class="footer__logo">Logo</a>
+      <p class="footer__copyright">Copyright</p>
+    </article>
+    <nav class="footer__nav">
+      <ul role="list">Links</ul>
+    </nav>
+    <button class="footer__back-to-top">Back to Top</button>
+  </section>
+</footer>
+```
+
+Caracteristicas:
+- Marca y copyright
+- Links de navegacion secundaria
+- Boton "Back to Top" con scroll suave
+
+**Main Content Component**
+
+```
+<main class="main-content main-content--padded">
+  <ng-content />
+</main>
+```
+
+Variantes:
+- `default` - Max-width 1440px
+- `narrow` - Max-width 960px (formularios, articulos)
+- `wide` - Max-width 1600px (dashboards)
+- `fluid` - Sin max-width
+
+**Sidebar Component**
+
+```
+<aside class="sidebar" aria-label="Admin navigation">
+  <header class="sidebar__header">
+    <h2 class="sidebar__title">ADMIN</h2>
+  </header>
+  <nav class="sidebar__nav">
+    <ul role="list">
+      <li><a class="sidebar__link">Dashboard</a></li>
+    </ul>
+  </nav>
+</aside>
+```
+
+Caracteristicas:
+- Navegacion sticky en desktop
+- Panel deslizante en mobile
+- Indicador visual de ruta activa
+
+### 2.3 Jerarquia de Headings
+
+AntiPanel sigue una jerarquia de headings consistente:
+
+```
+h1 - Titulo principal de la pagina (uno por pagina)
+  h2 - Secciones principales
+    h3 - Subsecciones
+      h4 - Elementos dentro de subsecciones
+```
+
+Ejemplo en una pagina de dashboard:
+
+```html
+<main>
+  <h1>Dashboard</h1>              <!-- Titulo de pagina -->
+  <section>
+    <h2>Statistics</h2>           <!-- Seccion -->
+    <article>
+      <h3>Orders Today</h3>       <!-- Stat card -->
+    </article>
+  </section>
+  <section>
+    <h2>Recent Orders</h2>        <!-- Otra seccion -->
+  </section>
+</main>
+```
+
+### 2.4 Estructura de Formularios
+
+**Form Input Component**
+
+```
+<fieldset class="form-input">
+  <label for="email" class="form-input__label">
+    Email
+    <span class="form-input__required">*</span>
+  </label>
+  <input
+    id="email"
+    type="email"
+    class="form-input__field"
+    aria-describedby="email-error"
+    aria-invalid="true"
+  />
+  <p id="email-error" class="form-input__error" role="alert">
+    Error message
+  </p>
+</fieldset>
+```
+
+Caracteristicas de accesibilidad:
+- Labels asociados via `for/id`
+- `aria-describedby` para mensajes de error
+- `aria-invalid` para estado de validacion
+- `role="alert"` para anunciar errores
+- Indicador visual de campo requerido
+
+**Auth Form Component**
+
+```
+<form class="auth-form" novalidate>
+  <fieldset class="auth-form__fieldset">
+    <legend class="auth-form__legend">Welcome Back</legend>
+
+    <section class="auth-form__fields">
+      <app-form-input label="Email" />
+      <app-form-input label="Password" />
+    </section>
+
+    <section class="auth-form__actions">
+      <button type="submit">LOGIN</button>
+      <p>Don't have an account? <a>Register</a></p>
+    </section>
+  </fieldset>
+</form>
+```
+
+Modos:
+- `login` - Email + Password
+- `register` - Email + Password + Confirm Password
+
+### 2.5 Patrones de Accesibilidad
+
+**Focus Management**
+
+Todos los elementos interactivos tienen estilos de focus visibles:
+
+```scss
+&:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+```
+
+**Skip Link**
+
+El reset CSS incluye un skip link para navegacion por teclado:
+
+```html
+<a href="#main-content" class="skip-link">
+  Skip to main content
+</a>
+```
+
+**ARIA Attributes**
+
+- `aria-label` en navegacion y botones sin texto visible
+- `aria-expanded` en menus desplegables
+- `aria-controls` vinculando toggles con contenido
+- `role="list"` en listas estilizadas
+
+**Reduced Motion**
+
+Respeto a preferencias de usuario:
+
+```scss
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+```
+
+---
+
 ## Proximas Secciones
 
-- **Seccion 2**: HTML Semantico y Estructura (Fase 2)
 - **Seccion 3**: Sistema de Componentes UI (Fase 3)
