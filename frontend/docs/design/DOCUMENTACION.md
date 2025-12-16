@@ -4,7 +4,7 @@
 
 1. [Arquitectura CSS y Comunicacion Visual](#1-arquitectura-css-y-comunicacion-visual)
 2. [HTML Semantico y Estructura](#2-html-semantico-y-estructura)
-3. Sistema de Componentes UI (Fase 3)
+3. [Sistema de Componentes UI](#3-sistema-de-componentes-ui)
 
 ---
 
@@ -651,6 +651,252 @@ Respeto a preferencias de usuario:
 
 ---
 
-## Proximas Secciones
+## 3. Sistema de Componentes UI
 
-- **Seccion 3**: Sistema de Componentes UI (Fase 3)
+Esta seccion documenta los componentes UI reutilizables implementados en AntiPanel.
+
+### 3.1 Componentes Implementados
+
+| Componente | Ubicacion | Descripcion |
+|------------|-----------|-------------|
+| `Button` | `shared/button/` | Boton con variantes primary, secondary, ghost, danger |
+| `Alert` | `shared/alert/` | Notificaciones success, error, warning, info |
+| `FormInput` | `shared/form-input/` | Input con label, validacion y estados |
+| `FormTextarea` | `shared/form-textarea/` | Textarea con contador de caracteres |
+| `FormSelect` | `shared/form-select/` | Select dropdown con opciones dinamicas |
+| `ServiceCard` | `shared/service-card/` | Tarjeta de servicio con icono y contador |
+| `StatsCard` | `shared/stats-card/` | Tarjeta de estadisticas con cambio porcentual |
+| `Modal` | `shared/modal/` | Dialogo modal accesible con backdrop |
+| `OrderInput` | `shared/order-input/` | Input de orden en lenguaje natural |
+| `DashboardHeader` | `shared/dashboard-header/` | Header grande para dashboards |
+| `UserOrderRow` | `shared/user-order-row/` | Fila de orden para listados |
+| `Header` | `layout/header/` | Cabecera con navegacion responsive |
+| `Footer` | `layout/footer/` | Pie de pagina con links |
+| `MainContent` | `layout/main-content/` | Contenedor principal |
+| `Sidebar` | `layout/sidebar/` | Barra lateral para admin |
+| `AuthForm` | `shared/auth-form/` | Formulario login/registro |
+
+### 3.2 Nomenclatura BEM
+
+Todos los componentes siguen la convencion BEM:
+
+```scss
+// Block
+.button { }
+
+// Element
+.button__content { }
+.button__spinner { }
+
+// Modifier
+.button--primary { }
+.button--secondary { }
+.button--sm { }
+.button--lg { }
+.button--loading { }
+```
+
+**Ejemplos de BEM en componentes:**
+
+```scss
+// Service Card
+.service-card { }
+.service-card__icon { }
+.service-card__name { }
+.service-card__count { }
+.service-card--interactive { }
+
+// Form Input
+.form-input { }
+.form-input__label { }
+.form-input__field { }
+.form-input__error { }
+.form-input--focused { }
+.form-input--error { }
+.form-input--disabled { }
+
+// Alert
+.alert { }
+.alert__icon { }
+.alert__content { }
+.alert__title { }
+.alert__message { }
+.alert__dismiss { }
+.alert--success { }
+.alert--error { }
+.alert--warning { }
+.alert--info { }
+```
+
+### 3.3 Patrones de Componentes Angular 21
+
+**Inputs y Outputs con Signals:**
+
+```typescript
+@Component({
+  selector: 'app-button',
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class Button {
+  // Inputs con signal API
+  readonly variant = input<ButtonVariant>('primary');
+  readonly size = input<ButtonSize>('md');
+  readonly disabled = input<boolean>(false);
+  readonly loading = input<boolean>(false);
+
+  // Required input
+  readonly label = input.required<string>();
+
+  // Outputs
+  readonly buttonClick = output<MouseEvent>();
+
+  // Computed values
+  protected readonly isDisabled = computed(() =>
+    this.disabled() || this.loading()
+  );
+}
+```
+
+**Control Flow en Templates:**
+
+```html
+<!-- @if -->
+@if (loading()) {
+  <span class="spinner"></span>
+} @else {
+  <ng-content />
+}
+
+<!-- @for -->
+@for (item of items(); track item.id) {
+  <app-item [data]="item" />
+}
+
+<!-- @switch -->
+@switch (variant()) {
+  @case ('success') {
+    <ng-icon name="matCheck" />
+  }
+  @case ('error') {
+    <ng-icon name="matError" />
+  }
+  @default {
+    <ng-icon name="matInfo" />
+  }
+}
+```
+
+**ControlValueAccessor para Forms:**
+
+```typescript
+@Component({
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => FormInput),
+      multi: true
+    }
+  ]
+})
+export class FormInput implements ControlValueAccessor {
+  protected readonly value = signal<string>('');
+
+  writeValue(value: string): void {
+    this.value.set(value ?? '');
+  }
+
+  registerOnChange(fn: (value: string) => void): void {
+    this.onChange = fn;
+  }
+  // ...
+}
+```
+
+### 3.4 Sistema de Iconos (ngicons)
+
+AntiPanel usa `@ng-icons` con Material Icons e Iconoir:
+
+**Configuracion en app.config.ts:**
+
+```typescript
+import { provideIcons } from '@ng-icons/core';
+import { matHome, matDashboard } from '@ng-icons/material-icons/baseline';
+import { iconoirInstagram, iconoirTiktok } from '@ng-icons/iconoir';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideIcons({
+      matHome,
+      matDashboard,
+      iconoirInstagram,
+      iconoirTiktok
+    })
+  ]
+};
+```
+
+**Uso en templates:**
+
+```html
+<ng-icon name="matHome" size="24" />
+<ng-icon name="iconoirInstagram" size="20" />
+```
+
+### 3.5 Style Guide
+
+El proyecto incluye una pagina de Style Guide en `/style-guide` que muestra:
+
+- Paleta de colores completa
+- Escala tipografica
+- Todos los variantes de botones
+- Tipos de alertas
+- Elementos de formulario
+- Tarjetas y cards
+- Iconos disponibles
+
+Para acceder: `http://localhost:4200/style-guide`
+
+### 3.6 Estructura de Archivos de Componentes
+
+```
+src/app/components/
+├── layout/
+│   ├── header/
+│   │   ├── header.ts
+│   │   ├── header.html
+│   │   └── header.scss
+│   ├── footer/
+│   ├── main-content/
+│   └── sidebar/
+└── shared/
+    ├── button/
+    │   ├── button.ts
+    │   ├── button.html
+    │   └── button.scss
+    ├── alert/
+    ├── form-input/
+    ├── form-textarea/
+    ├── form-select/
+    ├── service-card/
+    ├── stats-card/
+    ├── modal/
+    ├── order-input/
+    ├── dashboard-header/
+    ├── user-order-row/
+    └── auth-form/
+```
+
+---
+
+## Resumen
+
+AntiPanel Frontend implementa un sistema de diseno completo con:
+
+1. **Arquitectura CSS ITCSS** con design tokens
+2. **HTML Semantico** para accesibilidad
+3. **Componentes Angular 21** con signals y control flow moderno
+4. **BEM** para nomenclatura de clases
+5. **ngicons** para iconografia
+6. **Style Guide** para documentacion visual
+
+Para mas informacion, consulta el codigo fuente de cada componente.
