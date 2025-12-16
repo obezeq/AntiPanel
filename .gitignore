@@ -39,6 +39,7 @@ desktop.ini
 *.ipr
 *.iws
 .classpath
+.claude
 .project
 .settings/
 bin/

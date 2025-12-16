@@ -10,11 +10,16 @@
 // - Spacing values in components
 // - Any value that should be changeable at runtime
 //
-// Dark mode only for now. Light mode can be added via media query
-// or data attribute in the future.
+// THEME SYSTEM:
+// - Dark mode is the default and currently always active
+// - Light mode variables are prepared via [data-theme="light"] selector
+// - prefers-color-scheme is handled but dark mode is forced
+// - To enable light mode in the future, add data-theme="light" to <html>
 // ==========================================================================
 
 :root {
+  // Force dark color scheme for browser UI elements
+  color-scheme: dark;
   // -------------------------------------------------------------------------
   // COLOR TOKENS - Dark Mode (Primary Theme)
   // -------------------------------------------------------------------------
@@ -163,4 +168,76 @@
   --focus-ring-width: 2px;
   --focus-ring-offset: 2px;
   --focus-ring-color: var(--color-stats-blue);
+}
+
+// ==========================================================================
+// LIGHT MODE THEME (Prepared but not active by default)
+// ==========================================================================
+// To activate light mode, add data-theme="light" to the <html> element.
+// Example: <html data-theme="light">
+//
+// Currently dark mode is ALWAYS shown regardless of system preference.
+// ==========================================================================
+
+[data-theme='light'] {
+  color-scheme: light;
+
+  // -------------------------------------------------------------------------
+  // COLOR TOKENS - Light Mode
+  // -------------------------------------------------------------------------
+
+  // Background colors (inverted from dark mode)
+  --color-background: #ffffff;          // Main background
+  --color-tiny-info: #f5f5f5;           // Secondary background / subtle cards
+  --color-information: #e5e5e5;         // Borders, separators
+
+  // Text colors (inverted from dark mode)
+  --color-text: #0a0a0a;                // Primary text
+  --color-high-contrast: #000000;       // Maximum contrast text
+  --color-foreground: #666666;          // Secondary text / descriptions
+  --color-secondary: #999999;           // Tertiary text / borders
+
+  // Semantic colors (same hue, adjusted for light background)
+  --color-success: #00b82b;             // Slightly darker green for contrast
+  --color-error: #dc2626;               // Slightly darker red for contrast
+  --color-status-yellow: #ca9800;       // Slightly darker yellow for contrast
+  --color-stats-blue: #0284c7;          // Slightly darker blue for contrast
+
+  // -------------------------------------------------------------------------
+  // SHADOW TOKENS - Light Mode
+  // -------------------------------------------------------------------------
+  // Softer shadows for light backgrounds
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+
+  // Special shadows (adjusted for light mode)
+  --shadow-success-glow: 0 4px 111px 0 rgba(0, 184, 43, 0.15);
+
+  // Focus ring - darker for visibility on light backgrounds
+  --focus-ring-color: #0369a1;
+}
+
+// ==========================================================================
+// SYSTEM PREFERENCE OVERRIDE
+// ==========================================================================
+// This media query handles users with prefers-color-scheme: light.
+// Currently, we FORCE dark mode regardless of system preference.
+// The empty rule block ensures dark mode variables from :root are used.
+//
+// To respect system preference in the future, move light mode variables here:
+// @media (prefers-color-scheme: light) {
+//   :root:not([data-theme='dark']) {
+//     // Light mode variables here
+//   }
+// }
+// ==========================================================================
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='light']) {
+    // Dark mode is forced - no overrides applied
+    // This ensures dark mode is always shown regardless of system preference
+  }
 }
