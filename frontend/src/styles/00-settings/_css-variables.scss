@@ -1,8 +1,166 @@
 // ==========================================================================
-// CSS CUSTOM PROPERTIES
+// CSS CUSTOM PROPERTIES (Native CSS Variables)
 // ==========================================================================
-// Native CSS variables defined in :root.
-// These are the design tokens used throughout the application.
+// Design tokens exposed as CSS custom properties in :root.
+// These are the runtime variables used throughout the application.
+//
+// IMPORTANT: Use these for:
+// - Color values (for theming support)
+// - Typography properties
+// - Spacing values in components
+// - Any value that should be changeable at runtime
+//
+// Dark mode only for now. Light mode can be added via media query
+// or data attribute in the future.
 // ==========================================================================
 
-// Placeholder - will be populated in commit 1.2
+:root {
+  // -------------------------------------------------------------------------
+  // COLOR TOKENS - Dark Mode (Primary Theme)
+  // -------------------------------------------------------------------------
+  // Based on Figma design tokens
+
+  // Background colors
+  --color-background: #0a0a0a;        // Main background
+  --color-tiny-info: #1c1c1c;         // Secondary background / subtle cards
+  --color-information: #393939;       // Borders, separators
+
+  // Text colors
+  --color-text: #fafafa;              // Primary text
+  --color-high-contrast: #ffffff;     // Maximum contrast text
+  --color-foreground: #a1a1a1;        // Secondary text / descriptions
+  --color-secondary: #666666;         // Tertiary text / borders
+
+  // Semantic colors
+  --color-success: #00dc33;           // Success states, CTAs, positive
+  --color-error: #ff4444;             // Error states, destructive actions
+  --color-status-yellow: #f0b100;     // Warning, pending states
+  --color-stats-blue: #00a5ff;        // Statistics, informational
+
+  // -------------------------------------------------------------------------
+  // TYPOGRAPHY TOKENS
+  // -------------------------------------------------------------------------
+
+  // Font families
+  --font-primary: 'Montserrat', system-ui, -apple-system, sans-serif;
+  --font-secondary: 'IBM Plex Mono', 'SF Mono', 'Consolas', monospace;
+
+  // Font sizes (rem-based for accessibility)
+  --font-size-title: 8rem;      // 128px
+  --font-size-h1: 6rem;         // 96px
+  --font-size-h2: 4rem;         // 64px
+  --font-size-h3: 3rem;         // 48px
+  --font-size-h4: 2rem;         // 32px
+  --font-size-h5: 1.5rem;       // 24px
+  --font-size-h6: 1.25rem;      // 20px
+  --font-size-body: 1rem;       // 16px
+  --font-size-caption: 0.875rem; // 14px
+  --font-size-small: 0.75rem;   // 12px
+  --font-size-tiny: 0.625rem;   // 10px
+
+  // Font weights
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  // Line heights
+  --line-height-tight: 1.15;    // Headings
+  --line-height-normal: 1.5;    // Body text
+  --line-height-relaxed: 1.75;  // Long-form content
+
+  // -------------------------------------------------------------------------
+  // SPACING TOKENS (Base-8 Grid)
+  // -------------------------------------------------------------------------
+
+  --spacing-1: 0.25rem;    // 4px
+  --spacing-2: 0.5rem;     // 8px
+  --spacing-3: 0.75rem;    // 12px
+  --spacing-4: 1rem;       // 16px
+  --spacing-5: 1.25rem;    // 20px
+  --spacing-6: 1.5rem;     // 24px
+  --spacing-8: 2rem;       // 32px
+  --spacing-10: 2.5rem;    // 40px
+  --spacing-12: 3rem;      // 48px
+  --spacing-16: 4rem;      // 64px
+  --spacing-20: 5rem;      // 80px
+  --spacing-24: 6rem;      // 96px
+  --spacing-32: 8rem;      // 128px
+
+  // -------------------------------------------------------------------------
+  // BORDER RADIUS TOKENS
+  // -------------------------------------------------------------------------
+
+  --radius-sm: 0.25rem;    // 4px - Small elements
+  --radius-md: 0.5rem;     // 8px - Inputs, buttons
+  --radius-lg: 1rem;       // 16px - Cards
+  --radius-xl: 1.5rem;     // 24px - Large cards
+  --radius-2xl: 2rem;      // 32px - Hero sections
+  --radius-full: 9999px;   // Pills, avatars
+
+  // -------------------------------------------------------------------------
+  // BORDER TOKENS
+  // -------------------------------------------------------------------------
+
+  --border-width-thin: 1px;
+  --border-width-medium: 2px;
+  --border-width-thick: 3px;
+  --border-width-heavy: 4px;
+  --border-width-extra: 6px;
+
+  // -------------------------------------------------------------------------
+  // SHADOW TOKENS
+  // -------------------------------------------------------------------------
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.6);
+
+  // Special shadows (from design)
+  --shadow-success-glow: 0 4px 111px 0 rgba(0, 220, 51, 0.11);
+
+  // -------------------------------------------------------------------------
+  // TRANSITION TOKENS
+  // -------------------------------------------------------------------------
+
+  --transition-fast: 150ms ease-in-out;
+  --transition-base: 300ms ease-in-out;
+  --transition-slow: 500ms ease-in-out;
+
+  // Specific transitions
+  --transition-colors: color 150ms ease-in-out, background-color 150ms ease-in-out, border-color 150ms ease-in-out;
+  --transition-transform: transform 300ms ease-in-out;
+  --transition-opacity: opacity 300ms ease-in-out;
+  --transition-shadow: box-shadow 300ms ease-in-out;
+
+  // -------------------------------------------------------------------------
+  // Z-INDEX TOKENS
+  // -------------------------------------------------------------------------
+
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-modal-backdrop: 400;
+  --z-modal: 500;
+  --z-popover: 600;
+  --z-tooltip: 700;
+
+  // -------------------------------------------------------------------------
+  // LAYOUT TOKENS
+  // -------------------------------------------------------------------------
+
+  --container-max-width: 1440px;
+  --container-padding: var(--spacing-6);  // 24px
+  --header-height: 116px;                 // Based on design (32px padding * 2 + 52px logo)
+
+  // -------------------------------------------------------------------------
+  // FOCUS TOKENS (Accessibility)
+  // -------------------------------------------------------------------------
+
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --focus-ring-color: var(--color-stats-blue);
+}
