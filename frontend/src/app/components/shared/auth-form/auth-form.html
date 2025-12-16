@@ -1,0 +1,73 @@
+<form
+  class="auth-form"
+  [formGroup]="form"
+  (ngSubmit)="onSubmit()"
+  novalidate
+>
+  <fieldset class="auth-form__fieldset">
+    <legend class="auth-form__legend">{{ formTitle() }}</legend>
+
+    @if (serverError()) {
+      <p class="auth-form__server-error" role="alert">
+        {{ serverError() }}
+      </p>
+    }
+
+    <section class="auth-form__fields">
+      <app-form-input
+        label="Email"
+        type="email"
+        placeholder="Enter your email"
+        autocomplete="email"
+        [required]="true"
+        [errorMessage]="emailError()"
+        formControlName="email"
+      />
+
+      <app-form-input
+        label="Password"
+        type="password"
+        placeholder="Enter your password"
+        [autocomplete]="isRegisterMode() ? 'new-password' : 'current-password'"
+        [required]="true"
+        [hint]="isRegisterMode() ? 'Minimum 8 characters' : ''"
+        [errorMessage]="passwordError()"
+        formControlName="password"
+      />
+
+      @if (isRegisterMode()) {
+        <app-form-input
+          label="Confirm Password"
+          type="password"
+          placeholder="Confirm your password"
+          autocomplete="new-password"
+          [required]="true"
+          [errorMessage]="confirmPasswordError()"
+          formControlName="confirmPassword"
+        />
+      }
+    </section>
+
+    <section class="auth-form__actions">
+      <button
+        type="submit"
+        class="auth-form__submit"
+        [disabled]="loading()"
+      >
+        @if (loading()) {
+          <span class="auth-form__spinner" aria-hidden="true"></span>
+          <span>Processing...</span>
+        } @else {
+          {{ submitButtonText() }}
+        }
+      </button>
+
+      <p class="auth-form__switch">
+        {{ switchModeText() }}
+        <a [routerLink]="switchModeRoute()" class="auth-form__switch-link">
+          {{ switchModeLink() }}
+        </a>
+      </p>
+    </section>
+  </fieldset>
+</form>
