@@ -1,0 +1,231 @@
+<main class="style-guide">
+  <app-dashboard-header
+    title="Style Guide"
+    subtitle="Visual documentation of AntiPanel's design system components"
+  />
+
+  <!-- Colors Section -->
+  <section class="style-guide__section">
+    <h2 class="style-guide__section-title">Colors</h2>
+    <p class="style-guide__section-desc">Dark mode color palette</p>
+
+    <ul class="style-guide__colors" role="list">
+      @for (color of colors; track color.variable) {
+        <li class="style-guide__color">
+          <figure
+            class="style-guide__color-swatch"
+            [style.backgroundColor]="'var(' + color.variable + ')'"
+          ></figure>
+          <p class="style-guide__color-name">{{ color.name }}</p>
+          <code class="style-guide__color-value">{{ color.hex }}</code>
+        </li>
+      }
+    </ul>
+  </section>
+
+  <!-- Typography Section -->
+  <section class="style-guide__section">
+    <h2 class="style-guide__section-title">Typography</h2>
+    <p class="style-guide__section-desc">Montserrat (primary) + IBM Plex Mono (secondary)</p>
+
+    <ul class="style-guide__typography" role="list">
+      @for (size of typographySizes; track size.variable) {
+        <li class="style-guide__type-row">
+          <span
+            class="style-guide__type-sample"
+            [style.fontSize]="'var(' + size.variable + ')'"
+          >
+            Aa
+          </span>
+          <span class="style-guide__type-name">{{ size.name }}</span>
+          <code class="style-guide__type-size">{{ size.size }}</code>
+        </li>
+      }
+    </ul>
+  </section>
+
+  <!-- Buttons Section -->
+  <section class="style-guide__section">
+    <h2 class="style-guide__section-title">Buttons</h2>
+    <p class="style-guide__section-desc">Button variants and sizes</p>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Variants</h3>
+      <section class="style-guide__buttons">
+        <app-button variant="primary">Primary</app-button>
+        <app-button variant="secondary">Secondary</app-button>
+        <app-button variant="ghost">Ghost</app-button>
+        <app-button variant="danger">Danger</app-button>
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Sizes</h3>
+      <section class="style-guide__buttons">
+        <app-button size="sm">Small</app-button>
+        <app-button size="md">Medium</app-button>
+        <app-button size="lg">Large</app-button>
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">States</h3>
+      <section class="style-guide__buttons">
+        <app-button [disabled]="true">Disabled</app-button>
+        <app-button [loading]="true">Loading</app-button>
+      </section>
+    </article>
+  </section>
+
+  <!-- Alerts Section -->
+  <section class="style-guide__section">
+    <h2 class="style-guide__section-title">Alerts</h2>
+    <p class="style-guide__section-desc">Notification alerts for user feedback</p>
+
+    <section class="style-guide__alerts">
+      <app-alert variant="success" title="Success">
+        Your order has been placed successfully.
+      </app-alert>
+
+      <app-alert variant="error" title="Error">
+        There was a problem processing your request.
+      </app-alert>
+
+      <app-alert variant="warning" title="Warning">
+        Your session will expire in 5 minutes.
+      </app-alert>
+
+      <app-alert variant="info" title="Info" [dismissible]="true">
+        New services have been added to the platform.
+      </app-alert>
+    </section>
+  </section>
+
+  <!-- Form Elements Section -->
+  <section class="style-guide__section">
+    <h2 class="style-guide__section-title">Form Elements</h2>
+    <p class="style-guide__section-desc">Input fields and form controls</p>
+
+    <section class="style-guide__forms">
+      <app-form-input
+        label="Email"
+        type="email"
+        placeholder="Enter your email"
+        hint="We'll never share your email"
+        [required]="true"
+      />
+
+      <app-form-input
+        label="Password"
+        type="password"
+        placeholder="Enter your password"
+        errorMessage="Password must be at least 8 characters"
+        [required]="true"
+      />
+
+      <app-form-select
+        label="Platform"
+        [options]="selectOptions"
+        placeholder="Select a platform"
+        [required]="true"
+      />
+
+      <app-form-textarea
+        label="Message"
+        placeholder="Enter your message"
+        hint="Max 500 characters"
+        [maxLength]="500"
+        [rows]="4"
+      />
+    </section>
+  </section>
+
+  <!-- Cards Section -->
+  <section class="style-guide__section">
+    <h2 class="style-guide__section-title">Cards</h2>
+    <p class="style-guide__section-desc">Content containers</p>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Service Card</h3>
+      <section class="style-guide__cards">
+        <app-service-card [service]="serviceDemo" />
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Stats Cards</h3>
+      <section class="style-guide__cards style-guide__cards--wide">
+        <app-stats-card [stats]="statsDemo" />
+        <app-stats-card [stats]="{ value: '$1,234', label: 'Revenue', change: -5.2 }" variant="info" />
+        <app-stats-card [stats]="{ value: '98%', label: 'Success Rate' }" variant="success" />
+      </section>
+    </article>
+  </section>
+
+  <!-- Order Input Section -->
+  <section class="style-guide__section">
+    <h2 class="style-guide__section-title">Order Input</h2>
+    <p class="style-guide__section-desc">Natural language order input</p>
+
+    <section class="style-guide__order-input">
+      <app-order-input
+        placeholder="e.g., 1000 Instagram followers for @username"
+        (submitOrder)="onOrderSubmit($event)"
+      />
+    </section>
+  </section>
+
+  <!-- Icons Section -->
+  <section class="style-guide__section">
+    <h2 class="style-guide__section-title">Icons</h2>
+    <p class="style-guide__section-desc">Material Icons + Iconoir</p>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Material Icons</h3>
+      <section class="style-guide__icons">
+        <figure class="style-guide__icon">
+          <ng-icon name="matHome" size="24" />
+          <figcaption>Home</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matDashboard" size="24" />
+          <figcaption>Dashboard</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matShoppingCart" size="24" />
+          <figcaption>Cart</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matPerson" size="24" />
+          <figcaption>Person</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matSettings" size="24" />
+          <figcaption>Settings</figcaption>
+        </figure>
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Social Icons (Iconoir)</h3>
+      <section class="style-guide__icons">
+        <figure class="style-guide__icon">
+          <ng-icon name="iconoirInstagram" size="24" />
+          <figcaption>Instagram</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="iconoirTiktok" size="24" />
+          <figcaption>TikTok</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="iconoirYoutube" size="24" />
+          <figcaption>YouTube</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="iconoirTwitter" size="24" />
+          <figcaption>Twitter</figcaption>
+        </figure>
+      </section>
+    </article>
+  </section>
+</main>

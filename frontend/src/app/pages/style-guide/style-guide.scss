@@ -1,0 +1,230 @@
+@use '../../styles/01-tools/mixins' as *;
+
+// ==========================================================================
+// STYLE GUIDE PAGE
+// ==========================================================================
+// Visual documentation of all design system components.
+// ==========================================================================
+
+.style-guide {
+  max-width: var(--container-max-width);
+  margin-inline: auto;
+  padding: var(--spacing-8) var(--spacing-4);
+
+  @include respond-to('md') {
+    padding: var(--spacing-12) var(--spacing-6);
+  }
+
+  @include respond-to('lg') {
+    padding: var(--spacing-16) var(--spacing-8);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// SECTIONS
+// ---------------------------------------------------------------------------
+
+.style-guide__section {
+  margin-bottom: var(--spacing-16);
+  padding-bottom: var(--spacing-12);
+  border-bottom: var(--border-width-thin) solid var(--color-information);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.style-guide__section-title {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  margin: 0 0 var(--spacing-2);
+}
+
+.style-guide__section-desc {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-body);
+  color: var(--color-foreground);
+  margin: 0 0 var(--spacing-8);
+}
+
+.style-guide__row {
+  margin-bottom: var(--spacing-8);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.style-guide__subtitle {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h6);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  margin: 0 0 var(--spacing-4);
+}
+
+// ---------------------------------------------------------------------------
+// COLORS
+// ---------------------------------------------------------------------------
+
+.style-guide__colors {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--spacing-4);
+}
+
+.style-guide__color {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.style-guide__color-swatch {
+  width: 100%;
+  height: 80px;
+  border-radius: var(--radius-lg);
+  border: var(--border-width-thin) solid var(--color-information);
+  margin: 0;
+}
+
+.style-guide__color-name {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  margin: 0;
+}
+
+.style-guide__color-value {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-small);
+  color: var(--color-foreground);
+}
+
+// ---------------------------------------------------------------------------
+// TYPOGRAPHY
+// ---------------------------------------------------------------------------
+
+.style-guide__typography {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.style-guide__type-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-6);
+  padding: var(--spacing-4);
+  background-color: var(--color-tiny-info);
+  border-radius: var(--radius-lg);
+}
+
+.style-guide__type-sample {
+  font-family: var(--font-primary);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  min-width: 80px;
+  line-height: 1;
+}
+
+.style-guide__type-name {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  flex: 1;
+}
+
+.style-guide__type-size {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-caption);
+  color: var(--color-foreground);
+}
+
+// ---------------------------------------------------------------------------
+// BUTTONS
+// ---------------------------------------------------------------------------
+
+.style-guide__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-4);
+  align-items: center;
+}
+
+// ---------------------------------------------------------------------------
+// ALERTS
+// ---------------------------------------------------------------------------
+
+.style-guide__alerts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+// ---------------------------------------------------------------------------
+// FORMS
+// ---------------------------------------------------------------------------
+
+.style-guide__forms {
+  display: grid;
+  gap: var(--spacing-6);
+  max-width: 500px;
+}
+
+// ---------------------------------------------------------------------------
+// CARDS
+// ---------------------------------------------------------------------------
+
+.style-guide__cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-4);
+}
+
+.style-guide__cards--wide {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+// ---------------------------------------------------------------------------
+// ORDER INPUT
+// ---------------------------------------------------------------------------
+
+.style-guide__order-input {
+  max-width: 600px;
+}
+
+// ---------------------------------------------------------------------------
+// ICONS
+// ---------------------------------------------------------------------------
+
+.style-guide__icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-6);
+}
+
+.style-guide__icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-4);
+  background-color: var(--color-tiny-info);
+  border-radius: var(--radius-lg);
+  margin: 0;
+
+  ng-icon {
+    color: var(--color-text);
+  }
+
+  figcaption {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-small);
+    color: var(--color-foreground);
+  }
+}
