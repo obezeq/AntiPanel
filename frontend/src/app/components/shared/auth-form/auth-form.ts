@@ -127,6 +127,9 @@ export class AuthForm {
   /** Whether confirm password field has been touched */
   protected readonly confirmPasswordTouched = signal(false);
 
+  /** Whether confirm password field has been modified (for real-time validation) */
+  protected readonly confirmPasswordDirty = signal(false);
+
   /** Email validation pending state */
   protected readonly emailPending = computed(() => {
     return this.form.controls.email.pending;
@@ -144,11 +147,18 @@ export class AuthForm {
     return control.valid && this.passwordTouched();
   });
 
-  /** Whether confirm password is valid */
+  /** Whether confirm password is valid - checks after user starts typing */
   protected readonly confirmPasswordValid = computed(() => {
     if (!this.isRegisterMode()) return true;
-    const control = this.form.controls.confirmPassword;
-    return control.valid && !this.form.hasError('passwordMismatch') && this.confirmPasswordTouched();
+
+    // Only show valid state after user has interacted
+    if (!this.confirmPasswordTouched() && !this.confirmPasswordDirty()) return false;
+
+    const passwordValue = this.form.controls.password.value;
+    const confirmValue = this.form.controls.confirmPassword.value;
+
+    // Valid if both have values and they match
+    return confirmValue && passwordValue === confirmValue;
   });
 
   /** Whether form is currently validating */
@@ -203,29 +213,38 @@ export class AuthForm {
     return '';
   });
 
-  /** Confirm password error message */
+  /** Confirm password error message - shows in real-time for better UX */
   protected readonly confirmPasswordError = computed(() => {
     if (!this.isRegisterMode()) return '';
-    if (!this.confirmPasswordTouched()) return '';
 
-    const control = this.form.controls.confirmPassword;
+    const passwordValue = this.form.controls.password.value;
+    const confirmValue = this.form.controls.confirmPassword.value;
 
-    if (!control.value) {
+    // If user hasn't interacted with the field yet, don't show errors
+    if (!this.confirmPasswordTouched() && !this.confirmPasswordDirty()) return '';
+
+    // If field is empty and user has started typing (or blurred)
+    if (!confirmValue) {
       return 'Please confirm your password';
     }
-    if (this.form.hasError('passwordMismatch') || control.hasError('passwordMismatch')) {
+
+    // Show mismatch error in real-time while typing
+    if (confirmValue && passwordValue !== confirmValue) {
       return 'Passwords do not match';
     }
+
     return '';
   });
 
-  /** Password strength hints for UI */
+  /** Password strength hints for UI - always show in register mode for better UX */
   protected readonly passwordStrengthHints = computed(() => {
-    const control = this.form.controls.password;
-    const value = control.value;
+    // Only show hints in register mode
+    if (!this.isRegisterMode()) return [];
 
-    if (!value || !this.isRegisterMode()) return [];
+    // Get value, default to empty string if null/undefined
+    const value = this.form.controls.password.value || '';
 
+    // Always return hints in register mode so user knows requirements upfront
     return [
       { label: 'At least 8 characters', valid: value.length >= 8 },
       { label: 'Uppercase letter', valid: /[A-Z]/.test(value) },
@@ -281,6 +300,10 @@ export class AuthForm {
     this.confirmPasswordTouched.set(true);
   }
 
+  protected onConfirmPasswordInput(): void {
+    this.confirmPasswordDirty.set(true);
+  }
+
   protected onSubmit(): void {
     // Mark all as touched for validation display
     this.emailTouched.set(true);
@@ -318,5 +341,6 @@ export class AuthForm {
     this.emailTouched.set(false);
     this.passwordTouched.set(false);
     this.confirmPasswordTouched.set(false);
+    this.confirmPasswordDirty.set(false);
   }
 }

@@ -73,8 +73,8 @@
         }
       </div>
 
-      <!-- Password Strength Hints (only in register mode) -->
-      @if (isRegisterMode() && passwordStrengthHints().length > 0) {
+      <!-- Password Strength Hints (always visible in register mode for better UX) -->
+      @if (isRegisterMode()) {
         <ul class="auth-form__password-hints" aria-label="Password requirements">
           @for (hint of passwordStrengthHints(); track hint.label) {
             <li
@@ -106,15 +106,20 @@
             [errorMessage]="confirmPasswordError()"
             formControlName="confirmPassword"
             (blur)="onConfirmPasswordBlur()"
+            (input)="onConfirmPasswordInput()"
           />
-          <!-- Confirm password validation status -->
-          @if (confirmPasswordValid()) {
-            <div class="auth-form__field-status">
+          <!-- Confirm password validation status - real-time feedback -->
+          <div class="auth-form__field-status">
+            @if (confirmPasswordValid()) {
               <span class="auth-form__status auth-form__status--valid" aria-label="Passwords match">
                 <ng-icon name="matCheck" size="16" />
               </span>
-            </div>
-          }
+            } @else if (confirmPasswordError()) {
+              <span class="auth-form__status auth-form__status--invalid" aria-label="Passwords do not match">
+                <ng-icon name="matClose" size="16" />
+              </span>
+            }
+          </div>
         </div>
       }
     </section>
