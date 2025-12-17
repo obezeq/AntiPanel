@@ -1,0 +1,229 @@
+<main class="formarray-demo">
+  <header class="formarray-demo__header">
+    <h1 class="formarray-demo__title">FormArray Demo</h1>
+    <p class="formarray-demo__subtitle">
+      Dynamic form with add/remove items functionality
+    </p>
+  </header>
+
+  <form
+    class="formarray-demo__form"
+    [formGroup]="form"
+    (ngSubmit)="onSubmit()"
+    novalidate
+  >
+    <!-- Customer Name -->
+    <section class="formarray-demo__section">
+      <h2 class="formarray-demo__section-title">Customer Information</h2>
+
+      <div class="formarray-demo__field">
+        <label for="customerName" class="formarray-demo__label">
+          Customer Name
+          <span class="formarray-demo__required">*</span>
+        </label>
+        <input
+          id="customerName"
+          type="text"
+          class="formarray-demo__input"
+          [class.formarray-demo__input--error]="form.get('customerName')?.invalid && form.get('customerName')?.touched"
+          formControlName="customerName"
+          placeholder="Enter customer name"
+        />
+        @if (getCustomerNameError()) {
+          <span class="formarray-demo__error">{{ getCustomerNameError() }}</span>
+        }
+      </div>
+    </section>
+
+    <!-- Items FormArray -->
+    <section class="formarray-demo__section">
+      <div class="formarray-demo__section-header">
+        <h2 class="formarray-demo__section-title">Order Items</h2>
+        <span class="formarray-demo__badge">
+          {{ validItemsCount() }}/{{ items.length }} valid
+        </span>
+      </div>
+
+      <div class="formarray-demo__items" formArrayName="items">
+        @for (item of itemControls; track $index; let i = $index) {
+          <div class="formarray-demo__item" [formGroupName]="i">
+            <div class="formarray-demo__item-header">
+              <span class="formarray-demo__item-number">Item {{ i + 1 }}</span>
+              @if (canRemoveItem()) {
+                <button
+                  type="button"
+                  class="formarray-demo__remove-btn"
+                  (click)="removeItem(i)"
+                  aria-label="Remove item {{ i + 1 }}"
+                >
+                  <ng-icon name="matClose" size="18" />
+                </button>
+              }
+            </div>
+
+            <div class="formarray-demo__item-fields">
+              <!-- Item Name -->
+              <div class="formarray-demo__field formarray-demo__field--name">
+                <label [for]="'item-name-' + i" class="formarray-demo__label">
+                  Name
+                  <span class="formarray-demo__required">*</span>
+                </label>
+                <input
+                  [id]="'item-name-' + i"
+                  type="text"
+                  class="formarray-demo__input"
+                  [class.formarray-demo__input--error]="isItemFieldInvalid(i, 'name')"
+                  formControlName="name"
+                  placeholder="Item name"
+                />
+                @if (getItemError(i, 'name')) {
+                  <span class="formarray-demo__error">{{ getItemError(i, 'name') }}</span>
+                }
+              </div>
+
+              <!-- Item Quantity -->
+              <div class="formarray-demo__field formarray-demo__field--quantity">
+                <label [for]="'item-quantity-' + i" class="formarray-demo__label">
+                  Qty
+                  <span class="formarray-demo__required">*</span>
+                </label>
+                <input
+                  [id]="'item-quantity-' + i"
+                  type="number"
+                  class="formarray-demo__input formarray-demo__input--number"
+                  [class.formarray-demo__input--error]="isItemFieldInvalid(i, 'quantity')"
+                  formControlName="quantity"
+                  min="1"
+                  max="100"
+                />
+                @if (getItemError(i, 'quantity')) {
+                  <span class="formarray-demo__error">{{ getItemError(i, 'quantity') }}</span>
+                }
+              </div>
+
+              <!-- Item Price -->
+              <div class="formarray-demo__field formarray-demo__field--price">
+                <label [for]="'item-price-' + i" class="formarray-demo__label">
+                  Price
+                  <span class="formarray-demo__required">*</span>
+                </label>
+                <div class="formarray-demo__input-group">
+                  <span class="formarray-demo__input-prefix">$</span>
+                  <input
+                    [id]="'item-price-' + i"
+                    type="number"
+                    class="formarray-demo__input formarray-demo__input--number formarray-demo__input--with-prefix"
+                    [class.formarray-demo__input--error]="isItemFieldInvalid(i, 'price')"
+                    formControlName="price"
+                    min="0"
+                    step="0.01"
+                  />
+                </div>
+                @if (getItemError(i, 'price')) {
+                  <span class="formarray-demo__error">{{ getItemError(i, 'price') }}</span>
+                }
+              </div>
+
+              <!-- Item Subtotal -->
+              <div class="formarray-demo__field formarray-demo__field--subtotal">
+                <span class="formarray-demo__label">Subtotal</span>
+                <span class="formarray-demo__subtotal">
+                  ${{ itemSubtotals()[i] | number:'1.2-2' }}
+                </span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Add Item Button -->
+      <button
+        type="button"
+        class="formarray-demo__add-btn"
+        (click)="addItem()"
+      >
+        <ng-icon name="matAdd" size="20" />
+        <span>Add Item</span>
+      </button>
+    </section>
+
+    <!-- Summary -->
+    <section class="formarray-demo__summary">
+      <div class="formarray-demo__summary-row">
+        <span class="formarray-demo__summary-label">Total Items:</span>
+        <span class="formarray-demo__summary-value">{{ items.length }}</span>
+      </div>
+      <div class="formarray-demo__summary-row formarray-demo__summary-row--total">
+        <span class="formarray-demo__summary-label">Grand Total:</span>
+        <span class="formarray-demo__summary-value">
+          ${{ grandTotal() | number:'1.2-2' }}
+        </span>
+      </div>
+    </section>
+
+    <!-- Actions -->
+    <section class="formarray-demo__actions">
+      <button
+        type="button"
+        class="formarray-demo__btn formarray-demo__btn--secondary"
+        (click)="resetForm()"
+      >
+        Reset
+      </button>
+      <button
+        type="submit"
+        class="formarray-demo__btn formarray-demo__btn--primary"
+        [disabled]="form.invalid"
+      >
+        Submit Order
+      </button>
+    </section>
+  </form>
+
+  <!-- Submission Result -->
+  @if (submissionResult()) {
+    <section class="formarray-demo__result">
+      <h3 class="formarray-demo__result-title">
+        @if (submitted()) {
+          Submission Result
+        } @else {
+          Validation Error
+        }
+      </h3>
+      <pre class="formarray-demo__result-code">{{ submissionResult() }}</pre>
+    </section>
+  }
+
+  <!-- Documentation -->
+  <section class="formarray-demo__docs">
+    <h2 class="formarray-demo__docs-title">How FormArray Works</h2>
+    <div class="formarray-demo__docs-content">
+      <p>
+        <strong>FormArray</strong> is an Angular reactive forms construct that allows you to
+        manage a dynamic collection of form controls. Unlike FormGroup which has a fixed set of keys,
+        FormArray is an indexed array that can grow or shrink dynamically.
+      </p>
+      <h3>Key Concepts:</h3>
+      <ul>
+        <li><strong>Dynamic Items:</strong> Add or remove form controls at runtime</li>
+        <li><strong>Individual Validation:</strong> Each item in the array can have its own validators</li>
+        <li><strong>Array Index Access:</strong> Access controls by index using <code>formArrayName</code> and <code>formGroupName</code></li>
+        <li><strong>Iteration:</strong> Use <code>&#64;for</code> to iterate over items in the template</li>
+      </ul>
+      <h3>Code Example:</h3>
+      <pre class="formarray-demo__docs-code">// Create FormArray
+items = this.fb.array([
+  this.createItemGroup()
+]);
+
+// Add item
+this.items.push(this.createItemGroup());
+
+// Remove item
+this.items.removeAt(index);
+
+// Access controls
+this.items.controls as FormGroup[]</pre>
+    </div>
+  </section>
+</main>

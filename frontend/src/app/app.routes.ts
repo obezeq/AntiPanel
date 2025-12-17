@@ -7,6 +7,11 @@ export const routes: Routes = [
       import('./pages/style-guide/style-guide').then(m => m.StyleGuide)
   },
   {
+    path: 'formarray',
+    loadComponent: () =>
+      import('./pages/formarray-demo/formarray-demo').then(m => m.FormArrayDemo)
+  },
+  {
     path: '',
     redirectTo: 'style-guide',
     pathMatch: 'full'
