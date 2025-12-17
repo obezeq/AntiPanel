@@ -242,7 +242,7 @@
 
 .style-guide__colors {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(12.5rem, 1fr)); // 200px
   gap: var(--spacing-6);
 }
 
@@ -272,7 +272,7 @@
 
 .style-guide__color-swatch {
   width: 100%;
-  height: 80px;
+  height: 5rem; // 80px
   border-radius: var(--radius-md);
   border: var(--border-width-thin) solid var(--color-information);
   margin: 0;
@@ -325,7 +325,7 @@
   font-family: var(--font-primary);
   font-weight: var(--font-weight-bold);
   color: var(--color-text);
-  min-width: 80px;
+  min-width: 5rem; // 80px
   line-height: 1;
 }
 
@@ -349,7 +349,7 @@
 
 .style-guide__font-families {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(17.5rem, 1fr)); // 280px
   gap: var(--spacing-6);
 }
 
@@ -549,7 +549,7 @@
 .style-guide__forms {
   display: grid;
   gap: var(--spacing-6);
-  max-width: 500px;
+  max-width: 31.25rem; // 500px
 }
 
 // ---------------------------------------------------------------------------
@@ -630,8 +630,8 @@
 }
 
 .style-guide__layout-preview--sidebar {
-  max-width: 280px;
-  height: 300px;
+  max-width: 17.5rem;  // 280px
+  height: 18.75rem;    // 300px
   overflow: hidden;
 
   // Override sidebar's responsive behavior - keep it static in preview

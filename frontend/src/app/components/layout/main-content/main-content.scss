@@ -29,12 +29,12 @@
 
 // Narrow container for content-focused pages (forms, articles)
 .main-content--narrow {
-  max-width: 960px;
+  max-width: 60rem; // 960px
 }
 
 // Wide container for dashboards
 .main-content--wide {
-  max-width: 1600px;
+  max-width: 100rem; // 1600px
 }
 
 // Full-width container

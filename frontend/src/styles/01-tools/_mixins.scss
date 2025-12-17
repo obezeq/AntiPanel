@@ -5,6 +5,7 @@
 // Import variables for calculations.
 // ==========================================================================
 
+@use 'sass:list';
 @use '../00-settings/variables' as *;
 
 // ---------------------------------------------------------------------------
@@ -83,7 +84,7 @@
   }
 
   // Font size
-  @if map-has-key($font-sizes, $size) {
+  @if list.index($font-size-names, $size) {
     font-size: var(--font-size-#{$size});
   }
 

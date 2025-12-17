@@ -34,12 +34,12 @@
 
 // Narrow container for content-focused layouts
 .container--narrow {
-  max-width: 960px;
+  max-width: 60rem; // 960px
 }
 
 // Wide container for dashboards
 .container--wide {
-  max-width: 1600px;
+  max-width: 100rem; // 1600px
 }
 
 // ---------------------------------------------------------------------------
@@ -79,12 +79,12 @@
 
 // Auto-fill grid (responsive without media queries)
 .grid--auto-fill {
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17.5rem), 1fr)); // 280px
 }
 
 // Auto-fit grid
 .grid--auto-fit {
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17.5rem), 1fr)); // 280px
 }
 
 // Service cards grid (4 columns on desktop, as per design)
@@ -278,7 +278,7 @@
   gap: var(--spacing-6);
 
   > :first-child {
-    flex-basis: 280px;
+    flex-basis: 17.5rem; // 280px
     flex-grow: 1;
   }
 
@@ -297,7 +297,7 @@
 
   > * {
     flex: 1 1 0;
-    min-width: min(100%, 300px);
+    min-width: min(100%, 18.75rem); // 300px
   }
 }
 
@@ -381,7 +381,7 @@
   min-height: 100dvh;
 
   @include respond-to('lg') {
-    grid-template-columns: 280px 1fr;
+    grid-template-columns: 17.5rem 1fr; // 280px sidebar
   }
 }
 
@@ -395,7 +395,7 @@
   @include respond-below('lg') {
     position: fixed;
     left: 0;
-    width: 280px;
+    width: 17.5rem; // 280px
     z-index: var(--z-fixed);
     transform: translateX(-100%);
     transition: transform var(--transition-base);

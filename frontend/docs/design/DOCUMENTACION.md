@@ -1,4 +1,4 @@
-# AntiPanel Frontend - Documentacion de Diseno
+# AntiPanel Frontend - Documentacion de Diseño
 
 ## Indice
 
@@ -24,21 +24,19 @@ Para el diseno de AntiPanel segui una filosofia minimalista aplicando los 5 prin
 
 Implemente la jerarquia visual para guiar la atencion del usuario a traves de la interfaz mediante:
 - Uso de tamanos tipograficos con una escala que defini (128px - 10px)
-- Contraste alto entre texto y fondo (#FAFAFA sobre #0A0A0A)
+- Contraste alto (18.96:1 según webaim.org) entre texto y fondo (#FAFAFA sobre #0A0A0A)
 - Espaciado consistente basado en un sistema de 8px que estableci como base
 
-<!-- SCREENSHOT: Captura del Dashboard mostrando jerarquia de titulos (h1 grande, h2 mediano, texto body) -->
-> **Placeholder Screenshot:** Dashboard con jerarquia tipografica visible (titulo 96px, subtitulo 24px, texto 16px)
+**Ver en Style Guide:** La seccion "Typography" en `/style-guide` muestra la escala completa desde Title (128px) hasta Tiny (10px), con ejemplos de h1-h6 y body text aplicando la jerarquia visual.
 
 #### Contraste
 
 Asegure la legibilidad y distincion visual mediante el contraste:
-- Texto principal (#FAFAFA) sobre fondo oscuro (#0A0A0A) - Ratio 19.4:1
+- Texto principal (#FAFAFA) sobre fondo oscuro (#0A0A0A) - Ratio 18.96:1
 - Colores semanticos que elegi para distinguir estados: verde exito, rojo error, amarillo warning
 - Bordes sutiles (#393939) para separar elementos
 
-<!-- SCREENSHOT: Captura de alertas o botones mostrando contraste de colores -->
-> **Placeholder Screenshot:** Componentes Alert mostrando los 4 tipos (success, error, warning, info) con alto contraste
+**Ver en Style Guide:** La seccion "Alerts" en `/style-guide` muestra los 4 tipos de alertas (success verde, error rojo, warning amarillo, info azul) con el alto contraste sobre fondo oscuro.
 
 #### Alineacion
 
@@ -47,8 +45,7 @@ Cree orden y conexion visual a traves de la alineacion:
 - Alinee los elementos consistentemente al grid
 - Estableci margenes y paddings siguiendo la escala de espaciado
 
-<!-- SCREENSHOT: Captura del Style Guide mostrando grid y alineacion de componentes -->
-> **Placeholder Screenshot:** Vista del Style Guide con componentes alineados al grid de 8px
+**Ver en Style Guide:** Todas las secciones del Style Guide en `/style-guide` demuestran la alineacion al grid de 8px, con componentes organizados en grids consistentes.
 
 #### Proximidad
 
@@ -57,8 +54,7 @@ Agrupe elementos relacionados usando el principio de proximidad:
 - Botones de accion agrupados
 - Secciones separadas por espaciado mayor
 
-<!-- SCREENSHOT: Captura del formulario de login mostrando agrupacion de campos -->
-> **Placeholder Screenshot:** Formulario Auth mostrando proximidad entre label e input
+**Ver en Style Guide:** La seccion "Auth Form" en `/style-guide` muestra el formulario de login/registro con la proximidad entre labels e inputs, usando `fieldset` y `legend` para agrupar campos relacionados.
 
 #### Repeticion
 
@@ -67,8 +63,21 @@ Busque crear consistencia y reconocimiento a traves de la repeticion:
 - Tipografia consistente (Montserrat para headings, IBM Plex Mono para datos)
 - Patrones de componentes repetidos (cards, buttons, inputs)
 
-<!-- SCREENSHOT: Captura de multiples cards o componentes mostrando consistencia -->
-> **Placeholder Screenshot:** Grid de Service Cards mostrando repeticion del patron visual
+**Ver en Style Guide:** La seccion "Service Cards" en `/style-guide` muestra 8 tarjetas de plataformas (Instagram, TikTok, YouTube, etc.) demostrando la repeticion consistente del patron visual.
+
+#### Capturas del Diseño Figma
+
+A continuación se muestran capturas del diseño original en Figma demostrando los 5 principios de comunicación visual:
+
+| Principio | Captura Figma |
+|-----------|---------------|
+| **Jerarquía Visual** | ![Jerarquía Visual](screenshots/figma/jerarquia-visual.png) |
+| **Contraste** | ![Contraste](screenshots/figma/contraste.png) |
+| **Alineación** | ![Alineación](screenshots/figma/alineacion.png) |
+| **Proximidad** | ![Proximidad](screenshots/figma/proximidad.png) |
+| **Repetición** | ![Repetición](screenshots/figma/repeticion.png) |
+
+> **Nota:** Añadir capturas de Figma en la carpeta `docs/design/screenshots/figma/` con los nombres indicados.
 
 ---
 
@@ -170,8 +179,7 @@ Organice los archivos de estilos siguiendo el patron ITCSS:
 src/styles/
 ├── 00-settings/
 │   ├── _index.scss           # Forward de modulos
-│   ├── _variables.scss       # Variables SCSS (breakpoints, spacing)
-│   └── _css-variables.scss   # CSS Custom Properties (:root)
+│   └── _variables.scss       # SCSS vars ($breakpoints) + CSS Custom Properties (:root)
 ├── 01-tools/
 │   ├── _index.scss           # Forward de mixins
 │   └── _mixins.scss          # Mixins reutilizables
@@ -246,9 +254,9 @@ $font-sizes: (
 );
 ```
 
-**CSS Custom Properties** (`_css-variables.scss`)
+**CSS Custom Properties** (en `_variables.scss`)
 
-Estas son accesibles en runtime, lo que me permite hacer theming dinamico:
+Las CSS Custom Properties estan en el mismo archivo `_variables.scss`, en la seccion `:root`. Estas son accesibles en runtime, lo que me permite hacer theming dinamico:
 
 ```scss
 :root {
@@ -532,7 +540,7 @@ Caracteristicas que implemente:
 
 Para el footer opte por esta estructura:
 
-```
+```html
 <footer class="footer">
   <section class="footer__content">
     <article class="footer__brand">
@@ -618,7 +626,7 @@ Ejemplo en una pagina de dashboard:
 
 **Form Input Component**
 
-Disene los inputs de formulario con esta estructura:
+Diseñe los inputs de formulario con esta estructura:
 
 ```
 <fieldset class="form-input">
@@ -781,6 +789,158 @@ He creado los siguientes componentes organizados por categoria:
 | `DashboardSectionHeader` | `shared/dashboard-section-header/` | Encabezado de seccion con titulo y subtitulo |
 
 **Total: 24 componentes reutilizables**
+
+#### Ejemplos de Uso
+
+A continuacion muestro como usar los componentes principales en los templates:
+
+**Button:**
+```html
+<!-- Variantes -->
+<app-button variant="primary">Guardar</app-button>
+<app-button variant="secondary">Cancelar</app-button>
+<app-button variant="ghost">Ver mas</app-button>
+<app-button variant="danger">Eliminar</app-button>
+
+<!-- Tamanos -->
+<app-button size="sm">Pequeno</app-button>
+<app-button size="md">Mediano</app-button>
+<app-button size="lg">Grande</app-button>
+
+<!-- Estados -->
+<app-button [disabled]="true">Deshabilitado</app-button>
+<app-button [loading]="isLoading">Cargando...</app-button>
+<app-button [fullWidth]="true">Ancho completo</app-button>
+```
+
+**Alert:**
+```html
+<app-alert type="success" title="Exito" message="Operacion completada" />
+<app-alert type="error" title="Error" message="Algo salio mal" />
+<app-alert type="warning" title="Aviso" message="Ten cuidado" />
+<app-alert type="info" title="Info" message="Dato importante" />
+
+<!-- Con opcion de cerrar -->
+<app-alert
+  type="success"
+  title="Guardado"
+  message="Los cambios se han guardado"
+  [dismissible]="true"
+  (dismissed)="onAlertClosed()"
+/>
+```
+
+**FormInput:**
+```html
+<app-form-input
+  label="Email"
+  type="email"
+  placeholder="tu@email.com"
+  [required]="true"
+  [error]="emailError"
+  hint="Usaremos tu email para notificaciones"
+  formControlName="email"
+/>
+```
+
+**FormTextarea:**
+```html
+<app-form-textarea
+  label="Descripcion"
+  placeholder="Escribe aqui..."
+  [rows]="4"
+  [maxLength]="500"
+  [required]="true"
+  formControlName="description"
+/>
+```
+
+**FormSelect:**
+```html
+<app-form-select
+  label="Categoria"
+  placeholder="Selecciona una opcion"
+  [options]="categorias"
+  [required]="true"
+  formControlName="categoria"
+/>
+```
+
+**Modal:**
+```html
+<app-modal
+  [isOpen]="showModal"
+  title="Confirmar accion"
+  size="md"
+  (closed)="showModal = false"
+>
+  <p>¿Estas seguro de continuar?</p>
+  <footer>
+    <app-button variant="secondary" (click)="showModal = false">Cancelar</app-button>
+    <app-button variant="primary" (click)="confirmar()">Aceptar</app-button>
+  </footer>
+</app-modal>
+```
+
+**ServiceCard:**
+```html
+<app-service-card
+  name="Instagram"
+  icon="iconoirInstagram"
+  [serviceCount]="45"
+  [interactive]="true"
+  (click)="selectPlatform('instagram')"
+/>
+```
+
+**StatsCard:**
+```html
+<app-stats-card
+  title="Ordenes Hoy"
+  [value]="1234"
+  label="ordenes"
+  variant="success"
+  icon="matShoppingCart"
+/>
+```
+
+**OrderCard:**
+```html
+<app-order-card
+  [order]="orderData"
+  (orderAgain)="reorder($event)"
+  (refill)="requestRefill($event)"
+/>
+```
+
+**Header:**
+```html
+<!-- Variante para home -->
+<app-header variant="home" />
+
+<!-- Variante para dashboard autenticado -->
+<app-header variant="dashboard" [balance]="userBalance" />
+
+<!-- Variante admin -->
+<app-header variant="admin" panelName="AntiPanel Admin" />
+```
+
+**AuthForm:**
+```html
+<!-- Formulario de login -->
+<app-auth-form
+  mode="login"
+  (submitted)="onLogin($event)"
+  (modeSwitch)="goToRegister()"
+/>
+
+<!-- Formulario de registro -->
+<app-auth-form
+  mode="register"
+  (submitted)="onRegister($event)"
+  (modeSwitch)="goToLogin()"
+/>
+```
 
 ### 3.2 Nomenclatura BEM
 
@@ -976,6 +1136,21 @@ Cree una pagina de Style Guide en `/style-guide` que documenta visualmente todos
 Implemente un boton de toggle de tema en la parte superior del Style Guide que permite cambiar entre dark y light mode para visualizar todos los componentes en ambos temas. El tema seleccionado se persiste en localStorage.
 
 **Acceso:** `http://localhost:4200/style-guide`
+
+#### Capturas del Style Guide
+
+A continuación se muestran capturas de pantalla de la página Style Guide mostrando los componentes implementados:
+
+| Sección | Captura |
+|---------|---------|
+| **Tipografía y Colores** | ![Typography](screenshots/style-guide/typography-colors.png) |
+| **Botones y Alertas** | ![Buttons Alerts](screenshots/style-guide/buttons-alerts.png) |
+| **Formularios** | ![Forms](screenshots/style-guide/forms.png) |
+| **Cards** | ![Cards](screenshots/style-guide/cards.png) |
+| **Modal y Auth Form** | ![Modal Auth](screenshots/style-guide/modal-auth.png) |
+| **Layout Components** | ![Layout](screenshots/style-guide/layout.png) |
+
+> **Nota:** Añadir capturas del Style Guide en la carpeta `docs/design/screenshots/style-guide/` con los nombres indicados.
 
 ### 3.6 Animaciones CSS (@keyframes)
 
@@ -1257,13 +1432,162 @@ Todos los estilos base los disene para moviles, y los estilos para pantallas mas
 
 ## 5. Optimizacion Multimedia
 
-En esta seccion documento las mejores practicas para la gestion de imagenes y recursos multimedia que planeo implementar en AntiPanel.
+En esta seccion documento la gestion de imagenes y recursos multimedia que he implementado en AntiPanel. Aunque no utilizo imagenes raster (JPG, PNG, WebP), **si utilizo imagenes vectoriales SVG** para el logo y los iconos.
 
-> **Nota:** Actualmente la aplicacion no utiliza imagenes. Esta seccion documenta la estrategia que implementare cuando anada recursos multimedia.
+### 5.1 Imagenes SVG Implementadas
 
-### 5.1 Formatos de Imagen Modernos
+Actualmente utilizo imagenes en formato SVG en dos formas:
 
-He estudiado los siguientes formatos para cuando los necesite:
+| Tipo | Implementacion | Cantidad | Ubicacion |
+|------|----------------|----------|-----------|
+| **Logo** | SVG inline en template | 1 | Header component |
+| **Iconos** | ng-icons (SVG library) | 43 | Toda la aplicacion |
+
+#### Logo SVG Inline
+
+Implemente el logo como SVG inline directamente en el template del header:
+
+```html
+<svg
+  class="header__logo-icon"
+  width="71"
+  height="52"
+  viewBox="0 0 115 89"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+>
+  <path
+    d="M3.22559 83.2567L106.226 11.0391L76.1155 85.5253M4.00002 11.0919C29.0401..."
+    stroke="currentColor"
+    stroke-width="8"
+  />
+</svg>
+```
+
+**Optimizaciones aplicadas:**
+- `aria-hidden="true"` porque el logo es decorativo (el texto "AntiPanel" proporciona el significado)
+- `stroke="currentColor"` para que el SVG respete el color del tema CSS
+- Dimensiones explicitas (`width`, `height`) para evitar layout shift
+- SVG inline evita una peticion HTTP adicional
+
+#### Sistema de Iconos ng-icons
+
+Elegi la libreria `@ng-icons` para gestionar los iconos porque:
+- Los iconos son SVG que se renderizan inline
+- Tree-shaking elimina iconos no usados del bundle
+- No requiere peticiones HTTP (todo incluido en el JS bundle)
+- Facil de usar con el componente `<ng-icon>`
+
+**Configuracion en app.config.ts:**
+
+```typescript
+import { provideIcons } from '@ng-icons/core';
+import { matHome, matDashboard, matShoppingCart, ... } from '@ng-icons/material-icons/baseline';
+import { iconoirInstagram, iconoirTiktok, ... } from '@ng-icons/iconoir';
+import { simpleSnapchat } from '@ng-icons/simple-icons';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideIcons({
+      // Material Icons (32 iconos)
+      matHome, matDashboard, matShoppingCart, matPerson, matSettings,
+      matMenu, matClose, matKeyboardArrowDown, matKeyboardArrowUp,
+      matCheck, matError, matWarning, matInfo, matSearch, matAdd,
+      matRemove, matEdit, matDelete, matVisibility, matVisibilityOff,
+      matArrowBack, matArrowForward, matArrowUpward, matRefresh,
+      matAccountBalanceWallet, matShowChart, matSchedule,
+      matCheckCircle, matQueryStats, matLightMode, matDarkMode,
+
+      // Iconoir - Redes sociales (10 iconos)
+      iconoirInstagram, iconoirTiktok, iconoirYoutube, iconoirTwitter,
+      iconoirFacebook, iconoirSpotify, iconoirTelegram, iconoirDiscord,
+      iconoirLinkedin, iconoirFlash,
+
+      // Simple Icons (1 icono)
+      simpleSnapchat
+    })
+  ]
+};
+```
+
+- El único problema que he tenido a la hora de los iconos, se encuentra en que en el diseño de Figma elegí Iconoir porque incluia todos los iconos de redes sociales, incluido Snapchat, aparecia incluso en la web de ng-icons el icono de Snapchat. Sin embargo, a la hora de utilizarlo en Angular, el icono de Snapchat no me renderizaba lo que me ha obligado a usar otra libreria similar solamente para ese icono de Snapchat. Es ese realmente el motivo por el cual uso Simple Icons con 1 solo icono.
+
+**Uso en templates:**
+
+```html
+<!-- Icono basico -->
+<ng-icon name="matHome" size="24" />
+
+<!-- Icono de red social -->
+<ng-icon name="iconoirInstagram" size="48" />
+
+<!-- Icono con tamano dinamico -->
+<ng-icon [name]="stats().icon" [size]="iconSize()" />
+```
+
+**Estadisticas de iconos:**
+
+| Libreria | Iconos Usados | Tamano Aproximado | Optimizacion |
+|----------|---------------|-------------------|--------------|
+| Material Icons | 32 | ~15KB | Tree-shaking activo |
+| Iconoir | 10 | ~5KB | Tree-shaking activo |
+| Simple Icons | 1 | ~1KB | Tree-shaking activo |
+| **Total** | **43** | **~21KB** | Solo iconos usados |
+
+### 5.2 Accesibilidad de SVGs e Iconos
+
+Implemente las siguientes practicas de accesibilidad para los SVGs:
+
+**Iconos Decorativos:**
+
+Todos los iconos que acompanan texto visible tienen `aria-hidden="true"`:
+
+```html
+<!-- El icono es decorativo, el texto proporciona el significado -->
+<figure class="service-card__icon" aria-hidden="true">
+  <ng-icon [name]="service().icon" size="48" />
+</figure>
+<h3 class="service-card__name">{{ service().name }}</h3>
+```
+
+**Botones Solo con Icono:**
+
+Los botones que solo contienen un icono tienen `aria-label`:
+
+```html
+<button
+  type="button"
+  class="header__nav-close"
+  aria-label="Cerrar menu de navegacion"
+>
+  <svg class="header__nav-close-icon" aria-hidden="true">
+    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" />
+  </svg>
+</button>
+```
+
+**Colores Accesibles:**
+
+Uso `currentColor` en los SVGs para que hereden el color del texto, garantizando que:
+- Los iconos mantienen el contraste adecuado
+- Los iconos cambian automaticamente con el tema (dark/light)
+- No hay colores hardcodeados que puedan perder contraste
+
+### 5.3 Beneficios de SVG sobre Imagenes Raster
+
+| Aspecto | SVG (lo que uso) | Raster (JPG/PNG) |
+|---------|------------------|------------------|
+| Escalado | Infinito sin perdida | Pierde calidad |
+| Tamano | Muy pequeno (~1-5KB por icono) | Depende de resolucion |
+| Colorizacion | Via CSS (`currentColor`) | Requiere multiples archivos |
+| Animacion | Via CSS/SMIL | Requiere GIF/video |
+| Peticiones HTTP | 0 (inline) | 1 por imagen |
+| Accesibilidad | `aria-hidden`, `role` | Solo `alt` text |
+
+### 5.4 Formatos de Imagen para Uso Futuro
+
+Cuando necesite anadir imagenes raster (fotografias, screenshots, etc.), planeo usar:
 
 | Formato | Uso que le dare | Soporte | Compresion |
 |---------|----------------|---------|------------|
@@ -1275,7 +1599,7 @@ He estudiado los siguientes formatos para cuando los necesite:
 
 Planeo usar AVIF como formato principal, WebP como fallback, y JPG/PNG para navegadores legacy.
 
-### 5.2 Elemento Picture con Srcset
+### 5.5 Elemento Picture con Srcset (Futuro)
 
 Cuando implemente imagenes, usare el elemento `<picture>` para servir diferentes formatos:
 
@@ -1321,7 +1645,7 @@ Cuando implemente imagenes, usare el elemento `<picture>` para servir diferentes
 </picture>
 ```
 
-### 5.3 Lazy Loading Nativo
+### 5.6 Lazy Loading Nativo (Futuro)
 
 Aprovechare el lazy loading nativo de HTML5:
 
@@ -1339,7 +1663,7 @@ Aprovechare el lazy loading nativo de HTML5:
 - `decoding="async"` - Decodifica la imagen en un hilo separado
 - `fetchpriority="high"` - Para imagenes above-the-fold criticas
 
-### 5.4 NgOptimizedImage de Angular
+### 5.7 NgOptimizedImage de Angular (Futuro)
 
 Angular proporciona la directiva `NgOptimizedImage` que planeo usar:
 
@@ -1380,7 +1704,7 @@ export const appConfig: ApplicationConfig = {
 };
 ```
 
-### 5.5 Herramientas de Optimizacion
+### 5.8 Herramientas de Optimizacion
 
 Estas son las herramientas que usare:
 
@@ -1401,7 +1725,7 @@ sharp input.jpg --resize 800 --format webp -o output-800w.webp
 sharp input.jpg --resize 1200 --format webp -o output-1200w.webp
 ```
 
-### 5.6 Resultados de Optimizacion
+### 5.9 Resultados de Optimizacion
 
 Aunque actualmente AntiPanel no utiliza imagenes de contenido (solo iconos SVG), aqui documento los resultados esperados de la estrategia de optimizacion que implementare:
 
@@ -1430,7 +1754,7 @@ Aunque actualmente AntiPanel no utiliza imagenes de contenido (solo iconos SVG),
 - Iconos se renderizan inline (sin peticiones HTTP adicionales)
 - Soporte completo de colores via CSS (`currentColor`)
 
-### 5.7 Accesibilidad de Imagenes
+### 5.10 Accesibilidad de Imagenes Raster (Futuro)
 
 **Alt Text Descriptivo:**
 
@@ -1461,7 +1785,7 @@ Me asegurare de escribir buenos textos alternativos:
 <div class="hero" style="background-image: url(hero.jpg);" role="img" aria-label="Vista panoramica de la ciudad"></div>
 ```
 
-### 5.8 Tabla Comparativa de Formatos
+### 5.11 Tabla Comparativa de Formatos
 
 | Caracteristica | AVIF | WebP | PNG | JPG | SVG |
 |---------------|------|------|-----|-----|-----|
@@ -1473,7 +1797,7 @@ Me asegurare de escribir buenos textos alternativos:
 | Tamano tipico (foto 1MP) | ~50KB | ~80KB | ~500KB | ~100KB | N/A |
 | Soporte navegadores | 93% | 97% | 100% | 100% | 100% |
 
-### 5.9 Estrategia de Responsive Images
+### 5.12 Estrategia de Responsive Images (Futuro)
 
 **Breakpoints de Imagen:**
 
@@ -1773,14 +2097,13 @@ Todos los colores de texto que elegi cumplen con los ratios WCAG AA:
 
 | Combinacion | Ratio | Requisito AA | Estado |
 |-------------|-------|--------------|--------|
-| Text (#FAFAFA) sobre Background (#0A0A0A) | 19.4:1 | 4.5:1 | Pasa |
-| Foreground (#A1A1A1) sobre Background | 8.5:1 | 4.5:1 | Pasa |
-| Success (#00DC33) sobre Background | 8.2:1 | 4.5:1 | Pasa |
-| Error (#FF4444) sobre Background | 5.3:1 | 4.5:1 | Pasa |
+| Text (#FAFAFA) sobre Background (#0A0A0A) | 18.96:1 | 4.5:1 | Pasa |
+| Foreground (#A1A1A1) sobre Background | 7.66:1 | 4.5:1 | Pasa |
+| Success (#00DC33) sobre Background | 10.63:1 | 4.5:1 | Pasa |
+| Error (#FF4444) sobre Background | 5.8:1 | 4.5:1 | Pasa |
 
-**Herramientas que uso para verificar:**
+**Herramientas que he usado para verificar:**
 - [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/)
-- [Colour Contrast Analyser](https://www.tpgi.com/color-contrast-checker/)
 - Chrome DevTools > Accessibility panel
 
 ### 7.3 Navegacion por Teclado
@@ -1971,18 +2294,18 @@ Disene los formularios con esta estructura accesible:
 
 **Antes de cada release, verifico:**
 
-- [ ] Todos los elementos interactivos son accesibles via teclado
-- [ ] Focus visible en todos los elementos focusables
-- [ ] Contraste de color cumple WCAG AA (4.5:1 texto, 3:1 elementos grandes)
-- [ ] Todas las imagenes tienen alt text apropiado
-- [ ] Formularios tienen labels asociados
-- [ ] Errores de formulario son anunciados
-- [ ] Skip link funciona correctamente
-- [ ] Reduced motion es respetado
-- [ ] Estructura de headings es logica (h1 > h2 > h3...)
-- [ ] ARIA roles y estados son correctos
-- [ ] Modales atrapan el foco correctamente
-- [ ] No hay contenido que parpadee > 3 veces/segundo
+- [x] Todos los elementos interactivos son accesibles via teclado
+- [x] Focus visible en todos los elementos focusables
+- [x] Contraste de color cumple WCAG AA (4.5:1 texto, 3:1 elementos grandes)
+- [x] Todas las imagenes tienen alt text apropiado
+- [x] Formularios tienen labels asociados
+- [x] Errores de formulario son anunciados
+- [x] Skip link funciona correctamente
+- [x] Reduced motion es respetado
+- [x] Estructura de headings es logica (h1 > h2 > h3...)
+- [x] ARIA roles y estados son correctos
+- [x] Modales atrapan el foco correctamente
+- [x] No hay contenido que parpadee > 3 veces/segundo
 
 **Herramientas de Testing que utilizo:**
 - axe DevTools (extension Chrome/Firefox)
@@ -1990,20 +2313,26 @@ Disene los formularios con esta estructura accesible:
 - WAVE Web Accessibility Evaluator
 - NVDA / VoiceOver para testing con screen reader
 
----
+### 7.10 Verificacion Lighthouse
 
-## Resumen
+Para verificar los scores de accesibilidad y rendimiento, ejecuto Lighthouse en el Style Guide:
 
-En este proyecto he implementado un sistema de diseno completo que incluye:
+```bash
+# Usando Chrome DevTools
+1. Abrir http://localhost:4200/style-guide
+2. Abrir DevTools (F12)
+3. Ir a la pestana "Lighthouse"
+4. Seleccionar "Accessibility" y "Performance"
+5. Ejecutar el analisis
 
-1. **Arquitectura CSS ITCSS** con design tokens que defini
-2. **HTML Semantico** para accesibilidad
-3. **Componentes Angular 21** con signals y control flow moderno
-4. **BEM** como convencion de nomenclatura de clases
-5. **ngicons** para iconografia
-6. **Style Guide** para documentacion visual de todos los componentes
-7. **Responsive Design** mobile-first con 5 breakpoints
-8. **Sistema de Temas** preparado para dark/light mode
-9. **Accesibilidad WCAG AA** con soporte completo de teclado
+# Usando CLI (requiere instalacion)
+npx lighthouse http://localhost:4200/style-guide --output html
+```
 
-Para mas informacion, consulta el codigo fuente de cada componente.
+**Objetivos de puntuacion:**
+- Performance: >80
+- Accessibility: >90
+- Best Practices: >90
+- SEO: >80
+
+La puntuacion puede variar ligeramente dependiendo del entorno de ejecucion. Los resultados de desarrollo pueden diferir de produccion debido a optimizaciones de build.

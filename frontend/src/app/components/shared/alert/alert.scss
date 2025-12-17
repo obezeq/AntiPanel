@@ -90,7 +90,7 @@
 .alert__icon {
   display: flex;
   flex-shrink: 0;
-  margin-top: 2px;
+  margin-top: 0.125rem; // 2px micro-adjustment for alignment
 }
 
 // ---------------------------------------------------------------------------
@@ -128,8 +128,8 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 24px;
-  height: 24px;
+  width: 1.5rem;  // 24px
+  height: 1.5rem; // 24px
   color: var(--color-foreground);
   border-radius: var(--radius-sm);
   transition: var(--transition-colors);
