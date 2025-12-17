@@ -68,10 +68,16 @@ export class Header {
     return variant === 'dashboard' || variant === 'loggedIn' || variant === 'admin';
   });
 
-  /** Whether to show navigation items */
+  /** Whether to show navigation items (admin has NO navigation) */
   protected readonly showNavigation = computed(() => {
     const variant = this.variant();
     return variant === 'dashboard' || variant === 'loggedIn';
+  });
+
+  /** Whether to show mobile menu (hamburger + sidebar) */
+  protected readonly showMobileMenu = computed(() => {
+    const variant = this.variant();
+    return variant === 'dashboard' || variant === 'loggedIn' || variant === 'admin';
   });
 
   /** Access button text based on variant */
@@ -111,6 +117,7 @@ export class Header {
           { label: 'SUPPORT', path: '/support' }
         ];
       default:
+        // Admin and other variants have NO navigation items
         return [];
     }
   });

@@ -28,6 +28,12 @@
 // Admin variant specific layout
 .header--admin {
   justify-content: space-between;
+  gap: var(--spacing-4);
+
+  @include respond-below('lg') {
+    // Tighter gap on tablet/mobile
+    gap: var(--spacing-2);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -85,6 +91,14 @@
   color: var(--color-high-contrast);
   line-height: 1.15;
   white-space: nowrap;
+
+  @include respond-below('lg') {
+    font-size: var(--font-size-h5);
+  }
+
+  @include respond-below('md') {
+    font-size: var(--font-size-h6);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -332,7 +346,10 @@
 }
 
 .header__profile--admin {
-  // Same styling for admin variant
+  // Hide on mobile - shown in mobile sidebar instead
+  @include respond-below('lg') {
+    display: none;
+  }
 }
 
 .header__profile-icon {
@@ -410,6 +427,11 @@
   flex-direction: column;
   align-items: flex-end;
   gap: var(--spacing-1);
+
+  // Hide on mobile - shown in mobile sidebar instead
+  @include respond-below('lg') {
+    display: none;
+  }
 }
 
 .header__admin-name {
@@ -419,6 +441,10 @@
   color: var(--color-high-contrast);
   line-height: 1.15;
   text-transform: uppercase;
+
+  @include respond-below('xl') {
+    font-size: var(--font-size-h6);
+  }
 }
 
 .header__admin-department {
@@ -428,6 +454,10 @@
   color: var(--color-high-contrast);
   line-height: 1.15;
   text-transform: uppercase;
+
+  @include respond-below('xl') {
+    font-size: var(--font-size-h6);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -556,4 +586,70 @@
   }
 
   @include focus-visible;
+}
+
+// ---------------------------------------------------------------------------
+// MOBILE ADMIN INFO (Inside hamburger menu)
+// ---------------------------------------------------------------------------
+
+.header__mobile-actions--admin {
+  .header__admin-name,
+  .header__admin-department {
+    font-size: var(--font-size-body);
+  }
+}
+
+.header__mobile-admin-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  padding-block-end: var(--spacing-4);
+  border-block-end: var(--border-width-thin) solid var(--color-information);
+  margin-block-end: var(--spacing-4);
+}
+
+// ---------------------------------------------------------------------------
+// ADMIN MOBILE SIDEBAR (Admin variant only)
+// ---------------------------------------------------------------------------
+// Separate mobile sidebar for admin since admin has no navigation items
+
+.header__admin-mobile-nav {
+  // Hidden on desktop
+  display: none;
+
+  // Mobile: Fixed sidebar
+  @include respond-below('lg') {
+    display: flex;
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    inline-size: 17.5rem;
+    block-size: 100vh;
+    block-size: 100dvh;
+    background-color: var(--color-background);
+    border-inline-start: var(--border-width-thin) solid var(--color-information);
+    padding-block: var(--spacing-20) var(--spacing-6);
+    padding-inline: var(--spacing-6);
+    transform: translateX(100%);
+    transition: transform var(--transition-base);
+    z-index: var(--z-fixed);
+    overflow-y: auto;
+    flex-direction: column;
+    justify-content: flex-start;
+
+    &.header__admin-mobile-nav--open {
+      transform: translateX(0);
+    }
+  }
+
+  // Inside admin mobile nav, show mobile actions without needing respond-below
+  .header__mobile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+    inline-size: 100%;
+    padding-block-start: 0;
+    border-block-start: none;
+    margin-block-start: 0;
+  }
 }
