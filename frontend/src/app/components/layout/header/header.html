@@ -271,6 +271,19 @@
       </a>
     }
 
+    <!-- Theme Toggle Button (always visible) -->
+    <button
+      type="button"
+      class="header__theme-toggle"
+      (click)="onThemeToggle()"
+      [attr.aria-label]="themeService.isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+    >
+      <ng-icon
+        [name]="themeService.isDark() ? 'matLightMode' : 'matDarkMode'"
+        size="24"
+      />
+    </button>
+
     <!-- Mobile Menu Toggle (for authenticated variants) -->
     @if (showMobileMenu()) {
       <button

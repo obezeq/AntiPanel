@@ -1,13 +1,13 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  OnInit,
   PLATFORM_ID,
   inject,
   signal
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { NgIcon } from '@ng-icons/core';
+import { ThemeService } from '../../services/theme.service';
 
 import { Button } from '../../components/shared/button/button';
 import { Alert } from '../../components/shared/alert/alert';
@@ -68,42 +68,17 @@ import { AdminOrderTable, AdminOrder } from '../../components/shared/admin-order
     AdminOrderTable
   ]
 })
-export class StyleGuide implements OnInit {
+export class StyleGuide {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly isBrowser = isPlatformBrowser(this.platformId);
 
-  // Theme toggle state
-  protected readonly isDarkMode = signal<boolean>(true);
+  // Theme service (global)
+  protected readonly themeService = inject(ThemeService);
 
   // Form demo values
   protected readonly inputValue = signal<string>('');
   protected readonly textareaValue = signal<string>('');
   protected readonly selectValue = signal<string>('');
-
-  ngOnInit(): void {
-    if (this.isBrowser) {
-      const savedTheme = localStorage.getItem('antipanel-theme');
-      if (savedTheme === 'light') {
-        this.isDarkMode.set(false);
-        document.documentElement.setAttribute('data-theme', 'light');
-      }
-    }
-  }
-
-  protected toggleTheme(): void {
-    if (!this.isBrowser) return;
-
-    const newIsDark = !this.isDarkMode();
-    this.isDarkMode.set(newIsDark);
-
-    if (newIsDark) {
-      document.documentElement.removeAttribute('data-theme');
-      localStorage.setItem('antipanel-theme', 'dark');
-    } else {
-      document.documentElement.setAttribute('data-theme', 'light');
-      localStorage.setItem('antipanel-theme', 'light');
-    }
-  }
 
   // Select options
   protected readonly selectOptions: SelectOption[] = [

@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { NgIcon } from '@ng-icons/core';
+import { ThemeService } from '../../../services/theme.service';
 
 /**
  * Header variants matching Figma design:
@@ -23,9 +25,12 @@ interface NavItem {
   templateUrl: './header.html',
   styleUrl: './header.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, RouterLinkActive]
+  imports: [RouterLink, RouterLinkActive, NgIcon]
 })
 export class Header {
+  /** Theme service for dark/light mode toggle */
+  protected readonly themeService = inject(ThemeService);
+
   /** Header variant determines layout and navigation items */
   readonly variant = input<HeaderVariant>('home');
 
@@ -156,5 +161,9 @@ export class Header {
     this.logoutClick.emit();
     this.closeProfileDropdown();
     this.closeMobileMenu();
+  }
+
+  protected onThemeToggle(): void {
+    this.themeService.toggleTheme();
   }
 }

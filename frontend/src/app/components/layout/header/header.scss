@@ -13,14 +13,39 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--spacing-8);
-  min-height: var(--header-height, 8rem);
-  padding-inline: var(--spacing-6);
+  gap: var(--spacing-2);
+  min-height: 3.5rem;
+  padding-inline: var(--spacing-2);
   background-color: var(--color-background);
   border-block-end: var(--border-width-thin) solid var(--color-information);
   position: relative;
 
+  // Extra small screens (400px+)
+  @media screen and (min-width: 400px) {
+    gap: var(--spacing-3);
+    min-height: 4rem;
+    padding-inline: var(--spacing-3);
+  }
+
+  @include respond-to('sm') {
+    gap: var(--spacing-4);
+    min-height: 5rem;
+    padding-inline: var(--spacing-4);
+  }
+
+  @include respond-to('md') {
+    gap: var(--spacing-6);
+    min-height: 6rem;
+    padding-inline: var(--spacing-6);
+  }
+
   @include respond-to('lg') {
+    min-height: 7rem;
+  }
+
+  @include respond-to('xl') {
+    gap: var(--spacing-8);
+    min-height: var(--header-height, 8rem);
     padding-inline: var(--spacing-8);
   }
 }
@@ -43,10 +68,32 @@
 .header__logo {
   display: flex;
   align-items: center;
-  gap: var(--spacing-8);
+  gap: var(--spacing-1);
   text-decoration: none;
   z-index: calc(var(--z-fixed) + 1);
-  flex-shrink: 0;
+  flex-shrink: 1;
+  min-inline-size: 0; // Allow shrinking
+
+  @media screen and (min-width: 400px) {
+    gap: var(--spacing-2);
+    flex-shrink: 0;
+  }
+
+  @include respond-to('sm') {
+    gap: var(--spacing-3);
+  }
+
+  @include respond-to('md') {
+    gap: var(--spacing-4);
+  }
+
+  @include respond-to('lg') {
+    gap: var(--spacing-6);
+  }
+
+  @include respond-to('xl') {
+    gap: var(--spacing-8);
+  }
 
   @include focus-visible;
 }
@@ -55,22 +102,55 @@
   display: block;
   color: var(--color-high-contrast);
   flex-shrink: 0;
+  inline-size: 1.5rem;
+  block-size: auto;
+
+  @media screen and (min-width: 400px) {
+    inline-size: 2rem;
+  }
+
+  @include respond-to('sm') {
+    inline-size: 2.5rem;
+  }
+
+  @include respond-to('md') {
+    inline-size: 3rem;
+  }
+
+  @include respond-to('lg') {
+    inline-size: 3.5rem;
+  }
+
+  @include respond-to('xl') {
+    inline-size: 4.4375rem; // 71px original
+  }
 }
 
 .header__logo-text {
   font-family: var(--font-primary);
-  font-size: var(--font-size-h2);
+  font-size: var(--font-size-h6);
   font-weight: var(--font-weight-bold);
   color: var(--color-high-contrast);
   line-height: 1.15;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
-  @include respond-below('xl') {
+  @media screen and (min-width: 400px) {
+    font-size: var(--font-size-h5);
+    overflow: visible;
+  }
+
+  @include respond-to('sm') {
+    font-size: var(--font-size-h4);
+  }
+
+  @include respond-to('md') {
     font-size: var(--font-size-h3);
   }
 
-  @include respond-below('md') {
-    font-size: var(--font-size-h4);
+  @include respond-to('xl') {
+    font-size: var(--font-size-h2);
   }
 }
 
@@ -168,13 +248,17 @@
 .header__nav-list {
   display: flex;
   align-items: center;
-  gap: var(--spacing-8);
+  gap: var(--spacing-2);
   margin: 0;
   padding: 0;
   list-style: none;
 
-  @include respond-below('xl') {
+  @include respond-to('xl') {
     gap: var(--spacing-4);
+  }
+
+  @include respond-to('2xl') {
+    gap: var(--spacing-8);
   }
 
   @include respond-below('lg') {
@@ -196,9 +280,9 @@
 .header__nav-link {
   display: flex;
   align-items: center;
-  padding: var(--spacing-3) var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-1);
   font-family: var(--font-primary);
-  font-size: var(--font-size-h5);
+  font-size: var(--font-size-caption);
   font-weight: var(--font-weight-semibold);
   line-height: 1.15;
   color: var(--color-high-contrast);
@@ -208,9 +292,14 @@
   transition: var(--transition-colors);
   border-radius: var(--radius-md);
 
-  @include respond-below('xl') {
+  @include respond-to('xl') {
     font-size: var(--font-size-h6);
     padding: var(--spacing-2);
+  }
+
+  @include respond-to('2xl') {
+    font-size: var(--font-size-h5);
+    padding: var(--spacing-3) var(--spacing-2);
   }
 
   &:hover {
@@ -231,9 +320,29 @@
 .header__actions {
   display: flex;
   align-items: center;
-  gap: var(--spacing-8);
+  gap: var(--spacing-1);
   z-index: calc(var(--z-fixed) + 1);
   flex-shrink: 0;
+
+  @media screen and (min-width: 400px) {
+    gap: var(--spacing-2);
+  }
+
+  @include respond-to('sm') {
+    gap: var(--spacing-3);
+  }
+
+  @include respond-to('md') {
+    gap: var(--spacing-4);
+  }
+
+  @include respond-to('xl') {
+    gap: var(--spacing-6);
+  }
+
+  @include respond-to('2xl') {
+    gap: var(--spacing-8);
+  }
 
   // On mobile, reduce z-index so mobile nav appears on top
   @include respond-below('lg') {
@@ -246,18 +355,50 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  inline-size: 9.375rem;
-  padding: var(--spacing-3) var(--spacing-6);
+  min-inline-size: 3.5rem;
+  padding: var(--spacing-1) var(--spacing-2);
   background-color: var(--color-high-contrast);
   color: var(--color-background);
   font-family: var(--font-primary);
-  font-size: var(--font-size-h5);
+  font-size: var(--font-size-tiny);
   font-weight: var(--font-weight-semibold);
   line-height: 1.15;
   text-decoration: none;
   text-transform: uppercase;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-sm);
   transition: var(--transition-colors), transform var(--transition-fast);
+  flex-shrink: 0;
+
+  @media screen and (min-width: 400px) {
+    min-inline-size: 5rem;
+    padding: var(--spacing-2) var(--spacing-3);
+    font-size: var(--font-size-small);
+    border-radius: var(--radius-md);
+  }
+
+  @include respond-to('sm') {
+    min-inline-size: 6rem;
+    padding: var(--spacing-2) var(--spacing-4);
+    font-size: var(--font-size-caption);
+    border-radius: var(--radius-lg);
+  }
+
+  @include respond-to('md') {
+    min-inline-size: 7rem;
+    padding: var(--spacing-3) var(--spacing-4);
+    font-size: var(--font-size-h6);
+  }
+
+  @include respond-to('lg') {
+    min-inline-size: 8rem;
+    padding: var(--spacing-3) var(--spacing-5);
+  }
+
+  @include respond-to('xl') {
+    min-inline-size: 9.375rem;
+    padding: var(--spacing-3) var(--spacing-6);
+    font-size: var(--font-size-h5);
+  }
 
   &:hover {
     background-color: var(--color-text);
@@ -279,13 +420,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-2) var(--spacing-3);
+  padding: var(--spacing-1) var(--spacing-2);
   background-color: var(--color-text);
   border-radius: var(--radius-md);
   transition: var(--transition-colors);
 
-  @include respond-below('xl') {
+  @include respond-to('xl') {
     padding: var(--spacing-2);
+  }
+
+  @include respond-to('2xl') {
+    padding: var(--spacing-2) var(--spacing-3);
   }
 
   // Hide on mobile/tablet - moved to hamburger menu
@@ -302,14 +447,18 @@
 
 .header__wallet-text {
   font-family: var(--font-primary);
-  font-size: var(--font-size-h5);
+  font-size: var(--font-size-caption);
   font-weight: var(--font-weight-semibold);
   color: var(--color-background);
   line-height: 1.15;
   text-transform: uppercase;
 
-  @include respond-below('xl') {
+  @include respond-to('xl') {
     font-size: var(--font-size-h6);
+  }
+
+  @include respond-to('2xl') {
+    font-size: var(--font-size-h5);
   }
 }
 
@@ -332,11 +481,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  inline-size: 4rem;
-  block-size: 4rem;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
   border-radius: var(--radius-full);
   transition: var(--transition-colors);
   cursor: pointer;
+
+  @include respond-to('xl') {
+    inline-size: 3rem;
+    block-size: 3rem;
+  }
+
+  @include respond-to('2xl') {
+    inline-size: 4rem;
+    block-size: 4rem;
+  }
 
   &:hover .header__profile-icon {
     color: var(--color-foreground);
@@ -469,9 +628,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  inline-size: 2.5rem;
-  block-size: 2.5rem;
+  inline-size: 2rem;
+  block-size: 2rem;
   z-index: calc(var(--z-fixed) + 1);
+
+  @include respond-to('md') {
+    inline-size: 2.5rem;
+    block-size: 2.5rem;
+  }
 
   @include focus-visible;
 }
@@ -505,6 +669,53 @@
     &:nth-child(3) {
       transform: translateY(-0.5rem) rotate(-45deg); // -8px (base-8)
     }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// THEME TOGGLE
+// ---------------------------------------------------------------------------
+
+.header__theme-toggle {
+  @include reset-button;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  color: var(--color-text);
+  transition: var(--transition-colors);
+
+  @media screen and (min-width: 400px) {
+    inline-size: 1.75rem;
+    block-size: 1.75rem;
+  }
+
+  @include respond-to('sm') {
+    inline-size: 2rem;
+    block-size: 2rem;
+  }
+
+  @include respond-to('md') {
+    inline-size: 2.25rem;
+    block-size: 2.25rem;
+  }
+
+  @include respond-to('xl') {
+    inline-size: 2.5rem;
+    block-size: 2.5rem;
+  }
+
+  &:hover {
+    color: var(--color-status-yellow);
+  }
+
+  @include focus-visible;
+
+  ng-icon {
+    inline-size: 100%;
+    block-size: 100%;
+    transition: var(--transition-colors);
   }
 }
 

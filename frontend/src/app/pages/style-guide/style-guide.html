@@ -9,11 +9,11 @@
     <button
       class="style-guide__theme-button"
       type="button"
-      (click)="toggleTheme()"
-      [attr.aria-label]="isDarkMode() ? 'Switch to light mode' : 'Switch to dark mode'"
+      (click)="themeService.toggleTheme()"
+      [attr.aria-label]="themeService.isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
     >
-      <ng-icon [name]="isDarkMode() ? 'matLightMode' : 'matDarkMode'" size="24" />
-      {{ isDarkMode() ? 'Light Mode' : 'Dark Mode' }}
+      <ng-icon [name]="themeService.isDark() ? 'matLightMode' : 'matDarkMode'" size="24" />
+      {{ themeService.isDark() ? 'Light Mode' : 'Dark Mode' }}
     </button>
   </section>
 
