@@ -8,8 +8,10 @@ import {
   output,
   signal
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { startWith } from 'rxjs';
 import { NgIcon } from '@ng-icons/core';
 import { FormInput } from '../form-input/form-input';
 import {
@@ -94,24 +96,28 @@ export class AuthForm {
    * Reactive form with type-safe controls.
    * Using NonNullableFormBuilder for better type inference.
    *
-   * Note: passwordStrengthValidator is added dynamically in register mode only.
-   * This allows login mode to work with any password (no strength requirements).
+   * Note: passwordStrengthValidator and passwordMatchValidator are added
+   * dynamically in register mode only via effect.
    */
-  protected readonly form = this.fb.group(
-    {
-      email: ['', {
-        validators: [Validators.required, Validators.email],
-        updateOn: 'blur' as const
-      }],
-      password: ['', [
-        Validators.required,
-        Validators.minLength(8)
-      ]],
-      confirmPassword: ['']
-    },
-    {
-      validators: [passwordMatchValidator('password', 'confirmPassword')]
-    }
+  protected readonly form = this.fb.group({
+    email: ['', {
+      validators: [Validators.required, Validators.email],
+      updateOn: 'blur' as const
+    }],
+    password: ['', [
+      Validators.required,
+      Validators.minLength(8)
+    ]],
+    confirmPassword: ['']
+  });
+
+  /**
+   * Signal from form valueChanges to enable reactive computations.
+   * This is necessary because computed() doesn't react to form value changes directly.
+   */
+  private readonly formValues = toSignal(
+    this.form.valueChanges.pipe(startWith(this.form.getRawValue())),
+    { initialValue: this.form.getRawValue() }
   );
 
   // =========================================================================
@@ -154,8 +160,10 @@ export class AuthForm {
     // Only show valid state after user has interacted
     if (!this.confirmPasswordTouched() && !this.confirmPasswordDirty()) return false;
 
-    const passwordValue = this.form.controls.password.value;
-    const confirmValue = this.form.controls.confirmPassword.value;
+    // Use formValues() for reactivity with OnPush change detection
+    const values = this.formValues();
+    const passwordValue = values?.password || '';
+    const confirmValue = values?.confirmPassword || '';
 
     // Valid if both have values and they match
     return confirmValue && passwordValue === confirmValue;
@@ -163,11 +171,15 @@ export class AuthForm {
 
   /** Whether form is currently validating */
   protected readonly isValidating = computed(() => {
+    // Trigger reactivity - form state changes when values change
+    this.formValues();
     return this.form.pending;
   });
 
   /** Whether submit button should be disabled */
   protected readonly submitDisabled = computed(() => {
+    // Trigger reactivity - form state changes when values change
+    this.formValues();
     return this.loading() || this.form.invalid || this.form.pending;
   });
 
@@ -217,8 +229,10 @@ export class AuthForm {
   protected readonly confirmPasswordError = computed(() => {
     if (!this.isRegisterMode()) return '';
 
-    const passwordValue = this.form.controls.password.value;
-    const confirmValue = this.form.controls.confirmPassword.value;
+    // Use formValues() for reactivity with OnPush change detection
+    const values = this.formValues();
+    const passwordValue = values?.password || '';
+    const confirmValue = values?.confirmPassword || '';
 
     // If user hasn't interacted with the field yet, don't show errors
     if (!this.confirmPasswordTouched() && !this.confirmPasswordDirty()) return '';
@@ -241,8 +255,9 @@ export class AuthForm {
     // Only show hints in register mode
     if (!this.isRegisterMode()) return [];
 
-    // Get value, default to empty string if null/undefined
-    const value = this.form.controls.password.value || '';
+    // Use formValues() for reactivity with OnPush change detection
+    const values = this.formValues();
+    const value = values?.password || '';
 
     // Always return hints in register mode so user knows requirements upfront
     return [
@@ -270,6 +285,8 @@ export class AuthForm {
           Validators.minLength(8),
           passwordStrengthValidator()
         ]);
+        // Add password match validator at form group level (register mode only)
+        this.form.setValidators([passwordMatchValidator('password', 'confirmPassword')]);
       } else {
         // Remove async validator in login mode
         emailControl.clearAsyncValidators();
@@ -278,9 +295,12 @@ export class AuthForm {
           Validators.required,
           Validators.minLength(8)
         ]);
+        // Remove form group validators in login mode
+        this.form.clearValidators();
       }
       emailControl.updateValueAndValidity();
       passwordControl.updateValueAndValidity();
+      this.form.updateValueAndValidity();
     });
   }
 
