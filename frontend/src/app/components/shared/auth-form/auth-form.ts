@@ -2,15 +2,23 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   input,
   output,
   signal
 } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { NgIcon } from '@ng-icons/core';
 import { FormInput } from '../form-input/form-input';
+import {
+  passwordStrengthValidator,
+  passwordMatchValidator,
+  emailUniqueValidator,
+  getPasswordStrengthErrors,
+  type PasswordStrengthErrors
+} from '../../../core/validators';
 
 export type AuthFormMode = 'login' | 'register';
 
@@ -28,7 +36,7 @@ export interface AuthFormData {
   imports: [ReactiveFormsModule, RouterLink, NgIcon, FormInput]
 })
 export class AuthForm {
-  private readonly fb = inject(FormBuilder);
+  private readonly fb = inject(NonNullableFormBuilder);
 
   /** Form mode: login or register */
   readonly mode = input<AuthFormMode>('login');
@@ -82,80 +90,219 @@ export class AuthForm {
     this.isRegisterMode() ? '/login' : '/register'
   );
 
-  /** Reactive form */
-  protected readonly form = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(8)]],
-    confirmPassword: ['']
+  /**
+   * Reactive form with type-safe controls.
+   * Using NonNullableFormBuilder for better type inference.
+   */
+  protected readonly form = this.fb.group(
+    {
+      email: ['', {
+        validators: [Validators.required, Validators.email],
+        asyncValidators: [emailUniqueValidator(500)],
+        updateOn: 'blur' as const
+      }],
+      password: ['', [
+        Validators.required,
+        Validators.minLength(8),
+        passwordStrengthValidator()
+      ]],
+      confirmPassword: ['']
+    },
+    {
+      validators: [passwordMatchValidator('password', 'confirmPassword')]
+    }
+  );
+
+  // =========================================================================
+  // Computed validation states
+  // =========================================================================
+
+  /** Whether email field has been touched */
+  protected readonly emailTouched = signal(false);
+
+  /** Whether password field has been touched */
+  protected readonly passwordTouched = signal(false);
+
+  /** Whether confirm password field has been touched */
+  protected readonly confirmPasswordTouched = signal(false);
+
+  /** Email validation pending state */
+  protected readonly emailPending = computed(() => {
+    return this.form.controls.email.pending;
   });
 
+  /** Whether email is valid (for showing success state) */
+  protected readonly emailValid = computed(() => {
+    const control = this.form.controls.email;
+    return control.valid && this.emailTouched() && !control.pending;
+  });
+
+  /** Whether password is valid */
+  protected readonly passwordValid = computed(() => {
+    const control = this.form.controls.password;
+    return control.valid && this.passwordTouched();
+  });
+
+  /** Whether confirm password is valid */
+  protected readonly confirmPasswordValid = computed(() => {
+    if (!this.isRegisterMode()) return true;
+    const control = this.form.controls.confirmPassword;
+    return control.valid && !this.form.hasError('passwordMismatch') && this.confirmPasswordTouched();
+  });
+
+  /** Whether form is currently validating */
+  protected readonly isValidating = computed(() => {
+    return this.form.pending;
+  });
+
+  /** Whether submit button should be disabled */
+  protected readonly submitDisabled = computed(() => {
+    return this.loading() || this.form.invalid || this.form.pending;
+  });
+
+  // =========================================================================
+  // Error messages
+  // =========================================================================
+
   /** Email error message */
-  protected readonly emailError = signal<string>('');
+  protected readonly emailError = computed(() => {
+    const control = this.form.controls.email;
+
+    if (!this.emailTouched() || control.pending) return '';
+
+    if (control.hasError('required')) {
+      return 'Email is required';
+    }
+    if (control.hasError('email')) {
+      return 'Please enter a valid email address';
+    }
+    if (control.hasError('emailTaken')) {
+      return 'This email is already registered';
+    }
+    return '';
+  });
 
   /** Password error message */
-  protected readonly passwordError = signal<string>('');
+  protected readonly passwordError = computed(() => {
+    const control = this.form.controls.password;
+
+    if (!this.passwordTouched()) return '';
+
+    if (control.hasError('required')) {
+      return 'Password is required';
+    }
+    if (control.hasError('minlength')) {
+      return 'Password must be at least 8 characters';
+    }
+    if (control.hasError('passwordStrength')) {
+      const errors = control.getError('passwordStrength') as PasswordStrengthErrors;
+      const messages = getPasswordStrengthErrors(errors);
+      return `Password must have: ${messages.join(', ')}`;
+    }
+    return '';
+  });
 
   /** Confirm password error message */
-  protected readonly confirmPasswordError = signal<string>('');
+  protected readonly confirmPasswordError = computed(() => {
+    if (!this.isRegisterMode()) return '';
+    if (!this.confirmPasswordTouched()) return '';
+
+    const control = this.form.controls.confirmPassword;
+
+    if (!control.value) {
+      return 'Please confirm your password';
+    }
+    if (this.form.hasError('passwordMismatch') || control.hasError('passwordMismatch')) {
+      return 'Passwords do not match';
+    }
+    return '';
+  });
+
+  /** Password strength hints for UI */
+  protected readonly passwordStrengthHints = computed(() => {
+    const control = this.form.controls.password;
+    const value = control.value;
+
+    if (!value || !this.isRegisterMode()) return [];
+
+    return [
+      { label: 'At least 8 characters', valid: value.length >= 8 },
+      { label: 'Uppercase letter', valid: /[A-Z]/.test(value) },
+      { label: 'Lowercase letter', valid: /[a-z]/.test(value) },
+      { label: 'Number', valid: /\d/.test(value) },
+      { label: 'Special character', valid: /[!@#$%^&*(),.?":{}|<>]/.test(value) }
+    ];
+  });
+
+  constructor() {
+    // Effect to apply/remove validators based on mode
+    effect(() => {
+      const isRegister = this.isRegisterMode();
+      const emailControl = this.form.controls.email;
+
+      if (isRegister) {
+        // Enable async validator for email in register mode
+        emailControl.setAsyncValidators([emailUniqueValidator(500)]);
+      } else {
+        // Remove async validator in login mode
+        emailControl.clearAsyncValidators();
+      }
+      emailControl.updateValueAndValidity();
+    });
+  }
+
+  // =========================================================================
+  // Event handlers
+  // =========================================================================
+
+  protected onEmailBlur(): void {
+    this.emailTouched.set(true);
+  }
+
+  protected onPasswordBlur(): void {
+    this.passwordTouched.set(true);
+  }
+
+  protected onConfirmPasswordBlur(): void {
+    this.confirmPasswordTouched.set(true);
+  }
 
   protected onSubmit(): void {
-    this.clearErrors();
+    // Mark all as touched for validation display
+    this.emailTouched.set(true);
+    this.passwordTouched.set(true);
+    if (this.isRegisterMode()) {
+      this.confirmPasswordTouched.set(true);
+    }
 
-    if (!this.validateForm()) {
+    // Mark form as touched to trigger validation
+    this.form.markAllAsTouched();
+
+    // Check if form is valid
+    if (this.form.invalid || this.form.pending) {
       return;
     }
 
     const formData: AuthFormData = {
-      email: this.form.value.email ?? '',
-      password: this.form.value.password ?? ''
+      email: this.form.controls.email.value,
+      password: this.form.controls.password.value
     };
 
     if (this.isRegisterMode()) {
-      formData.confirmPassword = this.form.value.confirmPassword ?? '';
+      formData.confirmPassword = this.form.controls.confirmPassword.value;
     }
 
     this.formSubmit.emit(formData);
   }
 
-  private validateForm(): boolean {
-    let isValid = true;
-    const { email, password, confirmPassword } = this.form.controls;
-
-    // Email validation
-    if (email.hasError('required')) {
-      this.emailError.set('Email is required');
-      isValid = false;
-    } else if (email.hasError('email')) {
-      this.emailError.set('Please enter a valid email address');
-      isValid = false;
-    }
-
-    // Password validation
-    if (password.hasError('required')) {
-      this.passwordError.set('Password is required');
-      isValid = false;
-    } else if (password.hasError('minlength')) {
-      this.passwordError.set('Password must be at least 8 characters');
-      isValid = false;
-    }
-
-    // Confirm password validation (register mode only)
-    if (this.isRegisterMode()) {
-      if (!confirmPassword.value) {
-        this.confirmPasswordError.set('Please confirm your password');
-        isValid = false;
-      } else if (confirmPassword.value !== password.value) {
-        this.confirmPasswordError.set('Passwords do not match');
-        isValid = false;
-      }
-    }
-
-    return isValid;
-  }
-
-  private clearErrors(): void {
-    this.emailError.set('');
-    this.passwordError.set('');
-    this.confirmPasswordError.set('');
+  /**
+   * Reset the form to initial state.
+   * Useful after successful submission or mode change.
+   */
+  resetForm(): void {
+    this.form.reset();
+    this.emailTouched.set(false);
+    this.passwordTouched.set(false);
+    this.confirmPasswordTouched.set(false);
   }
 }

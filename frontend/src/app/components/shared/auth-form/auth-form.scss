@@ -276,3 +276,105 @@
 
   @include focus-visible;
 }
+
+// ---------------------------------------------------------------------------
+// FIELD WRAPPER & VALIDATION STATUS
+// ---------------------------------------------------------------------------
+
+.auth-form__field-wrapper {
+  position: relative;
+}
+
+.auth-form__field-status {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+
+  @include respond-to('md') {
+    right: 2rem;
+  }
+}
+
+.auth-form__status {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-medium);
+
+  &--pending {
+    color: var(--color-status-yellow);
+  }
+
+  &--valid {
+    color: var(--color-success);
+  }
+
+  &--invalid {
+    color: var(--color-error);
+  }
+}
+
+.auth-form__status-spinner {
+  display: inline-block;
+  width: 0.875rem;
+  height: 0.875rem;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.auth-form__status-text {
+  @include respond-below('md') {
+    @include visually-hidden;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// PASSWORD STRENGTH HINTS
+// ---------------------------------------------------------------------------
+
+.auth-form__password-hints {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  list-style: none;
+  padding: 0;
+  margin: -0.5rem 0 0.5rem;
+
+  @include respond-to('md') {
+    gap: 0.5rem 1.5rem;
+    margin: -1rem 0 0.5rem;
+  }
+}
+
+.auth-form__hint {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-medium);
+  transition: var(--transition-colors);
+
+  &--valid {
+    color: var(--color-success);
+  }
+
+  &--invalid {
+    color: var(--color-foreground);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// SUBMIT BUTTON STATES
+// ---------------------------------------------------------------------------
+
+.auth-form__submit--validating {
+  opacity: 0.8;
+  cursor: wait;
+}
