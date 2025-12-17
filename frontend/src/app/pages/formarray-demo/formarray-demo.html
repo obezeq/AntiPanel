@@ -193,37 +193,4 @@
       <pre class="formarray-demo__result-code">{{ submissionResult() }}</pre>
     </section>
   }
-
-  <!-- Documentation -->
-  <section class="formarray-demo__docs">
-    <h2 class="formarray-demo__docs-title">How FormArray Works</h2>
-    <div class="formarray-demo__docs-content">
-      <p>
-        <strong>FormArray</strong> is an Angular reactive forms construct that allows you to
-        manage a dynamic collection of form controls. Unlike FormGroup which has a fixed set of keys,
-        FormArray is an indexed array that can grow or shrink dynamically.
-      </p>
-      <h3>Key Concepts:</h3>
-      <ul>
-        <li><strong>Dynamic Items:</strong> Add or remove form controls at runtime</li>
-        <li><strong>Individual Validation:</strong> Each item in the array can have its own validators</li>
-        <li><strong>Array Index Access:</strong> Access controls by index using <code>formArrayName</code> and <code>formGroupName</code></li>
-        <li><strong>Iteration:</strong> Use <code>&#64;for</code> to iterate over items in the template</li>
-      </ul>
-      <h3>Code Example:</h3>
-      <pre class="formarray-demo__docs-code">// Create FormArray
-items = this.fb.array([
-  this.createItemGroup()
-]);
-
-// Add item
-this.items.push(this.createItemGroup());
-
-// Remove item
-this.items.removeAt(index);
-
-// Access controls
-this.items.controls as FormGroup[]</pre>
-    </div>
-  </section>
 </main>

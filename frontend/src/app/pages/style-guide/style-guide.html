@@ -34,7 +34,6 @@
       <li><a href="#layout" class="style-guide__toc-link">Layout</a></li>
       <li><a href="#modal" class="style-guide__toc-link">Modal</a></li>
       <li><a href="#auth-form" class="style-guide__toc-link">Auth Form</a></li>
-      <li><a href="#reactive-forms" class="style-guide__toc-link">Reactive Forms</a></li>
       <li><a href="#admin-orders" class="style-guide__toc-link">Admin Orders</a></li>
       <li><a href="#order-cards" class="style-guide__toc-link">Order Cards</a></li>
     </ul>
@@ -750,59 +749,6 @@
           mode="register"
           (formSubmit)="onAuthSubmit($event)"
         />
-      </section>
-    </article>
-  </section>
-
-  <!-- Reactive Forms Section -->
-  <section id="reactive-forms" class="style-guide__section">
-    <h2 class="style-guide__section-title">Reactive Forms</h2>
-    <p class="style-guide__section-desc">Advanced form validation patterns and FormArray demonstration</p>
-
-    <article class="style-guide__row">
-      <h3 class="style-guide__subtitle">Custom Validators</h3>
-      <section class="style-guide__validators">
-        <article class="style-guide__validator-card">
-          <h4 class="style-guide__validator-name">Password Strength</h4>
-          <p class="style-guide__validator-desc">
-            Validates password complexity: minimum 8 characters, uppercase, lowercase, number, and special character.
-          </p>
-          <code class="style-guide__validator-code">passwordStrengthValidator()</code>
-        </article>
-        <article class="style-guide__validator-card">
-          <h4 class="style-guide__validator-name">Password Match</h4>
-          <p class="style-guide__validator-desc">
-            Cross-field validator that ensures password and confirmation fields match.
-          </p>
-          <code class="style-guide__validator-code">passwordMatchValidator('password', 'confirmPassword')</code>
-        </article>
-        <article class="style-guide__validator-card">
-          <h4 class="style-guide__validator-name">Email Unique (Async)</h4>
-          <p class="style-guide__validator-desc">
-            Async validator that checks if email is already registered. Includes debounce to prevent excessive API calls.
-          </p>
-          <code class="style-guide__validator-code">emailUniqueValidator(500)</code>
-        </article>
-        <article class="style-guide__validator-card">
-          <h4 class="style-guide__validator-name">Custom Pattern</h4>
-          <p class="style-guide__validator-desc">
-            Generic pattern validator with configurable regex and error messages. Pre-built validators: phone, URL, slug.
-          </p>
-          <code class="style-guide__validator-code">customPatternValidator(&#123; pattern, errorKey, errorMessage &#125;)</code>
-        </article>
-      </section>
-    </article>
-
-    <article class="style-guide__row">
-      <h3 class="style-guide__subtitle">FormArray Demo</h3>
-      <p class="style-guide__desc">
-        FormArray allows dynamic form controls - add or remove items at runtime with individual validation.
-      </p>
-      <section class="style-guide__buttons">
-        <a href="/formarray" class="style-guide__link-button">
-          <ng-icon name="matOpenInNew" size="20" />
-          Open FormArray Demo Page
-        </a>
       </section>
     </article>
   </section>

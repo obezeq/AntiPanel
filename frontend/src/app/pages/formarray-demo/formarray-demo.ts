@@ -5,6 +5,7 @@ import {
   inject,
   signal
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import {
   NonNullableFormBuilder,
@@ -14,6 +15,7 @@ import {
   FormGroup
 } from '@angular/forms';
 import { NgIcon } from '@ng-icons/core';
+import { startWith } from 'rxjs';
 
 /**
  * Interface for a single item in the FormArray
@@ -78,12 +80,23 @@ export class FormArrayDemo {
   }
 
   /**
+   * Signal from form valueChanges to enable reactive computations.
+   * This is necessary because computed() doesn't react to form value changes directly.
+   */
+  private readonly formValues = toSignal(
+    this.form.valueChanges.pipe(startWith(this.form.getRawValue())),
+    { initialValue: this.form.getRawValue() }
+  );
+
+  /**
    * Computed: Calculate subtotal for each item (quantity * price)
+   * Now reactive to form value changes via formValues signal
    */
   protected readonly itemSubtotals = computed(() => {
-    return this.itemControls.map(group => {
-      const quantity = group.get('quantity')?.value || 0;
-      const price = group.get('price')?.value || 0;
+    const values = this.formValues();
+    return (values.items || []).map((item: ItemFormGroup) => {
+      const quantity = item.quantity || 0;
+      const price = item.price || 0;
       return quantity * price;
     });
   });
@@ -96,16 +109,23 @@ export class FormArrayDemo {
   });
 
   /**
+   * Signal to track items count for reactivity
+   */
+  protected readonly itemsCount = signal(1);
+
+  /**
    * Computed: Whether we can remove items (minimum 1 required)
    */
   protected readonly canRemoveItem = computed(() => {
-    return this.items.length > 1;
+    return this.itemsCount() > 1;
   });
 
   /**
    * Computed: Whether the form is valid
    */
   protected readonly isFormValid = computed(() => {
+    // Trigger recalculation when form values change
+    this.formValues();
     return this.form.valid;
   });
 
@@ -113,6 +133,8 @@ export class FormArrayDemo {
    * Computed: Count of valid items
    */
   protected readonly validItemsCount = computed(() => {
+    // Trigger recalculation when form values change
+    this.formValues();
     return this.itemControls.filter(group => group.valid).length;
   });
 
@@ -132,6 +154,7 @@ export class FormArrayDemo {
    */
   protected addItem(): void {
     this.items.push(this.createItemGroup());
+    this.itemsCount.set(this.items.length);
   }
 
   /**
@@ -141,6 +164,7 @@ export class FormArrayDemo {
   protected removeItem(index: number): void {
     if (this.items.length > 1) {
       this.items.removeAt(index);
+      this.itemsCount.set(this.items.length);
     }
   }
 
@@ -232,6 +256,7 @@ export class FormArrayDemo {
       quantity: 1,
       price: 0
     });
+    this.itemsCount.set(1);
     this.submitted.set(false);
     this.submissionResult.set('');
   }

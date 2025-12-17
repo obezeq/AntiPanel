@@ -93,18 +93,19 @@ export class AuthForm {
   /**
    * Reactive form with type-safe controls.
    * Using NonNullableFormBuilder for better type inference.
+   *
+   * Note: passwordStrengthValidator is added dynamically in register mode only.
+   * This allows login mode to work with any password (no strength requirements).
    */
   protected readonly form = this.fb.group(
     {
       email: ['', {
         validators: [Validators.required, Validators.email],
-        asyncValidators: [emailUniqueValidator(500)],
         updateOn: 'blur' as const
       }],
       password: ['', [
         Validators.required,
-        Validators.minLength(8),
-        passwordStrengthValidator()
+        Validators.minLength(8)
       ]],
       confirmPassword: ['']
     },
@@ -239,15 +240,28 @@ export class AuthForm {
     effect(() => {
       const isRegister = this.isRegisterMode();
       const emailControl = this.form.controls.email;
+      const passwordControl = this.form.controls.password;
 
       if (isRegister) {
         // Enable async validator for email in register mode
         emailControl.setAsyncValidators([emailUniqueValidator(500)]);
+        // Add password strength validator in register mode
+        passwordControl.setValidators([
+          Validators.required,
+          Validators.minLength(8),
+          passwordStrengthValidator()
+        ]);
       } else {
         // Remove async validator in login mode
         emailControl.clearAsyncValidators();
+        // Remove password strength validator in login mode (only required + minLength)
+        passwordControl.setValidators([
+          Validators.required,
+          Validators.minLength(8)
+        ]);
       }
       emailControl.updateValueAndValidity();
+      passwordControl.updateValueAndValidity();
     });
   }
 
