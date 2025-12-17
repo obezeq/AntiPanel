@@ -95,6 +95,7 @@
 
   &__details {
     @include flex-center;
+    justify-content: left;
     gap: var(--spacing-6);
     margin: 0;
     @include typography('h5', 'regular', 'primary');
