@@ -852,3 +852,77 @@
   border: var(--border-width-thin) solid var(--color-information);
   border-radius: var(--radius-lg);
 }
+
+// ---------------------------------------------------------------------------
+// REACTIVE FORMS / VALIDATORS
+// ---------------------------------------------------------------------------
+
+.style-guide__validators {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-4);
+
+  @include respond-to('md') {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.style-guide__validator-card {
+  background-color: var(--color-tiny-info);
+  border: var(--border-width-thin) solid var(--color-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-4);
+
+  @include respond-to('md') {
+    padding: var(--spacing-6);
+  }
+}
+
+.style-guide__validator-name {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  margin: 0 0 var(--spacing-2);
+}
+
+.style-guide__validator-desc {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-caption);
+  color: var(--color-foreground);
+  line-height: var(--line-height-relaxed);
+  margin: 0 0 var(--spacing-3);
+}
+
+.style-guide__validator-code {
+  display: block;
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-small);
+  color: var(--color-stats-blue);
+  background-color: var(--color-background);
+  padding: var(--spacing-2) var(--spacing-3);
+  border-radius: var(--radius-sm);
+  word-break: break-all;
+}
+
+.style-guide__link-button {
+  @include reset-button;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3) var(--spacing-6);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  background-color: var(--color-information);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: var(--transition-colors);
+
+  &:hover {
+    background-color: var(--color-secondary);
+  }
+
+  @include focus-visible;
+}
