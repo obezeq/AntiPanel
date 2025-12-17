@@ -775,6 +775,74 @@ ports:
   - "8081:8080"  # Mapear a otro puerto
 ```
 
+### **Error: "bind: address already in use" en PostgreSQL (puerto 5432)**
+
+Este error ocurre frecuentemente después de reiniciar el PC, cuando tienes **PostgreSQL instalado localmente** además de Docker:
+
+```
+Error response from daemon: driver failed programming external connectivity on endpoint antipanel-postgres:
+failed to bind port 0.0.0.0:5432/tcp: Error starting userland proxy: listen tcp4 0.0.0.0:5432: bind: address already in use
+```
+
+**Solución 1: Detener PostgreSQL local (Recomendado)**
+
+```bash
+# Linux (Ubuntu/Debian)
+sudo systemctl stop postgresql
+sudo systemctl disable postgresql   # Evita que arranque automáticamente
+
+# Para volver a habilitarlo después:
+sudo systemctl enable postgresql
+sudo systemctl start postgresql
+```
+
+```powershell
+# Windows (PowerShell como Administrador)
+Stop-Service postgresql-x64-16    # Ajusta el número de versión (14, 15, 16...)
+Set-Service postgresql-x64-16 -StartupType Disabled
+```
+
+```bash
+# macOS (Homebrew)
+brew services stop postgresql
+brew services stop postgresql@16  # Si instalaste una versión específica
+```
+
+**Solución 2: Ver qué proceso usa el puerto 5432**
+
+```bash
+# Linux/Mac
+sudo lsof -i :5432
+# o
+sudo ss -tlnp | grep 5432
+
+# Windows (PowerShell)
+Get-NetTCPConnection -LocalPort 5432 | Select-Object OwningProcess
+Get-Process -Id <PID>
+```
+
+**Solución 3: Cambiar el puerto de PostgreSQL en Docker**
+
+Si prefieres mantener PostgreSQL local activo, edita `docker-compose.dev.yml`:
+
+```yaml
+postgres:
+  ports:
+    - "5433:5432"  # Mapear a puerto 5433 en el host
+```
+
+Y actualiza tus herramientas (pgAdmin, DBeaver, etc.) para conectar al puerto `5433`.
+
+**Solución 4: Matar el proceso manualmente (último recurso)**
+
+```bash
+# Linux/Mac - Matar proceso en puerto 5432
+sudo fuser -k 5432/tcp
+
+# O encontrar el PID y matarlo
+sudo lsof -i :5432 -t | xargs sudo kill -9
+```
+
 ### **Error: "Cannot connect to database"**
 
 ```bash
