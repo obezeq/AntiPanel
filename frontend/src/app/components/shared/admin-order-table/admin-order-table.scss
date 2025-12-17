@@ -3,12 +3,13 @@
 // ==========================================================================
 // Table component for displaying admin orders with expandable rows.
 // Based on Figma design with semantic HTML table structure.
+// Uses CSS Grid on ROWS (not table) for proper layout.
 // ==========================================================================
 
 @use '../../../../styles/01-tools/mixins' as *;
 
 // ---------------------------------------------------------------------------
-// TABLE BASE
+// TABLE BASE - NOT grid, just a container
 // ---------------------------------------------------------------------------
 
 .admin-orders {
@@ -28,7 +29,20 @@
   background-color: var(--color-tiny-info);
 }
 
-.admin-orders__header-row {
+// ---------------------------------------------------------------------------
+// BODY
+// ---------------------------------------------------------------------------
+
+.admin-orders__body {
+  display: contents;
+}
+
+// ---------------------------------------------------------------------------
+// ROWS - Apply grid HERE (not on table)
+// ---------------------------------------------------------------------------
+
+.admin-orders__header-row,
+.admin-orders__row {
   display: grid;
   grid-template-columns:
     6.5rem           // STATUS (104px)
@@ -44,6 +58,25 @@
   align-items: center;
 }
 
+.admin-orders__row {
+  background-color: var(--color-background);
+  cursor: pointer;
+  transition: var(--transition-colors);
+  box-shadow: inset 0 -1px 0 var(--color-foreground);
+
+  &:hover {
+    background-color: var(--color-tiny-info);
+  }
+}
+
+.admin-orders__row--expanded {
+  box-shadow: inset 0 -1px 0 var(--color-secondary);
+}
+
+// ---------------------------------------------------------------------------
+// HEADER CELLS
+// ---------------------------------------------------------------------------
+
 .admin-orders__th {
   padding: var(--spacing-4);
   font-family: var(--font-primary);
@@ -53,6 +86,7 @@
   text-align: center;
   text-transform: uppercase;
   white-space: nowrap;
+  border-bottom: none; // Override global _base.scss style
 
   &:first-child {
     border-start-start-radius: var(--radius-md);
@@ -64,43 +98,7 @@
 }
 
 // ---------------------------------------------------------------------------
-// BODY ROWS
-// ---------------------------------------------------------------------------
-
-.admin-orders__body {
-  display: contents;
-}
-
-.admin-orders__row {
-  display: grid;
-  grid-template-columns:
-    6.5rem           // STATUS
-    5.5rem           // ORDER ID
-    6rem             // USER
-    12rem            // SERVICE
-    1fr              // LINK
-    5.5rem           // QTY
-    4rem             // COST
-    4rem             // SALE
-    4rem             // PROFIT
-    6.5rem;          // ACTIONS
-  align-items: center;
-  background-color: var(--color-background);
-  border-block-end: var(--border-width-medium) solid var(--color-foreground);
-  cursor: pointer;
-  transition: var(--transition-colors);
-
-  &:hover {
-    background-color: var(--color-tiny-info);
-  }
-}
-
-.admin-orders__row--expanded {
-  border-block-end-color: var(--color-secondary);
-}
-
-// ---------------------------------------------------------------------------
-// TABLE CELLS
+// DATA CELLS
 // ---------------------------------------------------------------------------
 
 .admin-orders__td {
@@ -115,6 +113,7 @@
   color: var(--color-text);
   text-align: center;
   min-block-size: 3.5rem;
+  border-bottom: none; // Override global _base.scss style
 }
 
 // Two-line cell styles
@@ -199,9 +198,9 @@
 // ---------------------------------------------------------------------------
 
 .admin-orders__expanded-row {
-  display: table-row;
+  display: block;
   background-color: var(--color-background);
-  border-block-end: var(--border-width-medium) solid var(--color-foreground);
+  box-shadow: inset 0 -1px 0 var(--color-foreground);
 }
 
 .admin-orders__expanded-content {
@@ -248,7 +247,7 @@
 }
 
 // ---------------------------------------------------------------------------
-// RESPONSIVE
+// RESPONSIVE - XL (< 1280px) - 6 columns
 // ---------------------------------------------------------------------------
 
 @include respond-below('xl') {
@@ -274,6 +273,10 @@
     display: none;
   }
 }
+
+// ---------------------------------------------------------------------------
+// RESPONSIVE - LG (< 1024px) - 5 columns
+// ---------------------------------------------------------------------------
 
 @include respond-below('lg') {
   .admin-orders__header-row,

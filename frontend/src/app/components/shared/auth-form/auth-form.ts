@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { NgIcon } from '@ng-icons/core';
 import { FormInput } from '../form-input/form-input';
 
 export type AuthFormMode = 'login' | 'register';
@@ -24,7 +25,7 @@ export interface AuthFormData {
   templateUrl: './auth-form.html',
   styleUrl: './auth-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, RouterLink, FormInput]
+  imports: [ReactiveFormsModule, RouterLink, NgIcon, FormInput]
 })
 export class AuthForm {
   private readonly fb = inject(FormBuilder);

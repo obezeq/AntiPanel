@@ -4,11 +4,12 @@
 // FOOTER COMPONENT
 // ==========================================================================
 // Site footer with branding, navigation links, and back to top button.
+// Design matches Figma (nodes 1024:6672 and 1300:2264)
 // ==========================================================================
 
 .footer {
   background-color: var(--color-background);
-  border-top: var(--border-width-thin) solid var(--color-information);
+  border-block-start: var(--border-width-thin) solid var(--color-information);
   padding: var(--spacing-8) var(--spacing-6);
 
   @include respond-to('lg') {
@@ -21,13 +22,15 @@
   flex-direction: column;
   align-items: center;
   gap: var(--spacing-6);
-  max-width: var(--container-max-width);
+  max-inline-size: var(--container-max-width);
   margin-inline: auto;
+  text-align: center;
 
   @include respond-to('md') {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    text-align: start;
   }
 }
 
@@ -44,7 +47,7 @@
 
   @include respond-to('md') {
     align-items: flex-start;
-    text-align: left;
+    text-align: start;
   }
 }
 
@@ -56,17 +59,19 @@
 
 .footer__logo-text {
   font-family: var(--font-primary);
-  font-size: var(--font-size-h6);
+  font-size: var(--font-size-h3);
   font-weight: var(--font-weight-bold);
-  color: var(--color-text);
-  letter-spacing: 0.1em;
+  color: var(--color-high-contrast);
   text-transform: uppercase;
+  line-height: 1.15;
 }
 
 .footer__copyright {
   font-family: var(--font-secondary);
-  font-size: var(--font-size-small);
-  color: var(--color-foreground);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-high-contrast);
+  line-height: 1.15;
 }
 
 // ---------------------------------------------------------------------------
@@ -75,13 +80,12 @@
 
 .footer__nav-list {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--spacing-4) var(--spacing-6);
-
-  @include respond-to('md') {
-    gap: var(--spacing-8);
-  }
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .footer__nav-item {
@@ -90,14 +94,16 @@
 
 .footer__nav-link {
   font-family: var(--font-primary);
-  font-size: var(--font-size-caption);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-foreground);
+  font-size: var(--font-size-h6);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-high-contrast);
   text-decoration: none;
+  text-transform: uppercase;
+  line-height: 1.15;
   transition: var(--transition-colors);
 
   &:hover {
-    color: var(--color-text);
+    color: var(--color-foreground);
   }
 
   @include focus-visible;
@@ -111,20 +117,18 @@
   @include reset-button;
   display: flex;
   align-items: center;
-  gap: var(--spacing-2);
-  padding: var(--spacing-2) var(--spacing-4);
+  gap: var(--spacing-4);
   font-family: var(--font-primary);
-  font-size: var(--font-size-small);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-foreground);
-  background-color: var(--color-tiny-info);
-  border: var(--border-width-thin) solid var(--color-information);
-  border-radius: var(--radius-lg);
+  font-size: var(--font-size-h6);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-high-contrast);
+  text-transform: uppercase;
+  line-height: 1.15;
   transition: var(--transition-colors);
+  flex-shrink: 0;
 
   &:hover {
-    color: var(--color-text);
-    border-color: var(--color-secondary);
+    color: var(--color-foreground);
   }
 
   @include focus-visible;
@@ -132,6 +136,8 @@
 
 .footer__back-to-top-icon {
   display: flex;
+  font-family: var(--font-secondary);
+  font-weight: var(--font-weight-semibold);
 }
 
 .footer__back-to-top-text {

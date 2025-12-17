@@ -24,6 +24,7 @@ import {
   matVisibilityOff,
   matArrowBack,
   matArrowForward,
+  matArrowUpward,
   matRefresh,
   matAccountBalanceWallet,
   // Stats card icons
@@ -44,7 +45,8 @@ import {
   iconoirSpotify,
   iconoirTelegram,
   iconoirDiscord,
-  iconoirLinkedin
+  iconoirLinkedin,
+  iconoirFlash
 } from '@ng-icons/iconoir';
 import { simpleSnapchat } from '@ng-icons/simple-icons';
 
@@ -78,6 +80,7 @@ export const appConfig: ApplicationConfig = {
       matVisibilityOff,
       matArrowBack,
       matArrowForward,
+      matArrowUpward,
       matRefresh,
       matAccountBalanceWallet,
       // Material Icons - Stats Cards
@@ -98,6 +101,8 @@ export const appConfig: ApplicationConfig = {
       iconoirTelegram,
       iconoirDiscord,
       iconoirLinkedin,
+      // Iconoir - Utility
+      iconoirFlash,
       // Simple Icons - Brand logos
       simpleSnapchat
     })

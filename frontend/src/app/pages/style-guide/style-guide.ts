@@ -133,20 +133,48 @@ export class StyleGuide implements OnInit {
     { icon: 'matQueryStats', title: 'STATUS', value: '33', label: 'This month' }
   ];
 
-  // Color palette
+  // Color palette with descriptions
   protected readonly colors = [
-    { name: 'Background', variable: '--color-background', hex: '#0A0A0A' },
-    { name: 'Text', variable: '--color-text', hex: '#FAFAFA' },
-    { name: 'High Contrast', variable: '--color-high-contrast', hex: '#FFFFFF' },
-    { name: 'Foreground', variable: '--color-foreground', hex: '#A1A1A1' },
-    { name: 'Secondary', variable: '--color-secondary', hex: '#666666' },
-    { name: 'Information', variable: '--color-information', hex: '#393939' },
-    { name: 'Tiny Info', variable: '--color-tiny-info', hex: '#1C1C1C' },
-    { name: 'Success', variable: '--color-success', hex: '#00DC33' },
-    { name: 'Error', variable: '--color-error', hex: '#FF4444' },
-    { name: 'Status Yellow', variable: '--color-status-yellow', hex: '#F0B100' },
-    { name: 'Stats Blue', variable: '--color-stats-blue', hex: '#00A5FF' }
+    { name: 'Background', variable: '--color-background', hex: '#0A0A0A', description: 'The foundation. Creates depth and provides contrast for all interface elements.' },
+    { name: 'Text', variable: '--color-text', hex: '#FAFAFA', description: 'Primary content. Ensures readability across all contexts.' },
+    { name: 'High Contrast', variable: '--color-high-contrast', hex: '#FFFFFF', description: 'Maximum emphasis. Reserved for critical actions and focal points.' },
+    { name: 'Foreground', variable: '--color-foreground', hex: '#A1A1A1', description: 'Secondary content. Descriptions, captions, and supporting information.' },
+    { name: 'Secondary', variable: '--color-secondary', hex: '#666666', description: 'Subtle elements. Borders, dividers, and inactive states.' },
+    { name: 'Information', variable: '--color-information', hex: '#393939', description: 'Neutral surfaces. Input fields, cards, and containers.' },
+    { name: 'Tiny Info', variable: '--color-tiny-info', hex: '#1C1C1C', description: 'Subtle backgrounds. Hover states and grouped sections.' },
+    { name: 'Success', variable: '--color-success', hex: '#00DC33', description: 'Positive feedback. Confirmations, completed actions, and valid states.' },
+    { name: 'Error', variable: '--color-error', hex: '#FF4444', description: 'Critical alerts. Errors, warnings, and destructive actions.' },
+    { name: 'Status Yellow', variable: '--color-status-yellow', hex: '#F0B100', description: 'Pending states. In-progress items and cautionary notices.' },
+    { name: 'Stats Blue', variable: '--color-stats-blue', hex: '#00A5FF', description: 'Informational highlights. Links, stats, and interactive elements.' }
   ];
+
+  // Copy toast state
+  protected readonly showCopyToast = signal(false);
+  protected readonly copiedColor = signal('');
+  protected readonly toastPosition = signal({ x: 0, y: 0 });
+
+  // Copy color hex to clipboard with toast notification
+  protected copyColorToClipboard(hex: string, event: Event): void {
+    if (!this.isBrowser) return;
+    navigator.clipboard.writeText(hex);
+
+    // Set toast position - use mouse position or element center for keyboard
+    if (event instanceof MouseEvent) {
+      this.toastPosition.set({ x: event.clientX, y: event.clientY });
+    } else {
+      const target = event.target as HTMLElement;
+      const rect = target.getBoundingClientRect();
+      this.toastPosition.set({ x: rect.left + rect.width / 2, y: rect.top });
+    }
+
+    this.copiedColor.set(hex);
+    this.showCopyToast.set(true);
+
+    // Hide toast after animation
+    setTimeout(() => {
+      this.showCopyToast.set(false);
+    }, 1500);
+  }
 
   // Typography scale
   protected readonly typographySizes = [
@@ -163,12 +191,50 @@ export class StyleGuide implements OnInit {
     { name: 'Tiny', size: '10px', variable: '--font-size-tiny' }
   ];
 
+  // Font weights with professional descriptions
+  protected readonly fontWeights = [
+    {
+      name: 'Light',
+      weight: 300,
+      variable: '--font-weight-light',
+      description: 'Elegant display. Large headlines and decorative text where subtlety creates sophistication.'
+    },
+    {
+      name: 'Regular',
+      weight: 400,
+      variable: '--font-weight-regular',
+      description: 'Body text. The baseline for comfortable extended reading and general content.'
+    },
+    {
+      name: 'Medium',
+      weight: 500,
+      variable: '--font-weight-medium',
+      description: 'Subtle emphasis. Labels and secondary information that needs distinction without dominance.'
+    },
+    {
+      name: 'Semibold',
+      weight: 600,
+      variable: '--font-weight-semibold',
+      description: 'Interface elements. Navigation, buttons, and interactive components that guide action.'
+    },
+    {
+      name: 'Bold',
+      weight: 700,
+      variable: '--font-weight-bold',
+      description: 'Primary hierarchy. Headlines and key information that anchors the visual structure.'
+    },
+    {
+      name: 'Extrabold',
+      weight: 800,
+      variable: '--font-weight-extrabold',
+      description: 'Maximum impact. Hero sections and statements that demand immediate attention.'
+    }
+  ];
+
   // Sidebar demo items
   protected readonly sidebarItems: SidebarItem[] = [
     { label: 'Dashboard', path: '/admin' },
-    { label: 'Orders', path: '/admin/orders' },
-    { label: 'Users', path: '/admin/users' },
-    { label: 'Services', path: '/admin/services' }
+    { label: 'Orders', path: '/admin/orders' }
   ];
 
   // Modal state

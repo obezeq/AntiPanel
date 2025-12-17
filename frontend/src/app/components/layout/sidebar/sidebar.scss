@@ -5,21 +5,22 @@
 // ==========================================================================
 // Admin sidebar navigation with responsive behavior.
 // Fixed on mobile, sticky on desktop.
+// Design matches Figma (node 1020:1140)
 // ==========================================================================
 
 .sidebar {
   background-color: var(--color-background);
-  border-right: var(--border-width-thin) solid var(--color-information);
+  border-inline-end: var(--border-width-thin) solid var(--color-information);
   padding: var(--spacing-6);
-  height: 100%;
+  block-size: 100%;
 
   @include respond-below('lg') {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 17.5rem; // 280px
-    height: 100vh;
-    height: 100dvh;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    inline-size: 17.5rem;
+    block-size: 100vh;
+    block-size: 100dvh;
     z-index: var(--z-fixed);
     transform: translateX(-100%);
     transition: transform var(--transition-base);
@@ -32,9 +33,9 @@
 
   @include respond-to('lg') {
     position: sticky;
-    top: 0;
-    height: 100vh;
-    height: 100dvh;
+    inset-block-start: 0;
+    block-size: 100vh;
+    block-size: 100dvh;
     overflow-y: auto;
   }
 
@@ -46,18 +47,16 @@
 // ---------------------------------------------------------------------------
 
 .sidebar__header {
-  margin-bottom: var(--spacing-8);
-  padding-bottom: var(--spacing-4);
-  border-bottom: var(--border-width-thin) solid var(--color-information);
+  margin-block-end: var(--spacing-8);
 }
 
 .sidebar__title {
   font-family: var(--font-primary);
-  font-size: var(--font-size-h5);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text);
-  letter-spacing: 0.15em;
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-high-contrast);
   text-transform: uppercase;
+  line-height: 1.15;
 }
 
 // ---------------------------------------------------------------------------
@@ -67,49 +66,40 @@
 .sidebar__list {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-1);
+  gap: var(--spacing-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .sidebar__item {
   list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .sidebar__link {
   display: flex;
   align-items: center;
-  gap: var(--spacing-3);
+  gap: var(--spacing-4);
+  inline-size: 12.5rem;
   padding: var(--spacing-3) var(--spacing-4);
   font-family: var(--font-primary);
   font-size: var(--font-size-body);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-foreground);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-high-contrast);
   text-decoration: none;
+  text-transform: uppercase;
   border-radius: var(--radius-md);
   transition: var(--transition-colors), background-color var(--transition-fast);
 
   &:hover {
-    color: var(--color-text);
-    background-color: var(--color-tiny-info);
+    background-color: var(--color-information);
   }
 
   &.sidebar__link--active {
-    color: var(--color-text);
-    background-color: var(--color-tiny-info);
-    font-weight: var(--font-weight-semibold);
-
-    // Left accent bar
-    position: relative;
-
-    &::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: var(--spacing-2);
-      bottom: var(--spacing-2);
-      width: 3px;
-      background-color: var(--color-success);
-      border-radius: var(--radius-full);
-    }
+    color: var(--color-secondary);
+    background-color: var(--color-high-contrast);
   }
 
   @include focus-visible;
@@ -119,9 +109,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 1.25rem; // 20px
-  height: 1.25rem;
-  color: currentColor;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  flex-shrink: 0;
 }
 
 .sidebar__label {

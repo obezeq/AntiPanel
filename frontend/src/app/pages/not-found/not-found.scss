@@ -48,6 +48,7 @@
     rgba(var(--color-stats-blue-rgb), 0.08) 50%,
     transparent 75%
   );
+  animation: opacity 2s ease;
 }
 
 // Grid pattern overlay with radial mask for edge fade
@@ -97,6 +98,9 @@
   letter-spacing: 0.075em;
   margin: 0;
 
+  animation: grow 1s ease-in-out forwards;
+  transform-origin: center;
+
   @include respond-below('lg') {
     font-size: 10rem; // 160px
   }
@@ -110,6 +114,17 @@
   }
 }
 
+@keyframes grow {
+  from {
+    transform: scale(0.33);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 // Blue subtitle
 .not-found__subtitle {
   font-family: var(--font-primary);
@@ -118,6 +133,8 @@
   line-height: var(--line-height-tight);
   color: var(--color-stats-blue);
   margin: 0;
+
+  animation: opacity 1s ease-in;
 
   @include respond-below('lg') {
     font-size: var(--font-size-h3); // 48px
@@ -132,6 +149,15 @@
   }
 }
 
+@keyframes opacity {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 // ---------------------------------------------------------------------------
 // EXPLORE SECTION
 // ---------------------------------------------------------------------------
@@ -141,6 +167,7 @@
   flex-direction: column;
   align-items: center;
   gap: var(--spacing-8);
+  animation: opacity 1s ease-in;
 }
 
 .not-found__description {
@@ -190,12 +217,14 @@
 
 .not-found__link {
   font-family: var(--font-primary);
-  font-size: var(--font-size-h4); // 32px / 2rem
+  font-size: var(--font-size-h4);
   font-weight: var(--font-weight-bold);
   line-height: var(--line-height-tight);
   color: var(--color-text);
   text-decoration: none;
   transition: var(--transition-colors);
+  opacity: 0;
+  animation: appearFromBottom 1s ease-out forwards;
 
   &:hover {
     color: var(--color-stats-blue);
@@ -203,15 +232,36 @@
 
   @include focus-visible;
 
+  /* Staggered delays for left-to-right sequence */
+  &:nth-child(1) {
+    animation-delay: 0.2s; /* First link */
+  }
+  &:nth-child(2) {
+    animation-delay: 0.4s;
+  }
+  &:nth-child(3) {
+    animation-delay: 0.6s;
+  }
+  /* Add more if needed for additional links */
+
   @include respond-below('lg') {
     font-size: var(--font-size-h5); // 24px
   }
-
   @include respond-below('md') {
     font-size: var(--font-size-h6); // 20px
   }
-
   @include respond-below('sm') {
     font-size: var(--font-size-body); // 16px
+  }
+}
+
+@keyframes appearFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

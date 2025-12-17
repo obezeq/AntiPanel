@@ -37,6 +37,32 @@
       [class.header__nav--open]="isMobileMenuOpen()"
       aria-label="Main navigation"
     >
+      <!-- Close button for mobile sidebar -->
+      <button
+        type="button"
+        class="header__nav-close"
+        (click)="closeMobileMenu()"
+        aria-label="Cerrar menú de navegación"
+      >
+        <svg
+          class="header__nav-close-icon"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <path
+            d="M18 6L6 18M6 6L18 18"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+
       <ul class="header__nav-list" role="list">
         @for (item of navItems(); track item.path) {
           <li class="header__nav-item">
@@ -52,6 +78,34 @@
           </li>
         }
       </ul>
+
+      <!-- Mobile-only: Wallet and Profile options (visible on md breakpoint) -->
+      @if (isAuthenticated() && variant() !== 'admin') {
+        <div class="header__mobile-actions">
+          <button
+            type="button"
+            class="header__mobile-wallet"
+            (click)="onWalletClick(); closeMobileMenu()"
+            [attr.aria-label]="'Wallet: ' + walletBalance()"
+          >
+            WALLET: {{ walletBalance() }}
+          </button>
+          <a
+            routerLink="/orders"
+            class="header__mobile-link"
+            (click)="closeMobileMenu()"
+          >
+            ORDERS
+          </a>
+          <button
+            type="button"
+            class="header__mobile-link"
+            (click)="onLogoutClick(); closeMobileMenu()"
+          >
+            LOG OUT
+          </button>
+        </div>
+      }
     </nav>
   }
 
@@ -171,7 +225,7 @@
     @if (showNavigation()) {
       <button
         type="button"
-        class="header__menu-toggle hide-desktop"
+        class="header__menu-toggle hide-desktop-lg"
         [class.header__menu-toggle--open]="isMobileMenuOpen()"
         (click)="toggleMobileMenu()"
         [attr.aria-expanded]="isMobileMenuOpen()"
@@ -190,7 +244,7 @@
   <!-- Mobile Overlay -->
   @if (isMobileMenuOpen()) {
     <div
-      class="header__overlay hide-desktop"
+      class="header__overlay hide-desktop-lg"
       (click)="closeMobileMenu()"
       aria-hidden="true"
     ></div>

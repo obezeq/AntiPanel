@@ -19,9 +19,7 @@
             (click)="onItemClick()"
           >
             @if (item.icon) {
-              <span class="sidebar__icon" aria-hidden="true">
-                <!-- Icon placeholder - will be replaced with ngicons -->
-              </span>
+              <ng-icon [name]="item.icon" class="sidebar__icon" aria-hidden="true" />
             }
             <span class="sidebar__label">{{ item.label }}</span>
           </a>

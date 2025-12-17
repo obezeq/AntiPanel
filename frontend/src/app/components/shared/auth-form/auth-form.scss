@@ -245,24 +245,18 @@
 
 .auth-form__switch {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.5rem;
+  gap: 2rem; // 32px gap según Figma
+  padding: 0.5rem 2rem; // 8px 32px
   font-family: var(--font-primary);
-  font-size: 1rem;
+  font-size: 1.5rem; // 24px según Figma
   font-weight: var(--font-weight-semibold);
   color: var(--color-text);
   line-height: 1.15;
   margin: 0;
-  text-align: center;
-
-  @include respond-to('md') {
-    gap: 2rem; // 32px gap según Figma
-    padding: 0.5rem 2rem; // 8px 32px
-    font-size: 1.5rem; // 24px
-  }
+  white-space: nowrap; // Mantener en una línea
 }
 
 .auth-form__switch-text {

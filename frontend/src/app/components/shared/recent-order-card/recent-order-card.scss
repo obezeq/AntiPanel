@@ -72,7 +72,7 @@
 
   &__info {
     @include flex-column;
-    justify-content: center;
+    justify-content: left;
     gap: var(--spacing-1);
   }
 

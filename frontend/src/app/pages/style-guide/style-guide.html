@@ -17,48 +17,165 @@
     </button>
   </section>
 
+  <!-- Table of Contents -->
+  <nav class="style-guide__toc" aria-label="Table of contents">
+    <h3 class="style-guide__toc-title">Contents</h3>
+    <ul class="style-guide__toc-list" role="list">
+      <li><a href="#colors" class="style-guide__toc-link">Colors</a></li>
+      <li><a href="#typography" class="style-guide__toc-link">Typography</a></li>
+      <li><a href="#buttons" class="style-guide__toc-link">Buttons</a></li>
+      <li><a href="#alerts" class="style-guide__toc-link">Alerts</a></li>
+      <li><a href="#forms" class="style-guide__toc-link">Form Elements</a></li>
+      <li><a href="#cards" class="style-guide__toc-link">Cards</a></li>
+      <li><a href="#service-items" class="style-guide__toc-link">Service Items</a></li>
+      <li><a href="#order-input" class="style-guide__toc-link">Order Input</a></li>
+      <li><a href="#order-ready" class="style-guide__toc-link">Order Ready</a></li>
+      <li><a href="#icons" class="style-guide__toc-link">Icons</a></li>
+      <li><a href="#layout" class="style-guide__toc-link">Layout</a></li>
+      <li><a href="#modal" class="style-guide__toc-link">Modal</a></li>
+      <li><a href="#auth-form" class="style-guide__toc-link">Auth Form</a></li>
+      <li><a href="#admin-orders" class="style-guide__toc-link">Admin Orders</a></li>
+      <li><a href="#order-cards" class="style-guide__toc-link">Order Cards</a></li>
+    </ul>
+  </nav>
+
+  <!-- Copy Toast Notification -->
+  @if (showCopyToast()) {
+    <aside
+      class="style-guide__toast"
+      [style.left.px]="toastPosition().x"
+      [style.top.px]="toastPosition().y"
+      role="status"
+      aria-live="polite"
+    >
+      <span class="style-guide__toast-icon">✓</span>
+      <span class="style-guide__toast-text">Copied {{ copiedColor() }}</span>
+    </aside>
+  }
+
   <!-- Colors Section -->
-  <section class="style-guide__section">
+  <section id="colors" class="style-guide__section">
     <h2 class="style-guide__section-title">Colors</h2>
-    <p class="style-guide__section-desc">Dark mode color palette</p>
+    <p class="style-guide__section-desc">Dark mode color palette. Click any color to copy its hex value.</p>
+
+    <blockquote class="style-guide__brand-statement">
+      <p>AntiPanel embraces darkness as its foundation. Where traditional panels overwhelm with visual noise, we strip away distractions. Our monochromatic palette creates depth through subtle gradations—from pure black to soft grays—allowing content to breathe and actions to speak clearly. Accent colors are used with surgical precision: green confirms, red alerts, yellow indicates progress, and blue guides. This is the anti-panel aesthetic: minimal, confident, and unapologetically focused.</p>
+    </blockquote>
 
     <ul class="style-guide__colors" role="list">
       @for (color of colors; track color.variable) {
-        <li class="style-guide__color">
+        <li
+          class="style-guide__color"
+          (click)="copyColorToClipboard(color.hex, $event)"
+          role="button"
+          tabindex="0"
+          [attr.aria-label]="'Copy ' + color.name + ' color: ' + color.hex"
+          (keydown.enter)="copyColorToClipboard(color.hex, $event)"
+          (keydown.space)="copyColorToClipboard(color.hex, $event)"
+        >
           <figure
             class="style-guide__color-swatch"
             [style.backgroundColor]="'var(' + color.variable + ')'"
           ></figure>
           <p class="style-guide__color-name">{{ color.name }}</p>
           <code class="style-guide__color-value">{{ color.hex }}</code>
+          <p class="style-guide__color-desc">{{ color.description }}</p>
         </li>
       }
     </ul>
   </section>
 
   <!-- Typography Section -->
-  <section class="style-guide__section">
+  <section id="typography" class="style-guide__section">
     <h2 class="style-guide__section-title">Typography</h2>
-    <p class="style-guide__section-desc">Montserrat (primary) + IBM Plex Mono (secondary)</p>
+    <p class="style-guide__section-desc">Two font families for distinct purposes</p>
 
-    <ul class="style-guide__typography" role="list">
-      @for (size of typographySizes; track size.variable) {
-        <li class="style-guide__type-row">
-          <span
-            class="style-guide__type-sample"
-            [style.fontSize]="'var(' + size.variable + ')'"
-          >
-            Aa
-          </span>
-          <span class="style-guide__type-name">{{ size.name }}</span>
-          <code class="style-guide__type-size">{{ size.size }}</code>
-        </li>
-      }
-    </ul>
+    <!-- Font Families -->
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Font Families</h3>
+      <section class="style-guide__font-families">
+        <article class="style-guide__font-card">
+          <h4 class="style-guide__font-name style-guide__font-name--primary">Montserrat</h4>
+          <p class="style-guide__font-role">Primary</p>
+          <p class="style-guide__font-desc">Headlines, navigation, buttons, and UI elements. Use for content that demands attention and clarity.</p>
+          <p class="style-guide__font-sample style-guide__font-sample--primary">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>abcdefghijklmnopqrstuvwxyz<br>0123456789</p>
+        </article>
+        <article class="style-guide__font-card">
+          <h4 class="style-guide__font-name style-guide__font-name--secondary">IBM Plex Mono</h4>
+          <p class="style-guide__font-role">Secondary</p>
+          <p class="style-guide__font-desc">Numeric data, prices, codes, and technical information. Use for content that requires precision and tabular alignment.</p>
+          <p class="style-guide__font-sample style-guide__font-sample--secondary">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>abcdefghijklmnopqrstuvwxyz<br>0123456789</p>
+        </article>
+      </section>
+    </article>
+
+    <!-- Monospace Examples -->
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Monospace in Action</h3>
+      <section class="style-guide__mono-examples">
+        <figure class="style-guide__mono-example">
+          <figcaption>Prices</figcaption>
+          <span class="style-guide__mono-value">$1,234.56</span>
+        </figure>
+        <figure class="style-guide__mono-example">
+          <figcaption>Order IDs</figcaption>
+          <span class="style-guide__mono-value">#000001</span>
+        </figure>
+        <figure class="style-guide__mono-example">
+          <figcaption>Quantities</figcaption>
+          <span class="style-guide__mono-value">10,000</span>
+        </figure>
+        <figure class="style-guide__mono-example">
+          <figcaption>Percentages</figcaption>
+          <span class="style-guide__mono-value">93%</span>
+        </figure>
+      </section>
+    </article>
+
+    <!-- Font Weights -->
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Font Weights</h3>
+      <section class="style-guide__weights">
+        @for (weight of fontWeights; track weight.variable) {
+          <article class="style-guide__weight-card">
+            <div class="style-guide__weight-left">
+              <span
+                class="style-guide__weight-sample"
+                [style.fontWeight]="weight.weight"
+              >
+                Aa
+              </span>
+              <h4 class="style-guide__weight-name">{{ weight.name }}</h4>
+              <code class="style-guide__weight-value">{{ weight.weight }}</code>
+            </div>
+            <p class="style-guide__weight-desc">{{ weight.description }}</p>
+          </article>
+        }
+      </section>
+    </article>
+
+    <!-- Type Scale -->
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Type Scale</h3>
+      <ul class="style-guide__typography" role="list">
+        @for (size of typographySizes; track size.variable) {
+          <li class="style-guide__type-row">
+            <span
+              class="style-guide__type-sample"
+              [style.fontSize]="'var(' + size.variable + ')'"
+            >
+              Aa
+            </span>
+            <span class="style-guide__type-name">{{ size.name }}</span>
+            <code class="style-guide__type-size">{{ size.size }}</code>
+          </li>
+        }
+      </ul>
+    </article>
   </section>
 
   <!-- Buttons Section -->
-  <section class="style-guide__section">
+  <section id="buttons" class="style-guide__section">
     <h2 class="style-guide__section-title">Buttons</h2>
     <p class="style-guide__section-desc">Button variants and sizes</p>
 
@@ -91,7 +208,7 @@
   </section>
 
   <!-- Alerts Section -->
-  <section class="style-guide__section">
+  <section id="alerts" class="style-guide__section">
     <h2 class="style-guide__section-title">Alerts</h2>
     <p class="style-guide__section-desc">Notification alerts for user feedback</p>
 
@@ -115,7 +232,7 @@
   </section>
 
   <!-- Form Elements Section -->
-  <section class="style-guide__section">
+  <section id="forms" class="style-guide__section">
     <h2 class="style-guide__section-title">Form Elements</h2>
     <p class="style-guide__section-desc">Input fields and form controls</p>
 
@@ -154,7 +271,7 @@
   </section>
 
   <!-- Cards Section -->
-  <section class="style-guide__section">
+  <section id="cards" class="style-guide__section">
     <h2 class="style-guide__section-title">Cards</h2>
     <p class="style-guide__section-desc">Content containers</p>
 
@@ -179,7 +296,7 @@
   </section>
 
   <!-- Service Item Cards Section -->
-  <section class="style-guide__section">
+  <section id="service-items" class="style-guide__section">
     <h2 class="style-guide__section-title">Service Item Cards</h2>
     <p class="style-guide__section-desc">Individual service cards with pricing. Hover to see Quick Order button.</p>
 
@@ -198,7 +315,7 @@
   </section>
 
   <!-- Order Input Section -->
-  <section class="style-guide__section">
+  <section id="order-input" class="style-guide__section">
     <h2 class="style-guide__section-title">Order Input</h2>
     <p class="style-guide__section-desc">Natural language order input</p>
 
@@ -211,7 +328,7 @@
   </section>
 
   <!-- Order Ready Section -->
-  <section class="style-guide__section">
+  <section id="order-ready" class="style-guide__section">
     <h2 class="style-guide__section-title">Order Ready</h2>
     <p class="style-guide__section-desc">Order result card with service information</p>
 
@@ -241,61 +358,235 @@
   </section>
 
   <!-- Icons Section -->
-  <section class="style-guide__section">
+  <section id="icons" class="style-guide__section">
     <h2 class="style-guide__section-title">Icons</h2>
-    <p class="style-guide__section-desc">Material Icons + Iconoir</p>
+    <p class="style-guide__section-desc">All registered icons: Material Icons + Iconoir + Simple Icons (38 total)</p>
 
     <article class="style-guide__row">
-      <h3 class="style-guide__subtitle">Material Icons</h3>
+      <h3 class="style-guide__subtitle">Navigation & UI</h3>
       <section class="style-guide__icons">
         <figure class="style-guide__icon">
           <ng-icon name="matHome" size="24" />
-          <figcaption>Home</figcaption>
+          <figcaption>matHome</figcaption>
         </figure>
         <figure class="style-guide__icon">
           <ng-icon name="matDashboard" size="24" />
-          <figcaption>Dashboard</figcaption>
+          <figcaption>matDashboard</figcaption>
         </figure>
         <figure class="style-guide__icon">
           <ng-icon name="matShoppingCart" size="24" />
-          <figcaption>Cart</figcaption>
+          <figcaption>matShoppingCart</figcaption>
         </figure>
         <figure class="style-guide__icon">
           <ng-icon name="matPerson" size="24" />
-          <figcaption>Person</figcaption>
+          <figcaption>matPerson</figcaption>
         </figure>
         <figure class="style-guide__icon">
           <ng-icon name="matSettings" size="24" />
-          <figcaption>Settings</figcaption>
+          <figcaption>matSettings</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matMenu" size="24" />
+          <figcaption>matMenu</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matClose" size="24" />
+          <figcaption>matClose</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matRefresh" size="24" />
+          <figcaption>matRefresh</figcaption>
         </figure>
       </section>
     </article>
 
     <article class="style-guide__row">
-      <h3 class="style-guide__subtitle">Social Icons (Iconoir)</h3>
+      <h3 class="style-guide__subtitle">Actions</h3>
+      <section class="style-guide__icons">
+        <figure class="style-guide__icon">
+          <ng-icon name="matSearch" size="24" />
+          <figcaption>matSearch</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matAdd" size="24" />
+          <figcaption>matAdd</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matRemove" size="24" />
+          <figcaption>matRemove</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matEdit" size="24" />
+          <figcaption>matEdit</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matDelete" size="24" />
+          <figcaption>matDelete</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matCheck" size="24" />
+          <figcaption>matCheck</figcaption>
+        </figure>
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Arrows</h3>
+      <section class="style-guide__icons">
+        <figure class="style-guide__icon">
+          <ng-icon name="matArrowBack" size="24" />
+          <figcaption>matArrowBack</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matArrowForward" size="24" />
+          <figcaption>matArrowForward</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matArrowUpward" size="24" />
+          <figcaption>matArrowUpward</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matKeyboardArrowDown" size="24" />
+          <figcaption>matKeyboardArrowDown</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matKeyboardArrowUp" size="24" />
+          <figcaption>matKeyboardArrowUp</figcaption>
+        </figure>
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Feedback & Status</h3>
+      <section class="style-guide__icons">
+        <figure class="style-guide__icon">
+          <ng-icon name="matError" size="24" />
+          <figcaption>matError</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matWarning" size="24" />
+          <figcaption>matWarning</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matInfo" size="24" />
+          <figcaption>matInfo</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matVisibility" size="24" />
+          <figcaption>matVisibility</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matVisibilityOff" size="24" />
+          <figcaption>matVisibilityOff</figcaption>
+        </figure>
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Stats Cards</h3>
+      <section class="style-guide__icons">
+        <figure class="style-guide__icon">
+          <ng-icon name="matShowChart" size="24" />
+          <figcaption>matShowChart</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matSchedule" size="24" />
+          <figcaption>matSchedule</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matCheckCircle" size="24" />
+          <figcaption>matCheckCircle</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matQueryStats" size="24" />
+          <figcaption>matQueryStats</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matAccountBalanceWallet" size="24" />
+          <figcaption>matAccountBalanceWallet</figcaption>
+        </figure>
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Theme Toggle</h3>
+      <section class="style-guide__icons">
+        <figure class="style-guide__icon">
+          <ng-icon name="matLightMode" size="24" />
+          <figcaption>matLightMode</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matDarkMode" size="24" />
+          <figcaption>matDarkMode</figcaption>
+        </figure>
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Utility (Iconoir)</h3>
+      <section class="style-guide__icons">
+        <figure class="style-guide__icon">
+          <ng-icon name="iconoirFlash" size="24" />
+          <figcaption>iconoirFlash</figcaption>
+        </figure>
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Social Media (Iconoir)</h3>
       <section class="style-guide__icons">
         <figure class="style-guide__icon">
           <ng-icon name="iconoirInstagram" size="24" />
-          <figcaption>Instagram</figcaption>
+          <figcaption>iconoirInstagram</figcaption>
         </figure>
         <figure class="style-guide__icon">
           <ng-icon name="iconoirTiktok" size="24" />
-          <figcaption>TikTok</figcaption>
+          <figcaption>iconoirTiktok</figcaption>
         </figure>
         <figure class="style-guide__icon">
           <ng-icon name="iconoirYoutube" size="24" />
-          <figcaption>YouTube</figcaption>
+          <figcaption>iconoirYoutube</figcaption>
         </figure>
         <figure class="style-guide__icon">
           <ng-icon name="iconoirTwitter" size="24" />
-          <figcaption>Twitter</figcaption>
+          <figcaption>iconoirTwitter</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="iconoirFacebook" size="24" />
+          <figcaption>iconoirFacebook</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="iconoirSpotify" size="24" />
+          <figcaption>iconoirSpotify</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="iconoirTelegram" size="24" />
+          <figcaption>iconoirTelegram</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="iconoirDiscord" size="24" />
+          <figcaption>iconoirDiscord</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="iconoirLinkedin" size="24" />
+          <figcaption>iconoirLinkedin</figcaption>
+        </figure>
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Brand (Simple Icons)</h3>
+      <section class="style-guide__icons">
+        <figure class="style-guide__icon">
+          <ng-icon name="simpleSnapchat" size="24" />
+          <figcaption>simpleSnapchat</figcaption>
         </figure>
       </section>
     </article>
   </section>
 
   <!-- Layout Components Section -->
-  <section class="style-guide__section">
+  <section id="layout" class="style-guide__section">
     <h2 class="style-guide__section-title">Layout Components</h2>
     <p class="style-guide__section-desc">Header, Footer, Sidebar, and MainContent components</p>
 
@@ -358,9 +649,16 @@
     </article>
 
     <article class="style-guide__row">
-      <h3 class="style-guide__subtitle">Footer</h3>
+      <h3 class="style-guide__subtitle">Footer - Default (User View)</h3>
       <section class="style-guide__layout-preview">
-        <app-footer />
+        <app-footer variant="default" />
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Footer - Admin (Support Only)</h3>
+      <section class="style-guide__layout-preview">
+        <app-footer variant="admin" />
       </section>
     </article>
 
@@ -390,7 +688,7 @@
   </section>
 
   <!-- Modal Section -->
-  <section class="style-guide__section">
+  <section id="modal" class="style-guide__section">
     <h2 class="style-guide__section-title">Modal</h2>
     <p class="style-guide__section-desc">Dialog modal with multiple sizes</p>
 
@@ -426,7 +724,7 @@
   </section>
 
   <!-- Auth Form Section -->
-  <section class="style-guide__section">
+  <section id="auth-form" class="style-guide__section">
     <h2 class="style-guide__section-title">Auth Form</h2>
     <p class="style-guide__section-desc">Login and Registration forms</p>
 
@@ -452,7 +750,7 @@
   </section>
 
   <!-- Admin Order Table Section -->
-  <section class="style-guide__section">
+  <section id="admin-orders" class="style-guide__section">
     <h2 class="style-guide__section-title">Admin Order Table</h2>
     <p class="style-guide__section-desc">Admin order table with expandable rows (click eye icon to expand)</p>
 
@@ -468,7 +766,7 @@
   </section>
 
   <!-- Order Cards Section (New Components from Figma) -->
-  <section class="style-guide__section">
+  <section id="order-cards" class="style-guide__section">
     <h2 class="style-guide__section-title">Order Cards</h2>
     <p class="style-guide__section-desc">New order card components based on Figma designs</p>
 

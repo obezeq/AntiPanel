@@ -2,9 +2,7 @@
   <!-- Header: Flash icon + ORDER READY + Match percentage -->
   <header class="order-ready__header">
     <div class="order-ready__title">
-      <svg class="order-ready__flash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-      </svg>
+      <ng-icon class="order-ready__flash" name="iconoirFlash" size="24" aria-hidden="true" />
       <h2 class="order-ready__heading">ORDER READY</h2>
     </div>
     <p class="order-ready__match">{{ data().matchPercentage }}% MATCH</p>
@@ -46,10 +44,7 @@
       aria-label="Explore more services"
       (click)="exploreMore.emit()"
     >
-      <svg class="order-ready__search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <circle cx="11" cy="11" r="8"/>
-        <path d="M21 21l-4.35-4.35"/>
-      </svg>
+      <ng-icon class="order-ready__search-icon" name="matSearch" size="24" aria-hidden="true" />
       <span>EXPLORE MORE</span>
     </button>
     <button
@@ -73,8 +68,6 @@
     <span class="order-ready__place-text">PLACE ORDER</span>
     <span class="order-ready__separator">•</span>
     <span class="order-ready__total">{{ data().price }}</span>
-    <svg class="order-ready__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-      <path d="M5 12h14M12 5l7 7-7 7"/>
-    </svg>
+    <ng-icon class="order-ready__arrow" name="matArrowForward" size="24" aria-hidden="true" />
   </button>
 </article>

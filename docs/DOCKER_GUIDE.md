@@ -150,7 +150,7 @@ AntiPanel tiene **dos entornos Docker** completamente separados:
 cd /ruta/a/AntiPanel
 
 # 2. Construir y levantar todos los servicios de desarrollo
-docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d
 
 # 3. Acceder a la aplicación
 # Backend:  http://localhost:8080

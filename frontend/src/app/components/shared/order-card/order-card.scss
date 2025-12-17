@@ -3,16 +3,18 @@
 // ==========================================================================
 // Full order card for Orders page display.
 // Based on Figma design: "Order" component (node 1094:1973)
+// Matches Figma exactly with base-8 spacing and flex layouts.
 // ==========================================================================
 
 @use '../../../../styles/01-tools/mixins' as *;
 
 .order-card {
-  @include flex-column;
-  gap: var(--spacing-4);
-  padding: var(--spacing-6) var(--spacing-8);
-  border: var(--border-width-medium) solid var(--color-information);
-  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; // 16px (base-8)
+  padding: 1.5rem 2rem; // 24px 32px (Figma exact)
+  border: 2px solid var(--color-information);
+  border-radius: 1rem; // 16px
   background-color: var(--color-background);
   transition: var(--transition-colors);
   cursor: pointer;
@@ -24,31 +26,36 @@
   @include focus-visible;
 
   // ---------------------------------------------------------------------------
-  // HEADER ROW (Status, ID, Service, URL)
+  // HEADER ROW (Status, ID, Service, URL) - "Order Type" in Figma
   // ---------------------------------------------------------------------------
 
   &__header {
-    @include flex-between;
-    flex-wrap: wrap;
-    gap: var(--spacing-4);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem; // 16px
     width: 100%;
   }
 
-  // Status Badge
+  // Status Badge - 40px height, 20px font (Figma exact)
   &__status {
-    @include typography('h6', 'bold', 'primary');
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: var(--spacing-1) var(--spacing-3);
-    border-radius: var(--radius-md);
-    background-color: var(--color-information);
+    height: 2.5rem; // 40px (base-8)
+    padding: 0.25rem 0.75rem; // 4px 12px
+    border-radius: 0.5rem; // 8px
+    font-family: var(--font-primary);
+    font-size: 1.25rem; // 20px (h6)
+    font-weight: var(--font-weight-bold);
+    line-height: 1.15;
     color: var(--color-text);
+    background-color: var(--color-information);
     text-transform: uppercase;
     white-space: nowrap;
     flex-shrink: 0;
 
-    // Status color modifiers
+    // Status color modifiers (KEPT as requested)
     &--pending {
       background-color: var(--color-status-yellow);
       color: var(--color-background);
@@ -75,96 +82,131 @@
     }
   }
 
-  // Order ID
+  // Order ID - 20px medium (Figma exact)
   &__id {
-    @include typography('h6', 'medium', 'primary');
+    font-family: var(--font-primary);
+    font-size: 1.25rem; // 20px
+    font-weight: var(--font-weight-medium);
+    line-height: 1.15;
     color: var(--color-text);
     white-space: nowrap;
+    flex-shrink: 0;
   }
 
-  // Service Name
+  // Service Name - 16px semibold, centered (Figma exact)
   &__service {
-    @include typography('body', 'semibold', 'primary');
+    font-family: var(--font-primary);
+    font-size: 1rem; // 16px
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.15;
     color: var(--color-text);
     flex: 1;
     min-width: 0;
-    @include truncate;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  // Target URL
+  // Target URL - 16px medium (Figma exact)
   &__url {
-    @include typography('body', 'medium', 'primary');
+    font-family: var(--font-primary);
+    font-size: 1rem; // 16px
+    font-weight: var(--font-weight-medium);
+    line-height: 1.15;
     color: var(--color-text);
-    @include truncate;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 0;
     max-width: 25%;
+  }
+
+  // ---------------------------------------------------------------------------
+  // FOOTER ROW (Date, Charge, Quantity, Remains, Actions) - "Order Info" in Figma
+  // ---------------------------------------------------------------------------
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem; // 16px
+    width: 100%;
+  }
+
+  // Common label style - 16px medium
+  &__label {
+    font-family: var(--font-primary);
+    font-size: 1rem;
+    font-weight: var(--font-weight-medium);
+    line-height: 1.15;
+    color: var(--color-text);
+  }
+
+  // Date - 16px medium
+  &__date {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem; // 4px
+    font-family: var(--font-primary);
+    font-size: 1rem;
+    font-weight: var(--font-weight-medium);
+    line-height: 1.15;
+    color: var(--color-text);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  // Charge / Price - Label + IBM Plex Mono value (Figma exact)
+  &__charge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; // 8px (Figma exact)
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  &__price-value {
+    font-family: var(--font-secondary); // IBM Plex Mono
+    font-size: 1rem;
+    font-weight: var(--font-weight-medium);
+    line-height: normal;
+    color: var(--color-text);
+    letter-spacing: 0.075rem; // 1.2px (Figma exact)
+    text-transform: uppercase;
+  }
+
+  // Quantity - 16px medium
+  &__quantity {
+    font-family: var(--font-primary);
+    font-size: 1rem;
+    font-weight: var(--font-weight-medium);
+    line-height: 1.15;
+    color: var(--color-text);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  // Remains - 16px medium
+  &__remains {
+    font-family: var(--font-primary);
+    font-size: 1rem;
+    font-weight: var(--font-weight-medium);
+    line-height: 1.15;
+    color: var(--color-text);
+    white-space: nowrap;
     flex-shrink: 0;
   }
 
   // ---------------------------------------------------------------------------
-  // FOOTER ROW (Date, Charge, Quantity, Remains, Actions)
-  // ---------------------------------------------------------------------------
-
-  &__footer {
-    @include flex-between;
-    flex-wrap: wrap;
-    gap: var(--spacing-4);
-    width: 100%;
-  }
-
-  // Common label style
-  &__label {
-    @include typography('body', 'medium', 'primary');
-    color: var(--color-text);
-  }
-
-  // Date
-  &__date {
-    @include typography('body', 'medium', 'primary');
-    display: inline-flex;
-    align-items: center;
-    gap: var(--spacing-1);
-    color: var(--color-text);
-    white-space: nowrap;
-  }
-
-  // Charge / Price
-  &__charge {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--spacing-2);
-    white-space: nowrap;
-  }
-
-  &__price-value {
-    @include typography('body', 'medium', 'secondary');
-    color: var(--color-text);
-    letter-spacing: 0.075em;
-    text-transform: uppercase;
-  }
-
-  // Quantity
-  &__quantity {
-    @include typography('body', 'medium', 'primary');
-    color: var(--color-text);
-    white-space: nowrap;
-  }
-
-  // Remains
-  &__remains {
-    @include typography('body', 'medium', 'primary');
-    color: var(--color-text);
-    white-space: nowrap;
-  }
-
-  // ---------------------------------------------------------------------------
-  // ACTION BUTTONS
+  // ACTION BUTTONS - 16px gap, 8px padding (Figma exact)
   // ---------------------------------------------------------------------------
 
   &__actions {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: var(--spacing-4);
+    gap: 1rem; // 16px (Figma exact)
     flex-shrink: 0;
   }
 
@@ -175,14 +217,17 @@
 
   &__action {
     @include reset-button;
-    @include typography('body', 'bold', 'primary');
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: var(--spacing-1) var(--spacing-2);
-    border-radius: var(--radius-md);
-    background-color: var(--color-information);
+    padding: 0.25rem 0.5rem; // 4px 8px (Figma exact)
+    border-radius: 0.5rem; // 8px
+    font-family: var(--font-primary);
+    font-size: 1rem; // 16px
+    font-weight: var(--font-weight-bold);
+    line-height: 1.15;
     color: var(--color-text);
+    background-color: var(--color-information);
     text-transform: uppercase;
     white-space: nowrap;
     transition: var(--transition-colors), var(--transition-transform);
@@ -200,15 +245,15 @@
   }
 
   // ---------------------------------------------------------------------------
-  // RESPONSIVE LAYOUT
+  // RESPONSIVE LAYOUT - flex gap instead of margin (base-8)
   // ---------------------------------------------------------------------------
 
   @include respond-below('lg') {
-    padding: var(--spacing-4) var(--spacing-6);
+    padding: 1rem 1.5rem; // 16px 24px
 
     &__header,
     &__footer {
-      gap: var(--spacing-3);
+      gap: 0.75rem; // 12px
     }
 
     &__url {
@@ -217,15 +262,16 @@
   }
 
   @include respond-below('md') {
-    gap: var(--spacing-6);
+    gap: 1.5rem; // 24px
 
     &__header {
       flex-direction: column;
       align-items: flex-start;
-      gap: var(--spacing-2);
+      gap: 0.5rem; // 8px
     }
 
     &__service {
+      text-align: left;
       max-width: 100%;
     }
 
@@ -236,13 +282,13 @@
     &__footer {
       flex-direction: column;
       align-items: flex-start;
-      gap: var(--spacing-2);
+      gap: 0.5rem; // 8px
     }
 
     &__actions {
       width: 100%;
       justify-content: flex-start;
-      margin-top: var(--spacing-2);
+      gap: 0.5rem; // 8px
     }
   }
 }

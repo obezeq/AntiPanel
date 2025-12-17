@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { NgIconComponent } from '@ng-icons/core';
 
 export interface SidebarItem {
   label: string;
@@ -12,7 +13,7 @@ export interface SidebarItem {
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, RouterLinkActive]
+  imports: [RouterLink, RouterLinkActive, NgIconComponent]
 })
 export class Sidebar {
   /** Sidebar title */
@@ -20,10 +21,8 @@ export class Sidebar {
 
   /** Navigation items */
   readonly items = input<SidebarItem[]>([
-    { label: 'Dashboard', path: '/admin' },
-    { label: 'Orders', path: '/admin/orders' },
-    { label: 'Users', path: '/admin/users' },
-    { label: 'Services', path: '/admin/services' }
+    { label: 'Dashboard', path: '/admin', icon: 'matDashboard' },
+    { label: 'Orders', path: '/admin/orders', icon: 'matShoppingCart' }
   ]);
 
   /** Whether the sidebar is open (mobile) */
