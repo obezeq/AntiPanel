@@ -1,32 +1,81 @@
-<div class="dom-events-section">
+<article class="dom-events-section">
   <!-- ========================================================================
-       TABS CON @angular/aria
+       TABS ACCESIBLES CON HTML NATIVO + ARIA
        ======================================================================== -->
-  <div ngTabs class="dom-events-section__tabs">
-    <ul ngTabList [(selectedTab)]="selectedTab" class="dom-events-section__tab-list">
-      <li ngTab value="eventos" class="dom-events-section__tab">
-        <ng-icon name="matMouse" size="18" />
-        <span>Eventos DOM</span>
+  <section class="dom-events-section__tabs" aria-label="Demostraciones de eventos DOM">
+    <menu role="tablist" class="dom-events-section__tab-list" aria-label="Secciones disponibles">
+      <li role="presentation">
+        <button
+          type="button"
+          role="tab"
+          id="tab-eventos"
+          class="dom-events-section__tab"
+          [class.dom-events-section__tab--active]="selectedTab() === 'eventos'"
+          [attr.aria-selected]="selectedTab() === 'eventos'"
+          aria-controls="panel-eventos"
+          (click)="selectedTab.set('eventos')"
+        >
+          <ng-icon name="matMouse" size="18" aria-hidden="true" />
+          <span>Eventos DOM</span>
+        </button>
       </li>
-      <li ngTab value="viewchild" class="dom-events-section__tab">
-        <ng-icon name="matVisibility" size="18" />
-        <span>ViewChild</span>
+      <li role="presentation">
+        <button
+          type="button"
+          role="tab"
+          id="tab-viewchild"
+          class="dom-events-section__tab"
+          [class.dom-events-section__tab--active]="selectedTab() === 'viewchild'"
+          [attr.aria-selected]="selectedTab() === 'viewchild'"
+          aria-controls="panel-viewchild"
+          (click)="selectedTab.set('viewchild')"
+        >
+          <ng-icon name="matVisibility" size="18" aria-hidden="true" />
+          <span>ViewChild</span>
+        </button>
       </li>
-      <li ngTab value="tooltips" class="dom-events-section__tab">
-        <ng-icon name="matInfo" size="18" />
-        <span>Tooltips</span>
+      <li role="presentation">
+        <button
+          type="button"
+          role="tab"
+          id="tab-tooltips"
+          class="dom-events-section__tab"
+          [class.dom-events-section__tab--active]="selectedTab() === 'tooltips'"
+          [attr.aria-selected]="selectedTab() === 'tooltips'"
+          aria-controls="panel-tooltips"
+          (click)="selectedTab.set('tooltips')"
+        >
+          <ng-icon name="matInfo" size="18" aria-hidden="true" />
+          <span>Tooltips</span>
+        </button>
       </li>
-      <li ngTab value="propagation" class="dom-events-section__tab">
-        <ng-icon name="matCallSplit" size="18" />
-        <span>Propagacion</span>
+      <li role="presentation">
+        <button
+          type="button"
+          role="tab"
+          id="tab-propagation"
+          class="dom-events-section__tab"
+          [class.dom-events-section__tab--active]="selectedTab() === 'propagation'"
+          [attr.aria-selected]="selectedTab() === 'propagation'"
+          aria-controls="panel-propagation"
+          (click)="selectedTab.set('propagation')"
+        >
+          <ng-icon name="matCallSplit" size="18" aria-hidden="true" />
+          <span>Propagacion</span>
+        </button>
       </li>
-    </ul>
+    </menu>
 
     <!-- =====================================================================
          TAB 1: EVENTOS DOM
          ===================================================================== -->
-    <div ngTabPanel value="eventos" class="dom-events-section__panel">
-      <ng-template ngTabContent>
+    @if (selectedTab() === 'eventos') {
+    <section
+      role="tabpanel"
+      id="panel-eventos"
+      aria-labelledby="tab-eventos"
+      class="dom-events-section__panel"
+    >
         <div class="dom-events-section__content">
           <h4 class="dom-events-section__subtitle">Event Binding en Angular</h4>
           <p class="dom-events-section__description">
@@ -105,14 +154,19 @@
             </div>
           </div>
         </div>
-      </ng-template>
-    </div>
+    </section>
+    }
 
     <!-- =====================================================================
          TAB 2: VIEWCHILD
          ===================================================================== -->
-    <div ngTabPanel value="viewchild" class="dom-events-section__panel">
-      <ng-template ngTabContent>
+    @if (selectedTab() === 'viewchild') {
+    <section
+      role="tabpanel"
+      id="panel-viewchild"
+      aria-labelledby="tab-viewchild"
+      class="dom-events-section__panel"
+    >
         <div class="dom-events-section__content">
           <h4 class="dom-events-section__subtitle">ViewChild y ElementRef</h4>
           <p class="dom-events-section__description">
@@ -172,14 +226,19 @@
             </div>
           </div>
         </div>
-      </ng-template>
-    </div>
+    </section>
+    }
 
     <!-- =====================================================================
          TAB 3: TOOLTIPS
          ===================================================================== -->
-    <div ngTabPanel value="tooltips" class="dom-events-section__panel">
-      <ng-template ngTabContent>
+    @if (selectedTab() === 'tooltips') {
+    <section
+      role="tabpanel"
+      id="panel-tooltips"
+      aria-labelledby="tab-tooltips"
+      class="dom-events-section__panel"
+    >
         <div class="dom-events-section__content">
           <h4 class="dom-events-section__subtitle">Tooltips Accesibles</h4>
           <p class="dom-events-section__description">
@@ -238,14 +297,19 @@
             </div>
           </div>
         </div>
-      </ng-template>
-    </div>
+    </section>
+    }
 
     <!-- =====================================================================
          TAB 4: PROPAGATION
          ===================================================================== -->
-    <div ngTabPanel value="propagation" class="dom-events-section__panel">
-      <ng-template ngTabContent>
+    @if (selectedTab() === 'propagation') {
+    <section
+      role="tabpanel"
+      id="panel-propagation"
+      aria-labelledby="tab-propagation"
+      class="dom-events-section__panel"
+    >
         <div class="dom-events-section__content">
           <h4 class="dom-events-section__subtitle">preventDefault y stopPropagation</h4>
           <p class="dom-events-section__description">
@@ -339,9 +403,9 @@
             </div>
           </div>
         </div>
-      </ng-template>
-    </div>
-  </div>
+    </section>
+    }
+  </section>
 
   <!-- ========================================================================
        ACCORDION NATIVO (details/summary)
@@ -410,4 +474,4 @@ onInnerClick(event: MouseEvent) {{'{'}}
       </details>
     </div>
   </section>
-</div>
+</article>
