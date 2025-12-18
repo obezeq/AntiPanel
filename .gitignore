@@ -11,10 +11,10 @@
 .env.prod
 
 # ========================================
-# SSL Certificates / Let's Encrypt
+# SSL Certificates / Caddy Data
 # ========================================
-traefik/acme.json
-traefik/*.json
+caddy/data/
+caddy/config/
 
 # ========================================
 # Docker

@@ -1,6 +1,6 @@
 # ========================================
 # Docker Compose - Production Configuration
-# AntiPanel with Traefik + SSL + Nginx
+# AntiPanel with Caddy + SSL + Nginx
 # ========================================
 #
 # Usage:
@@ -14,11 +14,11 @@
 
 services:
   # ========================================
-  # Traefik - Reverse Proxy + SSL Termination
+  # Caddy - Reverse Proxy + Automatic SSL
   # ========================================
-  traefik:
-    image: traefik:v3.2
-    container_name: antipanel-traefik
+  caddy:
+    image: caddy:2-alpine
+    container_name: antipanel-caddy
     restart: always
 
     security_opt:
@@ -27,25 +27,24 @@ services:
     ports:
       - "80:80"
       - "443:443"
+      - "443:443/udp"  # HTTP/3 (QUIC)
 
     environment:
       - TZ=${TZ:-Europe/Madrid}
 
     volumes:
-      # Docker socket for container discovery (read-only)
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      # Traefik static configuration
-      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
-      # Dynamic configuration directory
-      - ./traefik/dynamic:/etc/traefik/dynamic:ro
-      # Let's Encrypt certificates storage
-      - traefik_certs:/letsencrypt
+      # Caddyfile configuration
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      # Persistent data (certificates, etc.)
+      - caddy_data:/data
+      # Caddy configuration cache
+      - caddy_config:/config
 
     networks:
       - web
 
     healthcheck:
-      test: ["CMD", "traefik", "healthcheck", "--ping"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:2019/metrics"]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -55,10 +54,10 @@ services:
       resources:
         limits:
           cpus: '0.50'
-          memory: 256M
-        reservations:
-          cpus: '0.25'
           memory: 128M
+        reservations:
+          cpus: '0.10'
+          memory: 64M
 
   # ========================================
   # PostgreSQL Database - Production
@@ -180,23 +179,6 @@ services:
       - web
       - backend-net
 
-    labels:
-      - "traefik.enable=true"
-      # Main domain router (antipanel.tech)
-      - "traefik.http.routers.frontend.rule=Host(`antipanel.tech`)"
-      - "traefik.http.routers.frontend.entrypoints=websecure"
-      - "traefik.http.routers.frontend.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.frontend.middlewares=security-headers@file,compress@file,rate-limit@file"
-      # WWW domain router (www.antipanel.tech -> redirect)
-      - "traefik.http.routers.frontend-www.rule=Host(`www.antipanel.tech`)"
-      - "traefik.http.routers.frontend-www.entrypoints=websecure"
-      - "traefik.http.routers.frontend-www.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.frontend-www.middlewares=www-redirect@file"
-      # Service configuration
-      - "traefik.http.services.frontend.loadbalancer.server.port=80"
-      # Network specification
-      - "traefik.docker.network=antipanel-web"
-
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
       interval: 30s
@@ -217,7 +199,7 @@ services:
 # Production Networks
 # ========================================
 networks:
-  # Public-facing network (Traefik <-> Frontend)
+  # Public-facing network (Caddy <-> Frontend)
   web:
     driver: bridge
     name: antipanel-web
@@ -234,5 +216,7 @@ networks:
 volumes:
   postgres_data:
     driver: local
-  traefik_certs:
+  caddy_data:
+    driver: local
+  caddy_config:
     driver: local
