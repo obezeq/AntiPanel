@@ -26,9 +26,10 @@ jobs:
           ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
       
       # Ejecutamos el script de despliegue en el servidor remoto
+      # SSH Keep-Alive: Evita desconexión durante builds largos (Angular ~2-3 min)
       - name: Deploy to VPS
         run: |
-          ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+          ssh -o ServerAliveInterval=30 -o ServerAliveCountMax=10 ${{ secrets.DEPLOY_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
             echo "[+] Iniciando despliegue automatico desde GitHub Actions..."
 
             cd ~/AntiPanel
