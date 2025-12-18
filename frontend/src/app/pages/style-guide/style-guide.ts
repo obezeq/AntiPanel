@@ -6,6 +6,7 @@ import {
   signal
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { NgIcon } from '@ng-icons/core';
 import { ThemeService } from '../../services/theme.service';
 
@@ -43,6 +44,7 @@ import { OrderFilters, FilterCategory, SortOrder } from '../../components/shared
   styleUrl: './style-guide.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    RouterLink,
     NgIcon,
     Button,
     Alert,

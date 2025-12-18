@@ -30,18 +30,24 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 ```
 AntiPanel/
 ├── backend/                    # Spring Boot 4 + Java 25
-│   ├── src/
-│   │   ├── entity/            # Entidades JPA (11)
-│   │   ├── dto/               # DTOs (43 archivos)
-│   │   ├── repository/        # Repositories (11 con 150+ queries)
-│   │   └── resources/         # Configuración
-│   ├── docs/                  # Documentación
-│   ├── sql/                   # Scripts de base de datos
-│   └── Dockerfile             # Imagen Docker del backend
-├── frontend/                   # Angular 21 (próximamente)
-├── docs/                      # Documentación del proyecto
+│   ├── src/                   # Código fuente Java
+│   ├── docs/                  # Documentación backend
+│   ├── sql/                   # Scripts SQL (init, examples)
+│   └── Dockerfile             # Imagen Docker backend
+├── frontend/                   # Angular 21
+│   ├── src/                   # Código fuente Angular
+│   ├── public/                # Assets estáticos (favicon)
+│   └── docs/                  # Documentación frontend
+│       ├── design/            # Fases 1-3 Diseño
+│       └── client/            # Fases 1-3 Cliente
+├── docs/                      # Documentación general
+├── nginx/                     # Configuración Nginx
+├── traefik/                   # Configuración Traefik
+├── scripts/                   # Scripts de utilidad
 ├── docker-compose.yml         # Configuración Docker base
 ├── docker-compose.dev.yml     # Override para desarrollo
+├── docker-dev.bat             # Helper script Windows
+├── docker-dev.sh              # Helper script Linux/Mac
 └── .env.example               # Variables de entorno ejemplo
 ```
 
@@ -85,13 +91,13 @@ AntiPanel/
 - ✅ **Style Guide** en `/style-guide` con todos los componentes
 - ✅ **Accesibilidad WCAG AA** (focus visible, ARIA, reduced motion)
 - ✅ **9 Animaciones @keyframes** optimizadas
-- ✅ **Mobile-first** con 5 breakpoints
+- ✅ **Desktop-First** con Mobile Responsive (5 breakpoints)
 
 ### Tecnologías
 - Angular 21 (Standalone components, Signals, Control Flow)
 - TypeScript 5.7
 - SCSS con arquitectura ITCSS + BEM
-- ng-icons (Material Icons + Iconoir)
+- ng-icons (Material Icons + Iconoir + Simple Icons)
 - Reactive Forms con ControlValueAccessor
 
 ### Componentes Principales
@@ -114,10 +120,12 @@ AntiPanel/
 
 | Servicio | Puerto | URL |
 |----------|--------|-----|
+| Frontend (Angular) | 4200 | http://localhost:4200 |
 | Backend (Spring Boot) | 8080 | http://localhost:8080 |
 | Swagger UI | 8080 | http://localhost:8080/swagger-ui.html |
 | PostgreSQL | 5432 | localhost:5432 |
 | pgAdmin (dev) | 5050 | http://localhost:5050 |
+| Java Debug | 5005 | localhost:5005 |
 
 ### Comandos Principales
 
@@ -138,13 +146,15 @@ docker compose down -v
 docker compose -f docker-compose.yml -f docker-compose.test.yml up --build --abort-on-container-exit
 ```
 
-**Helper script para Windows:** `docker-dev.bat`
+**Helper scripts:**
+- Windows: `docker-dev.bat`
+- Linux/Mac: `./docker-dev.sh`
 
 ---
 
 ## 📚 Documentación
 
-### Frontend (Angular 21)
+### Frontend - Diseño (Fases 1-3)
 - [📖 Documentación de Diseño](frontend/docs/design/DOCUMENTACION.md) - **Arquitectura CSS, Componentes, Accesibilidad**
   - Sección 1: Arquitectura CSS (ITCSS + BEM + Design Tokens)
   - Sección 2: HTML Semántico y Estructura
@@ -153,19 +163,28 @@ docker compose -f docker-compose.yml -f docker-compose.test.yml up --build --abo
   - Sección 5: Optimización Multimedia
   - Sección 6: Sistema de Temas (Dark/Light)
   - Sección 7: Informe de Accesibilidad (WCAG AA)
+- [🎨 Justificación de Decisiones de Diseño](frontend/docs/design/justificacion_decisiones_de_diseno.md)
+
+### Frontend - Cliente (Fases 1-3)
+- [📖 Documentación de Cliente](frontend/docs/client/DOCUMENTACION.md) - **DOM, Eventos, Servicios, Formularios**
+  - Fase 1: DOM y Eventos (Signals, Control Flow, Event Binding)
+  - Fase 2: Servicios e Inyección de Dependencias (HttpClient, Interceptors)
+  - Fase 3: Formularios Reactivos (FormGroup, FormArray, Validators)
 
 ### Backend (Spring Boot 4)
 - [📖 Backend Documentation](backend/docs/README.md) - **Entry Point**
 - [📦 Setup Guide](backend/docs/SETUP.md) - Java 25, Gradle, PostgreSQL
 - [🧪 Testing Guide](backend/docs/TESTING.md) - Spring Boot 4.0 testing
 - [🗄️ Data Model](backend/docs/modelo_de_datos.md) - Database schema
+- [🔄 Spring Boot 4 Migration](backend/docs/SPRING_BOOT_4_MIGRATION.md) - Migration guide
 
 ### Docker
 - [📋 Quick Start](DOCKER_QUICKSTART.md)
 - [📖 Docker Guide](docs/DOCKER_GUIDE.md)
+- [🅰️ Angular Docker Setup](docs/ANGULAR_DOCKER_SETUP.md) - Frontend container config
 
 ### General
-- [🎯 Entender el Problema](entender_el_problema_real.md)
+- [🎯 Entender el Problema](frontend/docs/design/entender_el_problema_real.md)
 
 ---
 
@@ -186,4 +205,4 @@ Ver [docs/DOCKER_GUIDE.md](docs/DOCKER_GUIDE.md) para instrucciones detalladas.
 ## 👨‍💻 Autor
 
 **Ezequiel**
-Instituto - 2º Desarrollo de Aplicaciones Web
+IES Rafael Alberti - 2º Desarrollo de Aplicaciones Web

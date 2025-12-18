@@ -1385,7 +1385,3 @@ Antes de ir a producción, verifica:
 | **API Backend** | https://antipanel.tech/api |
 | **Health Check** | https://antipanel.tech/api/actuator/health |
 | **Swagger UI** | https://antipanel.tech/api/swagger-ui.html |
-
----
-
-**Última actualización: 2025-01-13**

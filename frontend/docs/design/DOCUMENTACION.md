@@ -69,15 +69,37 @@ Busque crear consistencia y reconocimiento a traves de la repeticion:
 
 A continuación se muestran capturas del diseño original en Figma demostrando los 5 principios de comunicación visual:
 
-| Principio | Captura Figma |
-|-----------|---------------|
-| **Jerarquía Visual** | ![Jerarquía Visual](screenshots/figma/jerarquia-visual.png) |
-| **Contraste** | ![Contraste](screenshots/figma/contraste.png) |
-| **Alineación** | ![Alineación](screenshots/figma/alineacion.png) |
-| **Proximidad** | ![Proximidad](screenshots/figma/proximidad.png) |
-| **Repetición** | ![Repetición](screenshots/figma/repeticion.png) |
+**Contraste**
+![Contraste](screenshots/figma/antipanel-dark-mode-colors-contrast.png)
+> Se ha realizado una elección de colores con un contraste alto, como hemos comentado anteriormente, y se ha realizado las pruebas en [webaim.org](https://webaim.org/resources/contrastchecker/) para garantizar un ratios WCAG AA
 
-> **Nota:** Añadir capturas de Figma en la carpeta `docs/design/screenshots/figma/` con los nombres indicados.
+**Alineación**
+![Alineación Base 8](screenshots/figma/antipanel-alineacion-base-8.png)
+> Para organizar la página web se ha realizado una alineación con las mejores practicas en base 8, diviendo los componentes basandonos en una alineación horizontal de 12 columnas con 16px de diferencia entre cada una de ellas.
+
+**Jerarquía Visual**
+![Escala Tipográfica](screenshots/figma/antipanel-font-sizes.png)
+> La jerarquía visual se establece principalmente a través de la escala tipográfica. Desde el título principal (128px) hasta el texto más pequeño (10px), cada nivel de la escala tiene un propósito específico: los títulos grandes capturan la atención inmediata, mientras que los tamaños menores proporcionan información secundaria sin competir visualmente.
+
+![Dashboard Principal](screenshots/figma/antipanel-dashboard-first-view.png)
+> En el dashboard, la jerarquía guía al usuario: primero ve el título "ANTIPANEL" y su balance, junto al lado con el boton para AÑADIR FONDOS en un tamaño considerable, guiando al usuario, incitandolo a depositar fondos. Luego las estadísticas en cards destacadas con colores semánticos, y finalmente el input de orden. El tamaño, color y posición de cada elemento refuerza su importancia relativa.
+
+**Proximidad**
+![Order Ready](screenshots/figma/antipanel-order-screen-view.png)
+> El principio de proximidad agrupa elementos relacionados. En la card "Order Ready", el icono de Instagram está junto al nombre del servicio y sus características (HIGH Quality, FAST Speed), formando una unidad visual. Los botones de acción se agrupan separados del contenido informativo.
+
+![Facturas](screenshots/figma/antipanel-invoices.png)
+> En la lista de facturas, cada fila agrupa información relacionada: el badge de estado (PENDING/PAID) junto al ID, seguido del monto, tipo de pago y fecha. La proximidad horizontal indica que estos datos pertenecen a la misma transacción.
+
+**Repetición**
+![Grid de Servicios](screenshots/figma/antipanel-dashboard-patron-visual-services.png)
+> La repetición crea consistencia y facilita el reconocimiento. Las 8 tarjetas de plataforma (Instagram, TikTok, Twitter/X, YouTube, Snapchat, Facebook, Discord, LinkedIn) comparten exactamente la misma estructura: icono centrado, nombre de plataforma y contador de servicios.
+
+![Stats Cards](screenshots/figma/antipanel-patron-visual-dashboard-stats.png)
+> Las 4 tarjetas de estadísticas del dashboard repiten el mismo patrón: icono + título en la cabecera, valor numérico destacado, y descripción pequeña. Solo varía el color semántico (blanco, amarillo, verde, azul) para diferenciar cada métrica.
+
+![Lista de Órdenes](screenshots/figma/antipanel-patron-visual-orders.png)
+> La página de órdenes demuestra la repetición en listas: cada orden sigue el mismo layout con badge de estado, ID, descripción del servicio, cantidad, precio, URL y botones de acción (ORDER AGAIN, REFILL). El patrón repetido permite escanear rápidamente múltiples órdenes.
 
 ---
 
@@ -1135,22 +1157,45 @@ Cree una pagina de Style Guide en `/style-guide` que documenta visualmente todos
 **Theme Toggle:**
 Implemente un boton de toggle de tema en la parte superior del Style Guide que permite cambiar entre dark y light mode para visualizar todos los componentes en ambos temas. El tema seleccionado se persiste en localStorage.
 
-**Acceso:** `http://localhost:4200/style-guide`
+**Acceso:** 
+- `https://antipanel.tech/style-guide`
+- `http://localhost:4200/style-guide`
 
 #### Capturas del Style Guide
 
 A continuación se muestran capturas de pantalla de la página Style Guide mostrando los componentes implementados:
 
-| Sección | Captura |
-|---------|---------|
-| **Tipografía y Colores** | ![Typography](screenshots/style-guide/typography-colors.png) |
-| **Botones y Alertas** | ![Buttons Alerts](screenshots/style-guide/buttons-alerts.png) |
-| **Formularios** | ![Forms](screenshots/style-guide/forms.png) |
-| **Cards** | ![Cards](screenshots/style-guide/cards.png) |
-| **Modal y Auth Form** | ![Modal Auth](screenshots/style-guide/modal-auth.png) |
-| **Layout Components** | ![Layout](screenshots/style-guide/layout.png) |
+**Tipografía** 
+![General Typography](screenshots/style-guide/website-style-guide-typography-general.png)
+![Type Scale Typography](screenshots/style-guide/website-style-guide-typography-type-scale.png)
 
-> **Nota:** Añadir capturas del Style Guide en la carpeta `docs/design/screenshots/style-guide/` con los nombres indicados.
+**Colores**
+![Colors](screenshots/style-guide/website-style-guide-colors.png)
+> **AntiPanel** adopta la oscuridad como su fundamento. Donde los paneles tradicionales abruman con ruido visual, nosotros eliminamos las distracciones. Nuestra paleta monocromática crea profundidad a través de gradaciones sutiles, desde **negro puro** hasta *grises suaves*, permitiendo que el contenido respire y las acciones hablen con claridad. Los colores de acento se utilizan con precisión quirúrgica: verde confirma, rojo alerta, amarillo indica progreso y azul guía. Esta es la estética anti-panel: minimalista, confiada y indiscutiblemente enfocada. Made with <3
+
+
+**Botones y Alertas**
+![Botones y Alertas](screenshots/style-guide/website-style-guide-buttons-and-alerts.png)
+
+**Formularios**
+![Formularios](screenshots/style-guide/website-style-guide-form-elements.png)
+
+**Auth Form**
+![Login Form](screenshots/style-guide/website-style-guide-login-form.png)
+![Sign Up Form](screenshots/style-guide/website-style-guide-register-form.png)
+
+**Modales**
+![Modal Demo](screenshots/style-guide/website-style-guide-modal-demo.png)
+![Modal Order Confirmation](screenshots/style-guide/website-style-guide-order-confirmation-modal.png)
+
+**Cards**
+![Cards](screenshots/style-guide/website-style-guide-cards.png)
+
+**Layout Components**
+![Layout Components Showing First Headers](screenshots/style-guide/website-style-guide-layout-components-1.png)
+![Layout Component Showing Remaining Headers & Admin Sidebar](screenshots/style-guide/website-style-guide-layout-components-2.png)
+![Layout Components Showing Footer & MainContent Variants](screenshots/style-guide/website-style-guide-layout-components-3.png)
+
 
 ### 3.6 Animaciones CSS (@keyframes)
 
@@ -2105,6 +2150,12 @@ Todos los colores de texto que elegi cumplen con los ratios WCAG AA:
 **Herramientas que he usado para verificar:**
 - [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/)
 - Chrome DevTools > Accessibility panel
+
+**Enlaces permalink WebAIM para la verificación de contraste de colores**
+- [Text (#FAFAFA) sobre Background (#0A0A0A) | **18.96:1**](https://webaim.org/resources/contrastchecker/?fcolor=FAFAFA&bcolor=0A0A0A)
+- [Foreground (#A1A1A1) sobre Background | **7.66:1**](https://webaim.org/resources/contrastchecker/?fcolor=A1A1A1&bcolor=0A0A0A)
+- [Success (#00DC33) sobre Background | **10.63:1**](https://webaim.org/resources/contrastchecker/?fcolor=00DC33&bcolor=0A0A0A)
+- [ Error (#FF4444) sobre Background | **5.8:1**](https://webaim.org/resources/contrastchecker/?fcolor=FF4444&bcolor=0A0A0A)
 
 ### 7.3 Navegacion por Teclado
 

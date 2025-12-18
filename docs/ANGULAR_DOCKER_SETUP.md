@@ -286,7 +286,3 @@ docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 - [Bun Documentation](https://bun.sh/docs)
 - [Docker Best Practices](https://docs.docker.com/develop/dev-best-practices/)
 - [Node.js 24 LTS](https://nodejs.org/en/blog/release/v24.11.0)
-
----
-
-**Última actualización:** 2025-12-15

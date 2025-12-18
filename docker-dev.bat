@@ -24,22 +24,24 @@ echo.
 REM Ask user what to do
 echo Que deseas hacer?
 echo.
-echo 1. Iniciar servicios (desarrollo)
-echo 2. Detener servicios
-echo 3. Ver logs
-echo 4. Reiniciar backend
-echo 5. Limpiar todo (CUIDADO: elimina datos)
-echo 6. Reconstruir desde cero
+echo 1. Iniciar servicios (sin build)
+echo 2. Iniciar servicios (con build)
+echo 3. Detener servicios
+echo 4. Ver logs
+echo 5. Reiniciar backend
+echo 6. Limpiar todo (CUIDADO: elimina datos)
+echo 7. Reconstruir desde cero
 echo.
 
-set /p choice="Selecciona una opcion (1-6): "
+set /p choice="Selecciona una opcion (1-7): "
 
 if "%choice%"=="1" goto start
-if "%choice%"=="2" goto stop
-if "%choice%"=="3" goto logs
-if "%choice%"=="4" goto restart
-if "%choice%"=="5" goto clean
-if "%choice%"=="6" goto rebuild
+if "%choice%"=="2" goto start_build
+if "%choice%"=="3" goto stop
+if "%choice%"=="4" goto logs
+if "%choice%"=="5" goto restart
+if "%choice%"=="6" goto clean
+if "%choice%"=="7" goto rebuild
 
 echo Opcion invalida
 pause
@@ -52,6 +54,22 @@ docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
 echo.
 echo [OK] Servicios iniciados
 echo.
+echo Frontend: http://localhost:4200
+echo Backend:  http://localhost:8080
+echo pgAdmin:  http://localhost:5050
+echo.
+echo Tip: Usa "docker-compose logs -f" para ver logs en tiempo real
+pause
+exit /b 0
+
+:start_build
+echo.
+echo Iniciando servicios con rebuild...
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d
+echo.
+echo [OK] Servicios iniciados (imagenes reconstruidas)
+echo.
+echo Frontend: http://localhost:4200
 echo Backend:  http://localhost:8080
 echo pgAdmin:  http://localhost:5050
 echo.
