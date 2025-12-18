@@ -1,0 +1,296 @@
+// ==========================================================================
+// ADMIN ORDER TABLE
+// ==========================================================================
+// Table component for displaying admin orders with expandable rows.
+// Based on Figma design with semantic HTML table structure.
+// Uses CSS Grid on ROWS (not table) for proper layout.
+// ==========================================================================
+
+@use '../../../../styles/01-tools/mixins' as *;
+
+// ---------------------------------------------------------------------------
+// TABLE BASE - NOT grid, just a container
+// ---------------------------------------------------------------------------
+
+.admin-orders {
+  inline-size: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background-color: var(--color-background);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+// ---------------------------------------------------------------------------
+// HEADER
+// ---------------------------------------------------------------------------
+
+.admin-orders__head {
+  background-color: var(--color-tiny-info);
+}
+
+// ---------------------------------------------------------------------------
+// BODY
+// ---------------------------------------------------------------------------
+
+.admin-orders__body {
+  display: contents;
+}
+
+// ---------------------------------------------------------------------------
+// ROWS - Apply grid HERE (not on table)
+// ---------------------------------------------------------------------------
+
+.admin-orders__header-row,
+.admin-orders__row {
+  display: grid;
+  grid-template-columns:
+    6.5rem           // STATUS (104px)
+    5.5rem           // ORDER ID (88px)
+    6rem             // USER (96px)
+    12rem            // SERVICE (192px)
+    1fr              // LINK (flexible)
+    5.5rem           // QTY (88px)
+    4rem             // COST (64px)
+    4rem             // SALE (64px)
+    4rem             // PROFIT (64px)
+    6.5rem;          // ACTIONS (104px)
+  align-items: center;
+}
+
+.admin-orders__row {
+  background-color: var(--color-background);
+  cursor: pointer;
+  transition: var(--transition-colors);
+  box-shadow: inset 0 -1px 0 var(--color-foreground);
+
+  &:hover {
+    background-color: var(--color-tiny-info);
+  }
+}
+
+.admin-orders__row--expanded {
+  box-shadow: inset 0 -1px 0 var(--color-secondary);
+}
+
+// ---------------------------------------------------------------------------
+// HEADER CELLS
+// ---------------------------------------------------------------------------
+
+.admin-orders__th {
+  padding: var(--spacing-4);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border-bottom: none; // Override global _base.scss style
+
+  &:first-child {
+    border-start-start-radius: var(--radius-md);
+  }
+
+  &:last-child {
+    border-start-end-radius: var(--radius-md);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// DATA CELLS
+// ---------------------------------------------------------------------------
+
+.admin-orders__td {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: var(--spacing-4);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-small);
+  color: var(--color-text);
+  text-align: center;
+  min-block-size: 3.5rem;
+  border-bottom: none; // Override global _base.scss style
+}
+
+// Two-line cell styles
+.admin-orders__cell-primary {
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-tight);
+}
+
+.admin-orders__cell-secondary {
+  font-weight: var(--font-weight-regular);
+  font-size: var(--font-size-tiny);
+  line-height: var(--line-height-tight);
+  color: var(--color-text);
+}
+
+// ---------------------------------------------------------------------------
+// SPECIFIC CELL STYLES
+// ---------------------------------------------------------------------------
+
+.admin-orders__td--id {
+  font-weight: var(--font-weight-medium);
+}
+
+.admin-orders__td--link {
+  overflow: hidden;
+}
+
+.admin-orders__link {
+  display: block;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: var(--transition-colors);
+
+  @include truncate;
+
+  &:hover {
+    color: var(--color-stats-blue);
+  }
+
+  @include focus-visible;
+}
+
+.admin-orders__td--cost,
+.admin-orders__td--sale,
+.admin-orders__td--profit {
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
+}
+
+// ---------------------------------------------------------------------------
+// ACTIONS
+// ---------------------------------------------------------------------------
+
+.admin-orders__td--actions {
+  flex-direction: row;
+  gap: var(--spacing-1);
+}
+
+.admin-orders__action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-1);
+  background: none;
+  border: none;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: var(--transition-colors);
+
+  &:hover {
+    color: var(--color-stats-blue);
+  }
+
+  @include focus-visible;
+}
+
+// ---------------------------------------------------------------------------
+// EXPANDED ROW
+// ---------------------------------------------------------------------------
+
+.admin-orders__expanded-row {
+  display: block;
+  background-color: var(--color-background);
+  box-shadow: inset 0 -1px 0 var(--color-foreground);
+}
+
+.admin-orders__expanded-content {
+  padding: 0;
+}
+
+.admin-orders__details {
+  display: flex;
+  align-items: stretch;
+  margin: 0;
+}
+
+.admin-orders__detail-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 0;
+  padding: var(--spacing-4);
+  text-align: center;
+}
+
+.admin-orders__detail-item--wide {
+  flex: 2;
+}
+
+.admin-orders__detail-label {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  line-height: var(--line-height-tight);
+  text-transform: uppercase;
+}
+
+.admin-orders__detail-value {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-tiny);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text);
+  line-height: var(--line-height-tight);
+  margin: 0;
+}
+
+// ---------------------------------------------------------------------------
+// RESPONSIVE - XL (< 1280px) - 6 columns
+// ---------------------------------------------------------------------------
+
+@include respond-below('xl') {
+  .admin-orders__header-row,
+  .admin-orders__row {
+    grid-template-columns:
+      5.5rem           // STATUS
+      5rem             // ORDER ID
+      8rem             // SERVICE
+      1fr              // LINK
+      4rem             // QTY
+      5rem;            // ACTIONS
+  }
+
+  .admin-orders__th--user,
+  .admin-orders__th--cost,
+  .admin-orders__th--sale,
+  .admin-orders__th--profit,
+  .admin-orders__td--user,
+  .admin-orders__td--cost,
+  .admin-orders__td--sale,
+  .admin-orders__td--profit {
+    display: none;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// RESPONSIVE - LG (< 1024px) - 5 columns
+// ---------------------------------------------------------------------------
+
+@include respond-below('lg') {
+  .admin-orders__header-row,
+  .admin-orders__row {
+    grid-template-columns:
+      5rem             // STATUS
+      4.5rem           // ORDER ID
+      1fr              // SERVICE
+      4rem             // QTY
+      4rem;            // ACTIONS
+  }
+
+  .admin-orders__th--link,
+  .admin-orders__td--link {
+    display: none;
+  }
+}

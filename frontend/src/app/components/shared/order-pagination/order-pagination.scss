@@ -1,0 +1,195 @@
+@use '../../../../styles/01-tools/mixins' as *;
+
+// ==========================================================================
+// ORDER PAGINATION COMPONENT
+// ==========================================================================
+
+.order-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: var(--spacing-4);
+}
+
+// ---------------------------------------------------------------------------
+// PAGE SIZE SELECTOR (Left Side)
+// ---------------------------------------------------------------------------
+
+.order-pagination__size {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-6);
+}
+
+.order-pagination__label {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+// ---------------------------------------------------------------------------
+// DROPDOWN
+// ---------------------------------------------------------------------------
+
+.order-pagination__dropdown-wrapper {
+  position: relative;
+}
+
+.order-pagination__dropdown {
+  @include reset-button;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-1) var(--spacing-3);
+  background-color: var(--color-information);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-colors);
+
+  @include focus-visible;
+
+  &:hover {
+    background-color: var(--color-secondary);
+  }
+
+  &--open {
+    background-color: var(--color-secondary);
+  }
+}
+
+.order-pagination__dropdown-value {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  line-height: 1;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+}
+
+.order-pagination__dropdown-icon {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-body);
+  color: var(--color-text);
+  line-height: 1;
+  transition: transform var(--transition-fast);
+
+  .order-pagination__dropdown--open & {
+    transform: rotate(180deg);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// OPTIONS LIST
+// ---------------------------------------------------------------------------
+
+.order-pagination__options {
+  position: absolute;
+  top: calc(100% + var(--spacing-2));
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 100%;
+  padding: var(--spacing-2);
+  background-color: var(--color-information);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  z-index: var(--z-dropdown);
+  list-style: none;
+  margin: 0;
+}
+
+.order-pagination__option {
+  padding: var(--spacing-2) var(--spacing-3);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  text-align: center;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: var(--transition-colors);
+
+  &:hover {
+    background-color: var(--color-secondary);
+  }
+
+  &--selected {
+    background-color: var(--color-secondary);
+    color: var(--color-high-contrast);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// PAGE NAVIGATION (Right Side)
+// ---------------------------------------------------------------------------
+
+.order-pagination__nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-2);
+}
+
+.order-pagination__btn {
+  @include reset-button;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.3125rem;
+  padding: 0 var(--spacing-2);
+  background-color: var(--color-information);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-colors);
+
+  @include focus-visible;
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-secondary);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  span {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-body);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text);
+    line-height: 1;
+    letter-spacing: 0.075em;
+  }
+}
+
+.order-pagination__current,
+.order-pagination__total {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  line-height: 1.15;
+}
+
+// ---------------------------------------------------------------------------
+// RESPONSIVE
+// ---------------------------------------------------------------------------
+
+@include respond-below('sm') {
+  .order-pagination {
+    flex-direction: column;
+    gap: var(--spacing-4);
+  }
+
+  .order-pagination__size,
+  .order-pagination__nav {
+    width: 100%;
+    justify-content: center;
+  }
+}

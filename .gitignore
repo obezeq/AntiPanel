@@ -8,6 +8,13 @@
 .env
 .env.local
 .env.*.local
+.env.prod
+
+# ========================================
+# SSL Certificates / Let's Encrypt
+# ========================================
+traefik/acme.json
+traefik/*.json
 
 # ========================================
 # Docker
@@ -39,6 +46,7 @@ desktop.ini
 *.ipr
 *.iws
 .classpath
+.claude
 .project
 .settings/
 bin/

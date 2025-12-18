@@ -1,0 +1,66 @@
+// ==========================================================================
+// DASHBOARD SECTION HEADER
+// ==========================================================================
+// Large section header for dashboard-style pages.
+// Based on Figma design: "Dashboard Component Header"
+// ==========================================================================
+
+@use '../../../../styles/01-tools/mixins' as *;
+
+.dashboard-section-header {
+  @include flex-column;
+  gap: var(--spacing-4);
+  text-align: center;
+  width: 100%;
+
+  // ---------------------------------------------------------------------------
+  // ALIGNMENT MODIFIERS
+  // ---------------------------------------------------------------------------
+
+  &--left {
+    text-align: left;
+    align-items: flex-start;
+  }
+
+  &--right {
+    text-align: right;
+    align-items: flex-end;
+  }
+
+  // ---------------------------------------------------------------------------
+  // TITLE
+  // ---------------------------------------------------------------------------
+  // Large bold heading (96px on desktop, responsive on mobile)
+
+  &__title {
+    @include typography('h1', 'bold', 'primary');
+    color: var(--color-text);
+    margin: 0;
+    text-transform: uppercase;
+
+    // Responsive: reduce size on smaller screens
+    @include respond-below('lg') {
+      font-size: var(--font-size-h2);
+    }
+
+    @include respond-below('md') {
+      font-size: var(--font-size-h3);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // SUBTITLE
+  // ---------------------------------------------------------------------------
+  // Monospace font for secondary description
+
+  &__subtitle {
+    @include typography('h5', 'medium', 'secondary');
+    color: var(--color-foreground);
+    margin: 0;
+
+    // Responsive: reduce size on smaller screens
+    @include respond-below('md') {
+      font-size: var(--font-size-body);
+    }
+  }
+}

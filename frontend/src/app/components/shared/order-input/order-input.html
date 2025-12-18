@@ -1,0 +1,42 @@
+<fieldset
+  class="order-input"
+  [class.order-input--focused]="isFocused()"
+  [class.order-input--disabled]="disabled()"
+>
+  <span class="order-input__icon" aria-hidden="true">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"/>
+      <circle cx="12" cy="12" r="3"/>
+      <line x1="12" y1="2" x2="12" y2="5"/>
+      <line x1="12" y1="19" x2="12" y2="22"/>
+      <line x1="2" y1="12" x2="5" y2="12"/>
+      <line x1="19" y1="12" x2="22" y2="12"/>
+    </svg>
+  </span>
+
+  <input
+    type="text"
+    class="order-input__field"
+    [placeholder]="placeholder()"
+    [value]="value()"
+    [disabled]="disabled()"
+    aria-label="Enter your order using natural language"
+    (input)="onInput($event)"
+    (focus)="onFocus()"
+    (blur)="onBlur()"
+    (keydown)="onKeydown($event)"
+  />
+
+  <button
+    type="button"
+    class="order-input__submit"
+    [disabled]="disabled() || !value().trim()"
+    (click)="onSubmitClick()"
+    aria-label="Submit order"
+  >
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="5" y1="12" x2="19" y2="12"/>
+      <polyline points="12 5 19 12 12 19"/>
+    </svg>
+  </button>
+</fieldset>

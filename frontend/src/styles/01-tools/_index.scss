@@ -1,0 +1,12 @@
+// ==========================================================================
+// TOOLS
+// ==========================================================================
+// Mixins, functions, and other tools.
+// No CSS output - only SCSS mixins and functions.
+// ==========================================================================
+
+// Forward all mixins for use with @use
+@forward 'mixins';
+
+// Also expose mixins as module members
+@use 'mixins' as *;

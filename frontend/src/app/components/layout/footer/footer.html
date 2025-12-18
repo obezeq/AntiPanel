@@ -1,0 +1,48 @@
+<footer class="footer">
+  <section class="footer__content">
+    <article class="footer__brand">
+      <a routerLink="/" class="footer__logo" aria-label="AntiPanel Home">
+        <span class="footer__logo-text">ANTIPANEL</span>
+      </a>
+      <p class="footer__copyright">
+        &copy; {{ currentYear }} ANTIPANEL. ALL RIGHTS RESERVED.
+      </p>
+    </article>
+
+    <nav class="footer__nav" aria-label="Footer navigation">
+      <ul class="footer__nav-list" role="list">
+        @for (link of links(); track link.path) {
+          <li class="footer__nav-item">
+            @if (link.external) {
+              <a
+                [href]="link.path"
+                class="footer__nav-link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {{ link.label }}
+              </a>
+            } @else {
+              <a
+                [routerLink]="link.path"
+                class="footer__nav-link"
+              >
+                {{ link.label }}
+              </a>
+            }
+          </li>
+        }
+      </ul>
+    </nav>
+
+    <button
+      type="button"
+      class="footer__back-to-top"
+      (click)="scrollToTop()"
+      aria-label="Back to top"
+    >
+      <span class="footer__back-to-top-text">BACK TO TOP</span>
+      <span class="footer__back-to-top-icon" aria-hidden="true">↑</span>
+    </button>
+  </section>
+</footer>

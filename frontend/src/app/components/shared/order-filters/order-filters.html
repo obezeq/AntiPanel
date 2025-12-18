@@ -1,0 +1,59 @@
+<nav class="order-filters" aria-label="Order filters">
+  <!-- Category Dropdown -->
+  <div class="order-filters__dropdown-wrapper">
+    <button
+      type="button"
+      class="order-filters__dropdown"
+      [class.order-filters__dropdown--open]="isCategoryOpen()"
+      [attr.aria-expanded]="isCategoryOpen()"
+      aria-haspopup="listbox"
+      (click)="toggleCategoryDropdown()"
+      (keydown)="onKeydown($event)"
+    >
+      <span class="order-filters__dropdown-text">{{ selectedCategory() }}</span>
+      <span class="order-filters__dropdown-icon" aria-hidden="true">↓</span>
+    </button>
+
+    @if (isCategoryOpen()) {
+      <ul
+        class="order-filters__options"
+        role="listbox"
+        aria-label="Filter by category"
+      >
+        @for (category of categories(); track category) {
+          <li
+            role="option"
+            class="order-filters__option"
+            [class.order-filters__option--selected]="category === selectedCategory()"
+            [attr.aria-selected]="category === selectedCategory()"
+            (click)="selectCategory(category)"
+          >
+            {{ category }}
+          </li>
+        }
+      </ul>
+    }
+  </div>
+
+  <!-- Sort Button -->
+  <button
+    type="button"
+    class="order-filters__sort"
+    aria-label="Toggle sort order"
+    (click)="toggleSort()"
+  >
+    <span class="order-filters__sort-text">{{ sortLabel() }}</span>
+  </button>
+
+  <!-- Search Input -->
+  <div class="order-filters__search">
+    <input
+      type="search"
+      class="order-filters__input"
+      placeholder="SEARCH"
+      [value]="searchQuery()"
+      aria-label="Search orders"
+      (input)="onSearchInput($event)"
+    />
+  </div>
+</nav>

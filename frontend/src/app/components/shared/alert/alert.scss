@@ -1,0 +1,143 @@
+@use '../../../../styles/01-tools/mixins' as *;
+
+// ==========================================================================
+// ALERT COMPONENT
+// ==========================================================================
+// Notification alert with variants for success, error, warning, and info.
+// ==========================================================================
+
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4);
+  border-radius: var(--radius-lg);
+  border: var(--border-width-thin) solid;
+  animation: alertSlideIn var(--transition-base) ease-out;
+}
+
+@keyframes alertSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// VARIANTS
+// ---------------------------------------------------------------------------
+
+.alert--success {
+  background-color: rgba(var(--color-success-rgb), 0.1);
+  border-color: var(--color-success);
+
+  .alert__icon {
+    color: var(--color-success);
+  }
+
+  .alert__title {
+    color: var(--color-success);
+  }
+}
+
+.alert--error {
+  background-color: rgba(var(--color-error-rgb), 0.1);
+  border-color: var(--color-error);
+
+  .alert__icon {
+    color: var(--color-error);
+  }
+
+  .alert__title {
+    color: var(--color-error);
+  }
+}
+
+.alert--warning {
+  background-color: rgba(var(--color-status-yellow-rgb), 0.1);
+  border-color: var(--color-status-yellow);
+
+  .alert__icon {
+    color: var(--color-status-yellow);
+  }
+
+  .alert__title {
+    color: var(--color-status-yellow);
+  }
+}
+
+.alert--info {
+  background-color: rgba(var(--color-stats-blue-rgb), 0.1);
+  border-color: var(--color-stats-blue);
+
+  .alert__icon {
+    color: var(--color-stats-blue);
+  }
+
+  .alert__title {
+    color: var(--color-stats-blue);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// ICON
+// ---------------------------------------------------------------------------
+
+.alert__icon {
+  display: flex;
+  flex-shrink: 0;
+  margin-top: 0.125rem; // 2px micro-adjustment for alignment
+}
+
+// ---------------------------------------------------------------------------
+// CONTENT
+// ---------------------------------------------------------------------------
+
+.alert__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.alert__title {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  margin: 0;
+  margin-bottom: var(--spacing-1);
+}
+
+.alert__message {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-caption);
+  color: var(--color-text);
+  margin: 0;
+  line-height: var(--line-height-normal);
+}
+
+// ---------------------------------------------------------------------------
+// DISMISS BUTTON
+// ---------------------------------------------------------------------------
+
+.alert__dismiss {
+  @include reset-button;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.5rem;  // 24px
+  height: 1.5rem; // 24px
+  color: var(--color-foreground);
+  border-radius: var(--radius-sm);
+  transition: var(--transition-colors);
+
+  &:hover {
+    color: var(--color-text);
+    background-color: var(--color-tiny-info);
+  }
+
+  @include focus-visible;
+}

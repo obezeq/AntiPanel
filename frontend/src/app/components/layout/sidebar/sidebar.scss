@@ -1,0 +1,119 @@
+@use '../../../../styles/01-tools/mixins' as *;
+
+// ==========================================================================
+// SIDEBAR COMPONENT
+// ==========================================================================
+// Admin sidebar navigation with responsive behavior.
+// Fixed on mobile, sticky on desktop.
+// Design matches Figma (node 1020:1140)
+// ==========================================================================
+
+.sidebar {
+  background-color: var(--color-background);
+  border-inline-end: var(--border-width-thin) solid var(--color-information);
+  padding: var(--spacing-6);
+  block-size: 100%;
+
+  @include respond-below('lg') {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    inline-size: 17.5rem;
+    block-size: 100vh;
+    block-size: 100dvh;
+    z-index: var(--z-fixed);
+    transform: translateX(-100%);
+    transition: transform var(--transition-base);
+    overflow-y: auto;
+
+    &.sidebar--open {
+      transform: translateX(0);
+    }
+  }
+
+  @include respond-to('lg') {
+    position: sticky;
+    inset-block-start: 0;
+    block-size: 100vh;
+    block-size: 100dvh;
+    overflow-y: auto;
+  }
+
+  @include custom-scrollbar;
+}
+
+// ---------------------------------------------------------------------------
+// HEADER
+// ---------------------------------------------------------------------------
+
+.sidebar__header {
+  margin-block-end: var(--spacing-8);
+}
+
+.sidebar__title {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-high-contrast);
+  text-transform: uppercase;
+  line-height: 1.15;
+}
+
+// ---------------------------------------------------------------------------
+// NAVIGATION
+// ---------------------------------------------------------------------------
+
+.sidebar__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sidebar__item {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar__link {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  inline-size: 12.5rem;
+  padding: var(--spacing-3) var(--spacing-4);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-high-contrast);
+  text-decoration: none;
+  text-transform: uppercase;
+  border-radius: var(--radius-md);
+  transition: var(--transition-colors), background-color var(--transition-fast);
+
+  &:hover {
+    background-color: var(--color-information);
+  }
+
+  &.sidebar__link--active {
+    color: var(--color-secondary);
+    background-color: var(--color-high-contrast);
+  }
+
+  @include focus-visible;
+}
+
+.sidebar__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.sidebar__label {
+  flex: 1;
+}

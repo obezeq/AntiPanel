@@ -1,0 +1,500 @@
+// ==========================================================================
+// BASE ELEMENT STYLES
+// ==========================================================================
+// Styling for bare HTML elements (type selectors).
+// No classes - these are the default styles for semantic HTML.
+// ==========================================================================
+
+// ---------------------------------------------------------------------------
+// ROOT ELEMENTS
+// ---------------------------------------------------------------------------
+
+html {
+  // Base font size for rem calculations (16px = 1rem)
+  font-size: 100%;
+  color-scheme: dark;
+}
+
+body {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-normal);
+  color: var(--color-text);
+  background-color: var(--color-background);
+}
+
+// ---------------------------------------------------------------------------
+// HEADINGS
+// ---------------------------------------------------------------------------
+// Typography scale based on design specs.
+// Montserrat for all headings.
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-primary);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  color: var(--color-text);
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-extrabold);
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+}
+
+h3 {
+  font-size: var(--font-size-h3);
+}
+
+h4 {
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-semibold);
+}
+
+h5 {
+  font-size: var(--font-size-h5);
+  font-weight: var(--font-weight-semibold);
+}
+
+h6 {
+  font-size: var(--font-size-h6);
+  font-weight: var(--font-weight-semibold);
+}
+
+// ---------------------------------------------------------------------------
+// PARAGRAPH & TEXT
+// ---------------------------------------------------------------------------
+
+p {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-normal);
+  color: var(--color-text);
+
+  // Add spacing between consecutive paragraphs
+  + p {
+    margin-top: var(--spacing-4);
+  }
+}
+
+small {
+  font-size: var(--font-size-small);
+}
+
+strong,
+b {
+  font-weight: var(--font-weight-bold);
+}
+
+em,
+i {
+  font-style: italic;
+}
+
+// ---------------------------------------------------------------------------
+// LINKS
+// ---------------------------------------------------------------------------
+
+a {
+  color: var(--color-text);
+  text-decoration: none;
+  transition: var(--transition-colors);
+
+  &:hover {
+    color: var(--color-high-contrast);
+  }
+
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// CODE & PREFORMATTED
+// ---------------------------------------------------------------------------
+// IBM Plex Mono for code elements.
+
+code,
+kbd,
+samp,
+pre {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-caption);
+}
+
+code {
+  padding: var(--spacing-1) var(--spacing-2);
+  background-color: var(--color-tiny-info);
+  border-radius: var(--radius-sm);
+}
+
+pre {
+  padding: var(--spacing-4);
+  background-color: var(--color-tiny-info);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+
+  code {
+    padding: 0;
+    background: none;
+    border-radius: 0;
+  }
+}
+
+kbd {
+  padding: var(--spacing-1) var(--spacing-2);
+  background-color: var(--color-information);
+  border-radius: var(--radius-sm);
+  border: var(--border-width-thin) solid var(--color-secondary);
+}
+
+// ---------------------------------------------------------------------------
+// LISTS
+// ---------------------------------------------------------------------------
+
+ul,
+ol {
+  padding-left: var(--spacing-6);
+
+  li {
+    margin-bottom: var(--spacing-2);
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+// Navigation lists (role="list") have no bullets
+ul[role="list"],
+ol[role="list"] {
+  padding-left: 0;
+  list-style: none;
+}
+
+// Description lists
+dl {
+  dt {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+  }
+
+  dd {
+    margin-left: var(--spacing-4);
+    color: var(--color-foreground);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// BLOCKQUOTE
+// ---------------------------------------------------------------------------
+
+blockquote {
+  padding-left: var(--spacing-4);
+  border-left: var(--border-width-heavy) solid var(--color-success);
+  font-style: italic;
+  color: var(--color-foreground);
+
+  cite {
+    display: block;
+    margin-top: var(--spacing-2);
+    font-style: normal;
+    font-size: var(--font-size-small);
+    color: var(--color-secondary);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// HORIZONTAL RULE
+// ---------------------------------------------------------------------------
+
+hr {
+  border: none;
+  height: var(--border-width-thin);
+  background-color: var(--color-information);
+  margin: var(--spacing-8) 0;
+}
+
+// ---------------------------------------------------------------------------
+// TABLES
+// ---------------------------------------------------------------------------
+
+table {
+  width: 100%;
+  font-size: var(--font-size-body);
+}
+
+th,
+td {
+  padding: var(--spacing-3) var(--spacing-4);
+  text-align: left;
+  border-bottom: var(--border-width-thin) solid var(--color-information);
+}
+
+th {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  background-color: var(--color-tiny-info);
+}
+
+td {
+  color: var(--color-foreground);
+}
+
+tbody tr:hover {
+  background-color: var(--color-tiny-info);
+}
+
+// ---------------------------------------------------------------------------
+// FORMS - BASE ELEMENTS
+// ---------------------------------------------------------------------------
+
+label {
+  display: block;
+  font-family: var(--font-primary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  margin-bottom: var(--spacing-2);
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: var(--spacing-3) var(--spacing-4);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-body);
+  color: var(--color-text);
+  background-color: var(--color-background);
+  border: var(--border-width-medium) solid var(--color-secondary);
+  border-radius: var(--radius-md);
+  transition: var(--transition-colors);
+
+  &::placeholder {
+    color: var(--color-foreground);
+  }
+
+  &:hover {
+    border-color: var(--color-foreground);
+  }
+
+  &:focus {
+    border-color: var(--color-text);
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+textarea {
+  min-height: 7.5rem; // 120px
+  resize: vertical;
+}
+
+select {
+  cursor: pointer;
+  appearance: none;
+
+  // Custom dropdown arrow
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23a1a1a1' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--spacing-3) center;
+  padding-right: var(--spacing-10);
+}
+
+// ---------------------------------------------------------------------------
+// BUTTON BASE
+// ---------------------------------------------------------------------------
+// Note: Most button styling is in components.
+// This is just the bare minimum for unstyled buttons.
+
+button {
+  font-family: var(--font-primary);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// MEDIA ELEMENTS
+// ---------------------------------------------------------------------------
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+figure {
+  figcaption {
+    margin-top: var(--spacing-2);
+    font-size: var(--font-size-small);
+    color: var(--color-foreground);
+    text-align: center;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// FIELDSET & LEGEND
+// ---------------------------------------------------------------------------
+
+fieldset {
+  padding: var(--spacing-4);
+  border: var(--border-width-medium) solid var(--color-information);
+  border-radius: var(--radius-md);
+}
+
+legend {
+  padding: 0 var(--spacing-2);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+}
+
+// ---------------------------------------------------------------------------
+// DETAILS & SUMMARY
+// ---------------------------------------------------------------------------
+
+details {
+  border: var(--border-width-medium) solid var(--color-information);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-4);
+
+  &[open] summary {
+    margin-bottom: var(--spacing-4);
+    border-bottom: var(--border-width-thin) solid var(--color-information);
+    padding-bottom: var(--spacing-4);
+  }
+}
+
+summary {
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  list-style: none;
+
+  &::-webkit-details-marker {
+    display: none;
+  }
+
+  &::before {
+    content: '+';
+    display: inline-block;
+    margin-right: var(--spacing-2);
+    font-family: var(--font-secondary);
+  }
+
+  details[open] &::before {
+    content: '−';
+  }
+}
+
+// ---------------------------------------------------------------------------
+// MARK (Highlight)
+// ---------------------------------------------------------------------------
+
+mark {
+  background-color: var(--color-status-yellow);
+  color: var(--color-background);
+  padding: var(--spacing-1);
+  border-radius: var(--radius-sm);
+}
+
+// ---------------------------------------------------------------------------
+// ABBREVIATION
+// ---------------------------------------------------------------------------
+
+abbr[title] {
+  text-decoration: underline dotted;
+  cursor: help;
+}
+
+// ---------------------------------------------------------------------------
+// ADDRESS
+// ---------------------------------------------------------------------------
+
+address {
+  font-style: normal;
+  color: var(--color-foreground);
+}
+
+// ---------------------------------------------------------------------------
+// TOOLTIP (Global - used by TooltipDirective)
+// ---------------------------------------------------------------------------
+
+.app-tooltip {
+  position: absolute;
+  z-index: var(--z-tooltip);
+  padding: var(--spacing-2) var(--spacing-3);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-small);
+  color: var(--color-background);
+  background-color: var(--color-text);
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: var(--transition-fast);
+
+  &--visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  // Arrow styles
+  &::after {
+    content: '';
+    position: absolute;
+    border: 6px solid transparent;
+  }
+
+  &--top::after {
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-top-color: var(--color-text);
+  }
+
+  &--bottom::after {
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-bottom-color: var(--color-text);
+  }
+
+  &--left::after {
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    border-left-color: var(--color-text);
+  }
+
+  &--right::after {
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    border-right-color: var(--color-text);
+  }
+}

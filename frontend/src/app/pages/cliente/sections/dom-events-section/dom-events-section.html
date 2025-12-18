@@ -1,0 +1,413 @@
+<div class="dom-events-section">
+  <!-- ========================================================================
+       TABS CON @angular/aria
+       ======================================================================== -->
+  <div ngTabs class="dom-events-section__tabs">
+    <ul ngTabList [(selectedTab)]="selectedTab" class="dom-events-section__tab-list">
+      <li ngTab value="eventos" class="dom-events-section__tab">
+        <ng-icon name="matMouse" size="18" />
+        <span>Eventos DOM</span>
+      </li>
+      <li ngTab value="viewchild" class="dom-events-section__tab">
+        <ng-icon name="matVisibility" size="18" />
+        <span>ViewChild</span>
+      </li>
+      <li ngTab value="tooltips" class="dom-events-section__tab">
+        <ng-icon name="matInfo" size="18" />
+        <span>Tooltips</span>
+      </li>
+      <li ngTab value="propagation" class="dom-events-section__tab">
+        <ng-icon name="matCallSplit" size="18" />
+        <span>Propagacion</span>
+      </li>
+    </ul>
+
+    <!-- =====================================================================
+         TAB 1: EVENTOS DOM
+         ===================================================================== -->
+    <div ngTabPanel value="eventos" class="dom-events-section__panel">
+      <ng-template ngTabContent>
+        <div class="dom-events-section__content">
+          <h4 class="dom-events-section__subtitle">Event Binding en Angular</h4>
+          <p class="dom-events-section__description">
+            Demuestra (click), (keydown), (focus), (blur) y (mousemove)
+          </p>
+
+          <div class="dom-events-section__demos">
+            <!-- Click Demo -->
+            <div class="dom-events-section__demo-card">
+              <span class="dom-events-section__demo-label">Click Event</span>
+              <button
+                type="button"
+                class="dom-events-section__btn dom-events-section__btn--primary"
+                (click)="onButtonClick()"
+              >
+                Haz click aqui
+              </button>
+              <div class="dom-events-section__result">
+                <span class="dom-events-section__result-label">Clicks:</span>
+                <span class="dom-events-section__result-value">{{ clickCount() }}</span>
+              </div>
+            </div>
+
+            <!-- Keydown Demo -->
+            <div class="dom-events-section__demo-card">
+              <span class="dom-events-section__demo-label">Keydown Event</span>
+              <input
+                type="text"
+                class="dom-events-section__input"
+                placeholder="Presiona teclas aqui..."
+                (keydown)="onKeyDown($event)"
+              />
+              <div class="dom-events-section__result">
+                <span class="dom-events-section__result-label">Ultima tecla:</span>
+                <span class="dom-events-section__result-value">{{ lastKey() || 'Ninguna' }}</span>
+              </div>
+            </div>
+
+            <!-- Focus/Blur Demo -->
+            <div class="dom-events-section__demo-card">
+              <span class="dom-events-section__demo-label">Focus / Blur Events</span>
+              <input
+                type="text"
+                class="dom-events-section__input"
+                [class.dom-events-section__input--focused]="hasFocus()"
+                placeholder="Haz focus aqui..."
+                (focus)="onFocus()"
+                (blur)="onBlur()"
+              />
+              <div class="dom-events-section__result">
+                <span class="dom-events-section__result-label">Estado:</span>
+                <span
+                  class="dom-events-section__result-value"
+                  [class.dom-events-section__result-value--active]="hasFocus()"
+                >
+                  {{ hasFocus() ? 'Con focus' : 'Sin focus' }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Mousemove Demo -->
+            <div class="dom-events-section__demo-card">
+              <span class="dom-events-section__demo-label">Mousemove Event</span>
+              <div
+                class="dom-events-section__mouse-area"
+                (mousemove)="onMouseMove($event)"
+              >
+                Mueve el mouse aqui
+              </div>
+              <div class="dom-events-section__result">
+                <span class="dom-events-section__result-label">Posicion:</span>
+                <span class="dom-events-section__result-value">
+                  X: {{ mousePosition().x }}, Y: {{ mousePosition().y }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- =====================================================================
+         TAB 2: VIEWCHILD
+         ===================================================================== -->
+    <div ngTabPanel value="viewchild" class="dom-events-section__panel">
+      <ng-template ngTabContent>
+        <div class="dom-events-section__content">
+          <h4 class="dom-events-section__subtitle">ViewChild y ElementRef</h4>
+          <p class="dom-events-section__description">
+            Acceso directo a elementos del DOM usando viewChild() signal
+          </p>
+
+          <div class="dom-events-section__viewchild-demo">
+            <!-- Input con ViewChild -->
+            <div class="dom-events-section__demo-card">
+              <span class="dom-events-section__demo-label">Focus Programatico</span>
+              <input
+                #demoInput
+                type="text"
+                class="dom-events-section__input"
+                placeholder="Input controlado por ViewChild"
+                [value]="inputText()"
+                (input)="onInputChange($event)"
+              />
+              <button
+                type="button"
+                class="dom-events-section__btn dom-events-section__btn--secondary"
+                (click)="focusInput()"
+              >
+                <ng-icon name="matCenterFocusWeak" size="18" />
+                <span>Enfocar Input</span>
+              </button>
+            </div>
+
+            <!-- Box con ViewChild -->
+            <div class="dom-events-section__demo-card">
+              <span class="dom-events-section__demo-label">Manipular Elemento</span>
+              <div
+                #demoBox
+                class="dom-events-section__box"
+                [style.background-color]="boxColor()"
+              >
+                Caja manipulable
+              </div>
+              <div class="dom-events-section__buttons">
+                <button
+                  type="button"
+                  class="dom-events-section__btn dom-events-section__btn--secondary"
+                  (click)="changeBoxColor()"
+                >
+                  <ng-icon name="matPalette" size="18" />
+                  <span>Cambiar Color</span>
+                </button>
+                <button
+                  type="button"
+                  class="dom-events-section__btn dom-events-section__btn--secondary"
+                  (click)="getBoxText()"
+                >
+                  <ng-icon name="matTextFields" size="18" />
+                  <span>Leer Texto</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- =====================================================================
+         TAB 3: TOOLTIPS
+         ===================================================================== -->
+    <div ngTabPanel value="tooltips" class="dom-events-section__panel">
+      <ng-template ngTabContent>
+        <div class="dom-events-section__content">
+          <h4 class="dom-events-section__subtitle">Tooltips Accesibles</h4>
+          <p class="dom-events-section__description">
+            Directiva appTooltip con soporte de teclado y aria-describedby
+          </p>
+
+          <div class="dom-events-section__tooltips-demo">
+            <div class="dom-events-section__tooltip-row">
+              <button
+                type="button"
+                class="dom-events-section__btn dom-events-section__btn--primary"
+                appTooltip="Tooltip arriba (por defecto)"
+                tooltipPosition="top"
+              >
+                <ng-icon name="matArrowUpward" size="18" />
+                <span>Arriba</span>
+              </button>
+
+              <button
+                type="button"
+                class="dom-events-section__btn dom-events-section__btn--primary"
+                appTooltip="Tooltip abajo"
+                tooltipPosition="bottom"
+              >
+                <ng-icon name="matArrowDownward" size="18" />
+                <span>Abajo</span>
+              </button>
+
+              <button
+                type="button"
+                class="dom-events-section__btn dom-events-section__btn--primary"
+                appTooltip="Tooltip izquierda"
+                tooltipPosition="left"
+              >
+                <ng-icon name="matArrowBack" size="18" />
+                <span>Izquierda</span>
+              </button>
+
+              <button
+                type="button"
+                class="dom-events-section__btn dom-events-section__btn--primary"
+                appTooltip="Tooltip derecha"
+                tooltipPosition="right"
+              >
+                <ng-icon name="matArrowForward" size="18" />
+                <span>Derecha</span>
+              </button>
+            </div>
+
+            <div class="dom-events-section__tooltip-info">
+              <ng-icon name="matAccessibility" size="20" />
+              <span>
+                Los tooltips son accesibles: usa Tab para navegar y Escape para cerrar.
+                Se agrega automaticamente aria-describedby.
+              </span>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- =====================================================================
+         TAB 4: PROPAGATION
+         ===================================================================== -->
+    <div ngTabPanel value="propagation" class="dom-events-section__panel">
+      <ng-template ngTabContent>
+        <div class="dom-events-section__content">
+          <h4 class="dom-events-section__subtitle">preventDefault y stopPropagation</h4>
+          <p class="dom-events-section__description">
+            Control del flujo de eventos en el DOM
+          </p>
+
+          <div class="dom-events-section__propagation-demo">
+            <!-- preventDefault Demo -->
+            <div class="dom-events-section__demo-card">
+              <span class="dom-events-section__demo-label">preventDefault()</span>
+              <a
+                href="https://angular.dev"
+                class="dom-events-section__link"
+                (click)="onLinkClick($event)"
+              >
+                <ng-icon name="matLink" size="18" />
+                <span>Link que no navega (preventDefault)</span>
+              </a>
+
+              <form
+                class="dom-events-section__mini-form"
+                (submit)="onFormSubmit($event)"
+              >
+                <input
+                  type="text"
+                  class="dom-events-section__input"
+                  placeholder="Escribe algo..."
+                />
+                <button
+                  type="submit"
+                  class="dom-events-section__btn dom-events-section__btn--success"
+                >
+                  Enviar (sin recargar)
+                </button>
+              </form>
+            </div>
+
+            <!-- stopPropagation Demo -->
+            <div class="dom-events-section__demo-card">
+              <span class="dom-events-section__demo-label">stopPropagation()</span>
+
+              <div
+                class="dom-events-section__outer-container"
+                (click)="onOuterClick()"
+              >
+                <span class="dom-events-section__container-label">Contenedor exterior (click)</span>
+
+                <div class="dom-events-section__inner-buttons">
+                  <button
+                    type="button"
+                    class="dom-events-section__btn dom-events-section__btn--warning"
+                    (click)="onInnerClick($event)"
+                  >
+                    Con stopPropagation
+                  </button>
+
+                  <button
+                    type="button"
+                    class="dom-events-section__btn dom-events-section__btn--error"
+                    (click)="onInnerClickNoPropagation($event)"
+                  >
+                    Sin stopPropagation
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Event Log -->
+            <div class="dom-events-section__event-log">
+              <div class="dom-events-section__log-header">
+                <span class="dom-events-section__log-title">Log de Eventos</span>
+                <button
+                  type="button"
+                  class="dom-events-section__btn dom-events-section__btn--small"
+                  (click)="clearEventLog()"
+                >
+                  Limpiar
+                </button>
+              </div>
+              <div class="dom-events-section__log-content">
+                @if (eventLog().length === 0) {
+                  <span class="dom-events-section__log-empty">
+                    Interactua con los elementos de arriba...
+                  </span>
+                } @else {
+                  @for (entry of eventLog(); track $index) {
+                    <div class="dom-events-section__log-entry">{{ entry }}</div>
+                  }
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       ACCORDION NATIVO (details/summary)
+       ======================================================================== -->
+  <section class="dom-events-section__accordion">
+    <h4 class="dom-events-section__subtitle">Accordion Nativo</h4>
+    <p class="dom-events-section__description">
+      Usando elementos HTML5 details/summary para maxima accesibilidad
+    </p>
+
+    <div class="dom-events-section__accordion-items">
+      <details class="dom-events-section__accordion-item">
+        <summary class="dom-events-section__accordion-header">
+          <ng-icon name="matCode" size="20" />
+          <span>ViewChild y ElementRef</span>
+        </summary>
+        <div class="dom-events-section__accordion-content">
+          <p>
+            <strong>ViewChild</strong> permite acceder a elementos del template desde el componente.
+            En Angular 21, usamos la funcion <code>viewChild()</code> que devuelve un signal.
+          </p>
+          <pre><code>protected readonly myInput = viewChild&lt;ElementRef&gt;('myInput');
+
+// Uso
+this.myInput()?.nativeElement.focus();</code></pre>
+        </div>
+      </details>
+
+      <details class="dom-events-section__accordion-item">
+        <summary class="dom-events-section__accordion-header">
+          <ng-icon name="matTouchApp" size="20" />
+          <span>Event Binding</span>
+        </summary>
+        <div class="dom-events-section__accordion-content">
+          <p>
+            Angular usa parentesis <code>(evento)</code> para vincular eventos del DOM.
+          </p>
+          <pre><code>&lt;button (click)="handleClick()"&gt;Click&lt;/button&gt;
+&lt;input (keydown)="onKey($event)"&gt;
+&lt;input (focus)="onFocus()" (blur)="onBlur()"&gt;</code></pre>
+        </div>
+      </details>
+
+      <details class="dom-events-section__accordion-item">
+        <summary class="dom-events-section__accordion-header">
+          <ng-icon name="matBlock" size="20" />
+          <span>preventDefault y stopPropagation</span>
+        </summary>
+        <div class="dom-events-section__accordion-content">
+          <p>
+            <strong>preventDefault()</strong> evita el comportamiento por defecto del evento
+            (ej: navegacion de links, submit de forms).
+          </p>
+          <p>
+            <strong>stopPropagation()</strong> detiene la propagacion del evento hacia
+            elementos padres (event bubbling).
+          </p>
+          <pre><code>onLinkClick(event: MouseEvent) {{'{'}}
+  event.preventDefault(); // No navega
+{{'}'}}
+
+onInnerClick(event: MouseEvent) {{'{'}}
+  event.stopPropagation(); // No propaga al padre
+{{'}'}}</code></pre>
+        </div>
+      </details>
+    </div>
+  </section>
+</div>

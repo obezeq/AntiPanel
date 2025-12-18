@@ -1,0 +1,43 @@
+<dialog
+  #dialogRef
+  class="modal"
+  [class.modal--sm]="size() === 'sm'"
+  [class.modal--md]="size() === 'md'"
+  [class.modal--lg]="size() === 'lg'"
+  aria-modal="true"
+  [attr.aria-labelledby]="title() ? 'modal-title' : null"
+  (click)="onOverlayClick($event)"
+  (keydown)="onKeydown($event)"
+>
+  <article class="modal__content" (click)="$event.stopPropagation()">
+    @if (title() || showCloseButton()) {
+      <header class="modal__header">
+        @if (title()) {
+          <h2 id="modal-title" class="modal__title">{{ title() }}</h2>
+        }
+
+        @if (showCloseButton()) {
+          <button
+            type="button"
+            class="modal__close"
+            (click)="onCloseClick()"
+            aria-label="Close modal"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        }
+      </header>
+    }
+
+    <section class="modal__body">
+      <ng-content />
+    </section>
+
+    <footer class="modal__footer">
+      <ng-content select="[modal-footer]" />
+    </footer>
+  </article>
+</dialog>

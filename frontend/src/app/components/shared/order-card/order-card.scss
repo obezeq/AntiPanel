@@ -1,0 +1,294 @@
+// ==========================================================================
+// ORDER CARD
+// ==========================================================================
+// Full order card for Orders page display.
+// Based on Figma design: "Order" component (node 1094:1973)
+// Matches Figma exactly with base-8 spacing and flex layouts.
+// ==========================================================================
+
+@use '../../../../styles/01-tools/mixins' as *;
+
+.order-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; // 16px (base-8)
+  padding: 1.5rem 2rem; // 24px 32px (Figma exact)
+  border: 2px solid var(--color-information);
+  border-radius: 1rem; // 16px
+  background-color: var(--color-background);
+  transition: var(--transition-colors);
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--color-secondary);
+  }
+
+  @include focus-visible;
+
+  // ---------------------------------------------------------------------------
+  // HEADER ROW (Status, ID, Service, URL) - "Order Type" in Figma
+  // ---------------------------------------------------------------------------
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem; // 16px
+    width: 100%;
+  }
+
+  // Status Badge - 40px height, 20px font (Figma exact)
+  &__status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.5rem; // 40px (base-8)
+    padding: 0.25rem 0.75rem; // 4px 12px
+    border-radius: 0.5rem; // 8px
+    font-family: var(--font-primary);
+    font-size: 1.25rem; // 20px (h6)
+    font-weight: var(--font-weight-bold);
+    line-height: 1.15;
+    color: var(--color-text);
+    background-color: var(--color-information);
+    text-transform: uppercase;
+    white-space: nowrap;
+    flex-shrink: 0;
+
+    // Status color modifiers (KEPT as requested)
+    &--pending {
+      background-color: var(--color-status-yellow);
+      color: var(--color-background);
+    }
+
+    &--processing {
+      background-color: var(--color-stats-blue);
+      color: var(--color-background);
+    }
+
+    &--completed {
+      background-color: var(--color-success);
+      color: var(--color-background);
+    }
+
+    &--cancelled {
+      background-color: var(--color-error);
+      color: var(--color-background);
+    }
+
+    &--partial {
+      background-color: var(--color-foreground);
+      color: var(--color-background);
+    }
+  }
+
+  // Order ID - 20px medium (Figma exact)
+  &__id {
+    font-family: var(--font-primary);
+    font-size: 1.25rem; // 20px
+    font-weight: var(--font-weight-medium);
+    line-height: 1.15;
+    color: var(--color-text);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  // Service Name - 16px semibold, centered (Figma exact)
+  &__service {
+    font-family: var(--font-primary);
+    font-size: 1rem; // 16px
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.15;
+    color: var(--color-text);
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  // Target URL - 16px medium (Figma exact)
+  &__url {
+    font-family: var(--font-primary);
+    font-size: 1rem; // 16px
+    font-weight: var(--font-weight-medium);
+    line-height: 1.15;
+    color: var(--color-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 0;
+    max-width: 25%;
+  }
+
+  // ---------------------------------------------------------------------------
+  // FOOTER ROW (Date, Charge, Quantity, Remains, Actions) - "Order Info" in Figma
+  // ---------------------------------------------------------------------------
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem; // 16px
+    width: 100%;
+  }
+
+  // Common label style - 16px medium
+  &__label {
+    font-family: var(--font-primary);
+    font-size: 1rem;
+    font-weight: var(--font-weight-medium);
+    line-height: 1.15;
+    color: var(--color-text);
+  }
+
+  // Date - 16px medium
+  &__date {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem; // 4px
+    font-family: var(--font-primary);
+    font-size: 1rem;
+    font-weight: var(--font-weight-medium);
+    line-height: 1.15;
+    color: var(--color-text);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  // Charge / Price - Label + IBM Plex Mono value (Figma exact)
+  &__charge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; // 8px (Figma exact)
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  &__price-value {
+    font-family: var(--font-secondary); // IBM Plex Mono
+    font-size: 1rem;
+    font-weight: var(--font-weight-medium);
+    line-height: normal;
+    color: var(--color-text);
+    letter-spacing: 0.075rem; // 1.2px (Figma exact)
+    text-transform: uppercase;
+  }
+
+  // Quantity - 16px medium
+  &__quantity {
+    font-family: var(--font-primary);
+    font-size: 1rem;
+    font-weight: var(--font-weight-medium);
+    line-height: 1.15;
+    color: var(--color-text);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  // Remains - 16px medium
+  &__remains {
+    font-family: var(--font-primary);
+    font-size: 1rem;
+    font-weight: var(--font-weight-medium);
+    line-height: 1.15;
+    color: var(--color-text);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  // ---------------------------------------------------------------------------
+  // ACTION BUTTONS - 16px gap, 8px padding (Figma exact)
+  // ---------------------------------------------------------------------------
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1rem; // 16px (Figma exact)
+    flex-shrink: 0;
+  }
+
+  // Screen reader only (accessibility)
+  .sr-only {
+    @include visually-hidden;
+  }
+
+  &__action {
+    @include reset-button;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0.5rem; // 4px 8px (Figma exact)
+    border-radius: 0.5rem; // 8px
+    font-family: var(--font-primary);
+    font-size: 1rem; // 16px
+    font-weight: var(--font-weight-bold);
+    line-height: 1.15;
+    color: var(--color-text);
+    background-color: var(--color-information);
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: var(--transition-colors), var(--transition-transform);
+
+    &:hover {
+      background-color: var(--color-text);
+      color: var(--color-background);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    @include focus-visible(var(--color-success));
+  }
+
+  // ---------------------------------------------------------------------------
+  // RESPONSIVE LAYOUT - flex gap instead of margin (base-8)
+  // ---------------------------------------------------------------------------
+
+  @include respond-below('lg') {
+    padding: 1rem 1.5rem; // 16px 24px
+
+    &__header,
+    &__footer {
+      gap: 0.75rem; // 12px
+    }
+
+    &__url {
+      max-width: 20%;
+    }
+  }
+
+  @include respond-below('md') {
+    gap: 1.5rem; // 24px
+
+    &__header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem; // 8px
+    }
+
+    &__service {
+      text-align: left;
+      max-width: 100%;
+    }
+
+    &__url {
+      max-width: 100%;
+    }
+
+    &__footer {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem; // 8px
+    }
+
+    &__actions {
+      width: 100%;
+      justify-content: flex-start;
+      gap: 0.5rem; // 8px
+    }
+  }
+}

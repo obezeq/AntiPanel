@@ -1,0 +1,70 @@
+<fieldset
+  class="form-select"
+  [class.form-select--focused]="isFocused()"
+  [class.form-select--error]="showError()"
+  [class.form-select--disabled]="isDisabled()"
+>
+  <label
+    [for]="selectId()"
+    class="form-select__label"
+  >
+    {{ label() }}
+    @if (required()) {
+      <span class="form-select__required" aria-hidden="true">*</span>
+      <span class="sr-only">(required)</span>
+    }
+  </label>
+
+  <div class="form-select__wrapper">
+    <select
+      [id]="selectId()"
+      [value]="value()"
+      [disabled]="isDisabled()"
+      [required]="required()"
+      [attr.aria-invalid]="showError()"
+      [attr.aria-describedby]="showError() ? selectId() + '-error' : hint() ? selectId() + '-hint' : null"
+      class="form-select__field"
+      (change)="onSelectionChange($event)"
+      (focus)="onFocus()"
+      (blur)="onBlur()"
+    >
+      @if (placeholder()) {
+        <option value="" disabled [selected]="!value()">
+          {{ placeholder() }}
+        </option>
+      }
+      @for (option of options(); track option.value) {
+        <option
+          [value]="option.value"
+          [disabled]="option.disabled"
+          [selected]="option.value === value()"
+        >
+          {{ option.label }}
+        </option>
+      }
+    </select>
+
+    <span class="form-select__icon" aria-hidden="true">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M6 9l6 6 6-6"/>
+      </svg>
+    </span>
+  </div>
+
+  @if (showError()) {
+    <p
+      [id]="selectId() + '-error'"
+      class="form-select__error"
+      role="alert"
+    >
+      {{ errorMessage() }}
+    </p>
+  } @else if (hint()) {
+    <p
+      [id]="selectId() + '-hint'"
+      class="form-select__hint"
+    >
+      {{ hint() }}
+    </p>
+  }
+</fieldset>
