@@ -1,98 +1,169 @@
 @use '../../../styles/01-tools/mixins' as *;
 
+// ==========================================================================
+// CLIENTE PAGE - Demo de Funcionalidades
+// ==========================================================================
+
 .cliente {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: var(--spacing-lg);
+  max-width: 75rem; // 1200px
+  margin-inline: auto;
+  padding: var(--spacing-6);
 
-  &__header {
-    text-align: center;
-    margin-bottom: var(--spacing-xl);
-    padding-bottom: var(--spacing-lg);
-    border-bottom: 1px solid var(--border-color);
+  @include respond-to('md') {
+    padding: var(--spacing-8);
   }
 
-  &__title {
-    font-size: var(--font-size-3xl);
-    font-weight: var(--font-weight-bold);
-    color: var(--text-color);
-    margin-bottom: var(--spacing-sm);
+  @include respond-to('lg') {
+    padding: var(--spacing-12);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// HEADER
+// ---------------------------------------------------------------------------
+
+.cliente__header {
+  text-align: center;
+  margin-block-end: var(--spacing-12);
+  padding-block-end: var(--spacing-8);
+  border-block-end: var(--border-width-thin) solid var(--color-secondary);
+
+  @include respond-to('md') {
+    margin-block-end: var(--spacing-16);
+    padding-block-end: var(--spacing-10);
+  }
+}
+
+.cliente__title {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  margin: 0 0 var(--spacing-3);
+
+  @include respond-to('md') {
+    font-size: var(--font-size-h3);
+    margin-block-end: var(--spacing-4);
+  }
+}
+
+.cliente__subtitle {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-caption);
+  color: var(--color-foreground);
+  max-width: 37.5rem; // 600px
+  margin-inline: auto;
+  line-height: var(--line-height-relaxed);
+
+  @include respond-to('md') {
+    font-size: var(--font-size-body);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// NAVIGATION
+// ---------------------------------------------------------------------------
+
+.cliente__nav {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-3);
+  margin-block-end: var(--spacing-12);
+  flex-wrap: wrap;
+
+  @include respond-to('md') {
+    gap: var(--spacing-4);
+    margin-block-end: var(--spacing-16);
+  }
+}
+
+.cliente__nav-link {
+  padding: var(--spacing-3) var(--spacing-4);
+  background-color: var(--color-tiny-info);
+  border: var(--border-width-thin) solid var(--color-secondary);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  text-decoration: none;
+  font-family: var(--font-primary);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-medium);
+  transition: var(--transition-colors);
+
+  @include respond-to('md') {
+    font-size: var(--font-size-caption);
+    padding: var(--spacing-3) var(--spacing-6);
   }
 
-  &__subtitle {
-    font-size: var(--font-size-lg);
-    color: var(--text-color-secondary);
-    max-width: 600px;
-    margin: 0 auto;
+  &:hover {
+    background-color: var(--color-success);
+    color: var(--color-background);
+    border-color: var(--color-success);
   }
 
-  &__nav {
-    display: flex;
-    justify-content: center;
-    gap: var(--spacing-md);
-    margin-bottom: var(--spacing-xl);
-    flex-wrap: wrap;
+  @include focus-visible;
+}
+
+// ---------------------------------------------------------------------------
+// CONTENT
+// ---------------------------------------------------------------------------
+
+.cliente__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+
+  @include respond-to('md') {
+    gap: var(--spacing-16);
   }
 
-  &__nav-link {
-    padding: var(--spacing-sm) var(--spacing-md);
-    background-color: var(--surface-color);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-md);
-    color: var(--text-color);
-    text-decoration: none;
-    font-weight: var(--font-weight-medium);
-    transition: all var(--transition-fast);
+  @include respond-to('lg') {
+    gap: var(--spacing-20);
+  }
+}
 
-    &:hover,
-    &:focus {
-      background-color: var(--primary-color);
-      color: var(--primary-text);
-      border-color: var(--primary-color);
-    }
+// ---------------------------------------------------------------------------
+// SECTIONS
+// ---------------------------------------------------------------------------
 
-    &:focus-visible {
-      outline: 2px solid var(--primary-color);
-      outline-offset: 2px;
-    }
+.cliente__section {
+  background-color: var(--color-tiny-info);
+  border: var(--border-width-thin) solid var(--color-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6);
+  scroll-margin-block-start: var(--spacing-6);
+
+  @include respond-to('md') {
+    padding: var(--spacing-8);
+    border-radius: var(--radius-xl);
   }
 
-  &__content {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-xl);
+  @include respond-to('lg') {
+    padding: var(--spacing-10);
   }
+}
 
-  &__section {
-    background-color: var(--surface-color);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-lg);
-    padding: var(--spacing-lg);
-    scroll-margin-top: var(--spacing-lg);
+.cliente__section-title {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h5);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  margin: 0 0 var(--spacing-2);
+
+  @include respond-to('md') {
+    font-size: var(--font-size-h4);
+    margin-block-end: var(--spacing-3);
   }
+}
 
-  &__section-title {
-    font-size: var(--font-size-xl);
-    font-weight: var(--font-weight-semibold);
-    color: var(--text-color);
-    margin-bottom: var(--spacing-sm);
-  }
+.cliente__section-description {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-small);
+  color: var(--color-foreground);
+  margin: 0 0 var(--spacing-6);
+  line-height: var(--line-height-normal);
 
-  &__section-description {
-    font-size: var(--font-size-md);
-    color: var(--text-color-secondary);
-    margin-bottom: var(--spacing-lg);
-  }
-
-  &__placeholder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 200px;
-    background-color: var(--bg-color);
-    border: 2px dashed var(--border-color);
-    border-radius: var(--border-radius-md);
-    color: var(--text-color-secondary);
-    font-style: italic;
+  @include respond-to('md') {
+    font-size: var(--font-size-caption);
+    margin-block-end: var(--spacing-8);
   }
 }

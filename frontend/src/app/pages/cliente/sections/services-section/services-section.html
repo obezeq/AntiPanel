@@ -46,7 +46,7 @@
       </button>
     </div>
 
-    <div class="services-section__status">
+    <div class="services-section__status" aria-live="polite" aria-atomic="true">
       <span class="services-section__status-label">Notificaciones activas:</span>
       <span class="services-section__status-value">{{ notificationService.count() }}</span>
       @if (notificationService.hasNotifications()) {
@@ -96,7 +96,7 @@
       </button>
     </div>
 
-    <div class="services-section__status">
+    <div class="services-section__status" aria-live="polite" aria-atomic="true">
       <span class="services-section__status-label">Estado:</span>
       <span
         class="services-section__status-value"
@@ -196,7 +196,7 @@
       </div>
     </div>
 
-    <div class="services-section__status">
+    <div class="services-section__status" aria-live="polite" aria-atomic="true">
       <span class="services-section__status-label">Eventos en historial:</span>
       <span class="services-section__status-value">{{ eventBus.historyCount() }}</span>
     </div>

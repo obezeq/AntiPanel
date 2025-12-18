@@ -109,7 +109,7 @@ export class FormsSection {
     if (!control.touched || control.valid) return null;
 
     if (control.hasError('required')) return 'El telefono es obligatorio';
-    if (control.hasError('invalidPattern')) return control.getError('invalidPattern').message;
+    if (control.hasError('invalidPhone')) return control.getError('invalidPhone').message;
     return null;
   }
 
@@ -119,7 +119,7 @@ export class FormsSection {
     if (!control.touched || control.valid) return null;
 
     if (control.hasError('required')) return 'El codigo postal es obligatorio';
-    if (control.hasError('invalidPattern')) return control.getError('invalidPattern').message;
+    if (control.hasError('invalidPostalCode')) return control.getError('invalidPostalCode').message;
     return null;
   }
 

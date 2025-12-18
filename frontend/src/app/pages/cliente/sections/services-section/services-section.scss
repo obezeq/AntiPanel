@@ -266,7 +266,7 @@
   color: var(--color-text);
   margin-bottom: var(--spacing-2);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
 }
 
 .services-section__sibling-content {
@@ -283,7 +283,7 @@
   background-color: var(--color-background);
   border-radius: var(--radius-sm);
   width: 100%;
-  min-height: 2.5rem;
+  min-height: var(--spacing-10);
   display: flex;
   align-items: center;
 }

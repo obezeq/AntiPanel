@@ -70,15 +70,44 @@ export function customPatternValidator(config: PatternConfig): ValidatorFn {
 // ============================================================================
 
 /**
- * Validates phone numbers in international format.
- * Accepts formats like: +1234567890, (123) 456-7890, 123-456-7890, etc.
+ * Validates phone numbers in Spanish formats.
+ * Normalizes input by removing spaces and hyphens before validation.
+ *
+ * Valid formats (all normalize to 9 digits + optional prefix):
+ * - 666666666 (9 digits, no spaces)
+ * - 666 666 666 (groups of 3)
+ * - 666 66 66 66 (groups of 3-2-2-2, common Spanish format)
+ * - +34 666666666 (international prefix)
+ * - +34 666 666 666
+ * - +34 666 66 66 66
+ * - +34-666-66-66-66 (with hyphens)
+ *
+ * Invalid formats:
+ * - 12345 (too short)
+ * - +3411111666666666 (too many digits)
  */
 export function phoneValidator(): ValidatorFn {
-  return customPatternValidator({
-    pattern: /^[+]?[(]?[0-9]{1,3}[)]?[-\s.]?[0-9]{1,4}[-\s.]?[0-9]{1,4}[-\s.]?[0-9]{1,9}$/,
-    errorKey: 'invalidPhone',
-    errorMessage: 'Please enter a valid phone number'
-  });
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value as string;
+    if (!value) return null;
+
+    // Normalize: remove spaces and hyphens
+    const normalized = value.replace(/[\s-]/g, '');
+
+    // Pattern: optional international prefix (1-3 digits) + exactly 9 digits
+    const pattern = /^(\+\d{1,3})?\d{9}$/;
+
+    if (!pattern.test(normalized)) {
+      return {
+        invalidPhone: {
+          pattern: pattern.toString(),
+          actualValue: value,
+          message: 'Introduce un telefono valido (ej: 666 666 666 o +34 666 66 66 66)'
+        }
+      };
+    }
+    return null;
+  };
 }
 
 /**
