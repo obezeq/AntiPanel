@@ -1,0 +1,141 @@
+<table class="admin-orders" aria-label="Admin orders list">
+  <thead class="admin-orders__head">
+    <tr class="admin-orders__header-row">
+      <th scope="col" class="admin-orders__th admin-orders__th--status">STATUS</th>
+      <th scope="col" class="admin-orders__th admin-orders__th--id">ORDER ID</th>
+      <th scope="col" class="admin-orders__th admin-orders__th--user">USER</th>
+      <th scope="col" class="admin-orders__th admin-orders__th--service">SERVICE</th>
+      <th scope="col" class="admin-orders__th admin-orders__th--link">LINK</th>
+      <th scope="col" class="admin-orders__th admin-orders__th--qty">QTY</th>
+      <th scope="col" class="admin-orders__th admin-orders__th--cost">COST</th>
+      <th scope="col" class="admin-orders__th admin-orders__th--sale">SALE</th>
+      <th scope="col" class="admin-orders__th admin-orders__th--profit">PROFIT</th>
+      <th scope="col" class="admin-orders__th admin-orders__th--actions">ACTIONS</th>
+    </tr>
+  </thead>
+
+  <tbody class="admin-orders__body">
+    @for (order of orders(); track order.id) {
+      <!-- Main Row -->
+      <tr
+        class="admin-orders__row"
+        [class.admin-orders__row--expanded]="isExpanded(order.id)"
+        (click)="onRowClick(order)"
+      >
+        <!-- Status -->
+        <td class="admin-orders__td admin-orders__td--status">
+          <app-admin-order-status-badge [status]="order.status" />
+        </td>
+
+        <!-- Order ID -->
+        <td class="admin-orders__td admin-orders__td--id">
+          #{{ order.id }}
+        </td>
+
+        <!-- User -->
+        <td class="admin-orders__td admin-orders__td--user">
+          <span class="admin-orders__cell-primary">{{ order.username }}</span>
+          <span class="admin-orders__cell-secondary">{{ order.userHandle }}</span>
+        </td>
+
+        <!-- Service -->
+        <td class="admin-orders__td admin-orders__td--service">
+          <span class="admin-orders__cell-primary">{{ order.serviceName }}</span>
+          <span class="admin-orders__cell-secondary">#{{ order.serviceId }}</span>
+        </td>
+
+        <!-- Link -->
+        <td class="admin-orders__td admin-orders__td--link">
+          <a
+            [href]="order.link"
+            class="admin-orders__link"
+            target="_blank"
+            rel="noopener noreferrer"
+            (click)="$event.stopPropagation()"
+            [title]="order.link"
+          >
+            {{ order.link }}
+          </a>
+        </td>
+
+        <!-- Quantity -->
+        <td class="admin-orders__td admin-orders__td--qty">
+          <span class="admin-orders__cell-primary">{{ order.quantity | number }}</span>
+          <span class="admin-orders__cell-secondary">-{{ order.remains | number }}</span>
+        </td>
+
+        <!-- Cost -->
+        <td class="admin-orders__td admin-orders__td--cost">
+          {{ formatCurrency(order.cost) }}
+        </td>
+
+        <!-- Sale -->
+        <td class="admin-orders__td admin-orders__td--sale">
+          {{ formatCurrency(order.sale) }}
+        </td>
+
+        <!-- Profit -->
+        <td class="admin-orders__td admin-orders__td--profit">
+          {{ formatCurrency(order.profit) }}
+        </td>
+
+        <!-- Actions -->
+        <td class="admin-orders__td admin-orders__td--actions">
+          <button
+            type="button"
+            class="admin-orders__action-btn"
+            [attr.aria-expanded]="isExpanded(order.id)"
+            [attr.aria-label]="isExpanded(order.id) ? 'Collapse order details' : 'Expand order details'"
+            (click)="toggleExpand(order.id, $event)"
+            (keydown.enter)="toggleExpand(order.id, $event)"
+            (keydown.space)="toggleExpand(order.id, $event); $event.preventDefault()"
+          >
+            <ng-icon
+              [name]="isExpanded(order.id) ? 'matVisibilityOff' : 'matVisibility'"
+              size="1rem"
+            />
+          </button>
+        </td>
+      </tr>
+
+      <!-- Expanded Row -->
+      @if (isExpanded(order.id)) {
+        <tr class="admin-orders__expanded-row">
+          <td colspan="10" class="admin-orders__expanded-content">
+            <dl class="admin-orders__details">
+              <article class="admin-orders__detail-item">
+                <dt class="admin-orders__detail-label">CREATED</dt>
+                <dd class="admin-orders__detail-value">{{ order.createdAt | date:'yyyy-MM-dd HH:mm:ss' }}</dd>
+              </article>
+
+              <article class="admin-orders__detail-item admin-orders__detail-item--wide">
+                <dt class="admin-orders__detail-label">DESCRIPTION</dt>
+                <dd class="admin-orders__detail-value">{{ order.description }}</dd>
+              </article>
+
+              <article class="admin-orders__detail-item">
+                <dt class="admin-orders__detail-label">REMAINS</dt>
+                <dd class="admin-orders__detail-value">{{ order.remains }}/{{ order.quantity }}</dd>
+              </article>
+
+              <article class="admin-orders__detail-item">
+                <dt class="admin-orders__detail-label">PROVIDER ID</dt>
+                <dd class="admin-orders__detail-value">{{ order.providerId }}</dd>
+              </article>
+
+              <article class="admin-orders__detail-item">
+                <dt class="admin-orders__detail-label">PROVIDER SERVICE ID</dt>
+                <dd class="admin-orders__detail-value">{{ order.providerServiceId }}</dd>
+              </article>
+
+              <article class="admin-orders__detail-item">
+                <dt class="admin-orders__detail-label">PROVIDER ORDER ID</dt>
+                <dd class="admin-orders__detail-value">{{ order.providerOrderId }}</dd>
+              </article>
+            </dl>
+          </td>
+        </tr>
+      }
+    }
+  </tbody>
+</table>

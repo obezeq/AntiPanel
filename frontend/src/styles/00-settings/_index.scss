@@ -1,0 +1,9 @@
+// ==========================================================================
+// SETTINGS
+// ==========================================================================
+// Global variables, config switches, brand colors, etc.
+// Contains both SCSS variables (for mixins) and CSS custom properties (for runtime).
+// ==========================================================================
+
+// Design Tokens: SCSS variables ($breakpoints, $font-sizes) + CSS custom properties (:root)
+@forward 'variables';

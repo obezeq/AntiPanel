@@ -1,0 +1,48 @@
+<article
+  class="recent-order-card"
+  [class.recent-order-card--interactive]="interactive()"
+  [attr.role]="interactive() ? 'button' : 'article'"
+  [attr.tabindex]="interactive() ? 0 : null"
+  [attr.aria-label]="'Order ' + order().id + ': ' + order().serviceName + ', ' + order().price + ', Status: ' + statusLabel()"
+  (click)="onClick()"
+  (keydown)="onKeydown($event)"
+>
+  <!-- Left side: Service info -->
+  <div class="recent-order-card__info">
+    <h3 class="recent-order-card__service-name">
+      {{ order().serviceName }}
+    </h3>
+    <p class="recent-order-card__details">
+      <span class="recent-order-card__order-id">ORDER #{{ order().id }}</span>
+      <span class="recent-order-card__separator" aria-hidden="true">&bull;</span>
+      <span class="recent-order-card__quantity">{{ formattedQuantity() }}</span>
+    </p>
+  </div>
+
+  <!-- Center: Order Again button (visible on hover/focus) -->
+  @if (interactive()) {
+    <button
+      type="button"
+      class="recent-order-card__order-again"
+      (click)="onOrderAgainClick($event)"
+      [attr.aria-label]="'Order again: ' + order().serviceName"
+    >
+      ORDER AGAIN
+    </button>
+  }
+
+  <!-- Right side: Price and status -->
+  <div class="recent-order-card__meta">
+    <span class="recent-order-card__price">
+      {{ order().price }}
+    </span>
+    <span
+      class="recent-order-card__status"
+      [class]="statusClass()"
+      role="status"
+      [attr.aria-label]="'Status: ' + statusLabel()"
+    >
+      {{ statusLabel() }}
+    </span>
+  </div>
+</article>

@@ -1,0 +1,51 @@
+<fieldset
+  class="form-input"
+  [class.form-input--focused]="isFocused()"
+  [class.form-input--error]="showError()"
+  [class.form-input--disabled]="isDisabled()"
+>
+  <label
+    [for]="inputId()"
+    class="form-input__label"
+    [class.form-input__label--hidden]="hideLabel()"
+  >
+    {{ label() }}
+    @if (required()) {
+      <span class="form-input__required" aria-hidden="true">*</span>
+      <span class="sr-only">(required)</span>
+    }
+  </label>
+
+  <input
+    [id]="inputId()"
+    [type]="type()"
+    [placeholder]="placeholder()"
+    [value]="value()"
+    [disabled]="isDisabled()"
+    [required]="required()"
+    [autocomplete]="autocomplete()"
+    [attr.aria-invalid]="showError()"
+    [attr.aria-describedby]="showError() ? inputId() + '-error' : hint() ? inputId() + '-hint' : null"
+    class="form-input__field"
+    (input)="onInput($event)"
+    (focus)="onFocus()"
+    (blur)="onBlur()"
+  />
+
+  @if (showError()) {
+    <p
+      [id]="inputId() + '-error'"
+      class="form-input__error"
+      role="alert"
+    >
+      {{ errorMessage() }}
+    </p>
+  } @else if (hint()) {
+    <p
+      [id]="inputId() + '-hint'"
+      class="form-input__hint"
+    >
+      {{ hint() }}
+    </p>
+  }
+</fieldset>

@@ -1,0 +1,232 @@
+@use '../../../../styles/01-tools/mixins' as *;
+
+// ==========================================================================
+// ORDER ROW COMPONENT
+// ==========================================================================
+// Row displaying order information with two variants:
+// - user: Simple flex layout with service name, quantity, price, status
+// - admin: Grid layout with extended columns (ID, user, link, start, remains, etc.)
+// ==========================================================================
+
+// ---------------------------------------------------------------------------
+// USER VARIANT (Default)
+// ---------------------------------------------------------------------------
+
+.order-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-4);
+  padding: var(--spacing-4);
+  border-block-end: var(--border-width-thin) solid var(--color-information);
+  transition: var(--transition-colors);
+
+  &:last-child {
+    border-block-end: none;
+  }
+}
+
+.order-row--clickable {
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--color-tiny-info);
+  }
+
+  @include focus-visible;
+}
+
+// ---------------------------------------------------------------------------
+// USER VARIANT - MAIN INFO
+// ---------------------------------------------------------------------------
+
+.order-row__main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  min-inline-size: 0;
+}
+
+.order-row__service {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  margin: 0;
+
+  @include truncate;
+}
+
+.order-row__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-small);
+  color: var(--color-foreground);
+  margin: 0;
+}
+
+.order-row__separator {
+  color: var(--color-secondary);
+}
+
+// ---------------------------------------------------------------------------
+// USER VARIANT - DETAILS
+// ---------------------------------------------------------------------------
+
+.order-row__details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--spacing-1);
+  flex-shrink: 0;
+}
+
+.order-row__price {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  margin: 0;
+}
+
+// ---------------------------------------------------------------------------
+// STATUS (Shared between variants)
+// ---------------------------------------------------------------------------
+
+.order-row__status {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.order-row__status--pending {
+  color: var(--color-status-yellow);
+}
+
+.order-row__status--processing {
+  color: var(--color-stats-blue);
+}
+
+.order-row__status--completed {
+  color: var(--color-success);
+}
+
+.order-row__status--cancelled {
+  color: var(--color-error);
+}
+
+.order-row__status--partial {
+  color: var(--color-foreground);
+}
+
+// ---------------------------------------------------------------------------
+// ADMIN VARIANT - GRID LAYOUT
+// ---------------------------------------------------------------------------
+
+.order-row--admin {
+  display: grid;
+  grid-template-columns:
+    minmax(5rem, 0.8fr)     // ID
+    minmax(6rem, 1fr)       // User
+    minmax(8rem, 2fr)       // Service
+    minmax(8rem, 2fr)       // Link
+    minmax(4rem, 0.6fr)     // Quantity
+    minmax(4rem, 0.6fr)     // Start
+    minmax(4rem, 0.6fr)     // Remains
+    minmax(5rem, 0.8fr)     // Status
+    minmax(4rem, 0.6fr)     // Price
+    minmax(6rem, 1fr);      // Date
+  align-items: center;
+  gap: var(--spacing-3);
+  padding-block: var(--spacing-3);
+  padding-inline: var(--spacing-4);
+
+  @include respond-below('xl') {
+    grid-template-columns:
+      minmax(4rem, 0.6fr)   // ID
+      minmax(8rem, 2fr)     // Service
+      minmax(4rem, 0.5fr)   // Quantity
+      minmax(5rem, 0.7fr)   // Status
+      minmax(4rem, 0.5fr);  // Price
+
+    .order-row__cell--user,
+    .order-row__cell--link,
+    .order-row__cell--start,
+    .order-row__cell--remains,
+    .order-row__cell--date {
+      display: none;
+    }
+  }
+}
+
+.order-row__cell {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-caption);
+  color: var(--color-text);
+  min-inline-size: 0;
+
+  @include truncate;
+}
+
+.order-row__cell--id {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-foreground);
+}
+
+.order-row__cell--user {
+  font-weight: var(--font-weight-medium);
+}
+
+.order-row__cell--service {
+  font-family: var(--font-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.order-row__cell--link {
+  color: var(--color-foreground);
+}
+
+.order-row__link {
+  color: var(--color-stats-blue);
+  text-decoration: none;
+  transition: var(--transition-colors);
+
+  &:hover {
+    color: var(--color-text);
+    text-decoration: underline;
+  }
+
+  @include focus-visible;
+  @include truncate;
+
+  display: block;
+}
+
+.order-row__cell--quantity,
+.order-row__cell--start,
+.order-row__cell--remains {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.order-row__cell--status {
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.order-row__cell--price {
+  font-weight: var(--font-weight-semibold);
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.order-row__cell--date {
+  color: var(--color-foreground);
+  text-align: end;
+}

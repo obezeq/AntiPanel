@@ -1,6 +1,35 @@
-# AntipanelFrontend
+# AntiPanel Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.3.
+> SMM Panel con diseno minimalista y UX/UI de alta calidad.
+
+## Documentacion
+
+- **[Documentacion de Diseno](./docs/design/DOCUMENTACION.md)** - Arquitectura CSS, componentes, accesibilidad, temas y responsive design
+- **[Style Guide](http://localhost:4200/style-guide)** - Catalogo visual de componentes (disponible en desarrollo)
+
+### Secciones de la Documentacion
+
+1. Arquitectura CSS y Comunicacion Visual
+2. HTML Semantico y Estructura
+3. Sistema de Componentes UI
+4. Estrategia Responsive
+5. Optimizacion Multimedia
+6. Sistema de Temas
+7. Informe de Accesibilidad
+
+---
+
+## Stack Tecnologico
+
+- **Framework**: Angular 21 (standalone components, signals, zoneless)
+- **Estilos**: SCSS + CSS Custom Properties
+- **Metodologia CSS**: ITCSS + BEM + Angular Emulated
+- **Fuentes**: Montserrat + IBM Plex Mono
+- **Iconos**: ng-icons (Material Icons + Iconoir)
+- **Testing**: Vitest
+- **Package Manager**: Bun
+
+---
 
 ## Development server
 

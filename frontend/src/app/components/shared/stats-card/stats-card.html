@@ -1,0 +1,18 @@
+<article
+  class="stats-card"
+  [class.stats-card--success]="variant() === 'success'"
+  [class.stats-card--info]="variant() === 'info'"
+  [class.stats-card--warning]="variant() === 'warning'"
+>
+  <header class="stats-card__header">
+    <figure class="stats-card__icon" aria-hidden="true">
+      <ng-icon [name]="stats().icon" size="32" />
+    </figure>
+    <h3 class="stats-card__title">{{ stats().title }}</h3>
+  </header>
+
+  <section class="stats-card__info">
+    <p class="stats-card__value">{{ stats().value }}</p>
+    <p class="stats-card__label">{{ stats().label }}</p>
+  </section>
+</article>

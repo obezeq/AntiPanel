@@ -1,0 +1,157 @@
+@use '../../../../styles/01-tools/mixins' as *;
+
+// ==========================================================================
+// MODAL COMPONENT
+// ==========================================================================
+// Accessible modal dialog using native <dialog> element.
+// ==========================================================================
+
+.modal {
+  // Respetar el comportamiento nativo del <dialog>
+  // Solo mostrar cuando tiene el atributo [open]
+  &:not([open]) {
+    display: none;
+  }
+
+  &[open] {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: var(--spacing-4);
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: modalFadeIn var(--transition-base) ease-out;
+  }
+
+  &::backdrop {
+    background-color: var(--overlay-dark-heavy);
+    backdrop-filter: blur(4px);
+  }
+
+  &[open]::backdrop {
+    animation: backdropFadeIn var(--transition-base) ease-out;
+  }
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes backdropFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// CONTENT
+// ---------------------------------------------------------------------------
+
+.modal__content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: calc(100vh - var(--spacing-8));
+  background-color: var(--color-background);
+  border: var(--border-width-heavy) solid var(--color-information);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+// Size variants
+.modal--sm .modal__content {
+  max-width: 25rem; // 400px
+}
+
+.modal--md .modal__content {
+  max-width: 35rem; // 560px
+}
+
+.modal--lg .modal__content {
+  max-width: 45rem; // 720px
+}
+
+// ---------------------------------------------------------------------------
+// HEADER
+// ---------------------------------------------------------------------------
+
+.modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-4);
+  padding: var(--spacing-6);
+  border-bottom: var(--border-width-thin) solid var(--color-information);
+}
+
+.modal__title {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  margin: 0;
+}
+
+.modal__close {
+  @include reset-button;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem; // 32px
+  height: 2rem;
+  color: var(--color-foreground);
+  border-radius: var(--radius-md);
+  transition: var(--transition-colors);
+
+  &:hover {
+    color: var(--color-text);
+    background-color: var(--color-tiny-info);
+  }
+
+  @include focus-visible;
+}
+
+// ---------------------------------------------------------------------------
+// BODY
+// ---------------------------------------------------------------------------
+
+.modal__body {
+  flex: 1;
+  padding: var(--spacing-6);
+  overflow-y: auto;
+
+  @include custom-scrollbar;
+}
+
+// ---------------------------------------------------------------------------
+// FOOTER
+// ---------------------------------------------------------------------------
+
+.modal__footer {
+  &:empty {
+    display: none;
+  }
+
+  display: flex;
+  gap: var(--spacing-4);
+  justify-content: flex-end;
+  padding: var(--spacing-6);
+  border-top: var(--border-width-thin) solid var(--color-information);
+}

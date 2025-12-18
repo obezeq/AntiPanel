@@ -1,0 +1,204 @@
+<div class="services-section">
+  <!-- ========================================================================
+       SECCION 1: SISTEMA DE NOTIFICACIONES
+       ======================================================================== -->
+  <section class="services-section__block">
+    <h3 class="services-section__block-title">Sistema de Notificaciones</h3>
+    <p class="services-section__block-description">
+      NotificationService centralizado con toasts animados y auto-dismiss
+    </p>
+
+    <div class="services-section__buttons">
+      <button
+        type="button"
+        class="services-section__btn services-section__btn--success"
+        (click)="showSuccess()"
+      >
+        <ng-icon name="matCheckCircle" size="18" />
+        <span>Exito</span>
+      </button>
+
+      <button
+        type="button"
+        class="services-section__btn services-section__btn--error"
+        (click)="showError()"
+      >
+        <ng-icon name="matError" size="18" />
+        <span>Error</span>
+      </button>
+
+      <button
+        type="button"
+        class="services-section__btn services-section__btn--warning"
+        (click)="showWarning()"
+      >
+        <ng-icon name="matWarning" size="18" />
+        <span>Advertencia</span>
+      </button>
+
+      <button
+        type="button"
+        class="services-section__btn services-section__btn--info"
+        (click)="showInfo()"
+      >
+        <ng-icon name="matInfo" size="18" />
+        <span>Info</span>
+      </button>
+    </div>
+
+    <div class="services-section__status" aria-live="polite" aria-atomic="true">
+      <span class="services-section__status-label">Notificaciones activas:</span>
+      <span class="services-section__status-value">{{ notificationService.count() }}</span>
+      @if (notificationService.hasNotifications()) {
+        <button
+          type="button"
+          class="services-section__link"
+          (click)="dismissAllNotifications()"
+        >
+          Limpiar todas
+        </button>
+      }
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       SECCION 2: SISTEMA DE LOADING
+       ======================================================================== -->
+  <section class="services-section__block">
+    <h3 class="services-section__block-title">Estados de Carga</h3>
+    <p class="services-section__block-description">
+      LoadingService para spinner global y estados de carga locales
+    </p>
+
+    <div class="services-section__buttons">
+      <button
+        type="button"
+        class="services-section__btn services-section__btn--primary"
+        (click)="simulateLoading()"
+        [disabled]="loadingService.isLoading()"
+      >
+        <ng-icon name="matRefresh" size="18" />
+        <span>Simular Carga Global (2s)</span>
+      </button>
+
+      <button
+        type="button"
+        class="services-section__btn services-section__btn--secondary"
+        (click)="simulateLocalLoading()"
+        [disabled]="isLocalLoading()"
+      >
+        @if (isLocalLoading()) {
+          <app-spinner size="sm" />
+        } @else {
+          <ng-icon name="matRefresh" size="18" />
+        }
+        <span>Carga Local (2s)</span>
+      </button>
+    </div>
+
+    <div class="services-section__status" aria-live="polite" aria-atomic="true">
+      <span class="services-section__status-label">Estado:</span>
+      <span
+        class="services-section__status-value"
+        [class.services-section__status-value--active]="loadingService.isLoading()"
+      >
+        {{ loadingService.isLoading() ? 'Cargando...' : 'Inactivo' }}
+      </span>
+      <span class="services-section__status-hint">
+        (Requests activos: {{ loadingService.activeRequests() }})
+      </span>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       SECCION 3: EVENT BUS - COMUNICACION ENTRE COMPONENTES
+       ======================================================================== -->
+  <section class="services-section__block">
+    <h3 class="services-section__block-title">Comunicacion entre Componentes</h3>
+    <p class="services-section__block-description">
+      EventBusService para comunicacion pub/sub entre componentes hermanos
+    </p>
+
+    <!-- Demo basica del Event Bus -->
+    <div class="services-section__event-demo">
+      <h4 class="services-section__subtitle">Demo: Emitir y Recibir Eventos</h4>
+
+      <div class="services-section__buttons">
+        <button
+          type="button"
+          class="services-section__btn services-section__btn--primary"
+          (click)="sendMessage()"
+        >
+          <ng-icon name="matArrowForward" size="18" />
+          <span>Emitir Mensaje</span>
+        </button>
+
+        <button
+          type="button"
+          class="services-section__btn services-section__btn--secondary"
+          (click)="clearMessages()"
+        >
+          <ng-icon name="matDelete" size="18" />
+          <span>Limpiar</span>
+        </button>
+      </div>
+
+      <div class="services-section__result">
+        <span class="services-section__result-label">Ultimo mensaje recibido:</span>
+        <span class="services-section__result-value">
+          {{ receivedMessage() || 'Ninguno' }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Demo de comunicacion entre hermanos -->
+    <div class="services-section__sibling-demo">
+      <h4 class="services-section__subtitle">Demo: Componentes Hermanos</h4>
+
+      <div class="services-section__siblings">
+        <!-- Componente A (Emisor) -->
+        <div class="services-section__sibling services-section__sibling--sender">
+          <span class="services-section__sibling-label">Componente A (Emisor)</span>
+          <div class="services-section__sibling-content">
+            <input
+              type="text"
+              class="services-section__input"
+              placeholder="Escribe un mensaje..."
+              [value]="componentAData()"
+              (input)="onComponentAInput($event)"
+              (keydown.enter)="sendFromComponentA()"
+            />
+            <button
+              type="button"
+              class="services-section__btn services-section__btn--small"
+              (click)="sendFromComponentA()"
+              [disabled]="!componentAData().trim()"
+            >
+              Enviar
+            </button>
+          </div>
+        </div>
+
+        <!-- Flecha -->
+        <div class="services-section__arrow">
+          <ng-icon name="matArrowForward" size="24" />
+        </div>
+
+        <!-- Componente B (Receptor) -->
+        <div class="services-section__sibling services-section__sibling--receiver">
+          <span class="services-section__sibling-label">Componente B (Receptor)</span>
+          <div class="services-section__sibling-content">
+            <span class="services-section__sibling-message">
+              {{ componentBData() || 'Esperando datos...' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="services-section__status" aria-live="polite" aria-atomic="true">
+      <span class="services-section__status-label">Eventos en historial:</span>
+      <span class="services-section__status-value">{{ eventBus.historyCount() }}</span>
+    </div>
+  </section>
+</div>

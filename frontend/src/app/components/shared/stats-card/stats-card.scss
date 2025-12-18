@@ -1,0 +1,124 @@
+@use '../../../../styles/01-tools/mixins' as *;
+
+// ==========================================================================
+// STATS CARD COMPONENT
+// ==========================================================================
+// Card displaying a statistic with icon, title, value, and label.
+// Basado en el diseño de Figma: 265px ancho, 177px alto.
+// ==========================================================================
+
+.stats-card {
+  @include card-base;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; // 16px (base-8)
+  width: 16rem; // 256px (base-8)
+  min-height: 11rem; // 176px (base-8)
+  padding: 1.25rem 1.5rem; // 20px 24px (base-8)
+}
+
+.stats-card:hover {
+  border-color: var(--color-secondary);
+}
+
+// ---------------------------------------------------------------------------
+// HEADER
+// ---------------------------------------------------------------------------
+
+.stats-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin: 0;
+}
+
+.stats-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem; // 32px
+  height: 2rem;
+  margin: 0;
+  color: var(--color-text);
+}
+
+.stats-card__title {
+  font-family: var(--font-primary);
+  font-size: 1.5rem; // 24px
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  line-height: 1.15;
+  margin: 0;
+}
+
+// ---------------------------------------------------------------------------
+// INFO
+// ---------------------------------------------------------------------------
+
+.stats-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem; // 8px
+  width: 100%;
+}
+
+// ---------------------------------------------------------------------------
+// VALUE
+// ---------------------------------------------------------------------------
+
+.stats-card__value {
+  font-family: var(--font-primary);
+  font-size: 2rem; // 32px
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  line-height: 1.15;
+  margin: 0;
+}
+
+// ---------------------------------------------------------------------------
+// LABEL
+// ---------------------------------------------------------------------------
+
+.stats-card__label {
+  font-family: var(--font-secondary);
+  font-size: 1rem; // 16px (base-8)
+  font-weight: var(--font-weight-medium);
+  color: var(--color-foreground);
+  line-height: 1.15;
+  margin: 0;
+}
+
+// ---------------------------------------------------------------------------
+// VARIANTS
+// ---------------------------------------------------------------------------
+
+.stats-card--success {
+  .stats-card__icon {
+    color: var(--color-success);
+  }
+
+  .stats-card__value {
+    color: var(--color-success);
+  }
+}
+
+.stats-card--info {
+  .stats-card__icon {
+    color: var(--color-stats-blue);
+  }
+
+  .stats-card__value {
+    color: var(--color-stats-blue);
+  }
+}
+
+.stats-card--warning {
+  .stats-card__icon {
+    color: var(--color-status-yellow);
+  }
+
+  .stats-card__value {
+    color: var(--color-status-yellow);
+  }
+}

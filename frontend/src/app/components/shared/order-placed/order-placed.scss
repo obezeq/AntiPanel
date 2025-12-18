@@ -1,0 +1,157 @@
+@use '../../../../styles/01-tools/mixins' as *;
+
+// ==========================================================================
+// ORDER PLACED MODAL OVERLAY
+// ==========================================================================
+
+.order-placed-modal {
+  &:not([open]) {
+    display: none;
+  }
+
+  &[open] {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: var(--spacing-4);
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: orderPlacedFadeIn var(--transition-base) ease-out;
+  }
+
+  &::backdrop {
+    background-color: var(--overlay-dark-heavy);
+    backdrop-filter: blur(4px);
+  }
+
+  &[open]::backdrop {
+    animation: orderPlacedBackdropFadeIn var(--transition-base) ease-out;
+  }
+}
+
+@keyframes orderPlacedFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes orderPlacedBackdropFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// ==========================================================================
+// ORDER PLACED COMPONENT
+// ==========================================================================
+// Success confirmation card after placing an order.
+// Displays as a floating card with success state.
+// ==========================================================================
+
+.order-placed {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 28rem; // 448px (base-8)
+  padding: 2rem 2.5rem;
+  background-color: var(--color-background);
+  border: 0.5rem solid var(--color-success); // 8px green border (base-8)
+  border-radius: 2rem; // 32px
+  text-align: center;
+
+  @include respond-to('md') {
+    gap: 1.5rem;
+    padding: 3rem 4.5rem; // 48px 72px (base-8)
+  }
+}
+
+// ---------------------------------------------------------------------------
+// TITLE
+// ---------------------------------------------------------------------------
+
+.order-placed__title {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h4); // 32px
+  font-weight: var(--font-weight-bold);
+  color: var(--color-high-contrast);
+  line-height: 1.15;
+  margin: 0;
+
+  @include respond-to('md') {
+    font-size: var(--font-size-h3); // 48px
+  }
+}
+
+// ---------------------------------------------------------------------------
+// MESSAGE
+// ---------------------------------------------------------------------------
+
+.order-placed__message {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-body); // 16px
+  font-weight: var(--font-weight-medium);
+  color: var(--color-high-contrast);
+  line-height: 1.15;
+  margin: 0;
+  max-width: 19rem; // 304px (base-8)
+
+  @include respond-to('md') {
+    font-size: var(--font-size-h6);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// CONTINUE BUTTON
+// ---------------------------------------------------------------------------
+
+.order-placed__continue {
+  @include reset-button;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 18.75rem; // 300px
+  height: 3rem;
+  background-color: var(--color-tiny-info); // Default: dark gray
+  border-radius: 1rem;
+  font-family: var(--font-primary);
+  font-size: var(--font-size-body); // 16px
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  line-height: 1.15;
+  transition: var(--transition-colors);
+
+  @include respond-to('md') {
+    height: 3.5rem; // 56px (base-8)
+    font-size: var(--font-size-h5); // 24px
+  }
+
+  &:hover {
+    background-color: var(--color-success);
+    color: var(--color-background);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  @include focus-visible;
+}

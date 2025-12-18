@@ -1,6 +1,6 @@
 # Dependencies
 node_modules/
-bun.lockb
+# Note: bun.lockb is intentionally NOT ignored - needed for reproducible builds
 
 # Build outputs
 dist/

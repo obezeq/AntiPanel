@@ -1,0 +1,59 @@
+@use '../../../../styles/01-tools/mixins' as *;
+
+// ==========================================================================
+// MAIN CONTENT COMPONENT
+// ==========================================================================
+// Semantic main content wrapper with responsive container sizing.
+// Uses ng-content for content projection.
+// ==========================================================================
+
+.main-content {
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin-inline: auto;
+  padding-inline: var(--spacing-4);
+  flex: 1 0 auto;
+
+  @include respond-to('md') {
+    padding-inline: var(--spacing-6);
+  }
+
+  @include respond-to('xl') {
+    padding-inline: var(--spacing-8);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// VARIANTS
+// ---------------------------------------------------------------------------
+
+// Narrow container for content-focused pages (forms, articles)
+.main-content--narrow {
+  max-width: 60rem; // 960px
+}
+
+// Wide container for dashboards
+.main-content--wide {
+  max-width: 100rem; // 1600px
+}
+
+// Full-width container
+.main-content--fluid {
+  max-width: none;
+}
+
+// ---------------------------------------------------------------------------
+// PADDING
+// ---------------------------------------------------------------------------
+
+.main-content--padded {
+  padding-block: var(--spacing-8);
+
+  @include respond-to('md') {
+    padding-block: var(--spacing-12);
+  }
+
+  @include respond-to('lg') {
+    padding-block: var(--spacing-16);
+  }
+}

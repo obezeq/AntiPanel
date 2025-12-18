@@ -1,0 +1,30 @@
+<aside
+  class="sidebar"
+  [class.sidebar--open]="isOpen()"
+  aria-label="Admin navigation"
+>
+  <header class="sidebar__header">
+    <h2 class="sidebar__title">{{ title() }}</h2>
+  </header>
+
+  <nav class="sidebar__nav">
+    <ul class="sidebar__list" role="list">
+      @for (item of items(); track item.path) {
+        <li class="sidebar__item">
+          <a
+            [routerLink]="item.path"
+            routerLinkActive="sidebar__link--active"
+            [routerLinkActiveOptions]="{ exact: item.path === '/admin' }"
+            class="sidebar__link"
+            (click)="onItemClick()"
+          >
+            @if (item.icon) {
+              <ng-icon [name]="item.icon" class="sidebar__icon" aria-hidden="true" />
+            }
+            <span class="sidebar__label">{{ item.label }}</span>
+          </a>
+        </li>
+      }
+    </ul>
+  </nav>
+</aside>

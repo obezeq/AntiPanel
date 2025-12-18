@@ -1,0 +1,332 @@
+<div class="forms-section">
+  <!-- ========================================================================
+       SECCION 1: FORMULARIO DE REGISTRO CON VALIDADORES PERSONALIZADOS
+       ======================================================================== -->
+  <section class="forms-section__block">
+    <h3 class="forms-section__block-title">Validadores Personalizados</h3>
+    <p class="forms-section__block-description">
+      Validadores sincronos (NIF, telefono, codigo postal) y asincronos (username disponible)
+    </p>
+
+    <form
+      class="forms-section__form"
+      [formGroup]="registrationForm"
+      (ngSubmit)="onRegistrationSubmit()"
+      novalidate
+    >
+      <div class="forms-section__grid">
+        <!-- Username con validador async -->
+        <div class="forms-section__field">
+          <label for="username" class="forms-section__label">
+            Nombre de usuario
+            <span class="forms-section__required">*</span>
+          </label>
+          <div class="forms-section__input-wrapper">
+            <input
+              id="username"
+              type="text"
+              class="forms-section__input"
+              [class.forms-section__input--error]="getUsernameError()"
+              [class.forms-section__input--success]="usernameTouched() && !registrationForm.controls.username.errors && !registrationForm.controls.username.pending"
+              formControlName="username"
+              placeholder="ej: mi_usuario123"
+              (blur)="onUsernameBlur()"
+            />
+            @if (isValidatingUsername()) {
+              <span class="forms-section__spinner" aria-label="Verificando disponibilidad">
+                <ng-icon name="matRefresh" size="16" />
+              </span>
+            }
+            @if (usernameTouched() && !registrationForm.controls.username.errors && !registrationForm.controls.username.pending) {
+              <span class="forms-section__icon forms-section__icon--success">
+                <ng-icon name="matCheck" size="16" />
+              </span>
+            }
+          </div>
+          @if (getUsernameError()) {
+            <span class="forms-section__error">{{ getUsernameError() }}</span>
+          }
+          <span class="forms-section__hint">Solo letras, numeros, guiones y guiones bajos</span>
+        </div>
+
+        <!-- NIF con validador personalizado -->
+        <div class="forms-section__field">
+          <label for="nif" class="forms-section__label">
+            NIF/NIE
+            <span class="forms-section__required">*</span>
+          </label>
+          <input
+            id="nif"
+            type="text"
+            class="forms-section__input"
+            [class.forms-section__input--error]="getNifError()"
+            [class.forms-section__input--success]="registrationForm.controls.nif.touched && !registrationForm.controls.nif.errors"
+            formControlName="nif"
+            placeholder="ej: 12345678Z"
+          />
+          @if (getNifError()) {
+            <span class="forms-section__error">{{ getNifError() }}</span>
+          }
+          <span class="forms-section__hint">Formato: 8 digitos + letra</span>
+        </div>
+
+        <!-- Telefono -->
+        <div class="forms-section__field">
+          <label for="phone" class="forms-section__label">
+            Telefono
+            <span class="forms-section__required">*</span>
+          </label>
+          <input
+            id="phone"
+            type="tel"
+            class="forms-section__input"
+            [class.forms-section__input--error]="getPhoneError()"
+            [class.forms-section__input--success]="registrationForm.controls.phone.touched && !registrationForm.controls.phone.errors"
+            formControlName="phone"
+            placeholder="ej: +34 612 345 678"
+          />
+          @if (getPhoneError()) {
+            <span class="forms-section__error">{{ getPhoneError() }}</span>
+          }
+        </div>
+
+        <!-- Codigo Postal -->
+        <div class="forms-section__field">
+          <label for="postalCode" class="forms-section__label">
+            Codigo Postal
+            <span class="forms-section__required">*</span>
+          </label>
+          <input
+            id="postalCode"
+            type="text"
+            class="forms-section__input"
+            [class.forms-section__input--error]="getPostalCodeError()"
+            [class.forms-section__input--success]="registrationForm.controls.postalCode.touched && !registrationForm.controls.postalCode.errors"
+            formControlName="postalCode"
+            placeholder="ej: 28001"
+          />
+          @if (getPostalCodeError()) {
+            <span class="forms-section__error">{{ getPostalCodeError() }}</span>
+          }
+          <span class="forms-section__hint">Codigo postal espanol (5 digitos)</span>
+        </div>
+      </div>
+
+      <!-- Acciones -->
+      <div class="forms-section__actions">
+        <button
+          type="button"
+          class="forms-section__btn forms-section__btn--secondary"
+          (click)="resetRegistrationForm()"
+        >
+          Resetear
+        </button>
+        <button
+          type="submit"
+          class="forms-section__btn forms-section__btn--primary"
+          [disabled]="registrationForm.invalid || registrationForm.pending"
+        >
+          Validar Formulario
+        </button>
+      </div>
+    </form>
+
+    @if (registrationResult()) {
+      <div class="forms-section__result">
+        <h4 class="forms-section__result-title">Resultado de validacion</h4>
+        <pre class="forms-section__result-code">{{ registrationResult() }}</pre>
+      </div>
+    }
+  </section>
+
+  <!-- ========================================================================
+       SECCION 2: FORMARRAY - PEDIDO DINAMICO
+       ======================================================================== -->
+  <section class="forms-section__block">
+    <h3 class="forms-section__block-title">FormArray Dinamico</h3>
+    <p class="forms-section__block-description">
+      Agrega y elimina items dinamicamente con validacion individual
+    </p>
+
+    <form
+      class="forms-section__form"
+      [formGroup]="form"
+      (ngSubmit)="onSubmit()"
+      novalidate
+    >
+      <!-- Customer Name -->
+      <div class="forms-section__field">
+        <label for="customerName" class="forms-section__label">
+          Nombre del Cliente
+          <span class="forms-section__required">*</span>
+        </label>
+        <input
+          id="customerName"
+          type="text"
+          class="forms-section__input"
+          [class.forms-section__input--error]="form.get('customerName')?.invalid && form.get('customerName')?.touched"
+          formControlName="customerName"
+          placeholder="Nombre del cliente"
+        />
+        @if (getCustomerNameError()) {
+          <span class="forms-section__error">{{ getCustomerNameError() }}</span>
+        }
+      </div>
+
+      <!-- Items FormArray -->
+      <div class="forms-section__items-header">
+        <span class="forms-section__items-title">Items del Pedido</span>
+        <span class="forms-section__badge">
+          {{ validItemsCount() }}/{{ items.length }} validos
+        </span>
+      </div>
+
+      <div class="forms-section__items" formArrayName="items">
+        @for (item of itemControls; track $index; let i = $index) {
+          <div class="forms-section__item" [formGroupName]="i">
+            <div class="forms-section__item-header">
+              <span class="forms-section__item-number">Item {{ i + 1 }}</span>
+              @if (canRemoveItem()) {
+                <button
+                  type="button"
+                  class="forms-section__remove-btn"
+                  (click)="removeItem(i)"
+                  aria-label="Eliminar item {{ i + 1 }}"
+                >
+                  <ng-icon name="matClose" size="18" />
+                </button>
+              }
+            </div>
+
+            <div class="forms-section__item-fields">
+              <!-- Item Name -->
+              <div class="forms-section__field forms-section__field--name">
+                <label [for]="'item-name-' + i" class="forms-section__label">
+                  Nombre
+                  <span class="forms-section__required">*</span>
+                </label>
+                <input
+                  [id]="'item-name-' + i"
+                  type="text"
+                  class="forms-section__input"
+                  [class.forms-section__input--error]="isItemFieldInvalid(i, 'name')"
+                  formControlName="name"
+                  placeholder="Nombre del item"
+                />
+                @if (getItemError(i, 'name')) {
+                  <span class="forms-section__error">{{ getItemError(i, 'name') }}</span>
+                }
+              </div>
+
+              <!-- Item Quantity -->
+              <div class="forms-section__field forms-section__field--quantity">
+                <label [for]="'item-quantity-' + i" class="forms-section__label">
+                  Cantidad
+                  <span class="forms-section__required">*</span>
+                </label>
+                <input
+                  [id]="'item-quantity-' + i"
+                  type="number"
+                  class="forms-section__input forms-section__input--number"
+                  [class.forms-section__input--error]="isItemFieldInvalid(i, 'quantity')"
+                  formControlName="quantity"
+                  min="1"
+                  max="100"
+                />
+                @if (getItemError(i, 'quantity')) {
+                  <span class="forms-section__error">{{ getItemError(i, 'quantity') }}</span>
+                }
+              </div>
+
+              <!-- Item Price -->
+              <div class="forms-section__field forms-section__field--price">
+                <label [for]="'item-price-' + i" class="forms-section__label">
+                  Precio
+                  <span class="forms-section__required">*</span>
+                </label>
+                <div class="forms-section__input-group">
+                  <span class="forms-section__input-prefix">EUR</span>
+                  <input
+                    [id]="'item-price-' + i"
+                    type="number"
+                    class="forms-section__input forms-section__input--number forms-section__input--with-prefix"
+                    [class.forms-section__input--error]="isItemFieldInvalid(i, 'price')"
+                    formControlName="price"
+                    min="0"
+                    step="0.01"
+                  />
+                </div>
+                @if (getItemError(i, 'price')) {
+                  <span class="forms-section__error">{{ getItemError(i, 'price') }}</span>
+                }
+              </div>
+
+              <!-- Item Subtotal -->
+              <div class="forms-section__field forms-section__field--subtotal">
+                <span class="forms-section__label">Subtotal</span>
+                <span class="forms-section__subtotal">
+                  {{ itemSubtotals()[i] | number:'1.2-2' }} EUR
+                </span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Add Item Button -->
+      <button
+        type="button"
+        class="forms-section__add-btn"
+        (click)="addItem()"
+      >
+        <ng-icon name="matAdd" size="20" />
+        <span>Agregar Item</span>
+      </button>
+
+      <!-- Summary -->
+      <div class="forms-section__summary">
+        <div class="forms-section__summary-row">
+          <span class="forms-section__summary-label">Total Items:</span>
+          <span class="forms-section__summary-value">{{ items.length }}</span>
+        </div>
+        <div class="forms-section__summary-row forms-section__summary-row--total">
+          <span class="forms-section__summary-label">Total General:</span>
+          <span class="forms-section__summary-value">
+            {{ grandTotal() | number:'1.2-2' }} EUR
+          </span>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="forms-section__actions">
+        <button
+          type="button"
+          class="forms-section__btn forms-section__btn--secondary"
+          (click)="resetForm()"
+        >
+          Resetear
+        </button>
+        <button
+          type="submit"
+          class="forms-section__btn forms-section__btn--primary"
+          [disabled]="form.invalid"
+        >
+          Enviar Pedido
+        </button>
+      </div>
+    </form>
+
+    @if (submissionResult()) {
+      <div class="forms-section__result" [class.forms-section__result--success]="submitted()">
+        <h4 class="forms-section__result-title">
+          @if (submitted()) {
+            Pedido Enviado
+          } @else {
+            Error de Validacion
+          }
+        </h4>
+        <pre class="forms-section__result-code">{{ submissionResult() }}</pre>
+      </div>
+    }
+  </section>
+</div>
