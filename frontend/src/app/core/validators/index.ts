@@ -46,3 +46,14 @@ export {
   emailUniqueValidator,
   createEmailUniqueValidator
 } from './async/email-unique.validator';
+
+// Username availability validator
+export {
+  usernameAvailableValidator,
+  createUsernameAvailableValidator,
+  usernameFormatValidator,
+  getUsernameTakenError,
+  getUsernameFormatError,
+  type UsernameCheckService,
+  type UsernameValidatorConfig
+} from './async/username-available.validator';
