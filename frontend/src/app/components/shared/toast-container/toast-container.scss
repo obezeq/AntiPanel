@@ -1,0 +1,185 @@
+@use '../../../../styles/01-tools/mixins' as *;
+
+// ==========================================================================
+// TOAST CONTAINER
+// ==========================================================================
+
+.toast-container {
+  position: fixed;
+  bottom: var(--spacing-4);
+  right: var(--spacing-4);
+  z-index: var(--z-notification);
+  display: flex;
+  flex-direction: column-reverse;
+  gap: var(--spacing-3);
+  max-width: 400px;
+  width: calc(100% - var(--spacing-8));
+
+  @include respond-to('md') {
+    bottom: var(--spacing-6);
+    right: var(--spacing-6);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// TOAST
+// ---------------------------------------------------------------------------
+
+.toast {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4);
+  background-color: var(--color-background);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  border-left: 4px solid transparent;
+  overflow: hidden;
+  animation: toast-enter 0.3s ease-out;
+
+  &:focus {
+    outline: 2px solid var(--color-stats-blue);
+    outline-offset: 2px;
+  }
+
+  // Variantes de color
+  &--success {
+    border-left-color: var(--color-success);
+
+    .toast__icon {
+      color: var(--color-success);
+    }
+
+    .toast__progress {
+      background-color: var(--color-success);
+    }
+  }
+
+  &--error {
+    border-left-color: var(--color-error);
+
+    .toast__icon {
+      color: var(--color-error);
+    }
+
+    .toast__progress {
+      background-color: var(--color-error);
+    }
+  }
+
+  &--warning {
+    border-left-color: var(--color-warning);
+
+    .toast__icon {
+      color: var(--color-warning);
+    }
+
+    .toast__progress {
+      background-color: var(--color-warning);
+    }
+  }
+
+  &--info {
+    border-left-color: var(--color-stats-blue);
+
+    .toast__icon {
+      color: var(--color-stats-blue);
+    }
+
+    .toast__progress {
+      background-color: var(--color-stats-blue);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// TOAST PARTS
+// ---------------------------------------------------------------------------
+
+.toast__icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toast__content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.toast__title {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+}
+
+.toast__message {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-caption);
+  color: var(--color-foreground);
+  line-height: var(--line-height-relaxed);
+}
+
+.toast__close {
+  @include reset-button;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--color-foreground);
+  border-radius: var(--radius-sm);
+  transition: var(--transition-colors);
+
+  &:hover {
+    color: var(--color-text);
+    background-color: var(--color-information);
+  }
+
+  @include focus-visible;
+}
+
+// ---------------------------------------------------------------------------
+// PROGRESS BAR
+// ---------------------------------------------------------------------------
+
+.toast__progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  transform-origin: left;
+  animation: progress-shrink linear forwards;
+}
+
+// ---------------------------------------------------------------------------
+// ANIMATIONS
+// ---------------------------------------------------------------------------
+
+@keyframes toast-enter {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes progress-shrink {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
