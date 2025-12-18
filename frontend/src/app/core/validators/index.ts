@@ -30,6 +30,14 @@ export {
   type PatternConfig
 } from './sync/custom-pattern.validator';
 
+// NIF/NIE validator (Spanish ID)
+export {
+  nifValidator,
+  getNifError,
+  isValidNif,
+  type NifValidationError
+} from './sync/nif.validator';
+
 // ============================================================================
 // Async Validators
 // ============================================================================
