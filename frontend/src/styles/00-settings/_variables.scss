@@ -61,23 +61,24 @@ $font-size-names: ('title', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'body', 'caption
   // -------------------------------------------------------------------------
 
   // Background colors
-  --color-background: #0a0a0a;        // Main background
-  --color-tiny-info: #1c1c1c;         // Secondary background / subtle cards
-  --color-information: #393939;       // Borders, separators
+  --color-background: #0a0a0a;         // Main background
+  --color-tiny-info: #1c1c1c;          // Secondary background / subtle cards
+  --color-information: #393939;        // Borders, separators
 
   // Text colors
-  --color-text: #fafafa;              // Primary text
-  --color-high-contrast: #ffffff;     // Maximum contrast text
-  --color-foreground: #a1a1a1;        // Secondary text / descriptions
-  --color-secondary: #666666;         // Tertiary text / borders
+  --color-text: #fafafa;               // Primary text
+  --color-high-contrast: #ffffff;      // Maximum contrast text
+  --color-foreground: #a1a1a1;         // Secondary text / descriptions
+  --color-secondary: #666666;          // Tertiary text / borders
 
   // Semantic colors
-  --color-success: #00dc33;           // Success states, CTAs, positive
-  --color-success-dark: #00c42e;      // Success hover state
-  --color-error: #ff4444;             // Error states, destructive actions
-  --color-error-dark: #cc3636;        // Error hover state
-  --color-status-yellow: #f0b100;     // Warning, pending states
-  --color-stats-blue: #00a5ff;        // Statistics, informational
+  --color-success: #00dc33;            // Success states, CTAs, positive
+  --color-success-dark: #00c42e;       // Success hover state
+  --color-error: #ff4444;              // Error states, destructive actions
+  --color-error-dark: #cc3636;         // Error hover state
+  --color-status-yellow: #f0b100;      // Warning, pending states
+  --color-status-yellow-dark: #d6a500; // Warning hover state
+  --color-stats-blue: #00a5ff;         // Statistics, informational
 
   // RGB versions for rgba() usage
   --color-success-rgb: 0, 220, 51;

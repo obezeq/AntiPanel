@@ -34,6 +34,8 @@ import { OrderReady, OrderReadyData } from '../../components/shared/order-ready/
 import { OrderPlaced } from '../../components/shared/order-placed/order-placed';
 import { ServiceItemCard, ServiceItemData } from '../../components/shared/service-item-card/service-item-card';
 import { AdminOrderTable, AdminOrder } from '../../components/shared/admin-order-table/admin-order-table';
+import { OrderPagination } from '../../components/shared/order-pagination/order-pagination';
+import { OrderFilters, FilterCategory, SortOrder } from '../../components/shared/order-filters/order-filters';
 
 @Component({
   selector: 'app-style-guide',
@@ -65,7 +67,9 @@ import { AdminOrderTable, AdminOrder } from '../../components/shared/admin-order
     OrderReady,
     OrderPlaced,
     ServiceItemCard,
-    AdminOrderTable
+    AdminOrderTable,
+    OrderPagination,
+    OrderFilters
   ]
 })
 export class StyleGuide {
@@ -637,5 +641,42 @@ export class StyleGuide {
   // Admin Order Table handlers
   protected onAdminOrderClick(_order: AdminOrder): void {
     // Demo handler - no-op
+  }
+
+  // =========================================================================
+  // ORDER PAGINATION & FILTERS DEMO
+  // =========================================================================
+
+  /** Pagination demo state */
+  protected readonly demoPaginationPage = signal(1);
+  protected readonly demoPaginationTotal = signal(33);
+  protected readonly demoPaginationSize = signal(10);
+
+  /** Filters demo state */
+  protected readonly demoFilterCategory = signal<FilterCategory>('ALL');
+  protected readonly demoFilterSort = signal<SortOrder>('latest');
+  protected readonly demoFilterSearch = signal('');
+
+  /** Pagination handlers */
+  protected onPaginationPageChange(page: number): void {
+    this.demoPaginationPage.set(page);
+  }
+
+  protected onPaginationSizeChange(size: number): void {
+    this.demoPaginationSize.set(size);
+    this.demoPaginationPage.set(1); // Reset to page 1 when size changes
+  }
+
+  /** Filters handlers */
+  protected onFilterCategoryChange(category: FilterCategory): void {
+    this.demoFilterCategory.set(category);
+  }
+
+  protected onFilterSortChange(order: SortOrder): void {
+    this.demoFilterSort.set(order);
+  }
+
+  protected onFilterSearchChange(query: string): void {
+    this.demoFilterSearch.set(query);
   }
 }

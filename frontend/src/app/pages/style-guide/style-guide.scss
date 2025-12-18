@@ -813,6 +813,26 @@
 }
 
 // ---------------------------------------------------------------------------
+// ORDER FILTERS & PAGINATION
+// ---------------------------------------------------------------------------
+
+// Order filters demo container
+.style-guide__filters-demo {
+  padding: var(--spacing-6);
+  background-color: var(--color-tiny-info);
+  border: var(--border-width-thin) solid var(--color-information);
+  border-radius: var(--radius-lg);
+}
+
+// Order pagination demo container
+.style-guide__pagination-demo {
+  padding: var(--spacing-6);
+  background-color: var(--color-tiny-info);
+  border: var(--border-width-thin) solid var(--color-information);
+  border-radius: var(--radius-lg);
+}
+
+// ---------------------------------------------------------------------------
 // ORDER READY
 // ---------------------------------------------------------------------------
 

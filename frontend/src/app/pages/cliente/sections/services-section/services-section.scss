@@ -116,10 +116,10 @@
 
   &--warning {
     color: var(--color-background);
-    background-color: var(--color-warning);
+    background-color: var(--color-status-yellow);
 
     &:hover:not(:disabled) {
-      background-color: var(--color-warning-dark);
+      background-color: var(--color-status-yellow-dark);
     }
   }
 

@@ -36,6 +36,8 @@
       <li><a href="#auth-form" class="style-guide__toc-link">Auth Form</a></li>
       <li><a href="#admin-orders" class="style-guide__toc-link">Admin Orders</a></li>
       <li><a href="#order-cards" class="style-guide__toc-link">Order Cards</a></li>
+      <li><a href="#order-filters" class="style-guide__toc-link">Order Filters</a></li>
+      <li><a href="#order-pagination" class="style-guide__toc-link">Order Pagination</a></li>
     </ul>
   </nav>
 
@@ -814,6 +816,47 @@
             (cardClick)="onOrderCardClick($event)"
           />
         }
+      </section>
+    </article>
+  </section>
+
+  <!-- Order Filters Section -->
+  <section id="order-filters" class="style-guide__section">
+    <h2 class="style-guide__section-title">Order Filters</h2>
+    <p class="style-guide__section-desc">Filter controls for orders page with category dropdown, sort toggle, and search</p>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Interactive Filters</h3>
+      <p class="style-guide__desc">Category: {{ demoFilterCategory() }} | Sort: {{ demoFilterSort() }} | Search: "{{ demoFilterSearch() }}"</p>
+      <section class="style-guide__filters-demo">
+        <app-order-filters
+          [selectedCategory]="demoFilterCategory()"
+          [sortOrder]="demoFilterSort()"
+          [searchQuery]="demoFilterSearch()"
+          (categoryChange)="onFilterCategoryChange($event)"
+          (sortChange)="onFilterSortChange($event)"
+          (searchChange)="onFilterSearchChange($event)"
+        />
+      </section>
+    </article>
+  </section>
+
+  <!-- Order Pagination Section -->
+  <section id="order-pagination" class="style-guide__section">
+    <h2 class="style-guide__section-title">Order Pagination</h2>
+    <p class="style-guide__section-desc">Pagination controls for orders list with page size selector</p>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Interactive Pagination</h3>
+      <p class="style-guide__desc">Page {{ demoPaginationPage() }} of {{ demoPaginationTotal() }} | Showing {{ demoPaginationSize() }} per page</p>
+      <section class="style-guide__pagination-demo">
+        <app-order-pagination
+          [currentPage]="demoPaginationPage()"
+          [totalPages]="demoPaginationTotal()"
+          [pageSize]="demoPaginationSize()"
+          (pageChange)="onPaginationPageChange($event)"
+          (pageSizeChange)="onPaginationSizeChange($event)"
+        />
       </section>
     </article>
   </section>
