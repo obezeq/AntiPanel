@@ -1,0 +1,71 @@
+<nav class="order-pagination" aria-label="Pagination">
+  <!-- Left: Page Size Selector -->
+  <div class="order-pagination__size">
+    <span class="order-pagination__label">SHOW</span>
+
+    <div class="order-pagination__dropdown-wrapper">
+      <button
+        type="button"
+        class="order-pagination__dropdown"
+        [class.order-pagination__dropdown--open]="isDropdownOpen()"
+        [attr.aria-expanded]="isDropdownOpen()"
+        aria-haspopup="listbox"
+        (click)="toggleDropdown()"
+        (keydown)="onDropdownKeydown($event)"
+      >
+        <span class="order-pagination__dropdown-value">{{ pageSize() }}</span>
+        <span class="order-pagination__dropdown-icon" aria-hidden="true">↓</span>
+      </button>
+
+      @if (isDropdownOpen()) {
+        <ul
+          class="order-pagination__options"
+          role="listbox"
+          aria-label="Items per page"
+        >
+          @for (option of pageSizeOptions(); track option) {
+            <li
+              role="option"
+              class="order-pagination__option"
+              [class.order-pagination__option--selected]="option === pageSize()"
+              [attr.aria-selected]="option === pageSize()"
+              (click)="selectPageSize(option)"
+            >
+              {{ option }}
+            </li>
+          }
+        </ul>
+      }
+    </div>
+
+    <span class="order-pagination__label">PER PAGE</span>
+  </div>
+
+  <!-- Right: Page Navigation -->
+  <div class="order-pagination__nav">
+    <button
+      type="button"
+      class="order-pagination__btn"
+      [disabled]="isPrevDisabled()"
+      aria-label="Previous page"
+      (click)="goToPrev()"
+    >
+      <span aria-hidden="true">&lt;</span>
+    </button>
+
+    <span class="order-pagination__label">PAGE</span>
+    <span class="order-pagination__current">{{ currentPage() }}</span>
+    <span class="order-pagination__label">OF</span>
+    <span class="order-pagination__total">{{ totalPages() }}</span>
+
+    <button
+      type="button"
+      class="order-pagination__btn"
+      [disabled]="isNextDisabled()"
+      aria-label="Next page"
+      (click)="goToNext()"
+    >
+      <span aria-hidden="true">&gt;</span>
+    </button>
+  </div>
+</nav>

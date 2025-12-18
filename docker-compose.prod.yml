@@ -1,0 +1,238 @@
+# ========================================
+# Docker Compose - Production Configuration
+# AntiPanel with Traefik + SSL + Nginx
+# ========================================
+#
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml --env-file .env.prod up -d --build
+#
+# Prerequisites:
+#   1. Copy .env.prod.example to .env.prod and configure
+#   2. Configure DNS: antipanel.tech and www.antipanel.tech pointing to server
+#   3. Ensure ports 80 and 443 are open
+#
+
+services:
+  # ========================================
+  # Traefik - Reverse Proxy + SSL Termination
+  # ========================================
+  traefik:
+    image: traefik:v3.2
+    container_name: antipanel-traefik
+    restart: always
+
+    security_opt:
+      - no-new-privileges:true
+
+    ports:
+      - "80:80"
+      - "443:443"
+
+    environment:
+      - TZ=${TZ:-Europe/Madrid}
+
+    volumes:
+      # Docker socket for container discovery (read-only)
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # Traefik static configuration
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      # Dynamic configuration directory
+      - ./traefik/dynamic:/etc/traefik/dynamic:ro
+      # Let's Encrypt certificates storage
+      - traefik_certs:/letsencrypt
+
+    networks:
+      - web
+
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck", "--ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
+  # ========================================
+  # PostgreSQL Database - Production
+  # ========================================
+  postgres:
+    # Inherits from base docker-compose.yml
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      # Production: Enable checksums for data integrity
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --data-checksums"
+
+    # Production: Remove external port exposure (security)
+    ports: []
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/sql/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      # Note: example.sql not included in production
+
+    networks:
+      - backend-net
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  # ========================================
+  # Spring Boot Backend - Production
+  # ========================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+
+    container_name: antipanel-backend
+    restart: always
+
+    environment:
+      # Production Profile
+      SPRING_PROFILES_ACTIVE: prod
+
+      # Database Configuration
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+
+      # CORS for production domain
+      SPRING_WEB_CORS_ALLOWED_ORIGINS: "https://antipanel.tech,https://www.antipanel.tech"
+
+      # JWT Secret
+      JWT_SECRET: ${JWT_SECRET}
+
+      # JVM Production Optimizations
+      JAVA_OPTS: >-
+        -XX:+UseContainerSupport
+        -XX:MaxRAMPercentage=75.0
+        -XX:+UseG1GC
+        -XX:+UseStringDeduplication
+        -Djava.security.egd=file:/dev/./urandom
+        -Dspring.profiles.active=prod
+
+    # Production: Remove external port exposure (nginx proxies)
+    ports: []
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    networks:
+      - backend-net
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  # ========================================
+  # Angular Frontend - Production (Nginx)
+  # ========================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: production  # Uses nginx:1.27-alpine stage
+
+    container_name: antipanel-frontend
+    restart: always
+
+    # Production: Remove external port exposure
+    ports: []
+
+    volumes:
+      # Custom nginx config for Angular SPA + API proxy
+      - ./nginx/nginx.prod.conf:/etc/nginx/nginx.conf:ro
+
+    depends_on:
+      backend:
+        condition: service_healthy
+
+    networks:
+      - web
+      - backend-net
+
+    labels:
+      - "traefik.enable=true"
+      # Main domain router (antipanel.tech)
+      - "traefik.http.routers.frontend.rule=Host(`antipanel.tech`)"
+      - "traefik.http.routers.frontend.entrypoints=websecure"
+      - "traefik.http.routers.frontend.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.frontend.middlewares=security-headers@file,compress@file,rate-limit@file"
+      # WWW domain router (www.antipanel.tech -> redirect)
+      - "traefik.http.routers.frontend-www.rule=Host(`www.antipanel.tech`)"
+      - "traefik.http.routers.frontend-www.entrypoints=websecure"
+      - "traefik.http.routers.frontend-www.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.frontend-www.middlewares=www-redirect@file"
+      # Service configuration
+      - "traefik.http.services.frontend.loadbalancer.server.port=80"
+      # Network specification
+      - "traefik.docker.network=antipanel-web"
+
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 256M
+        reservations:
+          cpus: '0.10'
+          memory: 64M
+
+# ========================================
+# Production Networks
+# ========================================
+networks:
+  # Public-facing network (Traefik <-> Frontend)
+  web:
+    driver: bridge
+    name: antipanel-web
+
+  # Internal network (Frontend <-> Backend <-> Database)
+  backend-net:
+    driver: bridge
+    name: antipanel-backend
+    # Note: Not set as internal because frontend needs to proxy to backend
+
+# ========================================
+# Production Volumes
+# ========================================
+volumes:
+  postgres_data:
+    driver: local
+  traefik_certs:
+    driver: local

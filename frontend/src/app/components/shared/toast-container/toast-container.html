@@ -1,0 +1,48 @@
+@if (notificationService.hasNotifications()) {
+  <div
+    class="toast-container"
+    role="region"
+    aria-label="Notificaciones"
+    aria-live="polite"
+  >
+    @for (notification of notificationService.notifications(); track trackByNotificationId($index, notification)) {
+      <div
+        class="toast"
+        [class.toast--success]="notification.type === 'success'"
+        [class.toast--error]="notification.type === 'error'"
+        [class.toast--warning]="notification.type === 'warning'"
+        [class.toast--info]="notification.type === 'info'"
+        role="alert"
+        tabindex="0"
+        (keydown)="onKeydown($event, notification)"
+      >
+        <div class="toast__icon">
+          <ng-icon [name]="getIcon(notification.type)" size="20" />
+        </div>
+
+        <div class="toast__content">
+          <span class="toast__title">
+            {{ notification.title || getDefaultTitle(notification.type) }}
+          </span>
+          <span class="toast__message">{{ notification.message }}</span>
+        </div>
+
+        <button
+          type="button"
+          class="toast__close"
+          (click)="dismiss(notification)"
+          aria-label="Cerrar notificacion"
+        >
+          <ng-icon name="matClose" size="16" />
+        </button>
+
+        @if (notification.duration > 0) {
+          <div
+            class="toast__progress"
+            [style.animation-duration.ms]="notification.duration"
+          ></div>
+        }
+      </div>
+    }
+  </div>
+}

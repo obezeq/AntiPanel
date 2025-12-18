@@ -1,0 +1,154 @@
+<!-- Header fuera del form -->
+<header class="auth-form__header">
+  <h1 class="auth-form__title">{{ headerTitle() }}</h1>
+  <p class="auth-form__subtitle">{{ headerSubtitle() }}</p>
+</header>
+
+<form
+  class="auth-form"
+  [formGroup]="form"
+  (ngSubmit)="onSubmit()"
+  novalidate
+>
+  <fieldset class="auth-form__fieldset">
+    <!-- Legend oculto visualmente pero presente para accesibilidad -->
+    <legend class="auth-form__legend">{{ formTitle() }}</legend>
+
+    @if (serverError()) {
+      <p class="auth-form__server-error" role="alert">
+        {{ serverError() }}
+      </p>
+    }
+
+    <section class="auth-form__fields">
+      <!-- Email Field -->
+      <div class="auth-form__field-wrapper">
+        <app-form-input
+          label="Email"
+          type="email"
+          placeholder="EMAIL"
+          autocomplete="email"
+          [required]="true"
+          [hideLabel]="true"
+          [errorMessage]="emailError()"
+          formControlName="email"
+          (blur)="onEmailBlur()"
+        />
+        <!-- Email validation status indicators -->
+        <div class="auth-form__field-status">
+          @if (form.controls.email.pending) {
+            <span class="auth-form__status auth-form__status--pending" aria-label="Checking email...">
+              <span class="auth-form__status-spinner"></span>
+              <span class="auth-form__status-text">Checking...</span>
+            </span>
+          } @else if (emailValid() && isRegisterMode()) {
+            <span class="auth-form__status auth-form__status--valid" aria-label="Email available">
+              <ng-icon name="matCheck" size="16" />
+              <span class="auth-form__status-text">Available</span>
+            </span>
+          }
+        </div>
+      </div>
+
+      <!-- Password Field -->
+      <div class="auth-form__field-wrapper">
+        <app-form-input
+          label="Password"
+          type="password"
+          placeholder="PASSWORD"
+          [autocomplete]="isRegisterMode() ? 'new-password' : 'current-password'"
+          [required]="true"
+          [hideLabel]="true"
+          [errorMessage]="passwordError()"
+          formControlName="password"
+          (blur)="onPasswordBlur()"
+        />
+        <!-- Password validation status -->
+        @if (passwordValid()) {
+          <div class="auth-form__field-status">
+            <span class="auth-form__status auth-form__status--valid" aria-label="Password valid">
+              <ng-icon name="matCheck" size="16" />
+            </span>
+          </div>
+        }
+      </div>
+
+      <!-- Password Strength Hints (always visible in register mode for better UX) -->
+      @if (isRegisterMode()) {
+        <ul class="auth-form__password-hints" aria-label="Password requirements">
+          @for (hint of passwordStrengthHints(); track hint.label) {
+            <li
+              class="auth-form__hint"
+              [class.auth-form__hint--valid]="hint.valid"
+              [class.auth-form__hint--invalid]="!hint.valid"
+            >
+              @if (hint.valid) {
+                <ng-icon name="matCheck" size="14" aria-hidden="true" />
+              } @else {
+                <ng-icon name="matClose" size="14" aria-hidden="true" />
+              }
+              <span>{{ hint.label }}</span>
+            </li>
+          }
+        </ul>
+      }
+
+      <!-- Confirm Password Field (register mode only) -->
+      @if (isRegisterMode()) {
+        <div class="auth-form__field-wrapper">
+          <app-form-input
+            label="Confirm Password"
+            type="password"
+            placeholder="CONFIRM PASSWORD"
+            autocomplete="new-password"
+            [required]="true"
+            [hideLabel]="true"
+            [errorMessage]="confirmPasswordError()"
+            formControlName="confirmPassword"
+            (blur)="onConfirmPasswordBlur()"
+            (input)="onConfirmPasswordInput()"
+          />
+          <!-- Confirm password validation status - real-time feedback -->
+          <div class="auth-form__field-status">
+            @if (confirmPasswordValid()) {
+              <span class="auth-form__status auth-form__status--valid" aria-label="Passwords match">
+                <ng-icon name="matCheck" size="16" />
+              </span>
+            } @else if (confirmPasswordError()) {
+              <span class="auth-form__status auth-form__status--invalid" aria-label="Passwords do not match">
+                <ng-icon name="matClose" size="16" />
+              </span>
+            }
+          </div>
+        </div>
+      }
+    </section>
+
+    <section class="auth-form__actions">
+      <button
+        type="submit"
+        class="auth-form__submit"
+        [disabled]="submitDisabled()"
+        [class.auth-form__submit--validating]="isValidating()"
+      >
+        @if (loading()) {
+          <span class="auth-form__spinner" aria-hidden="true"></span>
+          <span>Processing...</span>
+        } @else if (isValidating()) {
+          <span class="auth-form__spinner" aria-hidden="true"></span>
+          <span>Validating...</span>
+        } @else {
+          <ng-icon class="auth-form__submit-icon" name="matArrowForward" size="32" aria-hidden="true" />
+          <span>{{ submitButtonText() }}</span>
+        }
+      </button>
+
+      <p class="auth-form__switch">
+        <span class="auth-form__switch-text">{{ switchModeText() }}</span>
+        <a [routerLink]="switchModeRoute()" class="auth-form__switch-link">
+          {{ switchModeLink() }}
+        </a>
+      </p>
+    </section>
+  </fieldset>
+</form>

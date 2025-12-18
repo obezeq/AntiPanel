@@ -1,0 +1,12 @@
+<header
+  class="dashboard-header"
+  [class.dashboard-header--centered]="centered()"
+>
+  <h1 class="dashboard-header__title">{{ title() }}</h1>
+
+  @if (subtitle()) {
+    <p class="dashboard-header__subtitle">{{ subtitle() }}</p>
+  }
+
+  <ng-content />
+</header>

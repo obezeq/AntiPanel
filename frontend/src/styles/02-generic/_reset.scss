@@ -1,0 +1,288 @@
+// ==========================================================================
+// CSS RESET
+// ==========================================================================
+// Modern CSS reset based on best practices.
+// Normalizes browser defaults while being accessible.
+//
+// Sources:
+// - Josh Comeau's Custom CSS Reset
+// - Andy Bell's Modern CSS Reset
+// - Normalize.css concepts
+// ==========================================================================
+
+// ---------------------------------------------------------------------------
+// 1. BOX SIZING
+// ---------------------------------------------------------------------------
+// Use border-box globally for predictable sizing.
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+// ---------------------------------------------------------------------------
+// 2. MARGIN RESET
+// ---------------------------------------------------------------------------
+// Remove default margins for cleaner baseline.
+
+* {
+  margin: 0;
+}
+
+// ---------------------------------------------------------------------------
+// 3. TYPOGRAPHY DEFAULTS
+// ---------------------------------------------------------------------------
+// Improve text rendering and create accessible defaults.
+
+html {
+  // Prevent font size inflation on mobile
+  -moz-text-size-adjust: none;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+
+  // Smooth scrolling (respects user preferences)
+  @media (prefers-reduced-motion: no-preference) {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  // Accessible line-height
+  line-height: var(--line-height-normal);
+
+  // Improve text rendering
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+
+  // Full height by default
+  min-height: 100vh;
+  min-height: 100dvh; // Dynamic viewport height for mobile
+}
+
+// ---------------------------------------------------------------------------
+// 4. MEDIA DEFAULTS
+// ---------------------------------------------------------------------------
+// Improve media element behavior.
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+img,
+picture {
+  height: auto;
+}
+
+// ---------------------------------------------------------------------------
+// 5. FORM ELEMENT DEFAULTS
+// ---------------------------------------------------------------------------
+// Normalize form elements across browsers.
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+// Remove default button styles
+button {
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+// Improve textarea behavior
+textarea {
+  resize: vertical;
+}
+
+// Remove search input styling in WebKit
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  display: none;
+}
+
+// Remove number input spinners
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+// ---------------------------------------------------------------------------
+// 6. HEADING DEFAULTS
+// ---------------------------------------------------------------------------
+// Balance text wrapping in headings.
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+
+// ---------------------------------------------------------------------------
+// 7. PARAGRAPH DEFAULTS
+// ---------------------------------------------------------------------------
+// Improve paragraph readability.
+
+p {
+  text-wrap: pretty;
+  overflow-wrap: break-word;
+}
+
+// ---------------------------------------------------------------------------
+// 8. LINK DEFAULTS
+// ---------------------------------------------------------------------------
+// Remove underline by default (handled in element styles).
+
+a {
+  text-decoration: none;
+  color: inherit;
+
+  &:not([class]) {
+    text-decoration-skip-ink: auto;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 9. LIST DEFAULTS
+// ---------------------------------------------------------------------------
+// Remove default list styles where appropriate.
+
+ul,
+ol {
+  padding: 0;
+}
+
+// Role="list" preserves list semantics when list-style is removed
+ul[role="list"],
+ol[role="list"] {
+  list-style: none;
+}
+
+// ---------------------------------------------------------------------------
+// 10. TABLE DEFAULTS
+// ---------------------------------------------------------------------------
+// Normalize table behavior.
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+// ---------------------------------------------------------------------------
+// 11. DIALOG DEFAULTS
+// ---------------------------------------------------------------------------
+// Normalize dialog element.
+
+dialog {
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+// ---------------------------------------------------------------------------
+// 12. FOCUS STYLES
+// ---------------------------------------------------------------------------
+// Accessible focus styles that work with the design.
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--focus-ring-color, var(--color-stats-blue, #00a5ff));
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+// ---------------------------------------------------------------------------
+// 13. SELECTION STYLES
+// ---------------------------------------------------------------------------
+// Custom text selection colors.
+
+::selection {
+  background-color: var(--color-stats-blue, #00a5ff);
+  color: var(--color-background, #0a0a0a);
+}
+
+// ---------------------------------------------------------------------------
+// 14. REDUCED MOTION
+// ---------------------------------------------------------------------------
+// Respect user's motion preferences.
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 15. INTERACTIVE ELEMENTS
+// ---------------------------------------------------------------------------
+// Make interactive elements more accessible.
+
+// Prevent text selection on buttons
+button,
+[role="button"] {
+  user-select: none;
+}
+
+// Ensure disabled elements look disabled
+[disabled],
+[aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
+// ---------------------------------------------------------------------------
+// 16. HIDDEN ELEMENTS
+// ---------------------------------------------------------------------------
+// Ensure hidden elements are truly hidden.
+
+[hidden] {
+  display: none !important;
+}
+
+// ---------------------------------------------------------------------------
+// 17. SKIP LINK (Accessibility)
+// ---------------------------------------------------------------------------
+// Skip to main content link for keyboard users.
+
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: var(--spacing-2, 0.5rem) var(--spacing-4, 1rem);
+  background: var(--color-background, #0a0a0a);
+  color: var(--color-text, #fafafa);
+  z-index: 9999;
+  transform: translateY(-100%);
+  transition: transform var(--transition-fast, 150ms ease-in-out);
+
+  &:focus {
+    transform: translateY(0);
+  }
+}

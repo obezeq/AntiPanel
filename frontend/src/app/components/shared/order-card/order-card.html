@@ -1,0 +1,94 @@
+<article
+  class="order-card"
+  [attr.aria-label]="'Order ' + formattedId() + ': ' + order().serviceName"
+  (click)="onClick()"
+>
+  <!-- =========================================================================
+       ROW 1: ORDER TYPE (Status, ID, Service Name, URL)
+       ========================================================================= -->
+  <header class="order-card__header">
+    <!-- Status Badge -->
+    <span
+      class="order-card__status"
+      [class]="statusClass()"
+      role="status"
+      [attr.aria-label]="'Status: ' + statusLabel()"
+    >
+      {{ statusLabel() }}
+    </span>
+
+    <!-- Order ID -->
+    <span class="order-card__id">
+      <span class="sr-only">Order ID:</span>
+      <span aria-hidden="true">ID: #</span>{{ formattedId() }}
+    </span>
+
+    <!-- Service Name -->
+    <span class="order-card__service">
+      {{ order().serviceName }}
+    </span>
+
+    <!-- Target URL (if available) -->
+    @if (order().targetUrl) {
+      <span class="order-card__url" [title]="order().targetUrl">
+        {{ order().targetUrl }}
+      </span>
+    }
+  </header>
+
+  <!-- =========================================================================
+       ROW 2: ORDER INFO (Date, Charge, Quantity, Remains, Actions)
+       ========================================================================= -->
+  <footer class="order-card__footer">
+    <!-- Date -->
+    <span class="order-card__date">
+      <span class="order-card__label">DATE:</span>
+      <time [attr.datetime]="order().createdAt.toISOString()">
+        {{ formattedDate() }}
+      </time>
+    </span>
+
+    <!-- Charge / Price -->
+    <span class="order-card__charge">
+      <span class="order-card__label">CHARGE:</span>
+      <span class="order-card__price-value">{{ formattedPrice() }}</span>
+    </span>
+
+    <!-- Quantity -->
+    <span class="order-card__quantity">
+      <span class="order-card__label">QUANTITY:</span>
+      {{ formattedQuantity() }}
+    </span>
+
+    <!-- Remains -->
+    <span class="order-card__remains">
+      <span class="order-card__label">REMAINS:</span>
+      {{ formattedRemains() }}
+    </span>
+
+    <!-- Action Buttons -->
+    @if (showActions()) {
+      <div class="order-card__actions">
+        <button
+          type="button"
+          class="order-card__action"
+          (click)="onOrderAgain($event)"
+          [attr.aria-label]="'Order again: ' + order().serviceName"
+        >
+          ORDER AGAIN
+        </button>
+
+        @if (canRefill()) {
+          <button
+            type="button"
+            class="order-card__action"
+            (click)="onRefill($event)"
+            [attr.aria-label]="'Refill order: ' + order().serviceName"
+          >
+            REFILL
+          </button>
+        }
+      </div>
+    }
+  </footer>
+</article>

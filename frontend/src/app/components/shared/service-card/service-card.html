@@ -1,0 +1,20 @@
+<article
+  class="service-card"
+  [class.service-card--interactive]="interactive()"
+  (click)="onClick()"
+  [attr.role]="interactive() ? 'button' : null"
+  [attr.tabindex]="interactive() ? 0 : null"
+  (keydown.enter)="onClick()"
+  (keydown.space)="onClick()"
+>
+  <figure class="service-card__icon" aria-hidden="true">
+    <ng-icon [name]="service().icon" size="48" />
+  </figure>
+
+  <h3 class="service-card__name">{{ service().name }}</h3>
+
+  <p class="service-card__count">
+    <span class="service-card__count-number">{{ service().serviceCount }}</span>
+    <span class="service-card__count-label">SERVICES</span>
+  </p>
+</article>

@@ -1,0 +1,863 @@
+<main class="style-guide">
+  <app-dashboard-header
+    title="Style Guide"
+    subtitle="Visual documentation of AntiPanel's design system components"
+  />
+
+  <!-- Theme Toggle -->
+  <section class="style-guide__theme-toggle">
+    <button
+      class="style-guide__theme-button"
+      type="button"
+      (click)="themeService.toggleTheme()"
+      [attr.aria-label]="themeService.isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+    >
+      <ng-icon [name]="themeService.isDark() ? 'matLightMode' : 'matDarkMode'" size="24" />
+      {{ themeService.isDark() ? 'Light Mode' : 'Dark Mode' }}
+    </button>
+  </section>
+
+  <!-- Table of Contents -->
+  <nav class="style-guide__toc" aria-label="Table of contents">
+    <h3 class="style-guide__toc-title">Contents</h3>
+    <ul class="style-guide__toc-list" role="list">
+      <li><a routerLink="." fragment="colors" class="style-guide__toc-link">Colors</a></li>
+      <li><a routerLink="." fragment="typography" class="style-guide__toc-link">Typography</a></li>
+      <li><a routerLink="." fragment="buttons" class="style-guide__toc-link">Buttons</a></li>
+      <li><a routerLink="." fragment="alerts" class="style-guide__toc-link">Alerts</a></li>
+      <li><a routerLink="." fragment="forms" class="style-guide__toc-link">Form Elements</a></li>
+      <li><a routerLink="." fragment="cards" class="style-guide__toc-link">Cards</a></li>
+      <li><a routerLink="." fragment="service-items" class="style-guide__toc-link">Service Items</a></li>
+      <li><a routerLink="." fragment="order-input" class="style-guide__toc-link">Order Input</a></li>
+      <li><a routerLink="." fragment="order-ready" class="style-guide__toc-link">Order Ready</a></li>
+      <li><a routerLink="." fragment="icons" class="style-guide__toc-link">Icons</a></li>
+      <li><a routerLink="." fragment="layout" class="style-guide__toc-link">Layout</a></li>
+      <li><a routerLink="." fragment="modal" class="style-guide__toc-link">Modal</a></li>
+      <li><a routerLink="." fragment="auth-form" class="style-guide__toc-link">Auth Form</a></li>
+      <li><a routerLink="." fragment="admin-orders" class="style-guide__toc-link">Admin Orders</a></li>
+      <li><a routerLink="." fragment="order-cards" class="style-guide__toc-link">Order Cards</a></li>
+      <li><a routerLink="." fragment="order-filters" class="style-guide__toc-link">Order Filters</a></li>
+      <li><a routerLink="." fragment="order-pagination" class="style-guide__toc-link">Order Pagination</a></li>
+    </ul>
+  </nav>
+
+  <!-- Copy Toast Notification -->
+  @if (showCopyToast()) {
+    <aside
+      class="style-guide__toast"
+      [style.left.px]="toastPosition().x"
+      [style.top.px]="toastPosition().y"
+      role="status"
+      aria-live="polite"
+    >
+      <span class="style-guide__toast-icon">✓</span>
+      <span class="style-guide__toast-text">Copied {{ copiedColor() }}</span>
+    </aside>
+  }
+
+  <!-- Colors Section -->
+  <section id="colors" class="style-guide__section">
+    <h2 class="style-guide__section-title">Colors</h2>
+    <p class="style-guide__section-desc">Dark mode color palette. Click any color to copy its hex value.</p>
+
+    <blockquote class="style-guide__brand-statement">
+      <p>AntiPanel embraces darkness as its foundation. Where traditional panels overwhelm with visual noise, we strip away distractions. Our monochromatic palette creates depth through subtle gradations—from pure black to soft grays—allowing content to breathe and actions to speak clearly. Accent colors are used with surgical precision: green confirms, red alerts, yellow indicates progress, and blue guides. This is the anti-panel aesthetic: minimal, confident, and unapologetically focused.</p>
+    </blockquote>
+
+    <ul class="style-guide__colors" role="list">
+      @for (color of colors; track color.variable) {
+        <li
+          class="style-guide__color"
+          (click)="copyColorToClipboard(color.hex, $event)"
+          role="button"
+          tabindex="0"
+          [attr.aria-label]="'Copy ' + color.name + ' color: ' + color.hex"
+          (keydown.enter)="copyColorToClipboard(color.hex, $event)"
+          (keydown.space)="copyColorToClipboard(color.hex, $event)"
+        >
+          <figure
+            class="style-guide__color-swatch"
+            [style.backgroundColor]="'var(' + color.variable + ')'"
+          ></figure>
+          <p class="style-guide__color-name">{{ color.name }}</p>
+          <code class="style-guide__color-value">{{ color.hex }}</code>
+          <p class="style-guide__color-desc">{{ color.description }}</p>
+        </li>
+      }
+    </ul>
+  </section>
+
+  <!-- Typography Section -->
+  <section id="typography" class="style-guide__section">
+    <h2 class="style-guide__section-title">Typography</h2>
+    <p class="style-guide__section-desc">Two font families for distinct purposes</p>
+
+    <!-- Font Families -->
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Font Families</h3>
+      <section class="style-guide__font-families">
+        <article class="style-guide__font-card">
+          <h4 class="style-guide__font-name style-guide__font-name--primary">Montserrat</h4>
+          <p class="style-guide__font-role">Primary</p>
+          <p class="style-guide__font-desc">Headlines, navigation, buttons, and UI elements. Use for content that demands attention and clarity.</p>
+          <p class="style-guide__font-sample style-guide__font-sample--primary">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>abcdefghijklmnopqrstuvwxyz<br>0123456789</p>
+        </article>
+        <article class="style-guide__font-card">
+          <h4 class="style-guide__font-name style-guide__font-name--secondary">IBM Plex Mono</h4>
+          <p class="style-guide__font-role">Secondary</p>
+          <p class="style-guide__font-desc">Numeric data, prices, codes, and technical information. Use for content that requires precision and tabular alignment.</p>
+          <p class="style-guide__font-sample style-guide__font-sample--secondary">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>abcdefghijklmnopqrstuvwxyz<br>0123456789</p>
+        </article>
+      </section>
+    </article>
+
+    <!-- Monospace Examples -->
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Monospace in Action</h3>
+      <section class="style-guide__mono-examples">
+        <figure class="style-guide__mono-example">
+          <figcaption>Prices</figcaption>
+          <span class="style-guide__mono-value">$1,234.56</span>
+        </figure>
+        <figure class="style-guide__mono-example">
+          <figcaption>Order IDs</figcaption>
+          <span class="style-guide__mono-value">#000001</span>
+        </figure>
+        <figure class="style-guide__mono-example">
+          <figcaption>Quantities</figcaption>
+          <span class="style-guide__mono-value">10,000</span>
+        </figure>
+        <figure class="style-guide__mono-example">
+          <figcaption>Percentages</figcaption>
+          <span class="style-guide__mono-value">93%</span>
+        </figure>
+      </section>
+    </article>
+
+    <!-- Font Weights -->
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Font Weights</h3>
+      <section class="style-guide__weights">
+        @for (weight of fontWeights; track weight.variable) {
+          <article class="style-guide__weight-card">
+            <div class="style-guide__weight-left">
+              <span
+                class="style-guide__weight-sample"
+                [style.fontWeight]="weight.weight"
+              >
+                Aa
+              </span>
+              <h4 class="style-guide__weight-name">{{ weight.name }}</h4>
+              <code class="style-guide__weight-value">{{ weight.weight }}</code>
+            </div>
+            <p class="style-guide__weight-desc">{{ weight.description }}</p>
+          </article>
+        }
+      </section>
+    </article>
+
+    <!-- Type Scale -->
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Type Scale</h3>
+      <ul class="style-guide__typography" role="list">
+        @for (size of typographySizes; track size.variable) {
+          <li class="style-guide__type-row">
+            <span
+              class="style-guide__type-sample"
+              [style.fontSize]="'var(' + size.variable + ')'"
+            >
+              Aa
+            </span>
+            <span class="style-guide__type-name">{{ size.name }}</span>
+            <code class="style-guide__type-size">{{ size.size }}</code>
+          </li>
+        }
+      </ul>
+    </article>
+  </section>
+
+  <!-- Buttons Section -->
+  <section id="buttons" class="style-guide__section">
+    <h2 class="style-guide__section-title">Buttons</h2>
+    <p class="style-guide__section-desc">Button variants and sizes</p>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Variants</h3>
+      <section class="style-guide__buttons">
+        <app-button variant="primary">Primary</app-button>
+        <app-button variant="secondary">Secondary</app-button>
+        <app-button variant="ghost">Ghost</app-button>
+        <app-button variant="danger">Danger</app-button>
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Sizes</h3>
+      <section class="style-guide__buttons">
+        <app-button size="sm">Small</app-button>
+        <app-button size="md">Medium</app-button>
+        <app-button size="lg">Large</app-button>
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">States</h3>
+      <section class="style-guide__buttons">
+        <app-button [disabled]="true">Disabled</app-button>
+        <app-button [loading]="true">Loading</app-button>
+      </section>
+    </article>
+  </section>
+
+  <!-- Alerts Section -->
+  <section id="alerts" class="style-guide__section">
+    <h2 class="style-guide__section-title">Alerts</h2>
+    <p class="style-guide__section-desc">Notification alerts for user feedback</p>
+
+    <section class="style-guide__alerts">
+      <app-alert variant="success" title="Success">
+        Your order has been placed successfully.
+      </app-alert>
+
+      <app-alert variant="error" title="Error">
+        There was a problem processing your request.
+      </app-alert>
+
+      <app-alert variant="warning" title="Warning">
+        Your session will expire in 5 minutes.
+      </app-alert>
+
+      <app-alert variant="info" title="Info" [dismissible]="true">
+        New services have been added to the platform.
+      </app-alert>
+    </section>
+  </section>
+
+  <!-- Form Elements Section -->
+  <section id="forms" class="style-guide__section">
+    <h2 class="style-guide__section-title">Form Elements</h2>
+    <p class="style-guide__section-desc">Input fields and form controls</p>
+
+    <section class="style-guide__forms">
+      <app-form-input
+        label="Email"
+        type="email"
+        placeholder="Enter your email"
+        hint="We'll never share your email"
+        [required]="true"
+      />
+
+      <app-form-input
+        label="Password"
+        type="password"
+        placeholder="Enter your password"
+        errorMessage="Password must be at least 8 characters"
+        [required]="true"
+      />
+
+      <app-form-select
+        label="Platform"
+        [options]="selectOptions"
+        placeholder="Select a platform"
+        [required]="true"
+      />
+
+      <app-form-textarea
+        label="Message"
+        placeholder="Enter your message"
+        hint="Max 500 characters"
+        [maxLength]="500"
+        [rows]="4"
+      />
+    </section>
+  </section>
+
+  <!-- Cards Section -->
+  <section id="cards" class="style-guide__section">
+    <h2 class="style-guide__section-title">Cards</h2>
+    <p class="style-guide__section-desc">Content containers</p>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Service Cards (8 plataformas)</h3>
+      <section class="style-guide__cards style-guide__cards--grid">
+        @for (service of serviceDemos; track service.id) {
+          <app-service-card [service]="service" />
+        }
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Stats Cards (4 variantes según Figma)</h3>
+      <section class="style-guide__cards style-guide__cards--stats">
+        <app-stats-card [stats]="statsDemos[0]" />
+        <app-stats-card [stats]="statsDemos[1]" variant="warning" />
+        <app-stats-card [stats]="statsDemos[2]" variant="success" />
+        <app-stats-card [stats]="statsDemos[3]" variant="info" />
+      </section>
+    </article>
+  </section>
+
+  <!-- Service Item Cards Section -->
+  <section id="service-items" class="style-guide__section">
+    <h2 class="style-guide__section-title">Service Item Cards</h2>
+    <p class="style-guide__section-desc">Individual service cards with pricing. Hover to see Quick Order button.</p>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Service Items (Hover to see button)</h3>
+      <section class="style-guide__service-items">
+        @for (service of serviceItemDemos; track service.id) {
+          <app-service-item-card
+            [service]="service"
+            (quickOrder)="onServiceItemQuickOrder($event)"
+            (cardClick)="onServiceItemClick($event)"
+          />
+        }
+      </section>
+    </article>
+  </section>
+
+  <!-- Order Input Section -->
+  <section id="order-input" class="style-guide__section">
+    <h2 class="style-guide__section-title">Order Input</h2>
+    <p class="style-guide__section-desc">Natural language order input</p>
+
+    <section class="style-guide__order-input">
+      <app-order-input
+        placeholder="e.g., 1000 Instagram followers for @username"
+        (submitOrder)="onOrderSubmit($event)"
+      />
+    </section>
+  </section>
+
+  <!-- Order Ready Section -->
+  <section id="order-ready" class="style-guide__section">
+    <h2 class="style-guide__section-title">Order Ready</h2>
+    <p class="style-guide__section-desc">Order result card with service information</p>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Default Mode</h3>
+      <section class="style-guide__order-ready-preview">
+        <app-order-ready
+          [data]="orderReadyDemo"
+          (exploreMore)="onExploreMore()"
+          (morePlatform)="onMorePlatform($event)"
+          (placeOrder)="onPlaceOrder($event)"
+        />
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">With Target Mode</h3>
+      <section class="style-guide__order-ready-preview">
+        <app-order-ready
+          [data]="orderReadyWithTargetDemo"
+          (exploreMore)="onExploreMore()"
+          (morePlatform)="onMorePlatform($event)"
+          (placeOrder)="onPlaceOrder($event)"
+        />
+      </section>
+    </article>
+  </section>
+
+  <!-- Icons Section -->
+  <section id="icons" class="style-guide__section">
+    <h2 class="style-guide__section-title">Icons</h2>
+    <p class="style-guide__section-desc">All registered icons: Material Icons + Iconoir + Simple Icons (38 total)</p>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Navigation & UI</h3>
+      <section class="style-guide__icons">
+        <figure class="style-guide__icon">
+          <ng-icon name="matHome" size="24" />
+          <figcaption>matHome</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matDashboard" size="24" />
+          <figcaption>matDashboard</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matShoppingCart" size="24" />
+          <figcaption>matShoppingCart</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matPerson" size="24" />
+          <figcaption>matPerson</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matSettings" size="24" />
+          <figcaption>matSettings</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matMenu" size="24" />
+          <figcaption>matMenu</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matClose" size="24" />
+          <figcaption>matClose</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matRefresh" size="24" />
+          <figcaption>matRefresh</figcaption>
+        </figure>
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Actions</h3>
+      <section class="style-guide__icons">
+        <figure class="style-guide__icon">
+          <ng-icon name="matSearch" size="24" />
+          <figcaption>matSearch</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matAdd" size="24" />
+          <figcaption>matAdd</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matRemove" size="24" />
+          <figcaption>matRemove</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matEdit" size="24" />
+          <figcaption>matEdit</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matDelete" size="24" />
+          <figcaption>matDelete</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matCheck" size="24" />
+          <figcaption>matCheck</figcaption>
+        </figure>
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Arrows</h3>
+      <section class="style-guide__icons">
+        <figure class="style-guide__icon">
+          <ng-icon name="matArrowBack" size="24" />
+          <figcaption>matArrowBack</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matArrowForward" size="24" />
+          <figcaption>matArrowForward</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matArrowUpward" size="24" />
+          <figcaption>matArrowUpward</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matKeyboardArrowDown" size="24" />
+          <figcaption>matKeyboardArrowDown</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matKeyboardArrowUp" size="24" />
+          <figcaption>matKeyboardArrowUp</figcaption>
+        </figure>
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Feedback & Status</h3>
+      <section class="style-guide__icons">
+        <figure class="style-guide__icon">
+          <ng-icon name="matError" size="24" />
+          <figcaption>matError</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matWarning" size="24" />
+          <figcaption>matWarning</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matInfo" size="24" />
+          <figcaption>matInfo</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matVisibility" size="24" />
+          <figcaption>matVisibility</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matVisibilityOff" size="24" />
+          <figcaption>matVisibilityOff</figcaption>
+        </figure>
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Stats Cards</h3>
+      <section class="style-guide__icons">
+        <figure class="style-guide__icon">
+          <ng-icon name="matShowChart" size="24" />
+          <figcaption>matShowChart</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matSchedule" size="24" />
+          <figcaption>matSchedule</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matCheckCircle" size="24" />
+          <figcaption>matCheckCircle</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matQueryStats" size="24" />
+          <figcaption>matQueryStats</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matAccountBalanceWallet" size="24" />
+          <figcaption>matAccountBalanceWallet</figcaption>
+        </figure>
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Theme Toggle</h3>
+      <section class="style-guide__icons">
+        <figure class="style-guide__icon">
+          <ng-icon name="matLightMode" size="24" />
+          <figcaption>matLightMode</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="matDarkMode" size="24" />
+          <figcaption>matDarkMode</figcaption>
+        </figure>
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Utility (Iconoir)</h3>
+      <section class="style-guide__icons">
+        <figure class="style-guide__icon">
+          <ng-icon name="iconoirFlash" size="24" />
+          <figcaption>iconoirFlash</figcaption>
+        </figure>
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Social Media (Iconoir)</h3>
+      <section class="style-guide__icons">
+        <figure class="style-guide__icon">
+          <ng-icon name="iconoirInstagram" size="24" />
+          <figcaption>iconoirInstagram</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="iconoirTiktok" size="24" />
+          <figcaption>iconoirTiktok</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="iconoirYoutube" size="24" />
+          <figcaption>iconoirYoutube</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="iconoirTwitter" size="24" />
+          <figcaption>iconoirTwitter</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="iconoirFacebook" size="24" />
+          <figcaption>iconoirFacebook</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="iconoirSpotify" size="24" />
+          <figcaption>iconoirSpotify</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="iconoirTelegram" size="24" />
+          <figcaption>iconoirTelegram</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="iconoirDiscord" size="24" />
+          <figcaption>iconoirDiscord</figcaption>
+        </figure>
+        <figure class="style-guide__icon">
+          <ng-icon name="iconoirLinkedin" size="24" />
+          <figcaption>iconoirLinkedin</figcaption>
+        </figure>
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Brand (Simple Icons)</h3>
+      <section class="style-guide__icons">
+        <figure class="style-guide__icon">
+          <ng-icon name="simpleSnapchat" size="24" />
+          <figcaption>simpleSnapchat</figcaption>
+        </figure>
+      </section>
+    </article>
+  </section>
+
+  <!-- Layout Components Section -->
+  <section id="layout" class="style-guide__section">
+    <h2 class="style-guide__section-title">Layout Components</h2>
+    <p class="style-guide__section-desc">Header, Footer, Sidebar, and MainContent components</p>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Header - Home variant (Logo + Text + ACCESS)</h3>
+      <section class="style-guide__layout-preview">
+        <app-header variant="home" />
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Header - Login variant (Logo + Text + REGISTER)</h3>
+      <section class="style-guide__layout-preview">
+        <app-header variant="login" />
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Header - Register variant (Logo + Text + LOGIN)</h3>
+      <section class="style-guide__layout-preview">
+        <app-header variant="register" />
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Header - Dashboard variant (Logo icon + Nav + WALLET + Profile)</h3>
+      <section class="style-guide__layout-preview">
+        <app-header variant="dashboard" walletBalance="$125.50" />
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Header - Logged In variant (Logo icon + DASHBOARD + Nav + WALLET + Profile)</h3>
+      <section class="style-guide__layout-preview">
+        <app-header variant="loggedIn" walletBalance="$89.00" />
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Header - Admin variant (Logo icon + Panel Name + Admin Info + Profile)</h3>
+      <section class="style-guide__layout-preview">
+        <app-header
+          variant="admin"
+          panelName="PANEL NAME"
+          adminName="ADMIN"
+          adminDepartment="DEPARTMENT"
+        />
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Sidebar</h3>
+      <section class="style-guide__layout-preview style-guide__layout-preview--sidebar">
+        <app-sidebar
+          title="ADMIN"
+          [items]="sidebarItems"
+          [isOpen]="true"
+        />
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Footer - Default (User View)</h3>
+      <section class="style-guide__layout-preview">
+        <app-footer variant="default" />
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Footer - Admin (Support Only)</h3>
+      <section class="style-guide__layout-preview">
+        <app-footer variant="admin" />
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">MainContent Variants</h3>
+      <section class="style-guide__main-variants">
+        <figure class="style-guide__main-variant">
+          <app-main-content variant="narrow" [padded]="true">
+            <p class="style-guide__placeholder">Narrow (max-width: 960px)</p>
+          </app-main-content>
+          <figcaption>Narrow</figcaption>
+        </figure>
+        <figure class="style-guide__main-variant">
+          <app-main-content variant="default" [padded]="true">
+            <p class="style-guide__placeholder">Default (max-width: 1440px)</p>
+          </app-main-content>
+          <figcaption>Default</figcaption>
+        </figure>
+        <figure class="style-guide__main-variant">
+          <app-main-content variant="wide" [padded]="true">
+            <p class="style-guide__placeholder">Wide (max-width: 1600px)</p>
+          </app-main-content>
+          <figcaption>Wide</figcaption>
+        </figure>
+      </section>
+    </article>
+  </section>
+
+  <!-- Modal Section -->
+  <section id="modal" class="style-guide__section">
+    <h2 class="style-guide__section-title">Modal</h2>
+    <p class="style-guide__section-desc">Dialog modal with multiple sizes</p>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Modal Sizes</h3>
+      <section class="style-guide__buttons">
+        <app-button variant="secondary" (buttonClick)="openModal('sm')">Open Small Modal</app-button>
+        <app-button variant="secondary" (buttonClick)="openModal('md')">Open Medium Modal</app-button>
+        <app-button variant="secondary" (buttonClick)="openModal('lg')">Open Large Modal</app-button>
+        <app-button variant="primary" (buttonClick)="openOrderPlacedModal()">Place Order (Success)</app-button>
+      </section>
+    </article>
+
+    <app-modal
+      [isOpen]="isModalOpen()"
+      [size]="modalSize()"
+      title="Modal Demo"
+      (closeRequest)="closeModal()"
+    >
+      <p>This is a {{ modalSize() }} size modal.</p>
+      <p>Click the X button, press ESC, or click outside to close.</p>
+      <section class="style-guide__modal-actions">
+        <app-button variant="ghost" (buttonClick)="closeModal()">Cancel</app-button>
+        <app-button variant="primary" (buttonClick)="closeModal()">Confirm</app-button>
+      </section>
+    </app-modal>
+
+    <!-- Order Placed Success Modal -->
+    <app-order-placed
+      [isOpen]="isOrderPlacedOpen()"
+      (continueClick)="closeOrderPlacedModal()"
+    />
+  </section>
+
+  <!-- Auth Form Section -->
+  <section id="auth-form" class="style-guide__section">
+    <h2 class="style-guide__section-title">Auth Form</h2>
+    <p class="style-guide__section-desc">Login and Registration forms with advanced validation</p>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Login Mode</h3>
+      <section class="style-guide__auth-preview">
+        <app-auth-form
+          mode="login"
+          (formSubmit)="onAuthSubmit($event)"
+        />
+      </section>
+    </article>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Register Mode (with Advanced Validators)</h3>
+      <p class="style-guide__desc">
+        Register mode includes: password strength validation, password confirmation matching,
+        and async email validation. Try emails like admin&#64;antipanel.com or test&#64;test.com to see the async validator in action.
+      </p>
+      <section class="style-guide__auth-preview">
+        <app-auth-form
+          mode="register"
+          (formSubmit)="onAuthSubmit($event)"
+        />
+      </section>
+    </article>
+  </section>
+
+  <!-- Admin Order Table Section -->
+  <section id="admin-orders" class="style-guide__section">
+    <h2 class="style-guide__section-title">Admin Order Table</h2>
+    <p class="style-guide__section-desc">Admin order table with expandable rows (click eye icon to expand)</p>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Expandable Admin Orders</h3>
+      <section class="style-guide__admin-order-table">
+        <app-admin-order-table
+          [orders]="adminOrderTableData"
+          (orderClick)="onAdminOrderClick($event)"
+        />
+      </section>
+    </article>
+  </section>
+
+  <!-- Order Cards Section (New Components from Figma) -->
+  <section id="order-cards" class="style-guide__section">
+    <h2 class="style-guide__section-title">Order Cards</h2>
+    <p class="style-guide__section-desc">New order card components based on Figma designs</p>
+
+    <!-- Dashboard Section Header -->
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Dashboard Section Header</h3>
+      <section class="style-guide__dashboard-header-demo">
+        <app-dashboard-section-header
+          title="RECENT"
+          subtitle="Your latest orders and their status"
+        />
+      </section>
+    </article>
+
+    <!-- Recent Order Cards (Dashboard) -->
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Recent Order Cards (Dashboard View)</h3>
+      <p class="style-guide__desc">Simplified order cards for dashboard display with status colors</p>
+      <section class="style-guide__recent-orders">
+        @for (order of recentOrders; track order.id) {
+          <app-recent-order-card
+            [order]="order"
+            (orderClick)="onRecentOrderClick($event)"
+            (orderAgain)="onRecentOrderAgain($event)"
+          />
+        }
+      </section>
+    </article>
+
+    <!-- Full Order Cards (Orders Page) -->
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Full Order Cards (Orders Page View)</h3>
+      <p class="style-guide__desc">Complete order cards with all details and action buttons</p>
+      <section class="style-guide__full-orders">
+        @for (order of fullOrders; track order.id) {
+          <app-order-card
+            [order]="order"
+            [showActions]="true"
+            (orderAgain)="onOrderAgain($event)"
+            (refill)="onRefill($event)"
+            (cardClick)="onOrderCardClick($event)"
+          />
+        }
+      </section>
+    </article>
+  </section>
+
+  <!-- Order Filters Section -->
+  <section id="order-filters" class="style-guide__section">
+    <h2 class="style-guide__section-title">Order Filters</h2>
+    <p class="style-guide__section-desc">Filter controls for orders page with category dropdown, sort toggle, and search</p>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Interactive Filters</h3>
+      <p class="style-guide__desc">Category: {{ demoFilterCategory() }} | Sort: {{ demoFilterSort() }} | Search: "{{ demoFilterSearch() }}"</p>
+      <section class="style-guide__filters-demo">
+        <app-order-filters
+          [selectedCategory]="demoFilterCategory()"
+          [sortOrder]="demoFilterSort()"
+          [searchQuery]="demoFilterSearch()"
+          (categoryChange)="onFilterCategoryChange($event)"
+          (sortChange)="onFilterSortChange($event)"
+          (searchChange)="onFilterSearchChange($event)"
+        />
+      </section>
+    </article>
+  </section>
+
+  <!-- Order Pagination Section -->
+  <section id="order-pagination" class="style-guide__section">
+    <h2 class="style-guide__section-title">Order Pagination</h2>
+    <p class="style-guide__section-desc">Pagination controls for orders list with page size selector</p>
+
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Interactive Pagination</h3>
+      <p class="style-guide__desc">Page {{ demoPaginationPage() }} of {{ demoPaginationTotal() }} | Showing {{ demoPaginationSize() }} per page</p>
+      <section class="style-guide__pagination-demo">
+        <app-order-pagination
+          [currentPage]="demoPaginationPage()"
+          [totalPages]="demoPaginationTotal()"
+          [pageSize]="demoPaginationSize()"
+          (pageChange)="onPaginationPageChange($event)"
+          (pageSizeChange)="onPaginationSizeChange($event)"
+        />
+      </section>
+    </article>
+  </section>
+</main>

@@ -1,0 +1,528 @@
+@use '../../../../../styles/01-tools/mixins' as *;
+
+// ==========================================================================
+// DOM EVENTS SECTION - Fase 1
+// ==========================================================================
+
+.dom-events-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
+// ---------------------------------------------------------------------------
+// TABS
+// ---------------------------------------------------------------------------
+
+.dom-events-section__tabs {
+  background-color: var(--color-tiny-info);
+  border: var(--border-width-medium) solid var(--color-secondary);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.dom-events-section__tab-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background-color: var(--color-information);
+  border-bottom: var(--border-width-thin) solid var(--color-secondary);
+}
+
+.dom-events-section__tab {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3) var(--spacing-4);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-foreground);
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition-colors);
+
+  &:hover {
+    color: var(--color-text);
+    background-color: var(--color-tiny-info);
+  }
+
+  &[data-active='true'] {
+    color: var(--color-stats-blue);
+    background-color: var(--color-tiny-info);
+    border-bottom: var(--border-width-medium) solid var(--color-stats-blue);
+    margin-bottom: calc(-1 * var(--border-width-thin));
+  }
+
+  @include focus-visible;
+}
+
+.dom-events-section__panel {
+  &[inert] {
+    display: none;
+  }
+}
+
+.dom-events-section__content {
+  padding: var(--spacing-4);
+
+  @include respond-to('md') {
+    padding: var(--spacing-6);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// COMMON ELEMENTS
+// ---------------------------------------------------------------------------
+
+.dom-events-section__subtitle {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h5);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  margin: 0 0 var(--spacing-2);
+}
+
+.dom-events-section__description {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-caption);
+  color: var(--color-foreground);
+  margin: 0 0 var(--spacing-4);
+}
+
+// ---------------------------------------------------------------------------
+// DEMO CARDS
+// ---------------------------------------------------------------------------
+
+.dom-events-section__demos,
+.dom-events-section__viewchild-demo,
+.dom-events-section__propagation-demo {
+  display: grid;
+  gap: var(--spacing-4);
+
+  @include respond-to('md') {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.dom-events-section__demo-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4);
+  background-color: var(--color-background);
+  border: var(--border-width-thin) solid var(--color-secondary);
+  border-radius: var(--radius-md);
+}
+
+.dom-events-section__demo-label {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.04em; // Approx 0.64px at 16px base
+}
+
+// ---------------------------------------------------------------------------
+// BUTTONS
+// ---------------------------------------------------------------------------
+
+.dom-events-section__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+}
+
+.dom-events-section__btn {
+  @include reset-button;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3) var(--spacing-4);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--radius-md);
+  transition: var(--transition-colors);
+
+  @include focus-visible;
+
+  &--primary {
+    color: var(--color-background);
+    background-color: var(--color-stats-blue);
+
+    &:hover {
+      background-color: var(--color-stats-blue-dark);
+    }
+  }
+
+  &--secondary {
+    color: var(--color-text);
+    background-color: var(--color-information);
+
+    &:hover {
+      background-color: var(--color-secondary);
+    }
+  }
+
+  &--success {
+    color: var(--color-background);
+    background-color: var(--color-success);
+
+    &:hover {
+      background-color: var(--color-success-dark);
+    }
+  }
+
+  &--warning {
+    color: var(--color-background);
+    background-color: var(--color-warning);
+
+    &:hover {
+      background-color: var(--color-warning-dark);
+    }
+  }
+
+  &--error {
+    color: var(--color-background);
+    background-color: var(--color-error);
+
+    &:hover {
+      background-color: var(--color-error-dark);
+    }
+  }
+
+  &--small {
+    padding: var(--spacing-2) var(--spacing-3);
+    font-size: var(--font-size-small);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// INPUT
+// ---------------------------------------------------------------------------
+
+.dom-events-section__input {
+  @include reset-input;
+  padding: var(--spacing-3);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-caption);
+  color: var(--color-text);
+  background-color: var(--color-background);
+  border: var(--border-width-thin) solid var(--color-secondary);
+  border-radius: var(--radius-sm);
+
+  &::placeholder {
+    color: var(--color-foreground);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-stats-blue);
+  }
+
+  &--focused {
+    border-color: var(--color-success);
+    box-shadow: 0 0 0 2px rgba(var(--color-success-rgb), 0.2);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// RESULTS
+// ---------------------------------------------------------------------------
+
+.dom-events-section__result {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-3);
+  background-color: var(--color-tiny-info);
+  border-radius: var(--radius-sm);
+}
+
+.dom-events-section__result-label {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-small);
+  color: var(--color-foreground);
+}
+
+.dom-events-section__result-value {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+
+  &--active {
+    color: var(--color-success);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// MOUSE AREA
+// ---------------------------------------------------------------------------
+
+.dom-events-section__mouse-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 6rem;
+  background-color: var(--color-information);
+  border: var(--border-width-thin) dashed var(--color-secondary);
+  border-radius: var(--radius-md);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-caption);
+  color: var(--color-foreground);
+  cursor: crosshair;
+}
+
+// ---------------------------------------------------------------------------
+// BOX (ViewChild demo)
+// ---------------------------------------------------------------------------
+
+.dom-events-section__box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 5rem;
+  border-radius: var(--radius-md);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-background);
+  transition: var(--transition-colors);
+}
+
+// ---------------------------------------------------------------------------
+// TOOLTIPS DEMO
+// ---------------------------------------------------------------------------
+
+.dom-events-section__tooltips-demo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.dom-events-section__tooltip-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-4);
+  padding: var(--spacing-6);
+  background-color: var(--color-background);
+  border: var(--border-width-thin) solid var(--color-secondary);
+  border-radius: var(--radius-md);
+}
+
+.dom-events-section__tooltip-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3);
+  background-color: rgba(var(--color-stats-blue-rgb), 0.1);
+  border-radius: var(--radius-md);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-small);
+  color: var(--color-stats-blue);
+}
+
+// ---------------------------------------------------------------------------
+// PROPAGATION DEMO
+// ---------------------------------------------------------------------------
+
+.dom-events-section__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-caption);
+  color: var(--color-stats-blue);
+  text-decoration: underline;
+
+  &:hover {
+    color: var(--color-stats-blue-dark);
+  }
+}
+
+.dom-events-section__mini-form {
+  display: flex;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-3);
+}
+
+.dom-events-section__outer-container {
+  padding: var(--spacing-4);
+  background-color: rgba(var(--color-warning-rgb), 0.1);
+  border: var(--border-width-medium) solid var(--color-warning);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(var(--color-warning-rgb), 0.15);
+  }
+}
+
+.dom-events-section__container-label {
+  display: block;
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-small);
+  color: var(--color-warning);
+  margin-bottom: var(--spacing-3);
+}
+
+.dom-events-section__inner-buttons {
+  display: flex;
+  gap: var(--spacing-3);
+  flex-wrap: wrap;
+}
+
+// ---------------------------------------------------------------------------
+// EVENT LOG
+// ---------------------------------------------------------------------------
+
+.dom-events-section__event-log {
+  grid-column: 1 / -1;
+  background-color: var(--color-background);
+  border: var(--border-width-thin) solid var(--color-secondary);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.dom-events-section__log-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-3);
+  background-color: var(--color-information);
+  border-bottom: var(--border-width-thin) solid var(--color-secondary);
+}
+
+.dom-events-section__log-title {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+}
+
+.dom-events-section__log-content {
+  padding: var(--spacing-3);
+  max-height: 10rem;
+  overflow-y: auto;
+}
+
+.dom-events-section__log-empty {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-small);
+  color: var(--color-foreground);
+  font-style: italic;
+}
+
+.dom-events-section__log-entry {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-small);
+  color: var(--color-text);
+  padding: var(--spacing-1) 0;
+  border-bottom: var(--border-width-thin) solid var(--color-tiny-info);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// ACCORDION
+// ---------------------------------------------------------------------------
+
+.dom-events-section__accordion {
+  background-color: var(--color-tiny-info);
+  border: var(--border-width-medium) solid var(--color-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-4);
+
+  @include respond-to('md') {
+    padding: var(--spacing-6);
+  }
+}
+
+.dom-events-section__accordion-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.dom-events-section__accordion-item {
+  background-color: var(--color-background);
+  border: var(--border-width-thin) solid var(--color-secondary);
+  border-radius: var(--radius-md);
+  padding: 0;
+  overflow: hidden;
+
+  &[open] {
+    .dom-events-section__accordion-header {
+      border-bottom: var(--border-width-thin) solid var(--color-secondary);
+      background-color: var(--color-tiny-info);
+    }
+  }
+}
+
+.dom-events-section__accordion-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  cursor: pointer;
+  list-style: none;
+  transition: var(--transition-colors);
+
+  &::-webkit-details-marker {
+    display: none;
+  }
+
+  &::before {
+    display: none;
+  }
+
+  &:hover {
+    background-color: var(--color-tiny-info);
+  }
+}
+
+.dom-events-section__accordion-content {
+  padding: var(--spacing-4);
+
+  p {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-caption);
+    color: var(--color-foreground);
+    margin: 0 0 var(--spacing-3);
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  pre {
+    margin: var(--spacing-3) 0 0;
+    padding: var(--spacing-3);
+    background-color: var(--color-tiny-info);
+    border-radius: var(--radius-sm);
+    overflow-x: auto;
+
+    code {
+      font-family: var(--font-secondary);
+      font-size: var(--font-size-small);
+      color: var(--color-text);
+      background: none;
+      padding: 0;
+    }
+  }
+}

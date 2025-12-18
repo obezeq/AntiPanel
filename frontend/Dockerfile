@@ -26,11 +26,16 @@ WORKDIR /app
 # ========================================
 FROM base AS dependencies
 
-# Copy package files
+# Copy package files (bun.lockb is optional)
 COPY package.json bun.lockb* ./
 
 # Install dependencies with Bun (5-10x faster than npm)
-RUN bun install --frozen-lockfile
+# Use --frozen-lockfile only if bun.lockb exists, otherwise regular install
+RUN if [ -f bun.lockb ]; then \
+      bun install --frozen-lockfile; \
+    else \
+      bun install; \
+    fi
 
 # ========================================
 # Stage 3: Development - Hot Reload
