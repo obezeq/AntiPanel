@@ -54,7 +54,8 @@ echo "[4/6] Deteniendo contenedores..."
 docker compose -f "$APP_DIR/docker-compose.yml" -f "$APP_DIR/docker-compose.prod.yml" --env-file "$APP_DIR/.env.prod" down || true
 
 echo "[5/6] Reconstruyendo y levantando..."
-docker compose -f "$APP_DIR/docker-compose.yml" -f "$APP_DIR/docker-compose.prod.yml" --env-file "$APP_DIR/.env.prod" build --no-cache
+# Sin --no-cache para aprovechar Docker layer caching (reduce ~8min a ~2-3min)
+docker compose -f "$APP_DIR/docker-compose.yml" -f "$APP_DIR/docker-compose.prod.yml" --env-file "$APP_DIR/.env.prod" build
 docker compose -f "$APP_DIR/docker-compose.yml" -f "$APP_DIR/docker-compose.prod.yml" --env-file "$APP_DIR/.env.prod" up -d --force-recreate
 
 echo "[6/6] Limpiando imágenes antiguas..."
