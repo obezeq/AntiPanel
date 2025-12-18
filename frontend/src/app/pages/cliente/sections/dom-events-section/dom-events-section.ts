@@ -7,7 +7,6 @@ import {
   viewChild
 } from '@angular/core';
 import { NgIcon } from '@ng-icons/core';
-import { Tab, TabContent, TabList, TabPanel, Tabs } from '@angular/aria/tabs';
 import { TooltipDirective } from '../../../../directives/tooltip.directive';
 import { NotificationService } from '../../../../services/notification.service';
 
@@ -15,7 +14,7 @@ import { NotificationService } from '../../../../services/notification.service';
  * DOM Events Section - Fase 1
  *
  * Demuestra:
- * - Tabs con @angular/aria
+ * - Tabs accesibles con HTML nativo + ARIA
  * - Tooltips accesibles
  * - ViewChild y ElementRef
  * - Event binding (click, keydown, focus, blur)
@@ -29,12 +28,7 @@ import { NotificationService } from '../../../../services/notification.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NgIcon,
-    TooltipDirective,
-    Tabs,
-    TabList,
-    Tab,
-    TabPanel,
-    TabContent
+    TooltipDirective
   ]
 })
 export class DomEventsSection {
