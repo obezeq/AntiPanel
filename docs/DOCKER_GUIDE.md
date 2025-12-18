@@ -12,8 +12,8 @@ Guía completa para ejecutar AntiPanel en Docker - **Desarrollo** y **Producció
   - Debug y hot reload
   - Troubleshooting
 
-- **Parte 2: PRODUCCIÓN** ([Ver al final](#-producción---despliegue-con-traefik--ssl)) - Para desplegar en servidor
-  - Traefik + SSL automático
+- **Parte 2: PRODUCCIÓN** ([Ver al final](#-producción---despliegue-con-caddy--ssl)) - Para desplegar en servidor
+  - Caddy + SSL automático
   - Nginx optimizado
   - Configuración de seguridad
   - Backup y monitoreo
@@ -107,14 +107,14 @@ docker ps
 
 AntiPanel tiene **dos entornos Docker** completamente separados:
 
-> **🚀 ¿Buscas instrucciones de PRODUCCIÓN?** [Salta directamente a la sección de Producción](#-producción---despliegue-con-traefik--ssl)
+> **🚀 ¿Buscas instrucciones de PRODUCCIÓN?** [Salta directamente a la sección de Producción](#-producción---despliegue-con-caddy--ssl)
 
 ### **📌 Comparación Rápida**
 
 | Característica | 💻 DESARROLLO | 🚀 PRODUCCIÓN |
 |----------------|---------------|---------------|
 | **Comando** | `docker compose -f docker-compose.yml -f docker-compose.dev.yml up` | `docker compose -f docker-compose.yml -f docker-compose.prod.yml --env-file .env.prod up` |
-| **Puertos expuestos** | ✅ Backend: 8080<br>✅ DB: 5432<br>✅ pgAdmin: 5050<br>✅ Debug: 5005 | ❌ Solo 80 y 443<br>(Traefik maneja todo) |
+| **Puertos expuestos** | ✅ Backend: 8080<br>✅ DB: 5432<br>✅ pgAdmin: 5050<br>✅ Debug: 5005 | ❌ Solo 80 y 443<br>(Caddy maneja todo) |
 | **HTTPS/SSL** | ❌ No necesario | ✅ Automático con Let's Encrypt |
 | **Herramientas** | ✅ pgAdmin<br>✅ Debug remoto<br>✅ DevTools<br>✅ Logs detallados | ❌ Sin herramientas de desarrollo |
 | **Datos de ejemplo** | ✅ Incluidos (example.sql) | ❌ Solo esquema (init.sql) |
@@ -122,7 +122,7 @@ AntiPanel tiene **dos entornos Docker** completamente separados:
 | **Logging** | 🔊 DEBUG/INFO<br>SQL queries visibles | 🔇 WARN/ERROR<br>Mínimo logging |
 | **Seguridad** | 🔓 Relajada<br>CORS permisivo | 🔒 Máxima<br>Security headers, rate limiting |
 | **Optimización** | ⚡ Desarrollo rápido | 🚄 Performance máximo |
-| **Reverse Proxy** | ❌ Acceso directo | ✅ Traefik + nginx |
+| **Reverse Proxy** | ❌ Acceso directo | ✅ Caddy + nginx |
 
 ### **💻 Cuándo usar DESARROLLO**
 
@@ -184,13 +184,13 @@ curl https://antipanel.tech/api/actuator/health
 ```
 
 **✅ Incluye:**
-- Traefik con SSL automático (Let's Encrypt)
+- Caddy con SSL automático (Let's Encrypt)
 - Nginx optimizado para Angular
 - Backend en modo producción
 - PostgreSQL sin puerto expuesto
 - Security headers y rate limiting
 
-**📖 Para instrucciones completas de producción, ver [sección de Producción](#-producción---despliegue-con-traefik--ssl) al final de este documento.**
+**📖 Para instrucciones completas de producción, ver [sección de Producción](#-producción---despliegue-con-caddy--ssl) al final de este documento.**
 
 ---
 
@@ -207,10 +207,8 @@ AntiPanel/
 │   ├── docker-compose.yml          # ⚙️ Base (compartido)
 │   ├── docker-compose.prod.yml     # 🚀 Override PRODUCCIÓN
 │   ├── .env.prod.example           # 📝 Template variables producción
-│   ├── traefik/
-│   │   ├── traefik.yml            # Traefik config
-│   │   └── dynamic/
-│   │       └── middlewares.yml    # Security headers
+│   ├── caddy/
+│   │   └── Caddyfile              # Caddy config (SSL + reverse proxy)
 │   └── nginx/
 │       └── nginx.prod.conf        # Nginx para Angular + API
 │
@@ -240,7 +238,7 @@ AntiPanel/
 
 ## 🔧 **Comandos Principales (DESARROLLO)**
 
-**💡 Tip:** Todos estos comandos son para **entorno de desarrollo**. Para producción, ver la [sección de Producción](#-producción---despliegue-con-traefik--ssl).
+**💡 Tip:** Todos estos comandos son para **entorno de desarrollo**. Para producción, ver la [sección de Producción](#-producción---despliegue-con-caddy--ssl).
 
 ### **Levantar Servicios de Desarrollo**
 
@@ -955,7 +953,7 @@ Si encuentras problemas:
 ---
 
 # ═══════════════════════════════════════════════════════════════
-# 🚀 PRODUCCIÓN - Despliegue con Traefik + SSL
+# 🚀 PRODUCCIÓN - Despliegue con Caddy + SSL
 # ═══════════════════════════════════════════════════════════════
 
 **⚠️ ATENCIÓN:** Esta sección es para **PRODUCCIÓN en servidor público**.
@@ -991,7 +989,7 @@ Esta sección cubre el despliegue de AntiPanel en un entorno de producción con 
                              │
                              ▼
                    ┌─────────────────┐
-                   │     Traefik     │ :80 / :443
+                   │      Caddy      │ :80 / :443
                    │  (SSL + Proxy)  │
                    │   Let's Encrypt │
                    └────────┬────────┘
@@ -1036,10 +1034,8 @@ AntiPanel/
 ├── .env.prod.example           # Template de variables
 ├── .env.prod                   # Variables reales (NO commitear)
 │
-├── traefik/
-│   ├── traefik.yml             # Config estática de Traefik
-│   └── dynamic/
-│       └── middlewares.yml     # Middlewares (security headers, etc.)
+├── caddy/
+│   └── Caddyfile               # Config de Caddy (SSL + reverse proxy + security headers)
 │
 ├── nginx/
 │   └── nginx.prod.conf         # Config nginx para SPA + API proxy
@@ -1104,8 +1100,8 @@ dig www.antipanel.tech +short
 Para evitar rate limits de Let's Encrypt durante pruebas, usar servidor staging primero:
 
 ```bash
-# Editar traefik/traefik.yml y descomentar la línea de caServer staging
-# caServer: https://acme-staging-v02.api.letsencrypt.org/directory
+# Editar caddy/Caddyfile y descomentar la línea de acme_ca staging
+# acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
 
 # Construir y levantar
 docker compose -f docker-compose.yml -f docker-compose.prod.yml \
@@ -1123,11 +1119,11 @@ Una vez verificado que todo funciona:
 # Detener servicios
 docker compose -f docker-compose.yml -f docker-compose.prod.yml down
 
-# Comentar la línea de staging en traefik/traefik.yml
-# # caServer: https://acme-staging-v02.api.letsencrypt.org/directory
+# Comentar la línea de staging en caddy/Caddyfile
+# # acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
 
 # Eliminar certificados de staging
-docker volume rm antipanel_traefik_certs
+docker volume rm antipanel_caddy_data antipanel_caddy_config
 
 # Reiniciar con certificados reales
 docker compose -f docker-compose.yml -f docker-compose.prod.yml \
@@ -1152,7 +1148,7 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml \
 docker compose -f docker-compose.yml -f docker-compose.prod.yml logs -f
 
 # Servicio específico
-docker compose -f docker-compose.yml -f docker-compose.prod.yml logs -f traefik
+docker compose -f docker-compose.yml -f docker-compose.prod.yml logs -f caddy
 docker compose -f docker-compose.yml -f docker-compose.prod.yml logs -f frontend
 docker compose -f docker-compose.yml -f docker-compose.prod.yml logs -f backend
 ```
@@ -1194,7 +1190,7 @@ Todos deben mostrar `healthy`:
 
 ```
 NAME                  STATUS                   PORTS
-antipanel-traefik     Up (healthy)             0.0.0.0:80->80/tcp, 0.0.0.0:443->443/tcp
+antipanel-caddy       Up (healthy)             0.0.0.0:80->80/tcp, 0.0.0.0:443->443/tcp
 antipanel-frontend    Up (healthy)
 antipanel-backend     Up (healthy)
 antipanel-postgres    Up (healthy)
@@ -1230,7 +1226,7 @@ openssl s_client -connect antipanel.tech:443 -servername antipanel.tech < /dev/n
 | **SSL/TLS Let's Encrypt** | Certificados automáticos y renovación |
 | **HSTS** | Strict-Transport-Security con preload |
 | **Security Headers** | X-Frame-Options, CSP, X-Content-Type-Options |
-| **Rate Limiting** | 100 requests/minuto por IP |
+| **Rate Limiting** | Via Spring Boot (Bucket4j) por IP |
 | **DB no expuesta** | PostgreSQL solo accesible internamente |
 | **Backend no expuesto** | Solo accesible vía nginx proxy |
 | **Non-root containers** | Todos los contenedores como usuario no-root |
@@ -1266,13 +1262,13 @@ Añadir a crontab (`crontab -e`):
 
 ## 🔄 **Renovación de Certificados SSL**
 
-Los certificados Let's Encrypt se renuevan **automáticamente** por Traefik.
+Los certificados Let's Encrypt se renuevan **automáticamente** por Caddy.
 
 **Verificar estado:**
 
 ```bash
-# Ver logs de Traefik para renovaciones
-docker compose -f docker-compose.yml -f docker-compose.prod.yml logs traefik | grep -i "certificate"
+# Ver logs de Caddy para renovaciones
+docker compose -f docker-compose.yml -f docker-compose.prod.yml logs caddy | grep -i "certificate"
 ```
 
 ---
@@ -1311,8 +1307,8 @@ docker system prune -f
 # Verificar que el dominio apunta al servidor
 dig antipanel.tech +short
 
-# Ver logs de Traefik
-docker compose -f docker-compose.yml -f docker-compose.prod.yml logs traefik | grep -i error
+# Ver logs de Caddy
+docker compose -f docker-compose.yml -f docker-compose.prod.yml logs caddy | grep -i error
 
 # Verificar que puertos 80/443 están abiertos
 sudo ufw status

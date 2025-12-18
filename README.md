@@ -42,7 +42,7 @@ AntiPanel/
 │       └── client/            # Fases 1-3 Cliente
 ├── docs/                      # Documentación general
 ├── nginx/                     # Configuración Nginx
-├── traefik/                   # Configuración Traefik
+├── caddy/                     # Configuración Caddy (reverse proxy + SSL)
 ├── scripts/                   # Scripts de utilidad
 ├── docker-compose.yml         # Configuración Docker base
 ├── docker-compose.dev.yml     # Override para desarrollo
