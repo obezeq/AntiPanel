@@ -18,16 +18,15 @@ fi
 echo "[INFO] Cambiando al directorio del proyecto: $APP_DIR"
 cd "$APP_DIR"
 
-echo "[1/5] Actualizando solo el código rastreado por Git (sin tocar .env.prod ni secrets)..."
+echo "[1/5] Actualizando solo el código rastreado por Git (sin tocar .env.prod)..."
 git fetch origin
 git reset --hard origin/main
 echo "[+] Código actualizado"
 
-echo "[2/5] Verificando .env.prod y secrets..."
+echo "[2/5] Verificando .env.prod..."
 # Usamos rutas absolutas para las comprobaciones, haciéndolas independientes del directorio actual
 [ -f "$APP_DIR/.env.prod" ]     || { echo "ERROR: Falta el archivo .env.prod en $APP_DIR"; exit 1; }
-[ -d "$APP_DIR/secrets" ]  || { echo "ERROR: Falta el directorio secrets/ en $APP_DIR"; exit 1; }
-echo "[+] .env.prod y secrets presentes"
+echo "[+] .env.prod presente"
 
 echo "[3/5] Deteniendo contenedores..."
 # Usamos rutas absolutas para los archivos de Docker Compose
