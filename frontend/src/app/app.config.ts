@@ -1,5 +1,7 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { loadingInterceptor } from './core/interceptors/loading.interceptor';
 import { provideIcons } from '@ng-icons/core';
 import {
   matHome,
@@ -56,6 +58,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
+    provideHttpClient(withInterceptors([loadingInterceptor])),
     provideIcons({
       // Material Icons - Navigation & UI
       matHome,

@@ -7,3 +7,8 @@
 
 <!-- Global Toast Container -->
 <app-toast-container />
+
+<!-- Global Loading Spinner -->
+@if (loadingService.isLoading()) {
+  <app-spinner [overlay]="true" label="Cargando..." [showLabel]="true" />
+}
