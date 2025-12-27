@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Header } from '../../components/layout/header/header';
 import { Footer } from '../../components/layout/footer/footer';
@@ -28,6 +28,12 @@ import type { ServiceItemData } from '../../components/shared/service-item-card/
 export class Home {
   private readonly router = inject(Router);
 
+  /** Quick order data from ServicesSection */
+  protected readonly quickOrderData = signal<ServiceItemData | null>(null);
+
+  /** Selected platform slug from OrderSection "More Platform" button */
+  protected readonly selectedPlatformSlug = signal<string | null>(null);
+
   /**
    * Handle place order event from OrderSection.
    * Redirects to registration page since user is not authenticated.
@@ -42,13 +48,21 @@ export class Home {
 
   /**
    * Handle quick order event from ServicesSection.
-   * Scrolls to order section and potentially pre-fills the order.
+   * Sets the quick order data and scrolls to order section.
    */
   protected onQuickOrder(data: ServiceItemData): void {
+    // Set quick order data for OrderSection
+    this.quickOrderData.set(data);
+
     // Scroll to order section
     const orderSection = document.querySelector('app-order-section');
     orderSection?.scrollIntoView({ behavior: 'smooth' });
+  }
 
-    // TODO: Pre-fill order input with service data
+  /**
+   * Handle platform selection from OrderSection "More Platform" button.
+   */
+  protected onSelectPlatform(slug: string): void {
+    this.selectedPlatformSlug.set(slug);
   }
 }
