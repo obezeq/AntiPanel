@@ -6,11 +6,14 @@
 
   <!-- Order Section: Natural Language Input + Preview -->
   <app-order-section
+    [quickOrderService]="quickOrderData()"
     (placeOrder)="onPlaceOrder($event)"
+    (selectPlatform)="onSelectPlatform($event)"
   />
 
   <!-- Services Section: Platform Cards + Expanded Services -->
   <app-services-section
+    [platformToSelect]="selectedPlatformSlug()"
     (quickOrder)="onQuickOrder($event)"
   />
 </main>
