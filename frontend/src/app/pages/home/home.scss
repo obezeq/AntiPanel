@@ -1,0 +1,24 @@
+// ==========================================================================
+// HOME PAGE
+// ==========================================================================
+// Landing page for unauthenticated users.
+// ==========================================================================
+
+@use '../../../styles/01-tools/mixins' as *;
+
+.home {
+  @include flex-column;
+  gap: var(--spacing-24);
+  min-height: 100vh;
+  padding-bottom: var(--spacing-16);
+  background-color: var(--color-background);
+
+  @include respond-below('lg') {
+    gap: var(--spacing-16);
+  }
+
+  @include respond-below('md') {
+    gap: var(--spacing-12);
+    padding-bottom: var(--spacing-8);
+  }
+}
