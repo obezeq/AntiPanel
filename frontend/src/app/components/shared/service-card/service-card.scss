@@ -7,22 +7,28 @@
 // ==========================================================================
 
 .service-card {
-  @include card-base;
   @include flex-column;
   align-items: center;
   text-align: center;
-  gap: var(--spacing-3);
-  width: 14rem; // 224px (base-8)
-  padding: var(--spacing-5);
+  gap: var(--spacing-4);
+  width: 13.875rem; // 222px from Figma
+  padding: var(--spacing-10) var(--spacing-8); // 45px 34px from Figma
+  background-color: transparent;
+  border: var(--border-width-heavy) solid var(--color-information);
+  border-radius: var(--radius-xl); // 24px
+  transition: var(--transition-colors), var(--transition-transform);
 }
 
 .service-card--interactive {
   cursor: pointer;
 
-  @include card-hover;
-
   &:hover {
+    border-color: var(--color-text);
     transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0) scale(0.98);
   }
 
   @include focus-visible;
@@ -47,11 +53,10 @@
 // ---------------------------------------------------------------------------
 
 .service-card__name {
-  font-family: var(--font-primary);
-  font-size: var(--font-size-h5);
-  font-weight: var(--font-weight-semibold);
+  @include typography('h5', 'bold', 'primary');
   color: var(--color-text);
   margin: 0;
+  text-transform: uppercase;
 }
 
 // ---------------------------------------------------------------------------
@@ -59,15 +64,16 @@
 // ---------------------------------------------------------------------------
 
 .service-card__count {
-  display: flex;
+  @include flex-column;
   align-items: center;
-  gap: var(--spacing-1);
+  gap: 0;
   margin: 0;
-  font-family: var(--font-secondary);
-  font-size: var(--font-size-caption);
-  font-weight: var(--font-weight-medium);
+}
+
+.service-card__count-number,
+.service-card__count-label {
+  @include typography('h5', 'regular', 'secondary');
   color: var(--color-foreground);
-  letter-spacing: 0.05em;
 }
 
 .service-card__count-number {
