@@ -1,0 +1,163 @@
+// ==========================================================================
+// HERO SECTION
+// ==========================================================================
+// Main hero section for the home page with title, tagline, and stats.
+// Based on Figma design: "Main Presentation"
+// ==========================================================================
+
+@use '../../../../../styles/01-tools/mixins' as *;
+
+.hero-section {
+  @include flex-column-center;
+  gap: var(--spacing-8);
+  padding: var(--spacing-16) var(--spacing-6);
+  text-align: center;
+  width: 100%;
+  max-width: 73.375rem; // 1174px from Figma
+  margin: 0 auto;
+
+  // ---------------------------------------------------------------------------
+  // TITLE
+  // ---------------------------------------------------------------------------
+  // "ANTIPANEL" - 128px ExtraBold
+
+  &__title {
+    @include typography('title', 'extrabold', 'primary');
+    color: var(--color-text);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+
+    @include respond-below('xl') {
+      font-size: var(--font-size-h1);
+    }
+
+    @include respond-below('lg') {
+      font-size: var(--font-size-h2);
+    }
+
+    @include respond-below('md') {
+      font-size: var(--font-size-h3);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // TAGLINE
+  // ---------------------------------------------------------------------------
+  // "TRY BEFORE YOU BUY" - 64px Bold, green
+
+  &__tagline {
+    @include typography('h2', 'bold', 'primary');
+    color: var(--color-success);
+    margin: 0;
+    text-transform: uppercase;
+
+    @include respond-below('lg') {
+      font-size: var(--font-size-h3);
+    }
+
+    @include respond-below('md') {
+      font-size: var(--font-size-h4);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // DESCRIPTION
+  // ---------------------------------------------------------------------------
+  // Monospace description text - 32px Light
+
+  &__description {
+    @include typography('h4', 'light', 'secondary');
+    color: var(--color-foreground);
+    margin: 0;
+    max-width: 58.375rem; // 934px
+    line-height: var(--line-height-tight);
+
+    @include respond-below('lg') {
+      font-size: var(--font-size-h5);
+    }
+
+    @include respond-below('md') {
+      font-size: var(--font-size-h6);
+
+      // Remove line break on mobile
+      br {
+        display: none;
+      }
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // STATISTICS
+  // ---------------------------------------------------------------------------
+  // Row of key statistics
+
+  &__stats {
+    @include flex-between;
+    gap: var(--spacing-12);
+    margin: var(--spacing-8) 0 0;
+    padding: 0;
+    width: 100%;
+    max-width: 58.375rem; // 934px
+
+    @include respond-below('lg') {
+      gap: var(--spacing-8);
+    }
+
+    @include respond-below('md') {
+      @include flex-column;
+      gap: var(--spacing-6);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // SINGLE STAT
+  // ---------------------------------------------------------------------------
+
+  &__stat {
+    @include flex-column;
+    align-items: center;
+    gap: 0;
+    text-align: center;
+
+    &--success {
+      .hero-section__stat-value,
+      .hero-section__stat-label {
+        color: var(--color-success);
+      }
+    }
+
+    &--blue {
+      .hero-section__stat-value,
+      .hero-section__stat-label {
+        color: var(--color-stats-blue);
+      }
+    }
+  }
+
+  &__stat-value {
+    @include typography('h2', 'extrabold', 'primary');
+    margin: 0;
+
+    @include respond-below('lg') {
+      font-size: var(--font-size-h3);
+    }
+
+    @include respond-below('md') {
+      font-size: var(--font-size-h4);
+    }
+  }
+
+  &__stat-label {
+    @include typography('h5', 'medium', 'primary');
+    margin: 0;
+
+    @include respond-below('lg') {
+      font-size: var(--font-size-h6);
+    }
+
+    @include respond-below('md') {
+      font-size: var(--font-size-body);
+    }
+  }
+}
