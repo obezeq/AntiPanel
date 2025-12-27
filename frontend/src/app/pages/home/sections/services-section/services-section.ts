@@ -2,7 +2,9 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
+  input,
   output,
   signal
 } from '@angular/core';
@@ -32,6 +34,9 @@ import type { CategoryWithCount, Service } from '../../../../models';
 export class ServicesSection {
   private readonly catalogService = inject(CatalogService);
 
+  /** Platform slug to auto-select (from "More Platform" button) */
+  readonly platformToSelect = input<string | null>(null);
+
   /** Emits when user clicks "QUICK ORDER" on a service */
   readonly quickOrder = output<ServiceItemData>();
 
@@ -52,6 +57,25 @@ export class ServicesSection {
     this.catalogService.getCategories().subscribe(categories => {
       this.categories.set(categories);
     });
+
+    // Watch for platform selection from parent
+    effect(() => {
+      const slug = this.platformToSelect();
+      if (slug) {
+        this.selectPlatformBySlug(slug);
+      }
+    });
+  }
+
+  /**
+   * Select a platform by its slug
+   */
+  selectPlatformBySlug(slug: string): void {
+    const category = this.categories().find(c => c.slug === slug);
+    if (category) {
+      this.selectedCategory.set(category);
+      this.loadCategoryServices(category.id);
+    }
   }
 
   /**
