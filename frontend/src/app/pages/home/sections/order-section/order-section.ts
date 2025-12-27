@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   output,
   signal
@@ -101,6 +102,20 @@ export class OrderSection {
   /** Service matching the parsed order */
   protected readonly matchedService = signal<Service | null>(null);
 
+  constructor() {
+    // Watch parsedOrder and lookup matching service
+    effect(() => {
+      const parsed = this.parsedOrder();
+      if (parsed.platform && parsed.serviceType) {
+        this.catalogService.findService(parsed.platform, parsed.serviceType).subscribe(service => {
+          this.matchedService.set(service ?? null);
+        });
+      } else {
+        this.matchedService.set(null);
+      }
+    });
+  }
+
   /** Order ready data for the OrderReady component */
   protected readonly orderReadyData = computed<OrderReadyData | null>(() => {
     const parsed = this.parsedOrder();
@@ -165,15 +180,6 @@ export class OrderSection {
     // Add bonus for having all main fields
     if (quantity && platform && serviceType) {
       matchPercentage = Math.min(matchPercentage + 7, 100);
-    }
-
-    // Update matched service if we have platform and service type
-    if (platform && serviceType) {
-      this.catalogService.findService(platform, serviceType).subscribe(service => {
-        this.matchedService.set(service ?? null);
-      });
-    } else {
-      this.matchedService.set(null);
     }
 
     return {
