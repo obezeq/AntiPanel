@@ -104,8 +104,11 @@ services:
       WATCHPACK_POLLING: "true"
       CHOKIDAR_USEPOLLING: "true"
 
-    ports:
-      - "4200:4200"  # Angular dev server
+    # Use host network to bypass Vite's host check in Docker
+    network_mode: host
+
+    # ports:
+    #   - "4200:4200"  # Angular dev server (not needed with host network)
 
     volumes:
       # Hot reload - mount source code
@@ -114,6 +117,7 @@ services:
       - ./frontend/angular.json:/app/angular.json
       - ./frontend/tsconfig.json:/app/tsconfig.json
       - ./frontend/tsconfig.app.json:/app/tsconfig.app.json
+      - ./frontend/package.json:/app/package.json
       # Prevent node_modules from being overwritten by host mount
       - /app/node_modules
       - /app/.angular
@@ -121,8 +125,8 @@ services:
     depends_on:
       - backend
 
-    networks:
-      - antipanel-network
+    # networks: (not compatible with network_mode: host)
+    #   - antipanel-network
 
     # Health check for frontend (using curl, more reliable than BusyBox wget)
     healthcheck:
