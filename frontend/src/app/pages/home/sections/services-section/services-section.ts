@@ -37,6 +37,9 @@ export class ServicesSection {
   /** Platform slug to auto-select (from "More Platform" button) */
   readonly platformToSelect = input<string | null>(null);
 
+  /** Whether to reset platform selection (from "Explore More" button) */
+  readonly shouldReset = input<boolean>(false);
+
   /** Emits when user clicks "QUICK ORDER" on a service */
   readonly quickOrder = output<ServiceItemData>();
 
@@ -63,6 +66,13 @@ export class ServicesSection {
       const slug = this.platformToSelect();
       if (slug) {
         this.selectPlatformBySlug(slug);
+      }
+    });
+
+    // Watch for reset signal from parent
+    effect(() => {
+      if (this.shouldReset()) {
+        this.onBackClick();
       }
     });
   }

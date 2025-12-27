@@ -93,6 +93,9 @@ export class OrderSection {
   /** Emits when user clicks "More [Platform]" to select that platform */
   readonly selectPlatform = output<string>();
 
+  /** Emits when user clicks "Explore More" to reset platform selection */
+  readonly resetPlatform = output<void>();
+
   /** Current user input text */
   protected readonly inputText = signal<string>('');
 
@@ -349,8 +352,12 @@ export class OrderSection {
 
   /**
    * Handle "EXPLORE MORE" click
+   * Resets platform selection to show all platforms
    */
   protected onExploreMore(): void {
+    // Emit reset signal to parent
+    this.resetPlatform.emit();
+
     // Scroll to services section
     const servicesSection = document.getElementById('services-section');
     servicesSection?.scrollIntoView({ behavior: 'smooth' });
@@ -378,5 +385,55 @@ export class OrderSection {
 
     // On home page, redirect to signup
     this.router.navigate(['/register']);
+  }
+
+  /**
+   * Handle target change from OrderReady
+   * Updates the input text with the new target
+   */
+  protected onTargetChange(newTarget: string): void {
+    const currentText = this.inputText();
+    const parsed = this.parsedOrder();
+
+    let newText: string;
+    if (parsed.target) {
+      // Replace old target with new target
+      newText = currentText.replace(parsed.target, newTarget);
+    } else {
+      // Append new target to text
+      newText = `${currentText} ${newTarget}`;
+    }
+    this.inputText.set(newText);
+  }
+
+  /**
+   * Handle quantity change from OrderReady
+   * Updates the input text with the new quantity
+   */
+  protected onQuantityChange(newQuantity: number): void {
+    const currentText = this.inputText();
+
+    // Format new quantity (use k/m suffix for readability)
+    const formatted = this.formatQuantity(newQuantity);
+
+    // Replace old quantity in text
+    const quantityPattern = /\d+(?:\.\d+)?\s*(k|m)?/i;
+    const newText = currentText.replace(quantityPattern, formatted);
+    this.inputText.set(newText);
+  }
+
+  /**
+   * Format quantity with k/m suffix for readability
+   */
+  private formatQuantity(qty: number): string {
+    if (qty >= 1000000) {
+      const value = qty / 1000000;
+      return Number.isInteger(value) ? `${value}m` : `${value.toFixed(1)}m`;
+    }
+    if (qty >= 1000) {
+      const value = qty / 1000;
+      return Number.isInteger(value) ? `${value}k` : `${value.toFixed(1)}k`;
+    }
+    return qty.toString();
   }
 }
