@@ -34,6 +34,9 @@ export class Home {
   /** Selected platform slug from OrderSection "More Platform" button */
   protected readonly selectedPlatformSlug = signal<string | null>(null);
 
+  /** Whether to reset platform selection in ServicesSection */
+  protected readonly shouldResetPlatform = signal<boolean>(false);
+
   /**
    * Handle place order event from OrderSection.
    * Redirects to registration page since user is not authenticated.
@@ -64,5 +67,15 @@ export class Home {
    */
   protected onSelectPlatform(slug: string): void {
     this.selectedPlatformSlug.set(slug);
+  }
+
+  /**
+   * Handle platform reset from OrderSection "Explore More" button.
+   * Triggers ServicesSection to show all platforms.
+   */
+  protected onResetPlatform(): void {
+    this.shouldResetPlatform.set(true);
+    // Reset the signal after a tick so it can be triggered again
+    setTimeout(() => this.shouldResetPlatform.set(false), 0);
   }
 }

@@ -182,6 +182,51 @@
   }
 }
 
+.order-ready__quantity--editable {
+  cursor: pointer;
+  transition: var(--transition-colors);
+
+  &:hover {
+    color: var(--color-success);
+  }
+
+  @include focus-visible;
+}
+
+.order-ready__quantity-input {
+  @include reset-button;
+  width: auto;
+  max-width: 8ch;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h5); // 24px
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-high-contrast);
+  line-height: 1.15;
+  text-align: right;
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid var(--color-success);
+  border-radius: 0;
+
+  @include respond-to('md') {
+    font-size: var(--font-size-h4); // 32px
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  // Hide number input spinners
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  -moz-appearance: textfield;
+}
+
 .order-ready__price {
   font-family: var(--font-secondary);
   font-size: var(--font-size-body); // 16px
@@ -204,7 +249,7 @@
   flex-direction: column;
   gap: 0.5rem;
   padding: 1rem 1.5rem;
-  background-color: var(--color-information);
+  background-color: var(--color-tiny-info);
   border-radius: 1rem;
   margin-bottom: 1.5rem;
 
@@ -237,6 +282,41 @@
 
   @include respond-to('md') {
     font-size: var(--font-size-h5); // 24px
+  }
+}
+
+.order-ready__target-value--editable {
+  cursor: pointer;
+  transition: var(--transition-colors);
+
+  &:hover {
+    color: var(--color-success);
+  }
+
+  @include focus-visible;
+}
+
+.order-ready__target-input {
+  @include reset-button;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-primary);
+  font-size: var(--font-size-body); // 16px
+  font-weight: var(--font-weight-medium);
+  color: var(--color-high-contrast);
+  line-height: 1.15;
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid var(--color-success);
+  border-radius: 0;
+
+  @include respond-to('md') {
+    font-size: var(--font-size-h5); // 24px
+  }
+
+  &:focus {
+    outline: none;
   }
 }
 

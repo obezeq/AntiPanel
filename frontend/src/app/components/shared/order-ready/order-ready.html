@@ -23,7 +23,27 @@
       </p>
     </div>
     <div class="order-ready__service-amount">
-      <p class="order-ready__quantity">{{ data().quantity }}</p>
+      @if (isEditingQuantity()) {
+        <input
+          #quantityInput
+          type="number"
+          class="order-ready__quantity-input"
+          [value]="data().quantity"
+          min="1"
+          (blur)="onQuantityBlur($event)"
+          (keydown.enter)="onQuantitySubmit($event)"
+          (keydown.escape)="cancelQuantityEdit()"
+        />
+      } @else {
+        <p
+          class="order-ready__quantity order-ready__quantity--editable"
+          role="button"
+          tabindex="0"
+          aria-label="Click to edit quantity"
+          (click)="startQuantityEdit()"
+          (keydown.enter)="startQuantityEdit()"
+        >{{ data().quantity }}</p>
+      }
       <p class="order-ready__price">{{ data().price }}</p>
     </div>
   </section>
@@ -32,7 +52,26 @@
   @if (hasTarget()) {
     <section class="order-ready__target">
       <h4 class="order-ready__target-label">TARGET URL</h4>
-      <p class="order-ready__target-value">{{ data().target }}</p>
+      @if (isEditingTarget()) {
+        <input
+          #targetInput
+          type="text"
+          class="order-ready__target-input"
+          [value]="data().target"
+          (blur)="onTargetBlur($event)"
+          (keydown.enter)="onTargetSubmit($event)"
+          (keydown.escape)="cancelTargetEdit()"
+        />
+      } @else {
+        <p
+          class="order-ready__target-value order-ready__target-value--editable"
+          role="button"
+          tabindex="0"
+          aria-label="Click to edit target"
+          (click)="startTargetEdit()"
+          (keydown.enter)="startTargetEdit()"
+        >{{ data().target }}</p>
+      }
     </section>
   }
 
