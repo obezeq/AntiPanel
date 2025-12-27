@@ -1,0 +1,67 @@
+<section
+  id="services-section"
+  class="services-section"
+  [class.services-section--expanded]="isExpanded()"
+  aria-labelledby="services-title"
+>
+  <!-- Platform Grid View -->
+  @if (!isExpanded()) {
+    <!-- Section Header -->
+    <app-dashboard-section-header
+      title="SERVICES"
+      subtitle="Choose your platform to see all available services"
+    />
+
+    <!-- Platform Cards Grid -->
+    <div
+      class="services-section__grid"
+      role="list"
+      aria-label="Social media platforms"
+    >
+      @for (category of categories(); track category.id) {
+        <app-service-card
+          [service]="mapCategoryToServiceCardData(category)"
+          (cardClick)="onPlatformClick($event)"
+        />
+      }
+    </div>
+  }
+
+  <!-- Expanded Services View -->
+  @if (isExpanded() && selectedCategory()) {
+    <!-- Expanded Header with Back Button -->
+    <header class="services-section__expanded-header">
+      <button
+        type="button"
+        class="services-section__back-btn"
+        aria-label="Back to platforms"
+        (click)="onBackClick()"
+        (keydown)="onBackKeydown($event)"
+      >
+        <ng-icon name="matArrowBack" size="24" aria-hidden="true" />
+      </button>
+
+      <h2 class="services-section__expanded-title">
+        {{ selectedCategory()!.name.toUpperCase() }}
+      </h2>
+
+      <span class="services-section__service-count">
+        {{ categoryServices().length }} SERVICES
+      </span>
+    </header>
+
+    <!-- Services List -->
+    <div
+      class="services-section__services-list"
+      role="list"
+      [attr.aria-label]="selectedCategory()!.name + ' services'"
+    >
+      @for (service of categoryServices(); track service.id) {
+        <app-service-item-card
+          [service]="mapServiceToItemData(service)"
+          (quickOrder)="onQuickOrder($event)"
+        />
+      }
+    </div>
+  }
+</section>
