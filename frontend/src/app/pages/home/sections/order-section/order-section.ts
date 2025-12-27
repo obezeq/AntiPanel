@@ -4,6 +4,7 @@ import {
   computed,
   effect,
   inject,
+  input,
   output,
   signal
 } from '@angular/core';
@@ -12,6 +13,7 @@ import { DashboardSectionHeader } from '../../../../components/shared/dashboard-
 import { OrderReady, type OrderReadyData } from '../../../../components/shared/order-ready/order-ready';
 import { CatalogService } from '../../../../services/catalog.service';
 import type { Service } from '../../../../models';
+import type { ServiceItemData } from '../../../../components/shared/service-item-card/service-item-card';
 
 /**
  * Parsed order data from user input
@@ -79,8 +81,14 @@ export class OrderSection {
   private readonly router = inject(Router);
   private readonly catalogService = inject(CatalogService);
 
+  /** Quick order service passed from ServicesSection via Home */
+  readonly quickOrderService = input<ServiceItemData | null>(null);
+
   /** Emits when user wants to place an order (redirects to signup on home) */
   readonly placeOrder = output<OrderReadyData>();
+
+  /** Emits when user clicks "More [Platform]" to select that platform */
+  readonly selectPlatform = output<string>();
 
   /** Current user input text */
   protected readonly inputText = signal<string>('');
@@ -95,6 +103,10 @@ export class OrderSection {
 
   /** Whether we have enough data to show the order preview */
   protected readonly showOrderReady = computed<boolean>(() => {
+    // Show if quick order is set OR if parsed order has enough data
+    if (this.quickOrderService()) {
+      return true;
+    }
     const parsed = this.parsedOrder();
     return parsed.matchPercentage >= 50;
   });
@@ -118,6 +130,13 @@ export class OrderSection {
 
   /** Order ready data for the OrderReady component */
   protected readonly orderReadyData = computed<OrderReadyData | null>(() => {
+    // Check for quick order first
+    const quickOrder = this.quickOrderService();
+    if (quickOrder) {
+      return this.buildOrderReadyFromQuickOrder(quickOrder);
+    }
+
+    // Otherwise use parsed input
     const parsed = this.parsedOrder();
     const service = this.matchedService();
 
@@ -141,6 +160,33 @@ export class OrderSection {
       target: parsed.target ?? undefined
     };
   });
+
+  /**
+   * Build OrderReadyData from ServiceItemData (quick order)
+   */
+  private buildOrderReadyFromQuickOrder(data: ServiceItemData): OrderReadyData {
+    // Extract platform from service name (e.g., "Instagram Followers" -> "instagram")
+    const nameParts = data.name.toLowerCase().split(' ');
+    const platform = nameParts[0];
+    const serviceType = nameParts[1] ?? 'followers';
+
+    // Default quantity of 1000 for quick order
+    const defaultQuantity = 1000;
+    const price = (data.price * defaultQuantity) / 1000;
+
+    return {
+      matchPercentage: 100,
+      service: {
+        icon: this.catalogService.getPlatformIcon(platform),
+        platform: this.getPlatformDisplayName(platform),
+        type: this.getServiceTypeDisplayName(serviceType),
+        quality: `${data.quality} Quality`,
+        speed: `${data.speed} Speed`
+      },
+      quantity: defaultQuantity,
+      price: `$${price.toFixed(2)}`
+    };
+  }
 
   /**
    * Parse user input to extract order details
@@ -338,7 +384,10 @@ export class OrderSection {
    * Handle "MORE PLATFORM" click
    */
   protected onMorePlatform(platform: string): void {
-    // Scroll to services section and potentially filter by platform
+    // Emit platform selection to parent
+    this.selectPlatform.emit(platform.toLowerCase());
+
+    // Scroll to services section
     const servicesSection = document.getElementById('services-section');
     servicesSection?.scrollIntoView({ behavior: 'smooth' });
   }
