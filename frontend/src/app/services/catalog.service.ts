@@ -13,9 +13,9 @@ import type {
 const PLATFORM_ICONS: Record<string, string> = {
   instagram: 'iconoirInstagram',
   tiktok: 'iconoirTiktok',
-  twitter: 'iconoirXmark',
+  twitter: 'iconoirTwitter',
   youtube: 'iconoirYoutube',
-  snapchat: 'siSnapchat',
+  snapchat: 'simpleSnapchat',
   facebook: 'iconoirFacebook',
   discord: 'iconoirDiscord',
   linkedin: 'iconoirLinkedin'

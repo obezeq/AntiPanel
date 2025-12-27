@@ -25,7 +25,7 @@ import { Sidebar, SidebarItem } from '../../components/layout/sidebar/sidebar';
 import { MainContent } from '../../components/layout/main-content/main-content';
 import { Modal } from '../../components/shared/modal/modal';
 import { AuthForm } from '../../components/shared/auth-form/auth-form';
-import { UserOrderRow, UserOrder } from '../../components/shared/user-order-row/user-order-row';
+import type { UserOrder } from '../../components/shared/user-order-row/user-order-row';
 import { HeaderVariant } from '../../components/layout/header/header';
 // New order components
 import { DashboardSectionHeader } from '../../components/shared/dashboard-section-header/dashboard-section-header';
@@ -61,7 +61,6 @@ import { OrderFilters, FilterCategory, SortOrder } from '../../components/shared
     MainContent,
     Modal,
     AuthForm,
-    UserOrderRow,
     // New order components
     DashboardSectionHeader,
     RecentOrderCard,
