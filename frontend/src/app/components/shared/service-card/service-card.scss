@@ -11,12 +11,12 @@
   align-items: center;
   text-align: center;
   gap: var(--spacing-4);
-  width: 13.875rem; // 222px from Figma
-  padding: var(--spacing-10) var(--spacing-8); // 45px 34px from Figma
+  width: 100%;
+  padding: var(--spacing-10) var(--spacing-8);
   background-color: transparent;
   border: var(--border-width-heavy) solid var(--color-information);
-  border-radius: var(--radius-xl); // 24px
-  transition: var(--transition-colors), var(--transition-transform);
+  border-radius: var(--radius-xl);
+  transition: var(--transition-colors), var(--transition-transform), var(--transition-shadow);
 }
 
 .service-card--interactive {
@@ -25,6 +25,7 @@
   &:hover {
     border-color: var(--color-text);
     transform: translateY(-2px);
+    box-shadow: 0 0 30px 0 rgba(var(--color-success-rgb), 0.1);
   }
 
   &:active {
