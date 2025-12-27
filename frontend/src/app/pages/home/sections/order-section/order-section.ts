@@ -81,6 +81,9 @@ export class OrderSection {
   private readonly router = inject(Router);
   private readonly catalogService = inject(CatalogService);
 
+  /** Track last processed quick order to avoid re-processing */
+  private lastProcessedQuickOrder: ServiceItemData | null = null;
+
   /** Quick order service passed from ServicesSection via Home */
   readonly quickOrderService = input<ServiceItemData | null>(null);
 
@@ -103,10 +106,6 @@ export class OrderSection {
 
   /** Whether we have enough data to show the order preview */
   protected readonly showOrderReady = computed<boolean>(() => {
-    // Show if quick order is set OR if parsed order has enough data
-    if (this.quickOrderService()) {
-      return true;
-    }
     const parsed = this.parsedOrder();
     return parsed.matchPercentage >= 50;
   });
@@ -126,17 +125,21 @@ export class OrderSection {
         this.matchedService.set(null);
       }
     });
+
+    // Watch quickOrderService and populate input text
+    effect(() => {
+      const quickOrder = this.quickOrderService();
+      if (quickOrder && quickOrder !== this.lastProcessedQuickOrder) {
+        this.lastProcessedQuickOrder = quickOrder;
+        // Format: "1k Instagram Followers"
+        const text = `1k ${quickOrder.name}`;
+        this.inputText.set(text);
+      }
+    });
   }
 
   /** Order ready data for the OrderReady component */
   protected readonly orderReadyData = computed<OrderReadyData | null>(() => {
-    // Check for quick order first
-    const quickOrder = this.quickOrderService();
-    if (quickOrder) {
-      return this.buildOrderReadyFromQuickOrder(quickOrder);
-    }
-
-    // Otherwise use parsed input
     const parsed = this.parsedOrder();
     const service = this.matchedService();
 
@@ -160,33 +163,6 @@ export class OrderSection {
       target: parsed.target ?? undefined
     };
   });
-
-  /**
-   * Build OrderReadyData from ServiceItemData (quick order)
-   */
-  private buildOrderReadyFromQuickOrder(data: ServiceItemData): OrderReadyData {
-    // Extract platform from service name (e.g., "Instagram Followers" -> "instagram")
-    const nameParts = data.name.toLowerCase().split(' ');
-    const platform = nameParts[0];
-    const serviceType = nameParts[1] ?? 'followers';
-
-    // Default quantity of 1000 for quick order
-    const defaultQuantity = 1000;
-    const price = (data.price * defaultQuantity) / 1000;
-
-    return {
-      matchPercentage: 100,
-      service: {
-        icon: this.catalogService.getPlatformIcon(platform),
-        platform: this.getPlatformDisplayName(platform),
-        type: this.getServiceTypeDisplayName(serviceType),
-        quality: `${data.quality} Quality`,
-        speed: `${data.speed} Speed`
-      },
-      quantity: defaultQuantity,
-      price: `$${price.toFixed(2)}`
-    };
-  }
 
   /**
    * Parse user input to extract order details
