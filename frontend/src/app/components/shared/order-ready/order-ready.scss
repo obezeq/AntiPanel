@@ -13,10 +13,13 @@
   gap: 1.5rem;
   padding: 1.5rem;
   background-color: var(--color-background);
-  border: 0.5rem solid var(--color-success); // 8px green border (base-8)
-  border-radius: 2.5rem; // 40px (base-8)
+  border: 0.5rem solid var(--color-success);
+  border-radius: 2.5rem;
   width: 100%;
-  max-width: 56rem; // 896px (base-8)
+  max-width: 56rem;
+  box-shadow:
+    0 0 60px 0 rgba(var(--color-success-rgb), 0.15),
+    0 0 120px 0 rgba(var(--color-success-rgb), 0.08);
 
   @include respond-to('md') {
     gap: 0;
