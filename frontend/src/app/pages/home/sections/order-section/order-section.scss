@@ -1,0 +1,110 @@
+// ==========================================================================
+// ORDER SECTION
+// ==========================================================================
+// Order input section with preview for the home page.
+// Based on Figma design: "Order Component"
+// ==========================================================================
+
+@use '../../../../../styles/01-tools/mixins' as *;
+
+.order-section {
+  @include flex-column-center;
+  gap: var(--spacing-12);
+  padding: var(--spacing-12) var(--spacing-6);
+  width: 100%;
+  max-width: 58.375rem; // 934px from Figma
+  margin: 0 auto;
+
+  @include respond-below('md') {
+    padding: var(--spacing-8) var(--spacing-4);
+  }
+
+  // ---------------------------------------------------------------------------
+  // ORDER INPUT WRAPPER
+  // ---------------------------------------------------------------------------
+
+  &__input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-8);
+    width: 100%;
+    padding: var(--spacing-3) var(--spacing-8);
+    margin: 0;
+    background-color: var(--color-background);
+    border: var(--border-width-thick) solid var(--color-secondary);
+    border-radius: var(--radius-lg);
+    transition: var(--transition-colors);
+
+    &:hover:not(.order-section__input-wrapper--focused) {
+      border-color: var(--color-foreground);
+    }
+
+    &--focused {
+      border-color: var(--color-text);
+    }
+
+    @include respond-below('md') {
+      gap: var(--spacing-4);
+      padding: var(--spacing-3) var(--spacing-4);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // INPUT ICON (Target)
+  // ---------------------------------------------------------------------------
+
+  &__input-icon {
+    display: flex;
+    flex-shrink: 0;
+    color: var(--color-foreground);
+  }
+
+  // ---------------------------------------------------------------------------
+  // INPUT FIELD
+  // ---------------------------------------------------------------------------
+
+  &__input-field {
+    flex: 1;
+    min-width: 0;
+    padding: 0;
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-h6);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text);
+    background: none;
+    border: none;
+    outline: none;
+
+    &::placeholder {
+      color: var(--color-foreground);
+    }
+
+    @include respond-below('md') {
+      font-size: var(--font-size-body);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // ORDER PREVIEW (OrderReady component)
+  // ---------------------------------------------------------------------------
+
+  &__preview {
+    width: 100%;
+    animation: fadeInUp 0.3s ease-out;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// ANIMATIONS
+// ---------------------------------------------------------------------------
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
