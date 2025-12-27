@@ -1,0 +1,18 @@
+<app-header variant="home" />
+
+<main class="home" id="main-content">
+  <!-- Hero Section: Title, Tagline, Stats -->
+  <app-hero-section />
+
+  <!-- Order Section: Natural Language Input + Preview -->
+  <app-order-section
+    (placeOrder)="onPlaceOrder($event)"
+  />
+
+  <!-- Services Section: Platform Cards + Expanded Services -->
+  <app-services-section
+    (quickOrder)="onQuickOrder($event)"
+  />
+</main>
+
+<app-footer />
