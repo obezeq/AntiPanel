@@ -174,7 +174,7 @@
   font-size: var(--font-size-h5); // 24px
   font-weight: var(--font-weight-semibold);
   color: var(--color-high-contrast);
-  line-height: 1.15;
+  //line-height: 1.15;
   margin: 0;
 
   @include respond-to('md') {
@@ -203,11 +203,11 @@
   font-size: var(--font-size-h5); // 24px
   font-weight: var(--font-weight-semibold);
   color: var(--color-high-contrast);
-  line-height: 1.15;
+  //line-height: 1.15;
   text-align: right;
   background-color: transparent;
   border: none;
-  border-bottom: 2px solid var(--color-success);
+  //border-bottom: 2px solid var(--color-success);
   border-radius: 0;
 
   @include respond-to('md') {
@@ -277,7 +277,7 @@
   font-size: var(--font-size-body); // 16px
   font-weight: var(--font-weight-medium);
   color: var(--color-high-contrast);
-  line-height: 1.15;
+  //line-height: 1.15;
   margin: 0;
 
   @include respond-to('md') {
@@ -305,10 +305,10 @@
   font-size: var(--font-size-body); // 16px
   font-weight: var(--font-weight-medium);
   color: var(--color-high-contrast);
-  line-height: 1.15;
+  //line-height: 1.15;
   background-color: transparent;
   border: none;
-  border-bottom: 2px solid var(--color-success);
+  //border-bottom: 2px solid var(--color-success);
   border-radius: 0;
 
   @include respond-to('md') {

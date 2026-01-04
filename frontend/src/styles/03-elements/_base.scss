@@ -165,14 +165,6 @@ kbd {
 ul,
 ol {
   padding-left: var(--spacing-6);
-
-  li {
-    margin-bottom: var(--spacing-2);
-
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
 }
 
 // Navigation lists (role="list") have no bullets
