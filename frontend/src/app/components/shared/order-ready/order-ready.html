@@ -26,10 +26,10 @@
       @if (isEditingQuantity()) {
         <input
           #quantityInput
-          type="number"
+          type="text"
+          inputmode="numeric"
           class="order-ready__quantity-input"
           [value]="data().quantity"
-          min="1"
           (blur)="onQuantityBlur($event)"
           (keydown.enter)="onQuantitySubmit($event)"
           (keydown.escape)="cancelQuantityEdit()"
