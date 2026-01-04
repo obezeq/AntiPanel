@@ -1,4 +1,4 @@
-import { HttpInterceptorFn, HttpRequest, HttpHandlerFn, HttpErrorResponse } from '@angular/common/http';
+import { HttpInterceptorFn, HttpRequest, HttpHandlerFn, HttpErrorResponse, HttpEvent } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, switchMap, throwError, BehaviorSubject, filter, take, Observable } from 'rxjs';
@@ -123,7 +123,7 @@ function handle401Error(
   tokenService: TokenService,
   authService: AuthService,
   router: Router
-): Observable<unknown> {
+): Observable<HttpEvent<unknown>> {
   // Check if we can refresh
   const refreshToken = tokenService.getRefreshToken();
 
