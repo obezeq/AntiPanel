@@ -110,6 +110,11 @@
       @include flex-column;
       gap: var(--spacing-6);
     }
+
+    // Mobile landscape: smaller gap to fit better
+    @include respond-below('sm') {
+      gap: var(--spacing-4);
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -156,6 +161,10 @@
     @include respond-below('md') {
       font-size: var(--font-size-h4);
     }
+
+    @include respond-below('sm') {
+      font-size: var(--font-size-h5);
+    }
   }
 
   &__stat-label {
@@ -168,6 +177,10 @@
 
     @include respond-below('md') {
       font-size: var(--font-size-body);
+    }
+
+    @include respond-below('sm') {
+      font-size: var(--font-size-caption);
     }
   }
 }
