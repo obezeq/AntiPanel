@@ -103,7 +103,8 @@
     max-width: 58.375rem; // 934px
 
     @include respond-to('sm') {
-      @include flex-between; // Row layout from 640px+
+      @include flex-between;
+      flex-direction: row; // Explicitly set row (flex-between doesn't do this!)
       gap: var(--spacing-8); // 32px
     }
 
