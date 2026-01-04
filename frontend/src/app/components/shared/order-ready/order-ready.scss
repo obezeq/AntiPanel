@@ -11,7 +11,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-6);
-  padding: var(--spacing-6);
+  padding: var(--spacing-4);
   background-color: var(--color-background);
   border: var(--border-width-extra-heavy) solid var(--color-success);
   border-radius: var(--radius-3xl);
@@ -21,8 +21,16 @@
     0 0 60px 0 rgba(var(--color-success-rgb), 0.15),
     0 0 120px 0 rgba(var(--color-success-rgb), 0.08);
 
+  @include respond-to('sm') {
+    padding: var(--spacing-5);
+  }
+
   @include respond-to('md') {
     gap: 0;
+    padding: var(--spacing-6) var(--spacing-8);
+  }
+
+  @include respond-to('lg') {
     padding: var(--spacing-8) var(--spacing-10);
   }
 }
@@ -55,11 +63,21 @@
 }
 
 .order-ready__flash {
-  width: var(--spacing-10);
-  height: var(--spacing-10);
+  width: var(--spacing-8);
+  height: var(--spacing-8);
   color: var(--color-success);
 
+  @include respond-to('sm') {
+    width: var(--spacing-10);
+    height: var(--spacing-10);
+  }
+
   @include respond-to('md') {
+    width: var(--spacing-12);
+    height: var(--spacing-12);
+  }
+
+  @include respond-to('lg') {
     width: var(--spacing-16);
     height: var(--spacing-16);
   }
@@ -67,14 +85,18 @@
 
 .order-ready__heading {
   font-family: var(--font-primary);
-  font-size: var(--font-size-h4); // 32px
+  font-size: var(--font-size-h5);
   font-weight: var(--font-weight-bold);
   color: var(--color-text);
-  line-height: 1.15;
+  line-height: var(--line-height-tight);
   margin: 0;
 
-  @include respond-to('md') {
-    font-size: var(--font-size-h3); // 48px
+  @include respond-to('sm') {
+    font-size: var(--font-size-h4);
+  }
+
+  @include respond-to('lg') {
+    font-size: var(--font-size-h3);
   }
 }
 
@@ -346,25 +368,37 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-3);
+  gap: var(--spacing-2);
   flex: 1;
-  min-width: var(--spacing-32);
-  height: var(--spacing-12);
-  padding: 0 var(--spacing-4);
+  min-width: var(--spacing-24);
+  height: var(--spacing-10);
+  padding: 0 var(--spacing-3);
   background-color: var(--color-background);
   border: var(--border-width-heavy) solid var(--color-information);
   border-radius: var(--radius-md);
   font-family: var(--font-primary);
-  font-size: var(--font-size-body);
+  font-size: var(--font-size-caption);
   font-weight: var(--font-weight-medium);
   color: var(--color-high-contrast);
   transition: var(--transition-colors);
+
+  @include respond-to('sm') {
+    gap: var(--spacing-3);
+    min-width: var(--spacing-32);
+    height: var(--spacing-12);
+    padding: 0 var(--spacing-4);
+    font-size: var(--font-size-body);
+  }
 
   @include respond-to('md') {
     gap: var(--spacing-4);
     min-width: var(--spacing-40);
     height: var(--spacing-16);
     padding: 0 var(--spacing-6);
+    font-size: var(--font-size-h6);
+  }
+
+  @include respond-to('lg') {
     font-size: var(--font-size-h5);
   }
 
@@ -394,18 +428,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-4);
+  gap: var(--spacing-3);
   width: 100%;
-  height: var(--spacing-16);
+  height: var(--spacing-12);
   padding: 0 var(--spacing-4);
   background-color: var(--color-success);
   border-radius: var(--radius-lg);
   transition: var(--transition-colors);
 
-  @include respond-to('md') {
+  @include respond-to('sm') {
+    gap: var(--spacing-4);
+    height: var(--spacing-16);
+  }
+
+  @include respond-to('lg') {
     gap: var(--spacing-6);
     height: var(--spacing-20);
-    padding: 0 var(--spacing-4);
   }
 
   &:hover {
