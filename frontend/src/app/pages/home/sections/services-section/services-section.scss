@@ -73,17 +73,27 @@
     align-items: center;
     gap: var(--spacing-6);
     width: 100%;
+
+    @include respond-below('sm') {
+      flex-wrap: wrap;
+      gap: var(--spacing-4);
+    }
   }
 
   &__back-btn {
     @include reset-button;
     @include flex-center;
-    width: 3.5rem; // 56px
-    height: 3.5rem;
+    width: var(--spacing-12);
+    height: var(--spacing-12);
     border: var(--border-width-heavy) solid var(--color-information);
     border-radius: var(--radius-lg);
     color: var(--color-text);
     transition: var(--transition-colors), var(--transition-transform);
+
+    @include respond-to('md') {
+      width: 3.5rem;
+      height: 3.5rem;
+    }
 
     &:hover {
       border-color: var(--color-text);
@@ -110,6 +120,10 @@
     @include respond-below('md') {
       font-size: var(--font-size-h4);
     }
+
+    @include respond-below('sm') {
+      font-size: var(--font-size-h5);
+    }
   }
 
   &__service-count {
@@ -119,6 +133,10 @@
 
     @include respond-below('md') {
       font-size: var(--font-size-body);
+    }
+
+    @include respond-below('sm') {
+      font-size: var(--font-size-caption);
     }
   }
 
