@@ -76,3 +76,10 @@ management:
   endpoint:
     health:
       show-details: ${MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS:when-authorized}
+
+# ========================================
+# CORS Configuration (Docker environment)
+# ========================================
+app:
+  cors:
+    allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:4200,http://localhost:3000,http://frontend:4200}

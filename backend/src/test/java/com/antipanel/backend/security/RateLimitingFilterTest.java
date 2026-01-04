@@ -142,6 +142,14 @@ class RateLimitingFilterTest {
         }
 
         @Test
+        @DisplayName("Should not filter OPTIONS preflight requests")
+        void shouldNotFilterOptionsPreflightRequests() {
+            request.setServletPath("/api/v1/auth/login");
+            request.setMethod("OPTIONS");
+            assertThat(rateLimitingFilter.shouldNotFilter(request)).isTrue();
+        }
+
+        @Test
         @DisplayName("Should filter regular API endpoints")
         void shouldFilterRegularApiEndpoints() {
             request.setServletPath("/api/v1/users");
