@@ -92,28 +92,27 @@
   // ---------------------------------------------------------------------------
   // STATISTICS
   // ---------------------------------------------------------------------------
-  // Row of key statistics
+  // Row of key statistics - mobile-first responsive
 
   &__stats {
-    @include flex-between;
-    gap: var(--spacing-12);
+    @include flex-column;
+    gap: var(--spacing-4); // 16px mobile base
     margin: var(--spacing-8) 0 0;
     padding: 0;
     width: 100%;
     max-width: 58.375rem; // 934px
 
-    @include respond-below('lg') {
-      gap: var(--spacing-8);
+    @include respond-to('sm') {
+      gap: var(--spacing-6); // 24px
     }
 
-    @include respond-below('md') {
-      @include flex-column;
-      gap: var(--spacing-6);
+    @include respond-to('md') {
+      @include flex-between; // Row layout on tablet+
+      gap: var(--spacing-8); // 32px
     }
 
-    // Mobile landscape: smaller gap to fit better
-    @include respond-below('sm') {
-      gap: var(--spacing-4);
+    @include respond-to('lg') {
+      gap: var(--spacing-12); // 48px desktop
     }
   }
 
@@ -151,36 +150,40 @@
   }
 
   &__stat-value {
-    @include typography('h2', 'extrabold', 'primary');
+    font-family: var(--font-primary);
+    font-size: var(--font-size-h5); // 24px mobile base
+    font-weight: var(--font-weight-extrabold);
     margin: 0;
 
-    @include respond-below('lg') {
-      font-size: var(--font-size-h3);
+    @include respond-to('sm') {
+      font-size: var(--font-size-h4); // 32px
     }
 
-    @include respond-below('md') {
-      font-size: var(--font-size-h4);
+    @include respond-to('md') {
+      font-size: var(--font-size-h3); // 40px
     }
 
-    @include respond-below('sm') {
-      font-size: var(--font-size-h5);
+    @include respond-to('lg') {
+      font-size: var(--font-size-h2); // 48px desktop
     }
   }
 
   &__stat-label {
-    @include typography('h5', 'medium', 'primary');
+    font-family: var(--font-primary);
+    font-size: var(--font-size-caption); // 14px mobile base
+    font-weight: var(--font-weight-medium);
     margin: 0;
 
-    @include respond-below('lg') {
-      font-size: var(--font-size-h6);
+    @include respond-to('sm') {
+      font-size: var(--font-size-body); // 16px
     }
 
-    @include respond-below('md') {
-      font-size: var(--font-size-body);
+    @include respond-to('md') {
+      font-size: var(--font-size-h6); // 20px
     }
 
-    @include respond-below('sm') {
-      font-size: var(--font-size-caption);
+    @include respond-to('lg') {
+      font-size: var(--font-size-h5); // 24px desktop
     }
   }
 }

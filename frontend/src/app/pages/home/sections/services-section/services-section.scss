@@ -20,15 +20,25 @@
 
 .services-section {
   @include flex-column;
-  gap: var(--spacing-16);
-  padding: var(--spacing-12) var(--spacing-6);
+  gap: var(--spacing-8); // Reduced gap on mobile
+  padding: var(--spacing-6) var(--spacing-3); // Tighter padding on mobile
   width: 100%;
   max-width: 58.5rem; // 936px from Figma
   margin: 0 auto;
 
-  @include respond-below('md') {
-    gap: var(--spacing-8);
+  @include respond-to('sm') {
+    gap: var(--spacing-10);
     padding: var(--spacing-8) var(--spacing-4);
+  }
+
+  @include respond-to('md') {
+    gap: var(--spacing-12);
+    padding: var(--spacing-10) var(--spacing-5);
+  }
+
+  @include respond-to('lg') {
+    gap: var(--spacing-16);
+    padding: var(--spacing-12) var(--spacing-6);
   }
 
   // ---------------------------------------------------------------------------
@@ -38,20 +48,20 @@
 
   &__grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--spacing-4);
+    grid-template-columns: repeat(2, 1fr); // 2 columns base (fits 320px)
+    gap: var(--spacing-3); // Tighter gap on mobile
     width: 100%;
 
-    @include respond-below('xl') {
+    @include respond-to('sm') {
+      gap: var(--spacing-4);
+    }
+
+    @include respond-to('md') {
       grid-template-columns: repeat(3, 1fr);
     }
 
-    @include respond-below('lg') {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    @include respond-below('sm') {
-      grid-template-columns: 1fr;
+    @include respond-to('lg') {
+      grid-template-columns: repeat(4, 1fr);
     }
   }
 
@@ -70,29 +80,45 @@
 
   &__expanded-header {
     display: flex;
-    align-items: center;
-    gap: var(--spacing-6);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-3);
     width: 100%;
 
-    @include respond-below('sm') {
-      flex-wrap: wrap;
+    @include respond-to('sm') {
+      flex-direction: row;
+      align-items: center;
       gap: var(--spacing-4);
+    }
+
+    @include respond-to('md') {
+      gap: var(--spacing-6);
     }
   }
 
   &__back-btn {
     @include reset-button;
     @include flex-center;
-    width: var(--spacing-12);
-    height: var(--spacing-12);
-    border: var(--border-width-heavy) solid var(--color-information);
-    border-radius: var(--radius-lg);
+    width: var(--spacing-10); // 40px base - smaller on mobile
+    height: var(--spacing-10);
+    border: var(--border-width-thick) solid var(--color-information); // 4px on mobile
+    border-radius: var(--radius-md);
     color: var(--color-text);
+    font-size: var(--spacing-5); // 20px icon size
     transition: var(--transition-colors), var(--transition-transform);
 
+    @include respond-to('sm') {
+      width: var(--spacing-12); // 48px
+      height: var(--spacing-12);
+      border-width: var(--border-width-heavy); // 6px
+      border-radius: var(--radius-lg);
+      font-size: var(--spacing-6); // 24px
+    }
+
     @include respond-to('md') {
-      width: 3.5rem;
+      width: 3.5rem; // 56px
       height: 3.5rem;
+      font-size: var(--spacing-8); // 32px
     }
 
     &:hover {
@@ -108,35 +134,47 @@
   }
 
   &__expanded-title {
-    @include typography('h2', 'bold', 'primary');
+    font-family: var(--font-primary);
+    font-size: var(--font-size-h6); // 20px base - much smaller on mobile
+    font-weight: var(--font-weight-bold);
     color: var(--color-text);
     margin: 0;
     flex: 1;
 
-    @include respond-below('lg') {
-      font-size: var(--font-size-h3);
+    @include respond-to('sm') {
+      font-size: var(--font-size-h5); // 24px
     }
 
-    @include respond-below('md') {
-      font-size: var(--font-size-h4);
+    @include respond-to('md') {
+      font-size: var(--font-size-h4); // 32px
     }
 
-    @include respond-below('sm') {
-      font-size: var(--font-size-h5);
+    @include respond-to('lg') {
+      font-size: var(--font-size-h3); // 40px
+    }
+
+    @include respond-to('xl') {
+      font-size: var(--font-size-h2); // 48px
     }
   }
 
   &__service-count {
-    @include typography('h5', 'regular', 'secondary');
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-caption); // 14px base
+    font-weight: var(--font-weight-regular);
     color: var(--color-foreground);
     white-space: nowrap;
 
-    @include respond-below('md') {
-      font-size: var(--font-size-body);
+    @include respond-to('sm') {
+      font-size: var(--font-size-body); // 16px
     }
 
-    @include respond-below('sm') {
-      font-size: var(--font-size-caption);
+    @include respond-to('md') {
+      font-size: var(--font-size-h6); // 20px
+    }
+
+    @include respond-to('lg') {
+      font-size: var(--font-size-h5); // 24px
     }
   }
 
@@ -147,9 +185,13 @@
 
   &__services-list {
     @include flex-column;
-    gap: var(--spacing-4);
+    gap: var(--spacing-3); // Tighter gap on mobile
     width: 100%;
     animation: fadeIn 0.3s ease-out;
+
+    @include respond-to('sm') {
+      gap: var(--spacing-4);
+    }
   }
 }
 
