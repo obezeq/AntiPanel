@@ -148,13 +148,9 @@
 
   &__stat-value {
     font-family: var(--font-primary);
-    font-size: var(--font-size-h5); // 24px mobile base
+    font-size: var(--font-size-h4); // 32px mobile base (increased from h5)
     font-weight: var(--font-weight-extrabold);
     margin: 0;
-
-    @include respond-to('sm') {
-      font-size: var(--font-size-h4); // 32px
-    }
 
     @include respond-to('md') {
       font-size: var(--font-size-h3); // 40px
@@ -167,13 +163,9 @@
 
   &__stat-label {
     font-family: var(--font-primary);
-    font-size: var(--font-size-caption); // 14px mobile base
+    font-size: var(--font-size-body); // 16px mobile base (increased from caption)
     font-weight: var(--font-weight-medium);
     margin: 0;
-
-    @include respond-to('sm') {
-      font-size: var(--font-size-body); // 16px
-    }
 
     @include respond-to('md') {
       font-size: var(--font-size-h6); // 20px

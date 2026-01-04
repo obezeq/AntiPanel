@@ -5,14 +5,14 @@
 // ==========================================================================
 // Displays matched service when user searches in OrderInput.
 // Two modes: Default and With Target (shows TARGET URL section).
-// Restored to original base + md approach for compact desktop sizing.
+// 3-tier responsive: base (0-639px) < sm (640px+) < md (768px+)
 // ==========================================================================
 
 .order-ready {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-6);
-  padding: var(--spacing-6);
+  gap: var(--spacing-4);
+  padding: var(--spacing-4);
   background-color: var(--color-background);
   border: var(--border-width-extra-heavy) solid var(--color-success);
   border-radius: var(--radius-3xl);
@@ -21,6 +21,11 @@
   box-shadow:
     0 0 60px 0 rgba(var(--color-success-rgb), 0.15),
     0 0 120px 0 rgba(var(--color-success-rgb), 0.08);
+
+  @include respond-to('sm') {
+    gap: var(--spacing-6);
+    padding: var(--spacing-6);
+  }
 
   @include respond-to('md') {
     gap: 0;
@@ -37,8 +42,13 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--spacing-4);
-  margin-bottom: var(--spacing-6);
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-4);
+
+  @include respond-to('sm') {
+    gap: var(--spacing-4);
+    margin-bottom: var(--spacing-6);
+  }
 
   @include respond-to('md') {
     margin-bottom: var(--spacing-8);
@@ -48,7 +58,11 @@
 .order-ready__title {
   display: flex;
   align-items: center;
-  gap: var(--spacing-4);
+  gap: var(--spacing-3);
+
+  @include respond-to('sm') {
+    gap: var(--spacing-4);
+  }
 
   @include respond-to('md') {
     gap: var(--spacing-6);
@@ -59,9 +73,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: var(--spacing-10);
-  height: var(--spacing-10);
+  width: var(--spacing-8);
+  height: var(--spacing-8);
   color: var(--color-success);
+
+  @include respond-to('sm') {
+    width: var(--spacing-10);
+    height: var(--spacing-10);
+  }
 
   @include respond-to('md') {
     width: var(--spacing-16);
@@ -71,11 +90,15 @@
 
 .order-ready__heading {
   font-family: var(--font-primary);
-  font-size: var(--font-size-h4);
+  font-size: var(--font-size-h5);
   font-weight: var(--font-weight-bold);
   color: var(--color-text);
   line-height: 1.15;
   margin: 0;
+
+  @include respond-to('sm') {
+    font-size: var(--font-size-h4);
+  }
 
   @include respond-to('md') {
     font-size: var(--font-size-h3);
@@ -84,11 +107,15 @@
 
 .order-ready__match {
   font-family: var(--font-primary);
-  font-size: var(--font-size-h5);
+  font-size: var(--font-size-h6);
   font-weight: var(--font-weight-medium);
   color: var(--color-text);
   line-height: 1.15;
   margin: 0;
+
+  @include respond-to('sm') {
+    font-size: var(--font-size-h5);
+  }
 
   @include respond-to('md') {
     font-size: var(--font-size-h4);
@@ -103,11 +130,17 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--spacing-6);
-  padding: var(--spacing-4);
+  gap: var(--spacing-4);
+  padding: var(--spacing-3);
   background-color: var(--color-background);
   border: var(--border-width-medium) solid var(--color-information);
-  margin-bottom: var(--spacing-6);
+  margin-bottom: var(--spacing-4);
+
+  @include respond-to('sm') {
+    gap: var(--spacing-6);
+    padding: var(--spacing-4);
+    margin-bottom: var(--spacing-6);
+  }
 
   @include respond-to('md') {
     gap: var(--spacing-8);
@@ -122,7 +155,11 @@
   justify-content: center;
   margin: 0;
   color: var(--color-text);
-  font-size: var(--spacing-12);
+  font-size: var(--spacing-10);
+
+  @include respond-to('sm') {
+    font-size: var(--spacing-12);
+  }
 
   @include respond-to('md') {
     font-size: 4.5rem;
@@ -131,7 +168,11 @@
 
 .order-ready__service-info {
   flex: 1;
-  min-width: var(--spacing-40);
+  min-width: var(--spacing-32);
+
+  @include respond-to('sm') {
+    min-width: var(--spacing-40);
+  }
 
   @include respond-to('md') {
     min-width: 12.5rem;
@@ -140,11 +181,15 @@
 
 .order-ready__service-name {
   font-family: var(--font-primary);
-  font-size: var(--font-size-h5);
+  font-size: var(--font-size-h6);
   font-weight: var(--font-weight-semibold);
   color: var(--color-high-contrast);
   line-height: 1.15;
   margin: 0;
+
+  @include respond-to('sm') {
+    font-size: var(--font-size-h5);
+  }
 
   @include respond-to('md') {
     font-size: var(--font-size-h4);
@@ -154,13 +199,18 @@
 .order-ready__service-details {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-4);
+  gap: var(--spacing-3);
   font-family: var(--font-primary);
-  font-size: var(--font-size-body);
+  font-size: var(--font-size-caption);
   font-weight: var(--font-weight-regular);
   color: var(--color-high-contrast);
   line-height: var(--line-height-tight);
   margin: 0;
+
+  @include respond-to('sm') {
+    gap: var(--spacing-4);
+    font-size: var(--font-size-body);
+  }
 
   @include respond-to('md') {
     gap: var(--spacing-6);
@@ -175,12 +225,16 @@
 .order-ready__quantity {
   @include reset-button;
   font-family: var(--font-primary);
-  font-size: var(--font-size-h5);
+  font-size: var(--font-size-h6);
   font-weight: var(--font-weight-semibold);
   color: var(--color-high-contrast);
   line-height: var(--line-height-tight);
   text-align: right;
   margin: 0;
+
+  @include respond-to('sm') {
+    font-size: var(--font-size-h5);
+  }
 
   @include respond-to('md') {
     font-size: var(--font-size-h4);
@@ -205,13 +259,17 @@
   margin: 0;
   padding: 0;
   font-family: var(--font-primary);
-  font-size: var(--font-size-h5);
+  font-size: var(--font-size-h6);
   font-weight: var(--font-weight-semibold);
   color: var(--color-high-contrast);
   text-align: right;
   background-color: transparent;
   border: none;
   border-radius: 0;
+
+  @include respond-to('sm') {
+    font-size: var(--font-size-h5);
+  }
 
   @include respond-to('md') {
     font-size: var(--font-size-h4);
@@ -232,11 +290,15 @@
 
 .order-ready__price {
   font-family: var(--font-secondary);
-  font-size: var(--font-size-body);
+  font-size: var(--font-size-caption);
   font-weight: var(--font-weight-regular);
   color: var(--color-high-contrast);
   line-height: 1.15;
   margin: 0;
+
+  @include respond-to('sm') {
+    font-size: var(--font-size-body);
+  }
 
   @include respond-to('md') {
     font-size: var(--font-size-h5);
@@ -251,10 +313,15 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-2);
-  padding: var(--spacing-4) var(--spacing-6);
+  padding: var(--spacing-3) var(--spacing-4);
   background-color: var(--color-tiny-info);
   border-radius: var(--radius-lg);
-  margin-bottom: var(--spacing-6);
+  margin-bottom: var(--spacing-4);
+
+  @include respond-to('sm') {
+    padding: var(--spacing-4) var(--spacing-6);
+    margin-bottom: var(--spacing-6);
+  }
 
   @include respond-to('md') {
     padding: var(--spacing-6) var(--spacing-20);
@@ -264,11 +331,15 @@
 
 .order-ready__target-label {
   font-family: var(--font-primary);
-  font-size: var(--font-size-body);
+  font-size: var(--font-size-caption);
   font-weight: var(--font-weight-bold);
   color: var(--color-high-contrast);
   line-height: 1.15;
   margin: 0;
+
+  @include respond-to('sm') {
+    font-size: var(--font-size-body);
+  }
 
   @include respond-to('md') {
     font-size: var(--font-size-h5);
@@ -278,13 +349,17 @@
 .order-ready__target-value {
   @include reset-button;
   font-family: var(--font-primary);
-  font-size: var(--font-size-body);
+  font-size: var(--font-size-caption);
   font-weight: var(--font-weight-medium);
   color: var(--color-high-contrast);
   line-height: var(--line-height-tight);
   text-align: left;
   width: 100%;
   word-break: break-all;
+
+  @include respond-to('sm') {
+    font-size: var(--font-size-body);
+  }
 
   @include respond-to('md') {
     font-size: var(--font-size-h5);
@@ -312,12 +387,16 @@
   margin: 0;
   padding: 0;
   font-family: var(--font-primary);
-  font-size: var(--font-size-body);
+  font-size: var(--font-size-caption);
   font-weight: var(--font-weight-medium);
   color: var(--color-high-contrast);
   background-color: transparent;
   border: none;
   border-radius: 0;
+
+  @include respond-to('sm') {
+    font-size: var(--font-size-body);
+  }
 
   @include respond-to('md') {
     font-size: var(--font-size-h5);
@@ -335,11 +414,13 @@
 .order-ready__explore {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-4);
-  margin-bottom: var(--spacing-6);
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-4);
 
   @include respond-to('sm') {
     flex-direction: row;
+    gap: var(--spacing-4);
+    margin-bottom: var(--spacing-6);
   }
 
   @include respond-to('md') {
@@ -353,18 +434,25 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-3);
+  gap: var(--spacing-2);
   flex: 1;
-  height: var(--spacing-12);
-  padding: 0 var(--spacing-4);
+  height: var(--spacing-10);
+  padding: 0 var(--spacing-3);
   background-color: var(--color-background);
   border: var(--border-width-thick) solid var(--color-information);
   border-radius: var(--radius-md);
   font-family: var(--font-primary);
-  font-size: var(--font-size-body);
+  font-size: var(--font-size-caption);
   font-weight: var(--font-weight-medium);
   color: var(--color-high-contrast);
   transition: var(--transition-colors);
+
+  @include respond-to('sm') {
+    gap: var(--spacing-3);
+    height: var(--spacing-12);
+    padding: 0 var(--spacing-4);
+    font-size: var(--font-size-body);
+  }
 
   @include respond-to('md') {
     gap: var(--spacing-4);
@@ -384,7 +472,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: var(--spacing-6);
+  font-size: var(--spacing-5);
+
+  @include respond-to('sm') {
+    font-size: var(--spacing-6);
+  }
 
   @include respond-to('md') {
     font-size: var(--spacing-8);
@@ -401,13 +493,19 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-4);
+  gap: var(--spacing-3);
   width: 100%;
-  min-height: var(--spacing-16);
-  padding: 0 var(--spacing-4);
+  min-height: var(--spacing-14);
+  padding: 0 var(--spacing-3);
   background-color: var(--color-success);
   border-radius: var(--radius-lg);
   transition: var(--transition-colors);
+
+  @include respond-to('sm') {
+    gap: var(--spacing-4);
+    min-height: var(--spacing-16);
+    padding: 0 var(--spacing-4);
+  }
 
   @include respond-to('md') {
     gap: var(--spacing-6);
@@ -427,10 +525,14 @@
 
 .order-ready__currency {
   font-family: var(--font-secondary);
-  font-size: var(--font-size-body);
+  font-size: var(--font-size-caption);
   font-weight: var(--font-weight-semibold);
   color: var(--color-background);
   line-height: 1.15;
+
+  @include respond-to('sm') {
+    font-size: var(--font-size-body);
+  }
 
   @include respond-to('md') {
     font-size: var(--font-size-h5);
@@ -439,10 +541,14 @@
 
 .order-ready__place-text {
   font-family: var(--font-primary);
-  font-size: var(--font-size-h5);
+  font-size: var(--font-size-h6);
   font-weight: var(--font-weight-semibold);
   color: var(--color-background);
   line-height: 1.15;
+
+  @include respond-to('sm') {
+    font-size: var(--font-size-h5);
+  }
 
   @include respond-to('md') {
     font-size: var(--font-size-h4);
@@ -451,10 +557,14 @@
 
 .order-ready__separator {
   font-family: var(--font-primary);
-  font-size: var(--font-size-body);
+  font-size: var(--font-size-caption);
   font-weight: var(--font-weight-bold);
   color: var(--color-background);
   line-height: 1.15;
+
+  @include respond-to('sm') {
+    font-size: var(--font-size-body);
+  }
 
   @include respond-to('md') {
     font-size: var(--font-size-h5);
@@ -463,10 +573,14 @@
 
 .order-ready__total {
   font-family: var(--font-secondary);
-  font-size: var(--font-size-body);
+  font-size: var(--font-size-caption);
   font-weight: var(--font-weight-regular);
   color: var(--color-background);
   line-height: 1.15;
+
+  @include respond-to('sm') {
+    font-size: var(--font-size-body);
+  }
 
   @include respond-to('md') {
     font-size: var(--font-size-h5);
@@ -478,7 +592,11 @@
   align-items: center;
   justify-content: center;
   color: var(--color-background);
-  font-size: var(--spacing-6);
+  font-size: var(--spacing-5);
+
+  @include respond-to('sm') {
+    font-size: var(--spacing-6);
+  }
 
   @include respond-to('md') {
     font-size: var(--spacing-8);
