@@ -1,6 +1,5 @@
 <article
   class="service-item-card"
-  role="button"
   tabindex="0"
   (click)="onCardClick()"
   (keydown.enter)="onCardClick()"
@@ -9,23 +8,23 @@
   <!-- Header: Service Name + Pricing -->
   <header class="service-item-card__header">
     <h3 class="service-item-card__name">{{ service().name }}</h3>
-    <section class="service-item-card__pricing">
+    <div class="service-item-card__pricing">
       <p class="service-item-card__price">{{ formatPrice() }}</p>
       <p class="service-item-card__unit">{{ service().priceUnit }}</p>
-    </section>
+    </div>
   </header>
 
   <!-- Footer: Quality/Speed + Quick Order Button -->
   <footer class="service-item-card__footer">
-    <section class="service-item-card__attributes">
-      <span class="service-item-card__quality">{{ service().quality }}</span>
-      <span class="service-item-card__speed">{{ service().speed }}</span>
-    </section>
+    <div class="service-item-card__attributes" aria-label="Service attributes">
+      <span class="service-item-card__quality" aria-label="Quality level">{{ service().quality }}</span>
+      <span class="service-item-card__speed" aria-label="Delivery speed">{{ service().speed }}</span>
+    </div>
 
     <button
       type="button"
       class="service-item-card__quick-order"
-      [attr.aria-label]="'Quick order ' + service().name"
+      [attr.aria-label]="'Quick order ' + service().name + ' for ' + formatPrice()"
       (click)="onQuickOrder($event)"
     >
       QUICK ORDER
