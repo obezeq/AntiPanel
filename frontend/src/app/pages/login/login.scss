@@ -115,6 +115,37 @@
 }
 
 // ---------------------------------------------------------------------------
+// STATUS MESSAGES
+// ---------------------------------------------------------------------------
+
+.login-page__message {
+  width: 100%;
+  max-width: 43.5625rem; // Same as auth-form
+  padding: var(--spacing-3) var(--spacing-4);
+  margin-bottom: var(--spacing-4);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-caption);
+  text-align: center;
+  border-radius: var(--radius-md);
+
+  @include respond-to('md') {
+    margin-bottom: var(--spacing-6);
+  }
+
+  &--success {
+    color: var(--color-success);
+    background-color: rgba(var(--color-success-rgb), 0.1);
+    border: var(--border-width-thin) solid var(--color-success);
+  }
+
+  &--info {
+    color: var(--color-stats-blue);
+    background-color: rgba(var(--color-stats-blue-rgb), 0.1);
+    border: var(--border-width-thin) solid var(--color-stats-blue);
+  }
+}
+
+// ---------------------------------------------------------------------------
 // VISUALLY HIDDEN (for accessibility)
 // ---------------------------------------------------------------------------
 
