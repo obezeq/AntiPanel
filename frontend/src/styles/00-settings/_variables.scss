@@ -141,6 +141,7 @@ $font-size-names: ('title', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'body', 'caption
   --spacing-20: 5rem;      // 80px
   --spacing-24: 6rem;      // 96px
   --spacing-32: 8rem;      // 128px
+  --spacing-40: 10rem;     // 160px
 
   // -------------------------------------------------------------------------
   // BORDER RADIUS TOKENS
@@ -151,6 +152,7 @@ $font-size-names: ('title', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'body', 'caption
   --radius-lg: 1rem;       // 16px - Cards
   --radius-xl: 1.5rem;     // 24px - Large cards
   --radius-2xl: 2rem;      // 32px - Hero sections
+  --radius-3xl: 2.5rem;    // 40px - Large panels
   --radius-full: 9999px;   // Pills, avatars
 
   // -------------------------------------------------------------------------
@@ -162,6 +164,7 @@ $font-size-names: ('title', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'body', 'caption
   --border-width-thick: 3px;
   --border-width-heavy: 4px;
   --border-width-extra: 6px;
+  --border-width-extra-heavy: 8px;
 
   // -------------------------------------------------------------------------
   // SHADOW TOKENS
