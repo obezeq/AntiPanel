@@ -103,11 +103,7 @@
     max-width: 58.375rem; // 934px
 
     @include respond-to('sm') {
-      gap: var(--spacing-6); // 24px
-    }
-
-    @include respond-to('md') {
-      @include flex-between; // Row layout on tablet+
+      @include flex-between; // Row layout from 640px+
       gap: var(--spacing-8); // 32px
     }
 
