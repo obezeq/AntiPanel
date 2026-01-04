@@ -192,15 +192,16 @@
 }
 
 .order-ready__quantity {
+  @include reset-button;
   font-family: var(--font-primary);
-  font-size: var(--font-size-h5); // 24px
+  font-size: var(--font-size-h5);
   font-weight: var(--font-weight-semibold);
   color: var(--color-high-contrast);
-  //line-height: 1.15;
-  margin: 0;
+  line-height: var(--line-height-tight);
+  text-align: right;
 
   @include respond-to('md') {
-    font-size: var(--font-size-h4); // 32px
+    font-size: var(--font-size-h4);
   }
 }
 
@@ -295,15 +296,17 @@
 }
 
 .order-ready__target-value {
+  @include reset-button;
   font-family: var(--font-primary);
-  font-size: var(--font-size-body); // 16px
+  font-size: var(--font-size-body);
   font-weight: var(--font-weight-medium);
   color: var(--color-high-contrast);
-  //line-height: 1.15;
-  margin: 0;
+  line-height: var(--line-height-tight);
+  text-align: left;
+  width: 100%;
 
   @include respond-to('md') {
-    font-size: var(--font-size-h5); // 24px
+    font-size: var(--font-size-h5);
   }
 }
 

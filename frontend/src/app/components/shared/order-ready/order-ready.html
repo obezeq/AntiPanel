@@ -30,19 +30,18 @@
           inputmode="numeric"
           class="order-ready__quantity-input"
           [value]="data().quantity"
+          aria-label="Edit quantity - supports k/m suffixes"
           (blur)="onQuantityBlur($event)"
           (keydown.enter)="onQuantitySubmit($event)"
           (keydown.escape)="cancelQuantityEdit()"
         />
       } @else {
-        <p
+        <button
+          type="button"
           class="order-ready__quantity order-ready__quantity--editable"
-          role="button"
-          tabindex="0"
           aria-label="Click to edit quantity"
           (click)="startQuantityEdit()"
-          (keydown.enter)="startQuantityEdit()"
-        >{{ data().quantity }}</p>
+        >{{ data().quantity }}</button>
       }
       <p class="order-ready__price">{{ data().price }}</p>
     </div>
@@ -58,20 +57,19 @@
         class="order-ready__target-input"
         [value]="data().target ?? ''"
         placeholder="@username or URL"
+        aria-label="Enter target username or URL"
         (blur)="onTargetBlur($event)"
         (keydown.enter)="onTargetSubmit($event)"
         (keydown.escape)="cancelTargetEdit()"
       />
     } @else {
-      <p
+      <button
+        type="button"
         class="order-ready__target-value order-ready__target-value--editable"
         [class.order-ready__target-value--placeholder]="!hasTarget()"
-        role="button"
-        tabindex="0"
         [attr.aria-label]="hasTarget() ? 'Click to edit target' : 'Click to add target'"
         (click)="startTargetEdit()"
-        (keydown.enter)="startTargetEdit()"
-      >{{ hasTarget() ? data().target : 'Add @username or URL' }}</p>
+      >{{ hasTarget() ? data().target : 'Add @username or URL' }}</button>
     }
   </section>
 
