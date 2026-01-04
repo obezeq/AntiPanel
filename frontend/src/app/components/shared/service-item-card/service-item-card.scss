@@ -204,6 +204,18 @@
   visibility: hidden;
   transition: var(--transition-colors), opacity var(--transition-fast), visibility var(--transition-fast);
 
+  // Always visible on touch devices (no hover capability)
+  @media (hover: none) {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  // Also visible when card has focus (keyboard navigation)
+  .service-item-card:focus-within & {
+    opacity: 1;
+    visibility: visible;
+  }
+
   @include respond-to('sm') {
     padding: var(--spacing-3) var(--spacing-4);
     font-size: var(--font-size-h6);
