@@ -97,20 +97,25 @@
 // ---------------------------------------------------------------------------
 // CONTENT SECTION
 // ---------------------------------------------------------------------------
+// Vertically centered with mobile-first responsive padding.
+// No padding-top compensation needed - header is in document flow.
 
 .login-page__content {
   @include flex-column-center;
   flex: 1;
-  padding: var(--spacing-8) var(--spacing-4);
-  padding-top: calc(var(--header-height) + var(--spacing-8));
+  justify-content: center;
+  padding: var(--spacing-4);
+
+  @include respond-to('sm') {
+    padding: var(--spacing-6);
+  }
 
   @include respond-to('md') {
-    padding: var(--spacing-16) var(--spacing-8);
-    padding-top: calc(var(--header-height) + var(--spacing-12));
+    padding: var(--spacing-8);
   }
 
   @include respond-to('lg') {
-    padding-top: calc(var(--header-height) + var(--spacing-16));
+    padding: var(--spacing-10);
   }
 }
 
