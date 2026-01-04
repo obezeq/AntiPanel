@@ -27,6 +27,7 @@
     margin: 0;
     text-transform: uppercase;
     letter-spacing: 0.02em;
+    // No text-shadow - illuminated by ambient top glow instead
 
     @include respond-below('xl') {
       font-size: var(--font-size-h1);
@@ -51,6 +52,7 @@
     color: var(--color-success);
     margin: 0;
     text-transform: uppercase;
+    // No text-shadow - solid green color only
 
     @include respond-below('lg') {
       font-size: var(--font-size-h3);
@@ -125,12 +127,20 @@
       .hero-section__stat-label {
         color: var(--color-success);
       }
+
+      .hero-section__stat-value {
+        text-shadow: var(--glow-success-soft);
+      }
     }
 
     &--blue {
       .hero-section__stat-value,
       .hero-section__stat-label {
         color: var(--color-stats-blue);
+      }
+
+      .hero-section__stat-value {
+        text-shadow: var(--glow-blue-soft);
       }
     }
   }
