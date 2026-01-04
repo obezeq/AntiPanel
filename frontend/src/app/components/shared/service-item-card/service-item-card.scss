@@ -11,25 +11,27 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: var(--spacing-4);
+  gap: var(--spacing-3); // Tighter gap on mobile
   width: 100%;
-  padding: var(--spacing-4) var(--spacing-6);
+  padding: var(--spacing-3) var(--spacing-4); // Tighter padding on mobile
   background-color: var(--color-background);
   border: var(--border-width-medium) solid var(--color-secondary);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   cursor: pointer;
   transition: var(--transition-colors);
 
   @include respond-to('sm') {
-    padding: var(--spacing-5) var(--spacing-6);
+    gap: var(--spacing-4);
+    padding: var(--spacing-4) var(--spacing-5);
+    border-radius: var(--radius-lg);
   }
 
   @include respond-to('md') {
-    padding: var(--spacing-6) var(--spacing-8);
+    padding: var(--spacing-5) var(--spacing-6);
   }
 
   @include respond-to('lg') {
-    padding: var(--spacing-8) var(--spacing-10);
+    padding: var(--spacing-6) var(--spacing-8);
   }
 
   &:hover {
@@ -132,6 +134,10 @@
     min-height: var(--spacing-12);
   }
 
+  @include respond-to('md') {
+    min-height: var(--spacing-16);
+  }
+
   @include respond-to('lg') {
     min-height: var(--spacing-20);
   }
@@ -162,6 +168,10 @@
     font-size: var(--font-size-body);
   }
 
+  @include respond-to('md') {
+    font-size: var(--font-size-h6);
+  }
+
   @include respond-to('lg') {
     font-size: var(--font-size-h5);
   }
@@ -176,6 +186,10 @@
 
   @include respond-to('sm') {
     font-size: var(--font-size-body);
+  }
+
+  @include respond-to('md') {
+    font-size: var(--font-size-h6);
   }
 
   @include respond-to('lg') {

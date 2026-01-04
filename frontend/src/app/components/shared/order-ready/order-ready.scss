@@ -38,7 +38,7 @@
   }
 
   @include respond-to('xl') {
-    padding: var(--spacing-10) var(--spacing-12);
+    padding: var(--spacing-8) var(--spacing-10); // Same as lg to avoid oversized desktop
   }
 }
 
@@ -160,7 +160,8 @@
   gap: var(--spacing-4);
   padding: var(--spacing-4);
   background-color: var(--color-background);
-  border: var(--border-width-medium) solid var(--color-information);
+  border: var(--border-width-thick) solid var(--color-information); // 4px - subtle secondary container
+  border-radius: var(--radius-lg);
   margin-bottom: var(--spacing-6);
 
   @include respond-to('sm') {
@@ -173,6 +174,7 @@
     gap: var(--spacing-8);
     padding: var(--spacing-6);
     margin-bottom: var(--spacing-8);
+    // Keep 4px border on desktop (was 8px, too heavy)
   }
 
   @include respond-to('xl') {
@@ -528,7 +530,7 @@
   height: var(--spacing-10);
   padding: 0 var(--spacing-4);
   background-color: var(--color-background);
-  border: var(--border-width-heavy) solid var(--color-information);
+  border: var(--border-width-medium) solid var(--color-information); // 2px - lighter tertiary elements
   border-radius: var(--radius-md);
   font-family: var(--font-primary);
   font-size: var(--font-size-body);
@@ -550,6 +552,7 @@
     height: var(--spacing-16);
     padding: 0 var(--spacing-6);
     font-size: var(--font-size-h6);
+    border-width: var(--border-width-thick); // 4px on larger screens
   }
 
   @include respond-to('lg') {

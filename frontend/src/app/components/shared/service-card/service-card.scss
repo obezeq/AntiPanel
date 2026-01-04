@@ -11,14 +11,25 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  gap: var(--spacing-4);
+  gap: var(--spacing-3);
   width: 100%;
   aspect-ratio: 1 / 1;
-  padding: var(--spacing-6);
+  padding: var(--spacing-4); // Tighter padding on mobile
   background-color: transparent;
-  border: var(--border-width-heavy) solid var(--color-information);
-  border-radius: var(--radius-xl);
+  border: var(--border-width-thick) solid var(--color-information); // 4px on mobile
+  border-radius: var(--radius-lg);
   transition: var(--transition-colors), var(--transition-transform), var(--transition-shadow);
+
+  @include respond-to('sm') {
+    gap: var(--spacing-4);
+    padding: var(--spacing-5);
+    border-width: var(--border-width-heavy); // 6px
+    border-radius: var(--radius-xl);
+  }
+
+  @include respond-to('md') {
+    padding: var(--spacing-6);
+  }
 }
 
 .service-card--interactive {
@@ -45,14 +56,20 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: var(--spacing-10);
-  height: var(--spacing-10);
   margin: 0;
   color: var(--color-text);
+  font-size: var(--spacing-8); // 32px base - controls ng-icon size
+
+  @include respond-to('sm') {
+    font-size: var(--spacing-10); // 40px
+  }
 
   @include respond-to('md') {
-    width: var(--spacing-12);
-    height: var(--spacing-12);
+    font-size: var(--spacing-12); // 48px
+  }
+
+  @include respond-to('lg') {
+    font-size: 3.5rem; // 56px
   }
 }
 
@@ -62,15 +79,23 @@
 
 .service-card__name {
   font-family: var(--font-primary);
-  font-size: var(--font-size-h6);
+  font-size: var(--font-size-caption); // 14px base - smaller for mobile
   font-weight: var(--font-weight-bold);
   color: var(--color-text);
   line-height: var(--line-height-tight);
   margin: 0;
   text-transform: uppercase;
 
+  @include respond-to('sm') {
+    font-size: var(--font-size-body); // 16px
+  }
+
   @include respond-to('md') {
-    font-size: var(--font-size-h5);
+    font-size: var(--font-size-h6); // 20px
+  }
+
+  @include respond-to('lg') {
+    font-size: var(--font-size-h5); // 24px
   }
 }
 
@@ -88,12 +113,20 @@
 .service-card__count-number,
 .service-card__count-label {
   font-family: var(--font-secondary);
-  font-size: var(--font-size-h6);
+  font-size: var(--font-size-caption); // 14px base
   font-weight: var(--font-weight-regular);
   color: var(--color-foreground);
   line-height: var(--line-height-tight);
 
+  @include respond-to('sm') {
+    font-size: var(--font-size-body); // 16px
+  }
+
   @include respond-to('md') {
-    font-size: var(--font-size-h5);
+    font-size: var(--font-size-h6); // 20px
+  }
+
+  @include respond-to('lg') {
+    font-size: var(--font-size-h5); // 24px
   }
 }
