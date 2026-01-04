@@ -360,26 +360,20 @@ export class OrderSection {
   /**
    * Handle "EXPLORE MORE" click
    * Resets platform selection to show all platforms
+   * Parent (Home) handles the scrolling to services section
    */
   protected onExploreMore(): void {
-    // Emit reset signal to parent
+    // Emit reset signal to parent - parent handles scrolling
     this.resetPlatform.emit();
-
-    // Scroll to services section
-    const servicesSection = document.getElementById('services-section');
-    servicesSection?.scrollIntoView({ behavior: 'smooth' });
   }
 
   /**
    * Handle "MORE PLATFORM" click
+   * Parent (Home) handles the scrolling to services section
    */
   protected onMorePlatform(platform: string): void {
-    // Emit platform selection to parent
+    // Emit platform selection to parent - parent handles scrolling
     this.selectPlatform.emit(platform.toLowerCase());
-
-    // Scroll to services section
-    const servicesSection = document.getElementById('services-section');
-    servicesSection?.scrollIntoView({ behavior: 'smooth' });
   }
 
   /**

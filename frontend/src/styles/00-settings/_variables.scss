@@ -176,6 +176,27 @@ $font-size-names: ('title', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'body', 'caption
   --shadow-success-glow: 0 4px 111px 0 rgba(0, 220, 51, 0.11);
 
   // -------------------------------------------------------------------------
+  // GLOW EFFECT TOKENS
+  // -------------------------------------------------------------------------
+
+  // Soft, spread-out glows for stats (responsive blur radius)
+  --glow-success-soft:
+    0 0 clamp(20px, 3vw, 40px) rgba(var(--color-success-rgb), 0.4),
+    0 0 clamp(40px, 6vw, 80px) rgba(var(--color-success-rgb), 0.2),
+    0 0 clamp(60px, 9vw, 120px) rgba(var(--color-success-rgb), 0.1);
+  --glow-blue-soft:
+    0 0 clamp(20px, 3vw, 40px) rgba(var(--color-stats-blue-rgb), 0.4),
+    0 0 clamp(40px, 6vw, 80px) rgba(var(--color-stats-blue-rgb), 0.2),
+    0 0 clamp(60px, 9vw, 120px) rgba(var(--color-stats-blue-rgb), 0.1);
+
+  // -------------------------------------------------------------------------
+  // GRID BACKGROUND TOKENS
+  // -------------------------------------------------------------------------
+
+  --grid-color: rgba(57, 57, 57, 0.5);
+  --grid-size: clamp(40px, 5vw, 60px); // Responsive: 40px min, 60px max
+
+  // -------------------------------------------------------------------------
   // TRANSITION TOKENS
   // -------------------------------------------------------------------------
 
@@ -207,7 +228,9 @@ $font-size-names: ('title', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'body', 'caption
 
   --container-max-width: 90rem;        // 1440px
   --container-padding: var(--spacing-6);  // 24px
-  --header-height: 7.25rem;            // 116px (32px padding * 2 + 52px logo)
+
+  // Responsive header height (matches header.scss breakpoints)
+  --header-height: 3.5rem;             // Base: 56px
 
   // -------------------------------------------------------------------------
   // FOCUS TOKENS (Accessibility)
@@ -216,6 +239,42 @@ $font-size-names: ('title', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'body', 'caption
   --focus-ring-width: 0.125rem;        // 2px
   --focus-ring-offset: 0.125rem;       // 2px
   --focus-ring-color: var(--color-stats-blue);
+}
+
+// ===========================================================================
+// RESPONSIVE HEADER HEIGHT
+// ===========================================================================
+// Override --header-height at each breakpoint to match header.scss
+// This enables DRY scroll-margin-top using calc(var(--header-height) + spacing)
+
+@media screen and (min-width: 400px) {
+  :root {
+    --header-height: 4rem;             // 64px
+  }
+}
+
+@media screen and (min-width: 640px) {
+  :root {
+    --header-height: 5rem;             // 80px (sm)
+  }
+}
+
+@media screen and (min-width: 768px) {
+  :root {
+    --header-height: 6rem;             // 96px (md)
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  :root {
+    --header-height: 7rem;             // 112px (lg)
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  :root {
+    --header-height: 7.25rem;          // 116px (xl)
+  }
 }
 
 // ===========================================================================
@@ -269,6 +328,9 @@ $font-size-names: ('title', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'body', 'caption
 
   // Focus ring - darker for visibility on light backgrounds
   --focus-ring-color: #0369a1;
+
+  // Grid - lighter for white background
+  --grid-color: rgba(200, 200, 200, 0.4);
 }
 
 // ===========================================================================

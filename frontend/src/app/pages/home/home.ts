@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Header } from '../../components/layout/header/header';
 import { Footer } from '../../components/layout/footer/footer';
@@ -27,6 +27,14 @@ import type { ServiceItemData } from '../../components/shared/service-item-card/
 })
 export class Home {
   private readonly router = inject(Router);
+
+  /** Reference to OrderSection for scrolling (Angular best practice) */
+  @ViewChild('orderSection', { read: ElementRef })
+  private orderSectionRef?: ElementRef<HTMLElement>;
+
+  /** Reference to ServicesSection for scrolling */
+  @ViewChild('servicesSection', { read: ElementRef })
+  private servicesSectionRef?: ElementRef<HTMLElement>;
 
   /** Quick order data from ServicesSection */
   protected readonly quickOrderData = signal<ServiceItemData | null>(null);
@@ -57,25 +65,47 @@ export class Home {
     // Set quick order data for OrderSection
     this.quickOrderData.set(data);
 
-    // Scroll to order section
-    const orderSection = document.querySelector('app-order-section');
-    orderSection?.scrollIntoView({ behavior: 'smooth' });
+    // Scroll to order section using ViewChild (Angular best practice)
+    // block: 'center' shows context around the element for better UX
+    setTimeout(() => {
+      this.orderSectionRef?.nativeElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }, 0);
   }
 
   /**
    * Handle platform selection from OrderSection "More Platform" button.
+   * Scrolls to services section using ViewChild (Angular best practice).
    */
   protected onSelectPlatform(slug: string): void {
     this.selectedPlatformSlug.set(slug);
+
+    // Scroll to services section - block: 'center' for better UX
+    setTimeout(() => {
+      this.servicesSectionRef?.nativeElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }, 0);
   }
 
   /**
    * Handle platform reset from OrderSection "Explore More" button.
-   * Triggers ServicesSection to show all platforms.
+   * Triggers ServicesSection to show all platforms and scrolls to it.
    */
   protected onResetPlatform(): void {
     this.shouldResetPlatform.set(true);
     // Reset the signal after a tick so it can be triggered again
     setTimeout(() => this.shouldResetPlatform.set(false), 0);
+
+    // Scroll to services section - block: 'center' for better UX
+    setTimeout(() => {
+      this.servicesSectionRef?.nativeElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }, 0);
   }
 }
