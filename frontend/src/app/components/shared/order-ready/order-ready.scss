@@ -414,7 +414,7 @@
 .order-ready__explore {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-3);
+  gap: var(--spacing-4);
   margin-bottom: var(--spacing-4);
 
   @include respond-to('sm') {
@@ -434,15 +434,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-2);
+  gap: var(--spacing-3);
   flex: 1;
-  height: var(--spacing-10);
-  padding: 0 var(--spacing-3);
+  height: var(--spacing-12);
+  padding: var(--spacing-3) var(--spacing-4);
   background-color: var(--color-background);
   border: var(--border-width-thick) solid var(--color-information);
   border-radius: var(--radius-md);
   font-family: var(--font-primary);
-  font-size: var(--font-size-caption);
+  font-size: var(--font-size-body);
   font-weight: var(--font-weight-medium);
   color: var(--color-high-contrast);
   transition: var(--transition-colors);
@@ -450,7 +450,7 @@
   @include respond-to('sm') {
     gap: var(--spacing-3);
     height: var(--spacing-12);
-    padding: 0 var(--spacing-4);
+    padding: var(--spacing-3) var(--spacing-4);
     font-size: var(--font-size-body);
   }
 
@@ -472,7 +472,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: var(--spacing-5);
+  font-size: var(--spacing-6);
 
   @include respond-to('sm') {
     font-size: var(--spacing-6);
@@ -496,7 +496,7 @@
   gap: var(--spacing-3);
   width: 100%;
   min-height: var(--spacing-14);
-  padding: 0 var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-4);
   background-color: var(--color-success);
   border-radius: var(--radius-lg);
   transition: var(--transition-colors);
@@ -504,7 +504,7 @@
   @include respond-to('sm') {
     gap: var(--spacing-4);
     min-height: var(--spacing-16);
-    padding: 0 var(--spacing-4);
+    padding: var(--spacing-3) var(--spacing-4);
   }
 
   @include respond-to('md') {
