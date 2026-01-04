@@ -48,7 +48,7 @@ services:
       # Development: CORS enabled for Angular frontend
       # Port 4200 = Angular dev server (ng serve / bun run start)
       # Port 3000 = Alternative dev server (future)
-      SPRING_WEB_CORS_ALLOWED_ORIGINS: "http://localhost:4200,http://localhost:3000,http://frontend:4200"
+      APP_CORS_ALLOWED_ORIGINS: "http://localhost:4200,http://localhost:3000"
 
       # Development: Actuator endpoints
       MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "*"

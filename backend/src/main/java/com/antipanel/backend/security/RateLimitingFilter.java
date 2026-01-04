@@ -102,7 +102,7 @@ public class RateLimitingFilter extends OncePerRequestFilter {
 
     /**
      * Determines which requests should bypass rate limiting.
-     * Excludes actuator, swagger, and API docs endpoints.
+     * Excludes CORS preflight (OPTIONS), actuator, swagger, and API docs endpoints.
      *
      * @param request HTTP request
      * @return true if the request should not be rate limited
@@ -110,6 +110,13 @@ public class RateLimitingFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getServletPath();
+        String method = request.getMethod();
+
+        // Skip CORS preflight requests
+        if ("OPTIONS".equalsIgnoreCase(method)) {
+            return true;
+        }
+
         return path.startsWith("/actuator") ||
                path.startsWith("/swagger-ui") ||
                path.startsWith("/v3/api-docs");
