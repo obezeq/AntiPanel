@@ -284,9 +284,16 @@ export class OrderSection {
     const usernameMatch = text.match(/@[\w.]+/);
     if (usernameMatch) return usernameMatch[0];
 
-    // Match URL pattern
-    const urlMatch = text.match(/https?:\/\/[^\s]+/i);
-    if (urlMatch) return urlMatch[0];
+    // Match URL pattern with protocol
+    const urlWithProtocol = text.match(/https?:\/\/[^\s]+/i);
+    if (urlWithProtocol) return urlWithProtocol[0];
+
+    // Match URL pattern without protocol - any domain with common TLDs
+    // Handles: instagram.com/p/ABC, youtube.com/watch?v=xyz, example.com/path, etc.
+    const urlWithoutProtocol = text.match(
+      /(?:www\.)?[\w-]+\.(?:com|net|org|io|co|me|tv|app|dev|link|bio|page)(?:\/[^\s]*)?/i
+    );
+    if (urlWithoutProtocol) return urlWithoutProtocol[0];
 
     return null;
   }

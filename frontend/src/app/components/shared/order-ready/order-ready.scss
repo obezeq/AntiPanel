@@ -296,6 +296,10 @@
   @include focus-visible;
 }
 
+.order-ready__target-value--placeholder {
+  color: var(--color-foreground);
+}
+
 .order-ready__target-input {
   @include reset-button;
   width: 100%;

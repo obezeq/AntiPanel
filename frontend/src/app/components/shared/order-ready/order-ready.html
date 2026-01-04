@@ -48,32 +48,32 @@
     </div>
   </section>
 
-  <!-- Target URL section (only in With Target mode) -->
-  @if (hasTarget()) {
-    <section class="order-ready__target">
-      <h4 class="order-ready__target-label">TARGET URL</h4>
-      @if (isEditingTarget()) {
-        <input
-          #targetInput
-          type="text"
-          class="order-ready__target-input"
-          [value]="data().target"
-          (blur)="onTargetBlur($event)"
-          (keydown.enter)="onTargetSubmit($event)"
-          (keydown.escape)="cancelTargetEdit()"
-        />
-      } @else {
-        <p
-          class="order-ready__target-value order-ready__target-value--editable"
-          role="button"
-          tabindex="0"
-          aria-label="Click to edit target"
-          (click)="startTargetEdit()"
-          (keydown.enter)="startTargetEdit()"
-        >{{ data().target }}</p>
-      }
-    </section>
-  }
+  <!-- Target URL section - always visible -->
+  <section class="order-ready__target">
+    <h4 class="order-ready__target-label">TARGET URL</h4>
+    @if (isEditingTarget()) {
+      <input
+        #targetInput
+        type="text"
+        class="order-ready__target-input"
+        [value]="data().target ?? ''"
+        placeholder="@username or URL"
+        (blur)="onTargetBlur($event)"
+        (keydown.enter)="onTargetSubmit($event)"
+        (keydown.escape)="cancelTargetEdit()"
+      />
+    } @else {
+      <p
+        class="order-ready__target-value order-ready__target-value--editable"
+        [class.order-ready__target-value--placeholder]="!hasTarget()"
+        role="button"
+        tabindex="0"
+        [attr.aria-label]="hasTarget() ? 'Click to edit target' : 'Click to add target'"
+        (click)="startTargetEdit()"
+        (keydown.enter)="startTargetEdit()"
+      >{{ hasTarget() ? data().target : 'Add @username or URL' }}</p>
+    }
+  </section>
 
   <!-- Explore buttons -->
   <section class="order-ready__explore">
