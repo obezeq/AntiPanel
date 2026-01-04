@@ -1,8 +1,9 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, computed } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError, of, timer } from 'rxjs';
-import { map, catchError, switchMap } from 'rxjs/operators';
+import { Observable, throwError, timer } from 'rxjs';
+import { map, catchError, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { TokenService } from './token.service';
 
 // ============================================================================
 // Types
@@ -71,10 +72,26 @@ export interface FieldError {
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
+  private readonly tokenService = inject(TokenService);
   private readonly baseUrl = `${environment.apiUrl}/auth`;
+
+  // -------------------------------------------------------------------------
+  // Auth State (delegated to TokenService)
+  // -------------------------------------------------------------------------
+
+  /** Whether user is currently authenticated */
+  readonly isAuthenticated = computed(() => this.tokenService.isAuthenticated());
+
+  /** Current authenticated user */
+  readonly currentUser = computed(() => this.tokenService.currentUser());
+
+  // -------------------------------------------------------------------------
+  // Auth Methods
+  // -------------------------------------------------------------------------
 
   /**
    * Authenticates user with email and password.
+   * Stores tokens on success.
    *
    * @param credentials - Login credentials (email and password)
    * @returns Observable with AuthResponse containing tokens and user info
@@ -82,6 +99,15 @@ export class AuthService {
    */
   login(credentials: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.baseUrl}/login`, credentials).pipe(
+      tap((response) => {
+        // Store tokens and user info on successful login
+        this.tokenService.setTokens(
+          response.accessToken,
+          response.refreshToken,
+          response.expiresIn,
+          response.user
+        );
+      }),
       catchError(this.handleError)
     );
   }
@@ -113,14 +139,30 @@ export class AuthService {
 
   /**
    * Logs out the current user.
-   * Note: Since JWT is stateless, this mainly clears client-side tokens.
+   * Clears tokens and optionally notifies the backend.
    *
    * @returns Observable that completes on success
    */
   logout(): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/logout`, {}).pipe(
-      catchError(this.handleError)
+      tap(() => {
+        // Clear tokens on successful logout
+        this.tokenService.clearTokens();
+      }),
+      catchError((error) => {
+        // Clear tokens even if backend logout fails
+        this.tokenService.clearTokens();
+        return this.handleError(error);
+      })
     );
+  }
+
+  /**
+   * Logs out locally without calling the backend.
+   * Useful for session expiry or offline logout.
+   */
+  logoutLocal(): void {
+    this.tokenService.clearTokens();
   }
 
   /**
