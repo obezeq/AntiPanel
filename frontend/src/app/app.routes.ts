@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard, guestGuard } from './core/guards';
+import { authGuard, guestGuard, rootGuard } from './core/guards';
 
 export const routes: Routes = [
   {
@@ -59,8 +59,9 @@ export const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'home',
-    pathMatch: 'full'
+    pathMatch: 'full',
+    canActivate: [rootGuard],
+    children: []
   },
   {
     path: '**',
