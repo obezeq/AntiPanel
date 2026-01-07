@@ -1,0 +1,31 @@
+<div class="wallet-page">
+  <!-- Header (Dashboard Variant) -->
+  <app-header
+    variant="dashboard"
+    walletBalance="$0.00"
+    (walletClick)="onWalletClick()"
+    (logoutClick)="onLogoutClick()"
+  />
+
+  <!-- Main Content -->
+  <main class="wallet-page__content">
+    <section class="wallet-page__placeholder" aria-labelledby="wallet-title">
+      <h1 id="wallet-title" class="wallet-page__title">ADD FUNDS</h1>
+      <p class="wallet-page__subtitle">Coming Soon</p>
+      <p class="wallet-page__description">
+        The wallet functionality is currently under development.
+        Soon you'll be able to add funds to your account using various payment methods.
+      </p>
+      <button
+        type="button"
+        class="wallet-page__back-btn"
+        (click)="onBackToDashboard()"
+      >
+        Back to Dashboard
+      </button>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <app-footer />
+</div>

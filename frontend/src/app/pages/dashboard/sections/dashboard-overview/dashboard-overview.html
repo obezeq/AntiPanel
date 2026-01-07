@@ -1,0 +1,41 @@
+<section class="dashboard-overview" aria-labelledby="dashboard-title">
+  <!-- Dashboard Header with Branding, Balance, and Add Funds -->
+  <header class="dashboard-overview__header">
+    <!-- Branding: Title + Tagline -->
+    <hgroup class="dashboard-overview__branding">
+      <h1 id="dashboard-title" class="dashboard-overview__title">ANTIPANEL</h1>
+      <p class="dashboard-overview__tagline">The anti-SMM panel experience</p>
+    </hgroup>
+
+    <!-- Funds Section: Balance + Add Funds Button -->
+    <aside class="dashboard-overview__funds" aria-label="Account balance">
+      <figure class="dashboard-overview__balance">
+        <figcaption class="dashboard-overview__balance-label">BALANCE</figcaption>
+        <data class="dashboard-overview__balance-value" [value]="stats().balance">
+          {{ balance() }}
+        </data>
+      </figure>
+
+      <button
+        type="button"
+        class="dashboard-overview__add-funds-btn"
+        (click)="onAddFundsClick()"
+        aria-label="Add funds to your account"
+      >
+        <span class="dashboard-overview__add-funds-text">
+          <span aria-hidden="true">+</span>
+          <span>Add funds</span>
+        </span>
+      </button>
+    </aside>
+  </header>
+
+  <!-- Stats Cards Grid -->
+  <ul class="dashboard-overview__stats" role="list" aria-label="Order statistics">
+    @for (card of statsCards(); track card.data.title + card.data.label) {
+      <li class="dashboard-overview__stats-item">
+        <app-stats-card [stats]="card.data" [variant]="card.variant" />
+      </li>
+    }
+  </ul>
+</section>

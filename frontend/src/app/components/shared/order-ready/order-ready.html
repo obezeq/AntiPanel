@@ -98,6 +98,8 @@
   <button
     type="button"
     class="order-ready__place-order"
+    [class.order-ready__place-order--disabled]="disabled()"
+    [disabled]="disabled()"
     [attr.aria-label]="'Place order for ' + data().price"
     (click)="placeOrder.emit(data())"
   >
