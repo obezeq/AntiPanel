@@ -611,6 +611,9 @@
 }
 
 .auth-form__terms-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
   color: var(--color-text);
   text-decoration: underline;
   text-underline-offset: 2px;
@@ -618,6 +621,12 @@
 
   &:hover {
     color: var(--color-success);
+  }
+
+  // New tab icon
+  ng-icon {
+    flex-shrink: 0;
+    text-decoration: none;
   }
 
   @include focus-visible;
