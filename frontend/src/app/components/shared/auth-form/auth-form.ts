@@ -108,7 +108,8 @@ export class AuthForm {
       Validators.required,
       Validators.minLength(8)
     ]],
-    confirmPassword: ['']
+    confirmPassword: [''],
+    termsAccepted: [false]
   });
 
   /**
@@ -135,6 +136,9 @@ export class AuthForm {
 
   /** Whether confirm password field has been modified (for real-time validation) */
   protected readonly confirmPasswordDirty = signal(false);
+
+  /** Whether terms checkbox has been interacted with */
+  protected readonly termsAcceptedTouched = signal(false);
 
   /** Email validation pending state */
   protected readonly emailPending = computed(() => {
@@ -167,6 +171,21 @@ export class AuthForm {
 
     // Valid if both have values and they match
     return confirmValue && passwordValue === confirmValue;
+  });
+
+  /** Whether terms checkbox is checked */
+  protected readonly termsAcceptedValid = computed(() => {
+    if (!this.isRegisterMode()) return true;
+    return !!this.formValues()?.termsAccepted;
+  });
+
+  /** Terms acceptance error message */
+  protected readonly termsAcceptedError = computed(() => {
+    if (!this.isRegisterMode()) return '';
+    if (!this.termsAcceptedTouched()) return '';
+    const accepted = this.formValues()?.termsAccepted;
+    if (!accepted) return 'You must accept the terms of service';
+    return '';
   });
 
   /** Whether form is currently validating */
@@ -275,6 +294,7 @@ export class AuthForm {
       const isRegister = this.isRegisterMode();
       const emailControl = this.form.controls.email;
       const passwordControl = this.form.controls.password;
+      const termsControl = this.form.controls.termsAccepted;
 
       if (isRegister) {
         // Enable async validator for email in register mode
@@ -287,6 +307,8 @@ export class AuthForm {
         ]);
         // Add password match validator at form group level (register mode only)
         this.form.setValidators([passwordMatchValidator('password', 'confirmPassword')]);
+        // Require terms acceptance in register mode
+        termsControl.setValidators([Validators.requiredTrue]);
       } else {
         // Remove async validator in login mode
         emailControl.clearAsyncValidators();
@@ -297,9 +319,12 @@ export class AuthForm {
         ]);
         // Remove form group validators in login mode
         this.form.clearValidators();
+        // Remove terms validator in login mode
+        termsControl.clearValidators();
       }
       emailControl.updateValueAndValidity();
       passwordControl.updateValueAndValidity();
+      termsControl.updateValueAndValidity();
       this.form.updateValueAndValidity();
     });
   }
@@ -324,12 +349,17 @@ export class AuthForm {
     this.confirmPasswordDirty.set(true);
   }
 
+  protected onTermsBlur(): void {
+    this.termsAcceptedTouched.set(true);
+  }
+
   protected onSubmit(): void {
     // Mark all as touched for validation display
     this.emailTouched.set(true);
     this.passwordTouched.set(true);
     if (this.isRegisterMode()) {
       this.confirmPasswordTouched.set(true);
+      this.termsAcceptedTouched.set(true);
     }
 
     // Mark form as touched to trigger validation
@@ -362,5 +392,6 @@ export class AuthForm {
     this.passwordTouched.set(false);
     this.confirmPasswordTouched.set(false);
     this.confirmPasswordDirty.set(false);
+    this.termsAcceptedTouched.set(false);
   }
 }

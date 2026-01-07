@@ -504,3 +504,134 @@
   opacity: 0.8;
   cursor: wait;
 }
+
+// ---------------------------------------------------------------------------
+// TERMS ACCEPTANCE CHECKBOX
+// ---------------------------------------------------------------------------
+// Custom checkbox with accessible design.
+// Uses native checkbox with visual overlay for best accessibility.
+
+.auth-form__terms {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-2);
+}
+
+.auth-form__terms-label {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-3);
+  cursor: pointer;
+  position: relative;
+
+  // Focus-within for keyboard navigation
+  &:focus-within {
+    .auth-form__terms-checkmark {
+      outline: var(--focus-ring-width) solid var(--focus-ring-color);
+      outline-offset: var(--focus-ring-offset);
+    }
+  }
+}
+
+.auth-form__terms-checkbox {
+  // Visually hide but keep accessible
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+
+  // Checked state
+  &:checked + .auth-form__terms-checkmark {
+    background-color: var(--color-success);
+    border-color: var(--color-success);
+
+    &::after {
+      opacity: 1;
+      transform: rotate(45deg) scale(1);
+    }
+  }
+
+  // Focus visible (keyboard)
+  &:focus-visible + .auth-form__terms-checkmark {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+}
+
+.auth-form__terms-checkmark {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: var(--border-width-medium) solid var(--color-secondary);
+  border-radius: var(--radius-sm);
+  background-color: transparent;
+  transition: var(--transition-colors);
+  position: relative;
+  margin-top: 0.125rem; // Align with first line of text
+
+  // Checkmark icon
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0.375rem;
+    top: 0.125rem;
+    width: 0.3125rem;
+    height: 0.625rem;
+    border: solid var(--color-background);
+    border-width: 0 2px 2px 0;
+    opacity: 0;
+    transform: rotate(45deg) scale(0);
+    transition: var(--transition-transform), var(--transition-opacity);
+  }
+
+  @include respond-to('md') {
+    width: 1.5rem;
+    height: 1.5rem;
+
+    &::after {
+      left: 0.5rem;
+      top: 0.1875rem;
+      width: 0.375rem;
+      height: 0.75rem;
+    }
+  }
+}
+
+.auth-form__terms-text {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-foreground);
+  line-height: 1.4;
+
+  @include respond-to('md') {
+    font-size: var(--font-size-caption);
+  }
+}
+
+.auth-form__terms-link {
+  color: var(--color-text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: var(--transition-colors);
+
+  &:hover {
+    color: var(--color-success);
+  }
+
+  @include focus-visible;
+}
+
+.auth-form__terms-error {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-error);
+  margin: 0;
+  padding-left: calc(1.25rem + var(--spacing-3)); // Align with text
+
+  @include respond-to('md') {
+    padding-left: calc(1.5rem + var(--spacing-3));
+  }
+}
