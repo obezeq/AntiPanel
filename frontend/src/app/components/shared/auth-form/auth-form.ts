@@ -72,8 +72,10 @@ export class AuthForm {
     this.isRegisterMode() ? 'Registration Form' : 'Login Form'
   );
 
-  /** Submit button text */
-  protected readonly submitButtonText = computed(() => 'ACCESS');
+  /** Submit button text - "JOIN" for register, "ACCESS" for login */
+  protected readonly submitButtonText = computed(() =>
+    this.isRegisterMode() ? 'JOIN' : 'ACCESS'
+  );
 
   /** Link text for mode switch */
   protected readonly switchModeText = computed(() =>
