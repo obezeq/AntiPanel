@@ -137,11 +137,14 @@ export class Dashboard implements OnInit {
   }
 
   /**
-   * Handle logout click from header
+   * Handle logout click from header.
+   * Subscribes to logout observable to properly notify backend.
    */
   protected onLogoutClick(): void {
-    this.authService.logout();
-    this.router.navigate(['/home']);
+    this.authService.logout().subscribe({
+      next: () => this.router.navigate(['/home']),
+      error: () => this.router.navigate(['/home'])
+    });
   }
 
   /**
