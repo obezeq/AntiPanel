@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, APP_INITIALIZER, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor, loadingInterceptor } from './core/interceptors';
@@ -53,12 +53,28 @@ import {
 import { simpleSnapchat } from '@ng-icons/simple-icons';
 
 import { routes } from './app.routes';
+import { TokenRefreshService } from './core/services/token-refresh.service';
+
+/**
+ * Factory function to initialize TokenRefreshService.
+ * The service uses effect() internally to auto-schedule token refresh.
+ */
+function initTokenRefresh(service: TokenRefreshService) {
+  return () => service;
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withInMemoryScrolling({ anchorScrolling: 'enabled' })),
     provideHttpClient(withInterceptors([authInterceptor, loadingInterceptor])),
+    // Initialize token refresh service on app startup
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initTokenRefresh,
+      deps: [TokenRefreshService],
+      multi: true
+    },
     provideIcons({
       // Material Icons - Navigation & UI
       matHome,
