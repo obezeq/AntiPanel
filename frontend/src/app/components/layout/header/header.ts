@@ -17,6 +17,7 @@ export type HeaderVariant = 'home' | 'login' | 'register' | 'dashboard' | 'logge
 interface NavItem {
   label: string;
   path: string;
+  fragment?: string;
   external?: boolean;
 }
 
@@ -108,17 +109,18 @@ export class Header {
     switch (variant) {
       case 'dashboard':
         // Dashboard: NEW ORDER, SERVICES, SUPPORT
+        // NEW ORDER and SERVICES scroll to sections within dashboard
         return [
-          { label: 'NEW ORDER', path: '/new-order' },
-          { label: 'SERVICES', path: '/services' },
+          { label: 'NEW ORDER', path: '/dashboard', fragment: 'order-section' },
+          { label: 'SERVICES', path: '/dashboard', fragment: 'services-section' },
           { label: 'SUPPORT', path: '/support' }
         ];
       case 'loggedIn':
         // Logged In (non-dashboard): DASHBOARD, NEW ORDER, SERVICES, SUPPORT
         return [
           { label: 'DASHBOARD', path: '/dashboard' },
-          { label: 'NEW ORDER', path: '/new-order' },
-          { label: 'SERVICES', path: '/services' },
+          { label: 'NEW ORDER', path: '/dashboard', fragment: 'order-section' },
+          { label: 'SERVICES', path: '/dashboard', fragment: 'services-section' },
           { label: 'SUPPORT', path: '/support' }
         ];
       default:
