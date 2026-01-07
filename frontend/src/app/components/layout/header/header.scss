@@ -527,10 +527,10 @@
   margin-top: var(--spacing-2);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-6);
+  align-items: stretch; // Full width items for proper click area
+  gap: var(--spacing-4);
   inline-size: 15rem; // 240px (base-8)
-  padding: var(--spacing-8) var(--spacing-12);
+  padding: var(--spacing-6);
   background-color: var(--color-background);
   border: var(--border-width-thin) solid var(--color-information);
   border-radius: var(--radius-md);
@@ -544,6 +544,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%; // Full width clickable area
+  padding: var(--spacing-3) var(--spacing-4); // Proper touch target (min 44px)
   font-family: var(--font-primary);
   font-size: var(--font-size-h5);
   font-weight: var(--font-weight-semibold);
@@ -551,10 +553,12 @@
   text-decoration: none;
   text-transform: uppercase;
   white-space: nowrap;
-  transition: var(--transition-colors);
+  border-radius: var(--radius-sm); // Rounded corners for polish
+  transition: var(--transition-colors), var(--transition-bg);
 
   &:hover {
     color: var(--color-foreground);
+    background-color: var(--color-information); // Visual hover feedback
   }
 
   @include focus-visible;
