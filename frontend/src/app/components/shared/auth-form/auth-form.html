@@ -75,7 +75,7 @@
 
       <!-- Password Strength Hints (always visible in register mode for better UX) -->
       @if (isRegisterMode()) {
-        <ul class="auth-form__password-hints" aria-label="Password requirements">
+        <ul class="auth-form__password-hints" aria-label="Password requirements" aria-live="polite">
           @for (hint of passwordStrengthHints(); track hint.label) {
             <li
               class="auth-form__hint"
