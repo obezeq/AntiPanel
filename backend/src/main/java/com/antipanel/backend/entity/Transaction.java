@@ -42,7 +42,7 @@ public class Transaction {
 
     @NotNull(message = "El tipo no puede ser nulo")
     @Enumerated(EnumType.STRING)
-    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "type", nullable = false)
     private TransactionType type;
 

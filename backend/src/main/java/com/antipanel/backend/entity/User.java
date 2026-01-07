@@ -48,7 +48,7 @@ public class User {
 
     @NotNull(message = "El rol no puede ser nulo")
     @Enumerated(EnumType.STRING)
-    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "role", nullable = false)
     private UserRole role = UserRole.USER;
 
