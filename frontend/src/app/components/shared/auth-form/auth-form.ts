@@ -284,7 +284,7 @@ export class AuthForm {
       { label: 'Uppercase letter', valid: /[A-Z]/.test(value) },
       { label: 'Lowercase letter', valid: /[a-z]/.test(value) },
       { label: 'Number', valid: /\d/.test(value) },
-      { label: 'Special character', valid: /[!@#$%^&*(),.?":{}|<>]/.test(value) }
+      { label: 'Special character', valid: /[!@#$%^&*()\-_=+\[\]{}|;:'",.<>?/\\~`]/.test(value) }
     ];
   });
 
