@@ -37,6 +37,9 @@ export class OrderReady implements AfterViewInit {
   /** Order data to display */
   readonly data = input.required<OrderReadyData>();
 
+  /** Whether the Place Order button should be disabled */
+  readonly disabled = input<boolean>(false);
+
   /** Emits when user clicks "EXPLORE MORE" */
   readonly exploreMore = output<void>();
 

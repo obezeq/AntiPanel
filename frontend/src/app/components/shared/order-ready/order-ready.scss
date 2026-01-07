@@ -521,6 +521,22 @@
   }
 
   @include focus-visible;
+
+  // Disabled state for insufficient balance
+  &--disabled,
+  &:disabled {
+    background-color: var(--color-foreground);
+    cursor: not-allowed;
+    opacity: 0.6;
+
+    &:hover {
+      background-color: var(--color-foreground);
+    }
+
+    &:active {
+      transform: none;
+    }
+  }
 }
 
 .order-ready__currency {

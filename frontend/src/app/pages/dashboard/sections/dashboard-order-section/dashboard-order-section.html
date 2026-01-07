@@ -1,0 +1,102 @@
+<section
+  class="order-section"
+  aria-labelledby="order-title"
+>
+  <!-- Section Header -->
+  <app-dashboard-section-header
+    title="ORDER"
+    subtitle="Tell us what you want in plain language. No forms, no complexity."
+  />
+
+  <!-- Order Input -->
+  <fieldset
+    class="order-section__input-wrapper"
+    [class.order-section__input-wrapper--focused]="isInputFocused()"
+    [class.order-section__input-wrapper--loading]="orderState() === 'loading'"
+  >
+    <span class="order-section__input-icon" aria-hidden="true">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/>
+        <circle cx="12" cy="12" r="3"/>
+        <line x1="12" y1="2" x2="12" y2="5"/>
+        <line x1="12" y1="19" x2="12" y2="22"/>
+        <line x1="2" y1="12" x2="5" y2="12"/>
+        <line x1="19" y1="12" x2="22" y2="12"/>
+      </svg>
+    </span>
+
+    <input
+      type="text"
+      class="order-section__input-field"
+      placeholder="I want 3k example followers for @myaccount ..."
+      [value]="inputText()"
+      [disabled]="orderState() === 'loading'"
+      aria-label="Enter your order using natural language"
+      (input)="onInputChange($event)"
+      (focus)="onInputFocus()"
+      (blur)="onInputBlur()"
+      (keydown.enter)="onInputSubmit()"
+    />
+
+    @if (orderState() === 'loading') {
+      <span class="order-section__loading-indicator" aria-label="Creating order...">
+        <svg class="order-section__spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10" stroke-dasharray="60" stroke-dashoffset="20" />
+        </svg>
+      </span>
+    }
+  </fieldset>
+
+  <!-- Status Messages -->
+  @if (errorMessage()) {
+    <aside class="order-section__message order-section__message--error" role="alert">
+      <p>{{ errorMessage() }}</p>
+      @if (!hasSufficientBalance()) {
+        <button
+          type="button"
+          class="order-section__add-funds-link"
+          (click)="onAddFundsClick()"
+        >
+          Add Funds
+        </button>
+      }
+    </aside>
+  }
+
+  @if (successMessage()) {
+    <aside class="order-section__message order-section__message--success" role="status">
+      <p>{{ successMessage() }}</p>
+    </aside>
+  }
+
+  <!-- Balance Warning (shown when order preview is visible but balance is insufficient) -->
+  @if (showOrderReady() && orderReadyData() && !hasSufficientBalance() && !errorMessage()) {
+    <aside class="order-section__balance-warning" role="alert">
+      <p>
+        <strong>Insufficient balance.</strong>
+        You need {{ orderReadyData()!.price }} but your balance is ${{ userBalance().toFixed(2) }}.
+      </p>
+      <button
+        type="button"
+        class="order-section__add-funds-link"
+        (click)="onAddFundsClick()"
+      >
+        Add Funds
+      </button>
+    </aside>
+  }
+
+  <!-- Order Preview (shown when we have enough data) -->
+  @if (showOrderReady() && orderReadyData()) {
+    <app-order-ready
+      class="order-section__preview"
+      [data]="orderReadyData()!"
+      [disabled]="isPlaceOrderDisabled()"
+      (exploreMore)="onExploreMore()"
+      (morePlatform)="onMorePlatform($event)"
+      (placeOrder)="onPlaceOrder($event)"
+      (targetChange)="onTargetChange($event)"
+      (quantityChange)="onQuantityChange($event)"
+    />
+  }
+</section>
