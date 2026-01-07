@@ -225,6 +225,17 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     long countByUserIdAndStatus(Long userId, OrderStatus status);
 
     /**
+     * Count orders by user created after a specific date.
+     * Used for "orders this month" statistics.
+     *
+     * @param userId    User ID
+     * @param startDate Start date (inclusive)
+     * @return Number of orders
+     */
+    @Query("SELECT COUNT(o) FROM Order o WHERE o.user.id = :userId AND o.createdAt >= :startDate")
+    long countByUserIdAndCreatedAtAfter(@Param("userId") Long userId, @Param("startDate") LocalDateTime startDate);
+
+    /**
      * Calculate total revenue (sum of all charges on completed orders)
      *
      * @return Total revenue
