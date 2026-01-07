@@ -16,3 +16,4 @@
 
 export { authGuard, authGuardChild } from './auth.guard';
 export { guestGuard } from './guest.guard';
+export { rootGuard } from './root.guard';
