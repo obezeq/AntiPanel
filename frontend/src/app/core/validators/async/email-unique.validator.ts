@@ -45,7 +45,7 @@ export function createEmailUniqueValidator(
     return timer(debounceMs).pipe(
       switchMap(() => emailCheckService.checkEmailExists(email)),
       map(exists => (exists ? { emailTaken: true } : null)),
-      catchError(() => of(null)) // On error, don't block the form
+      catchError(() => of({ emailCheckFailed: true })) // Return error so UI can inform user
     );
   };
 }
@@ -92,7 +92,7 @@ export function emailUniqueValidator(debounceMs: number = 500): AsyncValidatorFn
         const isTaken = takenEmails.includes(emailLower);
         return isTaken ? { emailTaken: true } : null;
       }),
-      catchError(() => of(null))
+      catchError(() => of({ emailCheckFailed: true }))
     );
   };
 }
@@ -113,4 +113,13 @@ function isValidEmailFormat(email: string): boolean {
  */
 export function getEmailTakenError(): string {
   return 'This email is already registered';
+}
+
+/**
+ * Returns the error message for email check failure.
+ *
+ * @returns Error message string
+ */
+export function getEmailCheckFailedError(): string {
+  return 'Unable to verify email. Please try again.';
 }
