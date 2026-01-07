@@ -18,25 +18,25 @@
   flex-direction: column;
   align-items: center;
   gap: 0;
-  margin-bottom: var(--spacing-4);
+  margin-bottom: var(--spacing-6); // 24px on mobile (increased from 16px)
   text-align: center;
 
   @include respond-to('sm') {
-    margin-bottom: var(--spacing-6);
+    margin-bottom: var(--spacing-8); // 32px
   }
 
   @include respond-to('md') {
-    margin-bottom: var(--spacing-8);
+    margin-bottom: var(--spacing-10); // 40px
   }
 
   @include respond-to('lg') {
-    margin-bottom: var(--spacing-16); // 64px gap entre header y form según Figma
+    margin-bottom: var(--spacing-16); // 64px según Figma
   }
 }
 
 .auth-form__title {
   font-family: var(--font-primary);
-  font-size: var(--font-size-h3); // 48px base (mobile)
+  font-size: var(--font-size-h4); // 32px on mobile (reduced from 48px)
   font-weight: var(--font-weight-bold);
   color: var(--color-text);
   line-height: 1.15;
@@ -44,11 +44,11 @@
   letter-spacing: 0;
 
   @include respond-to('sm') {
-    font-size: var(--font-size-h2); // 64px
+    font-size: var(--font-size-h3); // 48px
   }
 
   @include respond-to('md') {
-    font-size: var(--font-size-h1); // 96px
+    font-size: var(--font-size-h2); // 64px
   }
 
   @include respond-to('lg') {
@@ -109,7 +109,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-4);
-  padding: var(--spacing-4);
+  padding: var(--spacing-5); // 20px on mobile (increased from 16px)
   background-color: var(--color-background);
   border: var(--border-width-thick) solid var(--color-secondary);
   border-radius: var(--radius-lg);
