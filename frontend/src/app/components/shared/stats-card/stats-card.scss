@@ -15,6 +15,10 @@
   width: 16rem; // 256px (base-8)
   min-height: 11rem; // 176px (base-8)
   padding: 1.25rem 1.5rem; // 20px 24px (base-8)
+  box-shadow:
+    0 0 30px 0 rgba(255, 255, 255, 0.06),
+    0 0 60px 0 rgba(255, 255, 255, 0.03);
+  transition: box-shadow var(--transition-base);
 }
 
 .stats-card:hover {
@@ -94,6 +98,10 @@
 // ---------------------------------------------------------------------------
 
 .stats-card--success {
+  box-shadow:
+    0 0 30px 0 rgba(var(--color-success-rgb), 0.12),
+    0 0 60px 0 rgba(var(--color-success-rgb), 0.06);
+
   .stats-card__icon {
     color: var(--color-success);
   }
@@ -104,6 +112,10 @@
 }
 
 .stats-card--info {
+  box-shadow:
+    0 0 30px 0 rgba(var(--color-stats-blue-rgb), 0.12),
+    0 0 60px 0 rgba(var(--color-stats-blue-rgb), 0.06);
+
   .stats-card__icon {
     color: var(--color-stats-blue);
   }
@@ -114,6 +126,10 @@
 }
 
 .stats-card--warning {
+  box-shadow:
+    0 0 30px 0 rgba(var(--color-status-yellow-rgb), 0.12),
+    0 0 60px 0 rgba(var(--color-status-yellow-rgb), 0.06);
+
   .stats-card__icon {
     color: var(--color-status-yellow);
   }
