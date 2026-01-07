@@ -221,6 +221,9 @@ export class AuthForm {
     if (control.hasError('emailTaken')) {
       return 'This email is already registered';
     }
+    if (control.hasError('emailCheckFailed')) {
+      return 'Unable to verify email. Please try again.';
+    }
     return '';
   });
 
