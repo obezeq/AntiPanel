@@ -64,12 +64,13 @@
       </button>
 
       <ul class="header__nav-list" role="list">
-        @for (item of navItems(); track item.path) {
+        @for (item of navItems(); track item.label) {
           <li class="header__nav-item">
             <a
               [routerLink]="item.path"
+              [fragment]="item.fragment"
               routerLinkActive="header__nav-link--active"
-              [routerLinkActiveOptions]="{ exact: item.path === '/dashboard' }"
+              [routerLinkActiveOptions]="{ exact: item.path === '/dashboard' && !item.fragment }"
               class="header__nav-link"
               (click)="closeMobileMenu()"
             >
