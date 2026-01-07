@@ -205,8 +205,20 @@
 
         <!-- Profile Dropdown Menu -->
         @if (isProfileDropdownOpen()) {
-          <nav class="header__dropdown" role="menu" aria-label="Profile menu">
+          <!-- Overlay inside container, before dropdown - prevents click blocking -->
+          <div
+            class="header__dropdown-overlay"
+            (click)="closeProfileDropdown()"
+            aria-hidden="true"
+          ></div>
+          <nav
+            class="header__dropdown"
+            role="menu"
+            aria-label="Profile menu"
+            (keydown)="onDropdownKeydown($event)"
+          >
             <a
+              #dropdownItem
               routerLink="/orders"
               class="header__dropdown-item"
               role="menuitem"
@@ -215,6 +227,7 @@
               ORDERS
             </a>
             <button
+              #dropdownItem
               type="button"
               class="header__dropdown-item"
               role="menuitem"
@@ -310,15 +323,6 @@
     <div
       class="header__overlay hide-desktop-lg"
       (click)="closeMobileMenu()"
-      aria-hidden="true"
-    ></div>
-  }
-
-  <!-- Profile Dropdown Overlay (click outside to close) -->
-  @if (isProfileDropdownOpen()) {
-    <div
-      class="header__dropdown-overlay"
-      (click)="closeProfileDropdown()"
       aria-hidden="true"
     ></div>
   }

@@ -1,4 +1,14 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  input,
+  output,
+  signal,
+  viewChildren
+} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgIcon } from '@ng-icons/core';
 import { ThemeService } from '../../../services/theme.service';
@@ -61,6 +71,9 @@ export class Header {
 
   /** Profile dropdown open state */
   protected readonly isProfileDropdownOpen = signal(false);
+
+  /** Dropdown menu items for keyboard navigation (WCAG 2.1.1) */
+  private readonly dropdownItems = viewChildren<ElementRef<HTMLElement>>('dropdownItem');
 
   /** Whether to show full logo (icon + text) or just icon */
   protected readonly showFullLogo = computed(() => {
@@ -152,6 +165,10 @@ export class Header {
 
   protected onProfileClick(): void {
     this.toggleProfileDropdown();
+    // Focus first item when dropdown opens (WCAG 2.4.7)
+    if (this.isProfileDropdownOpen()) {
+      setTimeout(() => this.focusFirstDropdownItem(), 0);
+    }
   }
 
   protected onOrdersClick(): void {
@@ -167,5 +184,67 @@ export class Header {
 
   protected onThemeToggle(): void {
     this.themeService.toggleTheme();
+  }
+
+  // ---------------------------------------------------------------------------
+  // Keyboard Navigation (WCAG 2.1.1, 2.4.3)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Handles keyboard navigation within the profile dropdown menu.
+   * Per WAI-ARIA: Arrow keys navigate items, Escape closes menu.
+   */
+  protected onDropdownKeydown(event: KeyboardEvent): void {
+    const items = this.dropdownItems();
+    if (!items.length) return;
+
+    const currentIndex = this.getCurrentDropdownItemIndex(items);
+
+    switch (event.key) {
+      case 'ArrowDown':
+        event.preventDefault();
+        this.focusDropdownItem(items, currentIndex + 1);
+        break;
+      case 'ArrowUp':
+        event.preventDefault();
+        this.focusDropdownItem(items, currentIndex - 1);
+        break;
+      case 'Escape':
+        event.preventDefault();
+        this.closeProfileDropdown();
+        break;
+      case 'Tab':
+        // Allow Tab to exit menu naturally, then close
+        this.closeProfileDropdown();
+        break;
+    }
+  }
+
+  /**
+   * Gets the currently focused item index within dropdown.
+   */
+  private getCurrentDropdownItemIndex(items: readonly ElementRef<HTMLElement>[]): number {
+    const activeElement = document.activeElement;
+    return items.findIndex(item => item.nativeElement === activeElement);
+  }
+
+  /**
+   * Focuses a dropdown item by index with wraparound.
+   */
+  private focusDropdownItem(items: readonly ElementRef<HTMLElement>[], index: number): void {
+    const length = items.length;
+    // Wraparound navigation
+    const targetIndex = ((index % length) + length) % length;
+    items[targetIndex]?.nativeElement.focus();
+  }
+
+  /**
+   * Focuses the first dropdown item (called when dropdown opens).
+   */
+  private focusFirstDropdownItem(): void {
+    const items = this.dropdownItems();
+    if (items.length > 0) {
+      items[0].nativeElement.focus();
+    }
   }
 }
