@@ -553,12 +553,13 @@
   text-decoration: none;
   text-transform: uppercase;
   white-space: nowrap;
-  border-radius: var(--radius-sm); // Rounded corners for polish
-  transition: var(--transition-colors), var(--transition-bg);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition-colors);
 
-  &:hover {
+  &:hover,
+  &:focus {
     color: var(--color-foreground);
-    background-color: var(--color-information); // Visual hover feedback
   }
 
   @include focus-visible;
