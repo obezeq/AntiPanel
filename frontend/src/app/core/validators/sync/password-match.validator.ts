@@ -53,8 +53,10 @@ export function passwordMatchValidator(
     // Check if passwords match
     if (password.value !== confirmPassword.value) {
       // Set error on the confirm password control for styling purposes
+      // Use null-safe spread to avoid issues with null errors
+      const existingErrors = confirmPassword.errors || {};
       confirmPassword.setErrors({
-        ...confirmPassword.errors,
+        ...existingErrors,
         passwordMismatch: true
       });
       return { passwordMismatch: true };
