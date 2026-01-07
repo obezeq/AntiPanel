@@ -36,7 +36,7 @@ export class DashboardOverview {
     return [
       {
         data: {
-          icon: 'matShowChartOutline',
+          icon: 'matShowChart',
           title: 'TOTAL',
           value: stats.totalOrders,
           label: 'All time orders'
@@ -45,7 +45,7 @@ export class DashboardOverview {
       },
       {
         data: {
-          icon: 'matAccessTimeOutline',
+          icon: 'matSchedule',
           title: 'PENDING',
           value: stats.pendingOrders,
           label: 'In progress'
@@ -54,7 +54,7 @@ export class DashboardOverview {
       },
       {
         data: {
-          icon: 'matCheckCircleOutline',
+          icon: 'matCheckCircle',
           title: 'STATUS',
           value: stats.completedOrders,
           label: 'Completed'
@@ -63,7 +63,7 @@ export class DashboardOverview {
       },
       {
         data: {
-          icon: 'matQueryStatsOutline',
+          icon: 'matQueryStats',
           title: 'STATUS',
           value: stats.ordersThisMonth,
           label: 'This month'
