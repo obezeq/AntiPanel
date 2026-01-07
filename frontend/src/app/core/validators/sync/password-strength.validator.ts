@@ -38,7 +38,7 @@ const DEFAULT_CONFIG: Required<PasswordStrengthConfig> = {
  * - At least one uppercase letter
  * - At least one lowercase letter
  * - At least one number
- * - At least one special character (!@#$%^&*(),.?":{}|<>)
+ * - At least one special character (!@#$%^&*()-_=+[]{}|;:'",.<>?/\~`)
  *
  * @param config - Optional configuration to customize validation rules
  * @returns ValidatorFn that returns null if valid, or PasswordStrengthErrors if invalid
@@ -87,8 +87,8 @@ export function passwordStrengthValidator(config?: PasswordStrengthConfig): Vali
       errors.number = true;
     }
 
-    // Check for special character
-    if (finalConfig.requireSpecial && !/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
+    // Check for special character (expanded to include common special chars)
+    if (finalConfig.requireSpecial && !/[!@#$%^&*()\-_=+\[\]{}|;:'",.<>?/\\~`]/.test(value)) {
       errors.special = true;
     }
 
