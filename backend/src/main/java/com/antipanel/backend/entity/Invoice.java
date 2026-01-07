@@ -75,7 +75,7 @@ public class Invoice {
 
     @NotNull(message = "El estado no puede ser nulo")
     @Enumerated(EnumType.STRING)
-    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "status", nullable = false)
     private InvoiceStatus status = InvoiceStatus.PENDING;
 

@@ -48,7 +48,8 @@ export class Register {
 
     this.authService.register({
       email: data.email,
-      password: data.password
+      password: data.password,
+      role: 'USER'
     }).subscribe({
       next: () => {
         this.isLoading.set(false);
