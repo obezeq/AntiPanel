@@ -1,0 +1,31 @@
+<main class="orders-page">
+  <!-- Header (Dashboard Variant) -->
+  <app-header
+    variant="dashboard"
+    walletBalance="$0.00"
+    (walletClick)="onWalletClick()"
+    (logoutClick)="onLogoutClick()"
+  />
+
+  <!-- Main Content -->
+  <section class="orders-page__content" aria-labelledby="orders-title">
+    <article class="orders-page__placeholder">
+      <h1 id="orders-title" class="orders-page__title">MY ORDERS</h1>
+      <p class="orders-page__subtitle">Coming Soon</p>
+      <p class="orders-page__description">
+        The orders page is currently under development.
+        Soon you'll be able to view your complete order history and track order status.
+      </p>
+      <button
+        type="button"
+        class="orders-page__back-btn"
+        (click)="onBackToDashboard()"
+      >
+        Back to Dashboard
+      </button>
+    </article>
+  </section>
+
+  <!-- Footer -->
+  <app-footer />
+</main>
