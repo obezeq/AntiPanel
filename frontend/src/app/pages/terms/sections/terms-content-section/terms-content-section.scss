@@ -1,0 +1,87 @@
+// ==========================================================================
+// TERMS CONTENT SECTION
+// ==========================================================================
+// Container for all terms of service content.
+// Bordered box with rounded corners following Figma design.
+// ==========================================================================
+
+@use '../../../../../styles/01-tools/mixins' as *;
+
+.terms-content {
+  @include flex-column;
+  gap: var(--spacing-16);
+  width: 100%;
+  max-width: 73.125rem; // 1170px from Figma
+  padding: var(--spacing-16);
+  border: var(--border-width-medium) solid var(--color-information);
+  border-radius: var(--radius-2xl);
+  background-color: transparent;
+
+  @include respond-below('lg') {
+    gap: var(--spacing-12);
+    padding: var(--spacing-12);
+  }
+
+  @include respond-below('md') {
+    gap: var(--spacing-8);
+    padding: var(--spacing-6);
+    border-radius: var(--radius-xl);
+  }
+
+  // ---------------------------------------------------------------------------
+  // TERM ARTICLE
+  // ---------------------------------------------------------------------------
+  // Individual term section with heading and text.
+
+  &__term {
+    @include flex-column;
+    gap: var(--spacing-4);
+  }
+
+  // ---------------------------------------------------------------------------
+  // HEADING
+  // ---------------------------------------------------------------------------
+  // 32px Bold Montserrat
+
+  &__heading {
+    @include typography('h4', 'bold', 'primary');
+    color: var(--color-high-contrast);
+    margin: 0;
+    line-height: var(--line-height-tight);
+
+    @include respond-below('lg') {
+      font-size: var(--font-size-h5);
+    }
+
+    @include respond-below('md') {
+      font-size: var(--font-size-h6);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // TEXT
+  // ---------------------------------------------------------------------------
+  // 16px Medium Montserrat
+
+  &__text {
+    @include typography('body', 'medium', 'primary');
+    color: var(--color-high-contrast);
+    margin: 0;
+    line-height: var(--line-height-tight);
+
+    @include respond-below('md') {
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-normal);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // FOOTER
+  // ---------------------------------------------------------------------------
+  // Final statement without heading.
+
+  &__footer {
+    @include flex-column;
+    gap: var(--spacing-4);
+  }
+}

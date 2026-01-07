@@ -1,0 +1,30 @@
+// ==========================================================================
+// TERMS PAGE
+// ==========================================================================
+// Terms of service page with header and content sections.
+// Simple layout without background pattern (unlike home page).
+// ==========================================================================
+
+@use '../../../styles/01-tools/mixins' as *;
+
+.terms {
+  @include flex-column;
+  align-items: center;
+  gap: var(--spacing-16);
+  min-height: 100vh;
+  padding: var(--spacing-16) var(--spacing-6);
+  padding-bottom: var(--spacing-24);
+  background-color: var(--color-background);
+
+  @include respond-below('lg') {
+    gap: var(--spacing-12);
+    padding: var(--spacing-12) var(--spacing-4);
+    padding-bottom: var(--spacing-16);
+  }
+
+  @include respond-below('md') {
+    gap: var(--spacing-8);
+    padding: var(--spacing-8) var(--spacing-4);
+    padding-bottom: var(--spacing-12);
+  }
+}

@@ -35,6 +35,11 @@ export const routes: Routes = [
     canActivate: [guestGuard]
   },
   {
+    path: 'terms',
+    loadComponent: () =>
+      import('./pages/terms/terms').then(m => m.Terms)
+  },
+  {
     path: '',
     redirectTo: 'home',
     pathMatch: 'full'
