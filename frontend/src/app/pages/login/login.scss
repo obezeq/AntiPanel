@@ -104,7 +104,7 @@
   @include flex-column-center;
   flex: 1;
   justify-content: center;
-  padding: var(--spacing-4);
+  padding: var(--spacing-5); // 20px on mobile (increased from 16px)
 
   @include respond-to('sm') {
     padding: var(--spacing-6);
