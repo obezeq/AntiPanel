@@ -73,11 +73,16 @@
     border-radius: var(--radius-lg);
   }
 
-  // Make app-button host full width on mobile
+  // Make app-button full width on mobile
   app-button {
     @include respond-below('md') {
       display: block;
       width: 100%;
+
+      // Pierce encapsulation to style internal button
+      ::ng-deep .button {
+        width: 100%;
+      }
     }
   }
 }
