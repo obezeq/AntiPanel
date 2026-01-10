@@ -68,11 +68,11 @@
 // Clickable invoice row
 
 .wallet-invoices__invoice {
-  @include flex-center;
+  display: grid;
+  grid-template-columns: 8rem minmax(5rem, auto) minmax(9rem, auto) auto;
+  align-items: center;
   gap: var(--spacing-4);
   width: 100%;
-  max-width: 51.4375rem; // 823px from Figma
-  margin: 0 auto;
   padding: var(--spacing-2) 0;
   cursor: pointer;
   border-radius: var(--radius-md);
@@ -87,14 +87,16 @@
     outline-offset: var(--focus-ring-offset);
   }
 
+  @include respond-below('lg') {
+    grid-template-columns: 7rem minmax(4.5rem, auto) minmax(8rem, auto) auto;
+  }
+
   @include respond-below('md') {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    align-items: center;
-    gap: var(--spacing-3);
+    grid-template-columns: 5rem 1fr;
+    grid-template-rows: auto auto;
+    gap: var(--spacing-2) var(--spacing-3);
     padding: var(--spacing-3) var(--spacing-4);
     background-color: var(--color-tiny-info);
-    border-radius: var(--radius-md);
   }
 }
 
@@ -105,8 +107,8 @@
 
 .wallet-invoices__status {
   @include flex-center;
-  width: 8rem; // 128px from Figma
-  height: 2.5rem; // 40px from Figma
+  width: 100%; // Fill grid cell - grid controls width
+  height: 2.5rem;
   padding: var(--spacing-1) var(--spacing-3);
   border-radius: var(--radius-md);
   border: var(--border-width-medium) solid;
@@ -115,16 +117,13 @@
   font-weight: var(--font-weight-semibold);
   line-height: 1.15;
   text-align: center;
-  flex-shrink: 0;
 
   @include respond-below('lg') {
     font-size: var(--font-size-h6);
-    width: 7rem;
     height: 2.25rem;
   }
 
   @include respond-below('md') {
-    width: auto;
     padding: var(--spacing-1) var(--spacing-2);
     font-size: var(--font-size-small);
     height: auto;
@@ -153,28 +152,13 @@
 }
 
 // ---------------------------------------------------------------------------
-// INVOICE DETAILS
+// INVOICE DATA FIELDS
 // ---------------------------------------------------------------------------
-// Single-line invoice information display
-
-.wallet-invoices__details {
-  @include flex-center;
-  gap: var(--spacing-5); // 20px from Figma
-  margin: 0;
-  flex-wrap: nowrap;
-
-  @include respond-below('md') {
-    flex: 1;
-    gap: var(--spacing-2);
-    justify-content: flex-start;
-    flex-wrap: wrap;
-  }
-}
+// Direct grid children for perfect column alignment
 
 .wallet-invoices__number,
 .wallet-invoices__amount,
-.wallet-invoices__date,
-.wallet-invoices__separator {
+.wallet-invoices__date {
   font-family: var(--font-secondary);
   font-size: var(--font-size-h5);
   font-weight: var(--font-weight-medium);
@@ -182,7 +166,6 @@
   line-height: 1;
   text-transform: uppercase;
   letter-spacing: 0.075em;
-  margin: 0;
   white-space: nowrap;
 
   @include respond-below('lg') {
@@ -194,11 +177,28 @@
   }
 }
 
-.wallet-invoices__separator {
-  color: var(--color-foreground);
+// Mobile: Position data fields in 2-column layout
+@include respond-below('md') {
+  .wallet-invoices__status {
+    grid-column: 1;
+    grid-row: 1 / 3; // Span both rows
+    align-self: center;
+  }
 
-  @include respond-below('md') {
-    display: inline;
+  .wallet-invoices__number {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .wallet-invoices__amount {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+  }
+
+  .wallet-invoices__date {
+    grid-column: 2;
+    grid-row: 2;
   }
 }
 

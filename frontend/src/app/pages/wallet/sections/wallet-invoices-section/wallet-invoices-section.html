@@ -19,14 +19,9 @@
           >
             {{ statusLabels[invoice.status] }}
           </mark>
-
-          <p class="wallet-invoices__details">
-            <span class="wallet-invoices__number">#{{ invoice.invoiceNumber }}</span>
-            <span class="wallet-invoices__separator" aria-hidden="true">-</span>
-            <span class="wallet-invoices__amount">${{ invoice.amount | number:'1.2-2' }} {{ invoice.currency | uppercase }}</span>
-            <span class="wallet-invoices__separator" aria-hidden="true">-</span>
-            <time class="wallet-invoices__date" [attr.datetime]="invoice.createdAt | date:'yyyy-MM-ddTHH:mm'">{{ invoice.createdAt | date:'yyyy-MM-dd HH:mm' }}.</time>
-          </p>
+          <span class="wallet-invoices__number">#{{ invoice.invoiceNumber }}</span>
+          <span class="wallet-invoices__amount">${{ invoice.amount | number:'1.2-2' }} {{ invoice.currency | uppercase }}</span>
+          <time class="wallet-invoices__date" [attr.datetime]="invoice.createdAt | date:'yyyy-MM-ddTHH:mm'">{{ invoice.createdAt | date:'yyyy-MM-dd HH:mm' }}</time>
         </article>
       </li>
     } @empty {
