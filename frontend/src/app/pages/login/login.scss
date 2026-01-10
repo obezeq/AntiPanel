@@ -12,6 +12,7 @@
   position: relative;
   overflow: hidden;
   min-height: 100vh;
+  padding-top: var(--header-height); // Space for fixed header
   background-color: var(--color-background);
 
   // ---------------------------------------------------------------------------
@@ -98,7 +99,6 @@
 // CONTENT SECTION
 // ---------------------------------------------------------------------------
 // Vertically centered with mobile-first responsive padding.
-// No padding-top compensation needed - header is in document flow.
 
 .login-page__content {
   @include flex-column-center;

@@ -18,7 +18,12 @@
   padding-inline: var(--spacing-2);
   background-color: var(--color-background);
   border-block-end: var(--border-width-thin) solid var(--color-information);
-  position: relative;
+
+  // Fixed positioning - header stays at viewport top when scrolling
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  z-index: var(--z-fixed);
 
   // Extra small screens (400px+)
   @media screen and (min-width: 400px) {
