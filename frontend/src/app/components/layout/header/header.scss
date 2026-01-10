@@ -527,10 +527,10 @@
   margin-top: var(--spacing-2);
   display: flex;
   flex-direction: column;
-  align-items: stretch; // Full width items for proper click area
-  gap: var(--spacing-4);
-  inline-size: 15rem; // 240px (base-8)
-  padding: var(--spacing-6);
+  align-items: stretch;
+  gap: 0; // No gap - items use margin for spacing (eliminates dead zones)
+  inline-size: 15rem;
+  padding: var(--spacing-4); // Tighter padding for balance with item backgrounds
   background-color: var(--color-background);
   border: var(--border-width-thin) solid var(--color-information);
   border-radius: var(--radius-md);
@@ -544,8 +544,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%; // Full width clickable area
-  padding: var(--spacing-3) var(--spacing-4); // Proper touch target (min 44px)
+  width: 100%;
+
+  // WCAG 2.2 AAA: 44px minimum touch target (Success Criterion 2.5.5)
+  min-height: 2.75rem;
+  padding-block: var(--spacing-2);
+  padding-inline: var(--spacing-4);
+
+  // Typography
   font-family: var(--font-primary);
   font-size: var(--font-size-h5);
   font-weight: var(--font-weight-semibold);
@@ -553,16 +559,34 @@
   text-decoration: none;
   text-transform: uppercase;
   white-space: nowrap;
+
+  // Visual container
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: var(--transition-colors);
 
-  &:hover,
+  // Transition includes background-color for visual hover feedback
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
+
+  // Hover: Background change shows full clickable area
+  &:hover {
+    color: var(--color-foreground);
+    background-color: var(--color-tiny-info);
+  }
+
+  // Focus: Match hover for consistent experience
   &:focus {
     color: var(--color-foreground);
+    background-color: var(--color-tiny-info);
   }
 
   @include focus-visible;
+
+  // Item spacing (replaces gap - no dead zones between items)
+  & + & {
+    margin-block-start: var(--spacing-1);
+  }
 }
 
 .header__dropdown-overlay {
