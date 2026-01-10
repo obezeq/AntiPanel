@@ -13,6 +13,15 @@ import {
 } from '@angular/core';
 import { NgIcon } from '@ng-icons/core';
 
+/**
+ * Validation error for quantity limits
+ */
+export interface QuantityValidationError {
+  type: 'min' | 'max';
+  message: string;
+  limit: number;
+}
+
 export interface OrderReadyData {
   matchPercentage: number;
   service: {
@@ -25,6 +34,8 @@ export interface OrderReadyData {
   quantity: number;
   price: string;
   target?: string;
+  /** Validation error when quantity is below min or above max */
+  validationError?: QuantityValidationError;
 }
 
 @Component({
@@ -61,6 +72,14 @@ export class OrderReady implements AfterViewInit {
 
   /** Platform name for "MORE X" button */
   protected readonly platformName = computed(() => this.data().service.platform);
+
+  /** Whether there's a quantity validation error */
+  protected readonly hasValidationError = computed(() => !!this.data().validationError);
+
+  /** Validation error message */
+  protected readonly validationMessage = computed(() =>
+    this.data().validationError?.message ?? ''
+  );
 
   /** Whether target is being edited */
   protected readonly isEditingTarget = signal(false);

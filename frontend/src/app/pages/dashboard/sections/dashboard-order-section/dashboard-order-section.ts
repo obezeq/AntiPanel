@@ -9,7 +9,11 @@ import {
   signal
 } from '@angular/core';
 import { DashboardSectionHeader } from '../../../../components/shared/dashboard-section-header/dashboard-section-header';
-import { OrderReady, type OrderReadyData } from '../../../../components/shared/order-ready/order-ready';
+import {
+  OrderReady,
+  type OrderReadyData,
+  type QuantityValidationError
+} from '../../../../components/shared/order-ready/order-ready';
 import { CatalogService } from '../../../../services/catalog.service';
 import { OrderService, type OrderCreateRequest, type OrderResponse } from '../../../../core/services/order.service';
 import type { Service } from '../../../../models';
@@ -166,6 +170,23 @@ export class DashboardOrderSection {
 
     const price = (service.pricePerK * parsed.quantity) / 1000;
 
+    // Validate quantity against service limits
+    let validationError: QuantityValidationError | undefined;
+
+    if (parsed.quantity < service.minQuantity) {
+      validationError = {
+        type: 'min',
+        message: `Minimum quantity is ${service.minQuantity.toLocaleString()}`,
+        limit: service.minQuantity
+      };
+    } else if (parsed.quantity > service.maxQuantity) {
+      validationError = {
+        type: 'max',
+        message: `Maximum quantity is ${service.maxQuantity.toLocaleString()}`,
+        limit: service.maxQuantity
+      };
+    }
+
     return {
       matchPercentage: parsed.matchPercentage,
       service: {
@@ -177,7 +198,8 @@ export class DashboardOrderSection {
       },
       quantity: parsed.quantity,
       price: `$${price.toFixed(2)}`,
-      target: parsed.target ?? undefined
+      target: parsed.target ?? undefined,
+      validationError
     };
   });
 
@@ -192,7 +214,10 @@ export class DashboardOrderSection {
 
   /** Whether the place order button should be disabled */
   protected readonly isPlaceOrderDisabled = computed<boolean>(() => {
-    return this.orderState() === 'loading' || !this.hasSufficientBalance();
+    const data = this.orderReadyData();
+    return this.orderState() === 'loading' ||
+           !this.hasSufficientBalance() ||
+           !!data?.validationError;
   });
 
   constructor() {

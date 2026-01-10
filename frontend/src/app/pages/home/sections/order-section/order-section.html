@@ -42,6 +42,7 @@
     <app-order-ready
       class="order-section__preview"
       [data]="orderReadyData()!"
+      [disabled]="isOrderDisabled()"
       (exploreMore)="onExploreMore()"
       (morePlatform)="onMorePlatform($event)"
       (placeOrder)="onPlaceOrder($event)"

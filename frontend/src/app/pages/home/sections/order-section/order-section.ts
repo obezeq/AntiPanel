@@ -10,7 +10,11 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { DashboardSectionHeader } from '../../../../components/shared/dashboard-section-header/dashboard-section-header';
-import { OrderReady, type OrderReadyData } from '../../../../components/shared/order-ready/order-ready';
+import {
+  OrderReady,
+  type OrderReadyData,
+  type QuantityValidationError
+} from '../../../../components/shared/order-ready/order-ready';
 import { CatalogService } from '../../../../services/catalog.service';
 import type { Service } from '../../../../models';
 import type { ServiceItemData } from '../../../../components/shared/service-item-card/service-item-card';
@@ -152,6 +156,23 @@ export class OrderSection {
 
     const price = (service.pricePerK * parsed.quantity) / 1000;
 
+    // Validate quantity against service limits
+    let validationError: QuantityValidationError | undefined;
+
+    if (parsed.quantity < service.minQuantity) {
+      validationError = {
+        type: 'min',
+        message: `Minimum quantity is ${service.minQuantity.toLocaleString()}`,
+        limit: service.minQuantity
+      };
+    } else if (parsed.quantity > service.maxQuantity) {
+      validationError = {
+        type: 'max',
+        message: `Maximum quantity is ${service.maxQuantity.toLocaleString()}`,
+        limit: service.maxQuantity
+      };
+    }
+
     return {
       matchPercentage: parsed.matchPercentage,
       service: {
@@ -163,8 +184,15 @@ export class OrderSection {
       },
       quantity: parsed.quantity,
       price: `$${price.toFixed(2)}`,
-      target: parsed.target ?? undefined
+      target: parsed.target ?? undefined,
+      validationError
     };
+  });
+
+  /** Whether place order should be disabled (has validation errors) */
+  protected readonly isOrderDisabled = computed<boolean>(() => {
+    const data = this.orderReadyData();
+    return !!data?.validationError;
   });
 
   /**
