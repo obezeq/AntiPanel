@@ -539,8 +539,14 @@
   right: 0;
   margin-top: var(--spacing-2);
 
-  // Sizing
-  min-inline-size: 12rem;
+  // CRITICAL FIX: Use flexbox for reliable child sizing
+  // Flex items stretch by default, making hover work on full width
+  display: flex;
+  flex-direction: column;
+
+  // Width: size to content but minimum 12rem
+  width: max-content;
+  min-width: 12rem;
 
   // Visual styling
   background-color: var(--color-background);
@@ -559,10 +565,14 @@
 }
 
 .header__profile-menu-item {
-  // Reset
+  // Reset list-item behavior
   list-style: none;
   margin: 0;
   padding: 0;
+
+  // CRITICAL: Flex items stretch by default to fill container width
+  // Parent's display: flex handles the width automatically
+  // No explicit display or width needed - flexbox does it
 
   // Separator between items
   & + & {
@@ -576,8 +586,11 @@
 // Using display: block instead of flex for reliable full-width hover areas
 
 .header__profile-menu-link {
-  // CRITICAL: display: block ensures full-width clickable area
-  display: block;
+  // CRITICAL: Use flex for reliable full-width layout
+  // Flexbox ensures the element fills the container width
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   // WCAG 2.2 AAA: 44px minimum touch target
   min-height: 2.75rem;
@@ -590,8 +603,7 @@
   color: var(--color-text);
   text-decoration: none;
   text-transform: uppercase;
-  text-align: center;
-  line-height: 1.5;
+  white-space: nowrap;
 
   // Transitions
   transition:
