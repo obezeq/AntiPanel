@@ -10,7 +10,11 @@ import { LoadingService } from '../../services/loading.service';
  */
 const IGNORED_URLS: string[] = [
   '/api/check-email',
-  '/api/check-username'
+  '/api/check-username',
+  // Catalog lookups during intelligent input typing - these are quick background lookups
+  // that shouldn't trigger the global spinner (prevents flickering)
+  '/api/v1/public/categories',
+  '/types/'
 ];
 
 /**

@@ -9,7 +9,9 @@ import {
   output,
   signal
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { debounceTime, distinctUntilChanged, filter, switchMap } from 'rxjs/operators';
+import { of } from 'rxjs';
 import { DashboardSectionHeader } from '../../../../components/shared/dashboard-section-header/dashboard-section-header';
 import {
   OrderReady,
@@ -228,19 +230,27 @@ export class DashboardOrderSection {
   });
 
   constructor() {
-    // Watch parsedOrder and lookup matching service
-    effect(() => {
-      const parsed = this.parsedOrder();
-      if (parsed.platform && parsed.serviceType) {
-        this.catalogService.findService(parsed.platform, parsed.serviceType)
-          .pipe(takeUntilDestroyed(this.destroyRef))
-          .subscribe(service => {
-            this.matchedService.set(service ?? null);
-          });
-      } else {
-        this.matchedService.set(null);
-      }
-    });
+    // Debounced service lookup - prevents rapid API calls during typing
+    // Best practice: Use toObservable + debounceTime for signal-to-HTTP patterns
+    // Reference: https://dev.to/agroupp/effective-debouncing-in-angular-keep-signals-pure-56mo
+    toObservable(this.parsedOrder)
+      .pipe(
+        debounceTime(300), // Wait 300ms after last keystroke
+        distinctUntilChanged((prev, curr) =>
+          prev.platform === curr.platform &&
+          prev.serviceType === curr.serviceType
+        ),
+        switchMap(parsed => {
+          if (parsed.platform && parsed.serviceType) {
+            return this.catalogService.findService(parsed.platform, parsed.serviceType);
+          }
+          return of(null);
+        }),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(service => {
+        this.matchedService.set(service ?? null);
+      });
 
     // Watch quickOrderService and populate input text
     effect(() => {
