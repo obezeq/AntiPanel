@@ -287,6 +287,29 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
+    // ==================== External Provider Exceptions ====================
+
+    @ExceptionHandler(ProviderApiException.class)
+    public ResponseEntity<ErrorResponse> handleProviderApi(ProviderApiException ex, HttpServletRequest request) {
+        log.error("Provider API error: {}", ex.getMessage());
+
+        ErrorResponse.ErrorResponseBuilder builder = ErrorResponse.builder()
+                .timestamp(java.time.LocalDateTime.now())
+                .status(HttpStatus.BAD_GATEWAY.value())
+                .error("Bad Gateway")
+                .message(ex.getMessage())
+                .path(request.getRequestURI());
+
+        if (ex.getProviderName() != null) {
+            builder.details(Map.of(
+                    "provider", ex.getProviderName(),
+                    "action", ex.getAction() != null ? ex.getAction() : "unknown"
+            ));
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(builder.build());
+    }
+
     // ==================== Database Exceptions ====================
 
     @ExceptionHandler(DataIntegrityViolationException.class)
