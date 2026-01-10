@@ -1,8 +1,9 @@
 // ==========================================================================
-// ORDERS PAGE (PLACEHOLDER)
+// ORDERS PAGE
 // ==========================================================================
-// Placeholder page for orders history functionality.
-// Uses flat 2D grid background (same as dashboard/wallet).
+// Displays user's order history with filtering and pagination.
+// Based on Figma design: node 1022:2120
+// Uses flat 2D grid background (consistent with dashboard/wallet).
 // ==========================================================================
 
 @use '../../../styles/01-tools/mixins' as *;
@@ -76,69 +77,235 @@
   }
 }
 
-// ---------------------------------------------------------------------------
+// ==========================================================================
 // MAIN CONTENT AREA
-// ---------------------------------------------------------------------------
+// ==========================================================================
 
 .orders-page__content {
-  @include flex-column-center;
+  @include flex-column;
+  align-items: center;
+  gap: var(--spacing-16); // 64px (Figma exact)
   flex: 1;
-  justify-content: center;
   padding: var(--spacing-8) var(--spacing-4);
-  padding-top: calc(var(--header-height) + var(--spacing-8));
+  padding-top: calc(var(--header-height) + var(--spacing-16));
+  padding-bottom: var(--spacing-16);
   width: 100%;
-  max-width: var(--container-max-width, 73.125rem);
+  max-width: 73.125rem; // 1170px (Figma exact)
   margin: 0 auto;
 
   @include respond-to('md') {
     padding: var(--spacing-12) var(--spacing-6);
-    padding-top: calc(var(--header-height) + var(--spacing-12));
+    padding-top: calc(var(--header-height) + var(--spacing-16));
+    padding-bottom: var(--spacing-24);
+  }
+
+  @include respond-below('sm') {
+    gap: var(--spacing-8);
+    padding-top: calc(var(--header-height) + var(--spacing-8));
   }
 }
 
-// ---------------------------------------------------------------------------
-// PLACEHOLDER SECTION
-// ---------------------------------------------------------------------------
+// ==========================================================================
+// PAGE HEADER: Icon + Title
+// ==========================================================================
 
-.orders-page__placeholder {
-  @include flex-column-center;
-  gap: var(--spacing-4);
-  text-align: center;
-  max-width: 30rem;
+.orders-page__header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-16); // 64px (Figma exact)
+  width: 100%;
+
+  @include respond-below('md') {
+    gap: var(--spacing-8);
+  }
+
+  @include respond-below('sm') {
+    flex-direction: column;
+    gap: var(--spacing-4);
+  }
 }
 
+// Shopping Cart Icon - Rotated -11deg (Figma exact)
+.orders-page__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  transform: rotate(-11deg);
+  flex-shrink: 0;
+
+  // Icon size
+  ng-icon {
+    font-size: 8rem; // 128px (Figma exact)
+    color: var(--color-text);
+
+    @include respond-below('lg') {
+      font-size: 6rem; // 96px
+    }
+
+    @include respond-below('md') {
+      font-size: 4rem; // 64px
+    }
+
+    @include respond-below('sm') {
+      font-size: 3rem; // 48px
+    }
+  }
+}
+
+// Page Title - 128px bold (Figma exact)
 .orders-page__title {
   font-family: var(--font-primary);
-  font-size: clamp(2rem, 5vw, 3rem);
+  font-size: var(--font-size-title); // 128px
   font-weight: var(--font-weight-bold);
   color: var(--color-text);
   line-height: 1.15;
   margin: 0;
-  letter-spacing: -0.02em;
+  text-align: center;
+  white-space: nowrap;
+
+  @include respond-below('lg') {
+    font-size: var(--font-size-h1); // 96px
+  }
+
+  @include respond-below('md') {
+    font-size: var(--font-size-h2); // 64px
+  }
+
+  @include respond-below('sm') {
+    font-size: var(--font-size-h3); // 48px
+  }
 }
 
-.orders-page__subtitle {
-  font-family: var(--font-secondary);
-  font-size: clamp(1.25rem, 3vw, 1.5rem);
+// ==========================================================================
+// FILTER NAVIGATION
+// ==========================================================================
+
+.orders-page__nav {
+  width: 100%;
+
+  // OrderFilters component handles internal styling
+  app-order-filters {
+    display: block;
+    width: 100%;
+  }
+}
+
+// ==========================================================================
+// ORDERS LIST
+// ==========================================================================
+
+.orders-page__list {
+  @include flex-column;
+  gap: var(--spacing-8); // 32px (Figma exact)
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @include respond-below('md') {
+    gap: var(--spacing-6);
+  }
+
+  @include respond-below('sm') {
+    gap: var(--spacing-4);
+  }
+}
+
+.orders-page__item {
+  width: 100%;
+
+  // Ensure OrderCard fills the item
+  app-order-card {
+    display: block;
+    width: 100%;
+  }
+}
+
+// ==========================================================================
+// PAGINATION
+// ==========================================================================
+
+.orders-page__pagination {
+  width: 100%;
+  margin-top: var(--spacing-8);
+
+  // OrderPagination component handles internal styling
+  app-order-pagination {
+    display: block;
+    width: 100%;
+  }
+
+  @include respond-below('sm') {
+    margin-top: var(--spacing-4);
+  }
+}
+
+// ==========================================================================
+// STATE DISPLAYS (Loading, Error, Empty)
+// ==========================================================================
+
+.orders-page__state {
+  @include flex-column-center;
+  gap: var(--spacing-4);
+  padding: var(--spacing-12) var(--spacing-6);
+  text-align: center;
+  width: 100%;
+  max-width: 30rem;
+  border-radius: var(--radius-xl);
+  background-color: var(--color-tiny-info);
+  border: var(--border-width-medium) solid var(--color-information);
+
+  &--loading {
+    // Subtle pulse animation for loading state
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  &--error {
+    border-color: var(--color-error);
+    background-color: rgba(var(--color-error-rgb), 0.1);
+  }
+
+  &--empty {
+    border-color: var(--color-foreground);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.orders-page__state-text {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h5);
   font-weight: var(--font-weight-semibold);
-  color: var(--color-foreground);
+  color: var(--color-text);
+  line-height: 1.15;
   margin: 0;
 }
 
-.orders-page__description {
+.orders-page__state-hint {
   font-family: var(--font-secondary);
   font-size: var(--font-size-body);
   font-weight: var(--font-weight-regular);
   color: var(--color-foreground);
-  line-height: 1.6;
+  line-height: 1.5;
   margin: 0;
 }
 
-.orders-page__back-btn {
+// Retry Button
+.orders-page__retry-btn {
+  @include reset-button;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-top: var(--spacing-4);
+  margin-top: var(--spacing-2);
   padding: var(--spacing-3) var(--spacing-6);
   font-family: var(--font-secondary);
   font-size: var(--font-size-caption);
@@ -147,7 +314,6 @@
   letter-spacing: 0.05em;
   color: var(--color-background);
   background-color: var(--color-text);
-  border: none;
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: var(--transition-colors);
@@ -157,18 +323,19 @@
     color: var(--color-text);
   }
 
-  &:focus-visible {
-    outline: 2px solid var(--color-text);
-    outline-offset: 2px;
-  }
+  @include focus-visible(var(--color-text));
 }
 
-// ---------------------------------------------------------------------------
+// ==========================================================================
 // ACCESSIBILITY: REDUCED MOTION
-// ---------------------------------------------------------------------------
+// ==========================================================================
 
 @media (prefers-reduced-motion: reduce) {
   .orders-page::after {
     opacity: 0.6;
+  }
+
+  .orders-page__state--loading {
+    animation: none;
   }
 }

@@ -1,28 +1,105 @@
 <!-- Header (Dashboard Variant) -->
 <app-header
   variant="dashboard"
-  walletBalance="$0.00"
+  [walletBalance]="balance()"
   (logoutClick)="onLogoutClick()"
 />
 
 <main class="orders-page">
-  <!-- Main Content -->
   <section class="orders-page__content" aria-labelledby="orders-title">
-    <article class="orders-page__placeholder">
-      <h1 id="orders-title" class="orders-page__title">MY ORDERS</h1>
-      <p class="orders-page__subtitle">Coming Soon</p>
-      <p class="orders-page__description">
-        The orders page is currently under development.
-        Soon you'll be able to view your complete order history and track order status.
-      </p>
-      <button
-        type="button"
-        class="orders-page__back-btn"
-        (click)="onBackToDashboard()"
-      >
-        Back to Dashboard
-      </button>
-    </article>
+
+    <!-- =====================================================================
+         HEADER: Shopping Cart Icon + Title
+         ===================================================================== -->
+    <header class="orders-page__header">
+      <figure class="orders-page__icon" aria-hidden="true">
+        <ng-icon name="matShoppingCart" />
+      </figure>
+      <h1 id="orders-title" class="orders-page__title">ORDERS</h1>
+    </header>
+
+    <!-- =====================================================================
+         FILTER NAVIGATION: Category, Sort, Search
+         ===================================================================== -->
+    <nav class="orders-page__nav" aria-label="Order filters">
+      <app-order-filters
+        [selectedCategory]="selectedCategory()"
+        [sortOrder]="sortOrder()"
+        [searchQuery]="searchQuery()"
+        (categoryChange)="onCategoryChange($event)"
+        (sortChange)="onSortChange($event)"
+        (searchChange)="onSearchChange($event)"
+      />
+    </nav>
+
+    <!-- =====================================================================
+         LOADING STATE
+         ===================================================================== -->
+    @if (isLoading()) {
+      <article class="orders-page__state orders-page__state--loading" role="status" aria-live="polite">
+        <p class="orders-page__state-text">Loading orders...</p>
+      </article>
+    }
+
+    <!-- =====================================================================
+         ERROR STATE
+         ===================================================================== -->
+    @if (error()) {
+      <article class="orders-page__state orders-page__state--error" role="alert">
+        <p class="orders-page__state-text">{{ error() }}</p>
+        <button
+          type="button"
+          class="orders-page__retry-btn"
+          (click)="loadOrders()"
+        >
+          Try Again
+        </button>
+      </article>
+    }
+
+    <!-- =====================================================================
+         ORDERS LIST
+         ===================================================================== -->
+    @if (showOrders()) {
+      <ul class="orders-page__list" role="list" aria-label="Orders list">
+        @for (order of filteredOrders(); track order.id) {
+          <li class="orders-page__item">
+            <app-order-card
+              [order]="order"
+              [showActions]="true"
+              (orderAgain)="onOrderAgain($event)"
+              (refill)="onRefill($event)"
+            />
+          </li>
+        }
+      </ul>
+
+      <!-- Pagination -->
+      <nav class="orders-page__pagination" aria-label="Orders pagination">
+        <app-order-pagination
+          [currentPage]="currentPage()"
+          [totalPages]="totalPages()"
+          [pageSize]="pageSize()"
+          (pageChange)="onPageChange($event)"
+          (pageSizeChange)="onPageSizeChange($event)"
+        />
+      </nav>
+    }
+
+    <!-- =====================================================================
+         EMPTY STATE
+         ===================================================================== -->
+    @if (isEmpty()) {
+      <article class="orders-page__state orders-page__state--empty" role="status">
+        <p class="orders-page__state-text">No orders found.</p>
+        @if (searchQuery() || selectedCategory() !== 'ALL') {
+          <p class="orders-page__state-hint">Try adjusting your filters or search query.</p>
+        } @else {
+          <p class="orders-page__state-hint">Place your first order from the dashboard.</p>
+        }
+      </article>
+    }
+
   </section>
 </main>
 
