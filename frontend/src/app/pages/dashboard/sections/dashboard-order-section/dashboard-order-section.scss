@@ -83,7 +83,7 @@
     min-width: 0;
     padding: 0;
     font-family: var(--font-secondary);
-    font-size: var(--font-size-body);
+    font-size: var(--font-size-body); // 16px base
     font-weight: var(--font-weight-medium);
     color: var(--color-text);
     background: none;
@@ -98,8 +98,12 @@
       cursor: not-allowed;
     }
 
+    @include respond-below('sm') {
+      font-size: var(--font-size-small); // 12px below 640px
+    }
+
     @include respond-to('md') {
-      font-size: var(--font-size-h6);
+      font-size: var(--font-size-h6); // 20px at 768px+
     }
   }
 

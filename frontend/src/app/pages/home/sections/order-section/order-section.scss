@@ -90,9 +90,15 @@
       color: var(--color-foreground);
     }
 
+    @include respond-below('sm') {
+      font-size: var(--font-size-caption);
+    }
+
     @include respond-below('md') {
       font-size: var(--font-size-body);
     }
+
+    
   }
 
   // ---------------------------------------------------------------------------
