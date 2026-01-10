@@ -1,11 +1,19 @@
-<article class="order-ready" [class.order-ready--with-target]="hasTarget()">
+<article
+  class="order-ready"
+  [class.order-ready--with-target]="hasTarget()"
+  role="region"
+  aria-labelledby="order-ready-heading"
+  aria-live="polite"
+>
   <!-- Header: Flash icon + ORDER READY + Match percentage -->
   <header class="order-ready__header">
     <div class="order-ready__title">
       <ng-icon class="order-ready__flash" name="iconoirFlash" aria-hidden="true" />
-      <h2 class="order-ready__heading">ORDER READY</h2>
+      <h2 id="order-ready-heading" class="order-ready__heading">ORDER READY</h2>
     </div>
-    <p class="order-ready__match">{{ data().matchPercentage }}% MATCH</p>
+    <p class="order-ready__match" [attr.aria-label]="'Match confidence ' + data().matchPercentage + ' percent'">
+      {{ data().matchPercentage }}% MATCH
+    </p>
   </header>
 
   <!-- Service info card -->
@@ -121,7 +129,8 @@
     class="order-ready__place-order"
     [class.order-ready__place-order--disabled]="disabled()"
     [disabled]="disabled()"
-    [attr.aria-label]="'Place order for ' + data().price"
+    [attr.aria-label]="'Place order for ' + data().quantity + ' ' + data().service.platform + ' ' + data().service.type + ' at ' + data().price"
+    [attr.aria-disabled]="disabled()"
     (click)="placeOrder.emit(data())"
   >
     <span class="order-ready__currency">$</span>
