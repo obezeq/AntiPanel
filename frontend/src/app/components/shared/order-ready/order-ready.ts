@@ -1,4 +1,5 @@
 import {
+  afterNextRender,
   AfterViewInit,
   booleanAttribute,
   ChangeDetectionStrategy,
@@ -6,6 +7,8 @@ import {
   computed,
   effect,
   ElementRef,
+  inject,
+  Injector,
   input,
   output,
   signal,
@@ -46,6 +49,8 @@ export interface OrderReadyData {
   imports: [NgIcon]
 })
 export class OrderReady implements AfterViewInit {
+  private readonly injector = inject(Injector);
+
   /** Order data to display */
   readonly data = input.required<OrderReadyData>();
 
@@ -97,14 +102,18 @@ export class OrderReady implements AfterViewInit {
     // Auto-focus target input when editing starts
     effect(() => {
       if (this.isEditingTarget()) {
-        setTimeout(() => this.targetInputRef()?.nativeElement.focus(), 0);
+        afterNextRender(() => {
+          this.targetInputRef()?.nativeElement.focus();
+        }, { injector: this.injector });
       }
     });
 
     // Auto-focus quantity input when editing starts
     effect(() => {
       if (this.isEditingQuantity()) {
-        setTimeout(() => this.quantityInputRef()?.nativeElement.focus(), 0);
+        afterNextRender(() => {
+          this.quantityInputRef()?.nativeElement.focus();
+        }, { injector: this.injector });
       }
     });
   }
