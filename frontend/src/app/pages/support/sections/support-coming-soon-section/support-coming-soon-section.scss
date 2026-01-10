@@ -1,0 +1,189 @@
+// ==========================================================================
+// SUPPORT COMING SOON SECTION
+// ==========================================================================
+// Elegant "coming soon" teaser for the ticket support feature.
+// Features subtle animations and visual hierarchy.
+// ==========================================================================
+
+@use '../../../../../styles/01-tools/mixins' as *;
+
+.coming-soon {
+  @include flex-column;
+  align-items: center;
+  text-align: center;
+  gap: var(--spacing-6);
+  width: 100%;
+  max-width: 50rem; // 800px
+  padding: var(--spacing-10) var(--spacing-6);
+  background-color: rgba(var(--color-status-yellow-rgb), 0.03);
+  border: var(--border-width-thin) dashed var(--color-status-yellow);
+  border-radius: var(--radius-2xl);
+
+  @include respond-to('md') {
+    padding: var(--spacing-12) var(--spacing-8);
+    gap: var(--spacing-8);
+  }
+
+  @include respond-to('lg') {
+    padding: var(--spacing-14) var(--spacing-10);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// HEADER
+// ---------------------------------------------------------------------------
+
+.coming-soon__header {
+  @include flex-column;
+  align-items: center;
+  gap: var(--spacing-4);
+  margin: 0;
+
+  @include respond-to('md') {
+    gap: var(--spacing-5);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// BADGE
+// ---------------------------------------------------------------------------
+// Small pill badge with icon and text
+
+.coming-soon__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-4);
+  margin: 0;
+  background-color: rgba(var(--color-status-yellow-rgb), 0.1);
+  border: var(--border-width-thin) solid var(--color-status-yellow);
+  border-radius: var(--radius-full);
+  color: var(--color-status-yellow);
+  font-size: var(--spacing-5); // 20px for icon
+
+  @include respond-to('md') {
+    padding: var(--spacing-2) var(--spacing-5);
+  }
+}
+
+.coming-soon__badge-text {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+
+  @include respond-to('md') {
+    font-size: var(--font-size-caption);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// TITLE
+// ---------------------------------------------------------------------------
+
+.coming-soon__title {
+  @include typography('h4', 'bold', 'primary');
+  color: var(--color-text);
+  margin: 0;
+  letter-spacing: 0.02em;
+
+  @include respond-to('md') {
+    font-size: var(--font-size-h3);
+  }
+
+  @include respond-to('lg') {
+    font-size: var(--font-size-h2);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// DESCRIPTION
+// ---------------------------------------------------------------------------
+
+.coming-soon__description {
+  @include typography('body', 'medium', 'secondary');
+  color: var(--color-foreground);
+  margin: 0;
+  max-width: 36rem;
+  line-height: var(--line-height-normal);
+
+  @include respond-to('md') {
+    font-size: var(--font-size-h6);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// FOOTER
+// ---------------------------------------------------------------------------
+
+.coming-soon__footer {
+  margin: 0;
+  padding-top: var(--spacing-2);
+}
+
+// ---------------------------------------------------------------------------
+// STATUS INDICATOR
+// ---------------------------------------------------------------------------
+// Animated pulsing dot to show active development
+
+.coming-soon__status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  margin: 0;
+}
+
+.coming-soon__status-indicator {
+  position: relative;
+  width: 0.75rem;
+  height: 0.75rem;
+  background-color: var(--color-status-yellow);
+  border-radius: var(--radius-full);
+
+  // Pulsing animation ring
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border: 2px solid var(--color-status-yellow);
+    border-radius: var(--radius-full);
+    opacity: 0;
+    animation: pulse 2s ease-out infinite;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+.coming-soon__status-text {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-status-yellow);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+// ---------------------------------------------------------------------------
+// ACCESSIBILITY: REDUCED MOTION
+// ---------------------------------------------------------------------------
+
+@media (prefers-reduced-motion: reduce) {
+  .coming-soon__status-indicator::before {
+    animation: none;
+    opacity: 0.4;
+    transform: scale(1.2);
+  }
+}
