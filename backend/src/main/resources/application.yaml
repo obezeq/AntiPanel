@@ -74,3 +74,13 @@ app:
     exposed-headers: Authorization
     allow-credentials: true
     max-age: 3600
+
+# ========================================
+# Paymento Payment Gateway Configuration
+# ========================================
+paymento:
+  api-key: ${PAYMENTO_API_KEY:}
+  api-secret: ${PAYMENTO_API_SECRET:}
+  base-url: ${PAYMENTO_BASE_URL:https://api.paymento.io/v1}
+  return-url: ${PAYMENTO_RETURN_URL:http://localhost:4200/wallet}
+  default-speed: ${PAYMENTO_DEFAULT_SPEED:0}
