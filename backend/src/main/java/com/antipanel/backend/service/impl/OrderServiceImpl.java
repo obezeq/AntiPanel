@@ -23,6 +23,7 @@ import com.antipanel.backend.repository.ServiceRepository;
 import com.antipanel.backend.repository.TransactionRepository;
 import com.antipanel.backend.repository.UserRepository;
 import com.antipanel.backend.service.ExternalOrderService;
+import com.antipanel.backend.service.OrderCompensationService;
 import com.antipanel.backend.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,6 +54,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
     private final PageMapper pageMapper;
     private final ExternalOrderService externalOrderService;
+    private final OrderCompensationService compensationService;
 
     // ============ CREATE OPERATIONS ============
 
@@ -192,59 +194,21 @@ public class OrderServiceImpl implements OrderService {
             return response;
         } catch (ProviderApiException e) {
             log.error("Provider API failed for order ID: {}. Initiating compensation.", orderId, e);
-            // Compensation runs in its own REQUIRES_NEW transaction
-            compensateFailedOrder(orderId);
+            // Compensation runs in its own REQUIRES_NEW transaction via separate service
+            compensationService.compensateFailedOrder(orderId);
             throw e;
         }
     }
 
     /**
      * Compensate a failed order by refunding the user.
-     * Uses REQUIRES_NEW propagation to ensure the refund is NOT rolled back
-     * even if the calling transaction fails/rolls back.
+     * Delegates to OrderCompensationService which uses REQUIRES_NEW propagation.
+     *
+     * @param orderId Order ID to compensate
      */
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void compensateFailedOrder(Long orderId) {
-        log.debug("Compensating failed order ID: {}", orderId);
-
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new ResourceNotFoundException("Order", "id", orderId));
-
-        // Prevent double compensation
-        if (order.getStatus() == OrderStatus.FAILED || order.getStatus() == OrderStatus.REFUNDED) {
-            log.warn("Order ID: {} already compensated (status: {}), skipping", orderId, order.getStatus());
-            return;
-        }
-
-        User user = order.getUser();
-        BigDecimal amount = order.getTotalCharge();
-
-        // Refund balance
-        BigDecimal balanceBefore = user.getBalance();
-        BigDecimal balanceAfter = balanceBefore.add(amount);
-        user.setBalance(balanceAfter);
-        userRepository.save(user);
-
-        // Create refund transaction
-        Transaction refundTransaction = Transaction.builder()
-                .user(user)
-                .type(TransactionType.REFUND)
-                .amount(amount)
-                .balanceBefore(balanceBefore)
-                .balanceAfter(balanceAfter)
-                .referenceType("ORDER")
-                .referenceId(order.getId())
-                .description("Auto-refund: Order #" + order.getId() + " - provider submission failed")
-                .build();
-        transactionRepository.save(refundTransaction);
-
-        // Mark order as failed
-        order.setStatus(OrderStatus.FAILED);
-        orderRepository.save(order);
-
-        log.info("Compensated failed order ID: {}. Refunded {} to user ID: {}",
-                orderId, amount, user.getId());
+        compensationService.compensateFailedOrder(orderId);
     }
 
     // ============ READ OPERATIONS ============
