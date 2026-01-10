@@ -1,5 +1,6 @@
 package com.antipanel.backend.controller.webhook;
 
+import com.antipanel.backend.config.PaymentoConfig;
 import com.antipanel.backend.dto.paymento.PaymentoWebhookPayload;
 import com.antipanel.backend.entity.PaymentProcessor;
 import com.antipanel.backend.repository.PaymentProcessorRepository;
@@ -42,6 +43,7 @@ public class PaymentoWebhookController {
 
     private final PaymentoWebhookService webhookService;
     private final PaymentProcessorRepository processorRepository;
+    private final PaymentoConfig paymentoConfig;
     private final ObjectMapper objectMapper;
 
     @PostMapping
@@ -75,7 +77,8 @@ public class PaymentoWebhookController {
             }
 
             // Verify HMAC signature
-            String apiSecret = processor.getApiSecret();
+            // SECURITY: Environment variable takes priority over database
+            String apiSecret = getApiSecret(processor);
             if (apiSecret != null && !apiSecret.isBlank()) {
                 if (!verifySignature(rawPayload, signature, apiSecret)) {
                     log.warn("Invalid webhook signature received");
@@ -151,5 +154,18 @@ public class PaymentoWebhookController {
             hex.append(String.format("%02x", b));
         }
         return hex.toString();
+    }
+
+    /**
+     * Gets API secret from config or processor.
+     * Environment variables take priority over database values for security.
+     */
+    private String getApiSecret(PaymentProcessor processor) {
+        // SECURITY: Environment variable takes priority
+        if (paymentoConfig.apiSecret() != null && !paymentoConfig.apiSecret().isBlank()) {
+            return paymentoConfig.apiSecret();
+        }
+        // Fall back to database (for admin-configured values)
+        return processor.getApiSecret();
     }
 }

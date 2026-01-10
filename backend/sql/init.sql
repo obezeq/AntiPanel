@@ -742,6 +742,8 @@ COMMENT ON VIEW v_orders_summary IS 'Vista de órdenes con información del usua
 -- ============================================================================
 
 -- Insert Paymento cryptocurrency payment processor
+-- NOTE: api_key and api_secret are NULL - credentials must be set via environment variables
+-- SECURITY: Never commit API credentials to version control
 INSERT INTO payment_processors (
     name,
     code,
@@ -759,8 +761,8 @@ INSERT INTO payment_processors (
     'Paymento',
     'paymento',
     'https://paymento.io',
-    'MzE1OERFRDczMkEyMUM2QzRGMEMzNzk3MjAzQTY2REE=',
-    'MzExOERDN0ZDM0I3NzZFNDhDMUJGRjY1MDNBNjhCQ0M=',
+    NULL,  -- Set via PAYMENTO_API_KEY environment variable
+    NULL,  -- Set via PAYMENTO_API_SECRET environment variable
     '{"baseUrl": "https://api.paymento.io/v1", "speed": 0, "returnUrl": "http://localhost:4200/wallet"}',
     1.00,
     10000.00,

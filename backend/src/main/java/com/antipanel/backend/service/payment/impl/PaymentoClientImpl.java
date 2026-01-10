@@ -257,15 +257,16 @@ public class PaymentoClientImpl implements PaymentoClient {
     }
 
     /**
-     * Gets the API key from processor or config.
+     * Gets the API key from config or processor.
+     * Environment variables take priority over database values for security.
      */
     private String getApiKey(PaymentProcessor processor) {
-        // Prefer processor's stored API key
-        if (processor.getApiKey() != null && !processor.getApiKey().isBlank()) {
-            return processor.getApiKey();
+        // SECURITY: Environment variable takes priority
+        if (paymentoConfig.apiKey() != null && !paymentoConfig.apiKey().isBlank()) {
+            return paymentoConfig.apiKey();
         }
-        // Fall back to application config
-        return paymentoConfig.apiKey();
+        // Fall back to database (for admin-configured values)
+        return processor.getApiKey();
     }
 
     /**

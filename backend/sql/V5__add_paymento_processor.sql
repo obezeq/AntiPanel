@@ -1,5 +1,6 @@
 -- Migration V5: Add Paymento payment processor
 -- Purpose: Configure Paymento cryptocurrency payment gateway
+-- SECURITY: API credentials are NOT stored in this file - use environment variables
 
 -- Insert Paymento payment processor
 INSERT INTO payment_processors (
@@ -19,8 +20,8 @@ INSERT INTO payment_processors (
     'Paymento',
     'paymento',
     'https://paymento.io',
-    'MzE1OERFRDczMkEyMUM2QzRGMEMzNzk3MjAzQTY2REE=',
-    'MzExOERDN0ZDM0I3NzZFNDhDMUJGRjY1MDNBNjhCQ0M=',
+    NULL,  -- Set via PAYMENTO_API_KEY environment variable
+    NULL,  -- Set via PAYMENTO_API_SECRET environment variable
     '{"baseUrl": "https://api.paymento.io/v1", "speed": 0, "returnUrl": "http://localhost:4200/wallet"}',
     1.00,
     10000.00,
@@ -31,8 +32,6 @@ INSERT INTO payment_processors (
 ) ON CONFLICT (code) DO UPDATE SET
     name = EXCLUDED.name,
     website = EXCLUDED.website,
-    api_key = EXCLUDED.api_key,
-    api_secret = EXCLUDED.api_secret,
     config_json = EXCLUDED.config_json,
     min_amount = EXCLUDED.min_amount,
     max_amount = EXCLUDED.max_amount,
