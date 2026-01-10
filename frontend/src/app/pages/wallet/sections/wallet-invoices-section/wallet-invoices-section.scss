@@ -88,14 +88,13 @@
   }
 
   @include respond-below('md') {
-    flex-direction: row;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: auto 1fr;
     align-items: center;
-    gap: var(--spacing-2) var(--spacing-3);
+    gap: var(--spacing-3);
     padding: var(--spacing-3) var(--spacing-4);
     background-color: var(--color-tiny-info);
     border-radius: var(--radius-md);
-    min-height: var(--spacing-12);
   }
 }
 

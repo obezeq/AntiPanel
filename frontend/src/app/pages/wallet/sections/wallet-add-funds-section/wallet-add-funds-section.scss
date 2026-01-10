@@ -72,6 +72,14 @@
     background-color: var(--color-tiny-info);
     border-radius: var(--radius-lg);
   }
+
+  // Make app-button host full width on mobile
+  app-button {
+    @include respond-below('md') {
+      display: block;
+      width: 100%;
+    }
+  }
 }
 
 // ---------------------------------------------------------------------------

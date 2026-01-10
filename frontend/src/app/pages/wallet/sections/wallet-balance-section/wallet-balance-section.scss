@@ -71,6 +71,10 @@
   color: var(--color-background);
   line-height: 1;
   letter-spacing: 0.075em;
+
+  @include respond-below('md') {
+    font-size: var(--font-size-h5);
+  }
 }
 
 // ---------------------------------------------------------------------------
