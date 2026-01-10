@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { UpperCasePipe } from '@angular/common';
+import { Button } from '../../../../components/shared/button/button';
 
 /**
  * Crypto payment option interface.
@@ -24,7 +25,7 @@ export interface AddFundsPayload {
  * Features:
  * - Crypto selection dropdown (placeholder for now)
  * - Amount input with validation
- * - Submit button with loading state
+ * - Submit button with loading state (uses shared Button component)
  * - Responsive layout (horizontal on desktop, vertical on mobile)
  */
 @Component({
@@ -32,7 +33,7 @@ export interface AddFundsPayload {
   templateUrl: './wallet-add-funds-section.html',
   styleUrl: './wallet-add-funds-section.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [UpperCasePipe]
+  imports: [UpperCasePipe, Button]
 })
 export class WalletAddFundsSection {
   /** Whether the form is currently processing */

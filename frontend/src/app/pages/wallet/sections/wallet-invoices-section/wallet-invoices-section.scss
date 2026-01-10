@@ -151,7 +151,7 @@
 // ---------------------------------------------------------------------------
 // INVOICE DETAILS
 // ---------------------------------------------------------------------------
-// Definition list with invoice information
+// Single-line invoice information display
 
 .wallet-invoices__details {
   @include flex-center;
@@ -196,10 +196,6 @@
   }
 }
 
-.wallet-invoices__date time {
-  font: inherit;
-  color: inherit;
-}
 
 // ---------------------------------------------------------------------------
 // EMPTY STATE
