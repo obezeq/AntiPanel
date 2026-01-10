@@ -66,6 +66,8 @@ public class SecurityConfig {
                         // Public endpoints - no authentication required
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/api/v1/public/**").permitAll()
+                        // Webhook endpoints - public but signature-verified
+                        .requestMatchers("/api/v1/webhooks/**").permitAll()
                         // Swagger/OpenAPI endpoints
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/swagger-ui.html").permitAll()
