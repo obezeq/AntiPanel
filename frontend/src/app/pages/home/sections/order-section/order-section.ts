@@ -183,7 +183,7 @@ export class OrderSection {
         speed: `${service.speed} Speed`
       },
       quantity: parsed.quantity,
-      price: `$${price.toFixed(2)}`,
+      price: this.formatPrice(price),
       target: parsed.target ?? undefined,
       validationError
     };
@@ -482,5 +482,18 @@ export class OrderSection {
       return Number.isInteger(value) ? `${value}k` : `${value.toFixed(1)}k`;
     }
     return qty.toString();
+  }
+
+  /**
+   * Format price with appropriate precision
+   * Shows 2 decimals for prices >= $0.01, up to 4 decimals for smaller amounts
+   */
+  private formatPrice(price: number): string {
+    if (price >= 0.01) {
+      return `$${price.toFixed(2)}`;
+    }
+    // For very small amounts, show up to 4 decimals but trim trailing zeros
+    const formatted = price.toFixed(4).replace(/0+$/, '').replace(/\.$/, '');
+    return `$${formatted}`;
   }
 }
