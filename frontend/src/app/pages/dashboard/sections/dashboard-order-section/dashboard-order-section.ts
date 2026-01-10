@@ -453,14 +453,14 @@ export class DashboardOrderSection {
 
   /**
    * Format price with appropriate precision
-   * Shows 2 decimals for prices >= $0.01, up to 4 decimals for smaller amounts
+   * Shows 2 decimals for prices >= $0.01, up to 6 decimals for smaller amounts
    */
   private formatPrice(price: number): string {
     if (price >= 0.01) {
       return `$${price.toFixed(2)}`;
     }
-    // For very small amounts, show up to 4 decimals but trim trailing zeros
-    const formatted = price.toFixed(4).replace(/0+$/, '').replace(/\.$/, '');
+    // For very small amounts, show up to 6 decimals but trim trailing zeros
+    const formatted = price.toFixed(6).replace(/0+$/, '').replace(/\.$/, '');
     return `$${formatted}`;
   }
 

@@ -3,10 +3,12 @@ import {
   Component,
   computed,
   ElementRef,
+  HostListener,
   inject,
   input,
   output,
   signal,
+  viewChild,
   viewChildren
 } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
@@ -71,6 +73,9 @@ export class Header {
 
   /** Profile dropdown open state */
   protected readonly isProfileDropdownOpen = signal(false);
+
+  /** Profile container reference for click-outside detection */
+  private readonly profileContainerRef = viewChild<ElementRef<HTMLElement>>('profileContainer');
 
   /** Dropdown menu items for keyboard navigation (WCAG 2.1.1) */
   private readonly dropdownItems = viewChildren<ElementRef<HTMLElement>>('dropdownItem');
@@ -184,6 +189,28 @@ export class Header {
 
   protected onThemeToggle(): void {
     this.themeService.toggleTheme();
+  }
+
+  // ---------------------------------------------------------------------------
+  // Click Outside Detection (for closing dropdown)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Closes the profile dropdown when clicking outside the container.
+   * Replaces the overlay pattern for cleaner, more reliable behavior.
+   */
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    // Only process if dropdown is open
+    if (!this.isProfileDropdownOpen()) return;
+
+    const target = event.target as HTMLElement;
+    const container = this.profileContainerRef()?.nativeElement;
+
+    // Close dropdown if click is outside the profile container
+    if (container && !container.contains(target)) {
+      this.closeProfileDropdown();
+    }
   }
 
   // ---------------------------------------------------------------------------

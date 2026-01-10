@@ -173,13 +173,13 @@
         <span class="header__wallet-text">WALLET</span>
       </button>
 
-      <div class="header__profile-container">
+      <div #profileContainer class="header__profile-container">
         <button
           type="button"
           class="header__profile"
           (click)="onProfileClick()"
           [attr.aria-expanded]="isProfileDropdownOpen()"
-          aria-haspopup="menu"
+          aria-haspopup="true"
           aria-label="User profile menu"
         >
           <!-- Profile Circle Icon -->
@@ -203,39 +203,34 @@
           </svg>
         </button>
 
-        <!-- Profile Dropdown Menu -->
+        <!-- Profile Dropdown Menu (Disclosure Pattern) -->
         @if (isProfileDropdownOpen()) {
-          <!-- Overlay inside container, before dropdown - prevents click blocking -->
-          <div
-            class="header__dropdown-overlay"
-            (click)="closeProfileDropdown()"
-            aria-hidden="true"
-          ></div>
-          <nav
-            class="header__dropdown"
-            role="menu"
-            aria-label="Profile menu"
+          <ul
+            class="header__profile-menu"
+            role="list"
             (keydown)="onDropdownKeydown($event)"
           >
-            <a
-              #dropdownItem
-              routerLink="/orders"
-              class="header__dropdown-item"
-              role="menuitem"
-              (click)="onOrdersClick()"
-            >
-              ORDERS
-            </a>
-            <button
-              #dropdownItem
-              type="button"
-              class="header__dropdown-item"
-              role="menuitem"
-              (click)="onLogoutClick()"
-            >
-              LOG OUT
-            </button>
-          </nav>
+            <li class="header__profile-menu-item">
+              <a
+                #dropdownItem
+                routerLink="/orders"
+                class="header__profile-menu-link"
+                (click)="onOrdersClick()"
+              >
+                ORDERS
+              </a>
+            </li>
+            <li class="header__profile-menu-item">
+              <button
+                #dropdownItem
+                type="button"
+                class="header__profile-menu-button"
+                (click)="onLogoutClick()"
+              >
+                LOG OUT
+              </button>
+            </li>
+          </ul>
         }
       </div>
     }
