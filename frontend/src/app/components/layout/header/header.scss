@@ -570,9 +570,10 @@
   margin: 0;
   padding: 0;
 
-  // CRITICAL: Flex items stretch by default to fill container width
-  // Parent's display: flex handles the width automatically
-  // No explicit display or width needed - flexbox does it
+  // CRITICAL: Explicit width needed for child percentage widths to resolve
+  // Without this, children's width: 100% can't calculate properly
+  // (CSS % widths require parent to have explicit width)
+  width: 100%;
 
   // Separator between items
   & + & {

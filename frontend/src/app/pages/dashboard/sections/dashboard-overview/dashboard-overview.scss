@@ -185,21 +185,27 @@
 // ---------------------------------------------------------------------------
 
 .dashboard-overview__stats {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
+  flex-direction: column; // Single column on smallest screens (< 640px)
   gap: var(--spacing-4);
   width: 100%;
   margin: 0;
   padding: 0;
   list-style: none;
 
+  @include respond-to('sm') {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); // 2 columns at 640px+
+  }
+
   @include respond-to('md') {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, 1fr); // 4 columns at 768px+
     gap: var(--spacing-6);
   }
 
   @include respond-to('lg') {
     display: flex;
+    flex-direction: row; // Horizontal flex at 1024px+
     justify-content: space-between;
   }
 }
