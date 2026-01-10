@@ -294,23 +294,21 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ProviderApiException.class)
     public ResponseEntity<ErrorResponse> handleProviderApi(ProviderApiException ex, HttpServletRequest request) {
-        log.error("Provider API error: {}", ex.getMessage());
+        // Detailed logging for debugging (provider info stays in logs only)
+        log.error("Provider API error [provider={}, action={}]: {}",
+                ex.getProviderName(),
+                ex.getAction(),
+                ex.getMessage());
 
-        ErrorResponse.ErrorResponseBuilder builder = ErrorResponse.builder()
-                .timestamp(java.time.LocalDateTime.now())
-                .status(HttpStatus.BAD_GATEWAY.value())
-                .error("Bad Gateway")
-                .message(ex.getMessage())
-                .path(request.getRequestURI());
+        // Generic user-friendly message (no provider details exposed)
+        ErrorResponse error = ErrorResponse.of(
+                HttpStatus.SERVICE_UNAVAILABLE.value(),
+                "Service Unavailable",
+                "Service is temporarily unavailable. Please try again later or contact support.",
+                request.getRequestURI()
+        );
 
-        if (ex.getProviderName() != null) {
-            builder.details(Map.of(
-                    "provider", ex.getProviderName(),
-                    "action", ex.getAction() != null ? ex.getAction() : "unknown"
-            ));
-        }
-
-        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(builder.build());
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(error);
     }
 
     @ExceptionHandler(PaymentoApiException.class)

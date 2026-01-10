@@ -516,8 +516,10 @@ export class DashboardOrderSection {
             this.errorMessage.set('Insufficient balance. Please add funds to continue.');
           } else if (this.orderService.isDuplicateOrderError(error)) {
             this.errorMessage.set('Duplicate order detected. Please wait before trying again.');
+          } else if (this.orderService.isServiceUnavailableError(error)) {
+            this.errorMessage.set('Service is temporarily unavailable. Please try again later or contact support.');
           } else {
-            this.errorMessage.set(error.error?.message || 'Failed to create order. Please try again.');
+            this.errorMessage.set('Failed to create order. Please try again.');
           }
         }
       });

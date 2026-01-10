@@ -218,6 +218,16 @@ export class OrderService {
   }
 
   /**
+   * Checks if error is a service unavailable error (HTTP 503).
+   *
+   * @param error - Error to check
+   * @returns true if service is temporarily unavailable
+   */
+  isServiceUnavailableError(error: unknown): error is HttpErrorResponse {
+    return error instanceof HttpErrorResponse && error.status === 503;
+  }
+
+  /**
    * Handles HTTP errors for order operations.
    */
   private handleError(error: HttpErrorResponse): Observable<never> {
@@ -231,6 +241,8 @@ export class OrderService {
       errorMessage = 'Service not found.';
     } else if (error.status === 409) {
       errorMessage = error.error?.message || 'Duplicate order detected. Please wait before trying again.';
+    } else if (error.status === 503) {
+      errorMessage = 'Service is temporarily unavailable. Please try again later or contact support.';
     }
 
     console.error('Order error:', errorMessage, error);
