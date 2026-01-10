@@ -4,13 +4,13 @@ import { NgIcon } from '@ng-icons/core';
 export type StatsCardVariant = 'default' | 'success' | 'info' | 'warning';
 
 export interface StatsCardData {
-  /** Nombre del icono ngicons (ej: 'matActivity') */
+  /** Icon name from ng-icons (e.g., 'matActivity') */
   icon: string;
-  /** Título del card (ej: 'TOTAL', 'PENDING', 'STATUS') */
+  /** Card title (e.g., 'TOTAL', 'PENDING', 'STATUS') */
   title: string;
-  /** Valor numérico o texto a mostrar */
+  /** Numeric value or text to display */
   value: string | number;
-  /** Descripción debajo del valor */
+  /** Description below the value */
   label: string;
 }
 
@@ -25,6 +25,6 @@ export class StatsCard {
   /** Stats data */
   readonly stats = input.required<StatsCardData>();
 
-  /** Card visual variant - afecta el color del valor */
+  /** Card visual variant - affects the value color */
   readonly variant = input<StatsCardVariant>('default');
 }
