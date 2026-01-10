@@ -83,15 +83,15 @@
   animation: spinner-dash 1.5s ease-in-out infinite;
 }
 
-// En overlay, usar color mas visible
+// In overlay mode, use high-contrast colors for visibility on dark background
 :host(.spinner--overlay) {
   .spinner__track {
-    stroke: var(--color-background);
-    opacity: 0.3;
+    stroke: var(--color-text);
+    opacity: 0.2;
   }
 
   .spinner__indicator {
-    stroke: var(--color-background);
+    stroke: var(--color-stats-blue);
   }
 }
 
@@ -106,7 +106,7 @@
 }
 
 :host(.spinner--overlay) .spinner__label {
-  color: var(--color-background);
+  color: var(--color-text);
   font-size: var(--font-size-body);
   font-weight: var(--font-weight-medium);
 }

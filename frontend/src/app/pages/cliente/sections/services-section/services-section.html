@@ -102,7 +102,7 @@
         class="services-section__status-value"
         [class.services-section__status-value--active]="loadingService.isLoading()"
       >
-        {{ loadingService.isLoading() ? 'Cargando...' : 'Inactivo' }}
+        {{ loadingService.isLoading() ? 'Loading...' : 'Inactive' }}
       </span>
       <span class="services-section__status-hint">
         (Requests activos: {{ loadingService.activeRequests() }})
