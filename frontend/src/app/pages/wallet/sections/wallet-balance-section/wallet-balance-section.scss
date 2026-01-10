@@ -19,8 +19,9 @@
   }
 
   @include respond-below('md') {
-    gap: var(--spacing-8);
+    gap: var(--spacing-6);
     flex-direction: column;
+    padding: 0 var(--spacing-4);
   }
 }
 
@@ -55,9 +56,8 @@
   }
 
   @include respond-below('md') {
-    position: absolute;
-    left: var(--spacing-4);
-    top: calc(var(--header-height) + var(--spacing-6));
+    position: static;
+    align-self: flex-start;
   }
 }
 

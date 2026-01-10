@@ -157,11 +157,12 @@
   @include flex-center;
   gap: var(--spacing-5); // 20px from Figma
   margin: 0;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 
   @include respond-below('md') {
     gap: var(--spacing-3);
     justify-content: flex-start;
+    flex-wrap: wrap;
   }
 }
 
