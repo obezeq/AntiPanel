@@ -4,6 +4,7 @@ import com.antipanel.backend.dto.category.CategoryResponse;
 import com.antipanel.backend.dto.common.PageResponse;
 import com.antipanel.backend.dto.paymentprocessor.PaymentProcessorResponse;
 import com.antipanel.backend.dto.service.ServiceDetailResponse;
+import com.antipanel.backend.dto.service.ServicePublicResponse;
 import com.antipanel.backend.dto.service.ServiceResponse;
 import com.antipanel.backend.entity.enums.ServiceQuality;
 import com.antipanel.backend.entity.enums.ServiceSpeed;
@@ -97,15 +98,15 @@ public class PublicCatalogController {
             description = "Returns all active services for a specific category")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Services retrieved successfully",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = ServiceResponse.class)))),
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = ServicePublicResponse.class)))),
             @ApiResponse(responseCode = "404", description = "Category not found")
     })
     @GetMapping("/categories/{categoryId}/services")
-    public ResponseEntity<List<ServiceResponse>> getServicesByCategory(
+    public ResponseEntity<List<ServicePublicResponse>> getServicesByCategory(
             @Parameter(description = "Category ID", example = "1")
             @PathVariable Integer categoryId) {
         log.debug("Getting services for category: {}", categoryId);
-        List<ServiceResponse> services = catalogService.getActiveCatalogServicesByCategory(categoryId);
+        List<ServicePublicResponse> services = catalogService.getPublicServicesByCategory(categoryId);
         return ResponseEntity.ok(services);
     }
 
@@ -129,12 +130,12 @@ public class PublicCatalogController {
             description = "Returns all active services from the catalog")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Services retrieved successfully",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = ServiceResponse.class))))
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = ServicePublicResponse.class))))
     })
     @GetMapping("/services")
-    public ResponseEntity<List<ServiceResponse>> getAllActiveServices() {
+    public ResponseEntity<List<ServicePublicResponse>> getAllActiveServices() {
         log.debug("Getting all active services");
-        List<ServiceResponse> services = catalogService.getActiveCatalogServices();
+        List<ServicePublicResponse> services = catalogService.getPublicActiveServices();
         return ResponseEntity.ok(services);
     }
 
@@ -173,16 +174,16 @@ public class PublicCatalogController {
             description = "Returns active services filtered by both category and service type")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Services retrieved successfully",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = ServiceResponse.class))))
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = ServicePublicResponse.class))))
     })
     @GetMapping("/categories/{categoryId}/types/{serviceTypeId}/services")
-    public ResponseEntity<List<ServiceResponse>> getServicesByCategoryAndType(
+    public ResponseEntity<List<ServicePublicResponse>> getServicesByCategoryAndType(
             @Parameter(description = "Category ID", example = "1")
             @PathVariable Integer categoryId,
             @Parameter(description = "Service type ID", example = "1")
             @PathVariable Integer serviceTypeId) {
         log.debug("Getting services for category: {} and type: {}", categoryId, serviceTypeId);
-        List<ServiceResponse> services = catalogService.getActiveCatalogServicesByCategoryAndType(categoryId, serviceTypeId);
+        List<ServicePublicResponse> services = catalogService.getPublicServicesByCategoryAndType(categoryId, serviceTypeId);
         return ResponseEntity.ok(services);
     }
 

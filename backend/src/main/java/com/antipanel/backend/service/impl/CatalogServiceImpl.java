@@ -3,6 +3,7 @@ package com.antipanel.backend.service.impl;
 import com.antipanel.backend.dto.common.PageResponse;
 import com.antipanel.backend.dto.service.ServiceCreateRequest;
 import com.antipanel.backend.dto.service.ServiceDetailResponse;
+import com.antipanel.backend.dto.service.ServicePublicResponse;
 import com.antipanel.backend.dto.service.ServiceResponse;
 import com.antipanel.backend.dto.service.ServiceSummary;
 import com.antipanel.backend.dto.service.ServiceUpdateRequest;
@@ -166,6 +167,29 @@ public class CatalogServiceImpl implements CatalogService {
                 .map(serviceMapper::enrichWithProfitMargin)
                 .toList();
         return pageMapper.toPageResponse(page, content);
+    }
+
+    // ============ PUBLIC API (SAFE RESPONSES) ============
+
+    @Override
+    public List<ServicePublicResponse> getPublicServicesByCategory(Integer categoryId) {
+        log.debug("Getting public services for category ID: {}", categoryId);
+        List<Service> services = serviceRepository.findActiveCatalogServicesByCategory(categoryId);
+        return serviceMapper.toPublicResponseList(services);
+    }
+
+    @Override
+    public List<ServicePublicResponse> getPublicServicesByCategoryAndType(Integer categoryId, Integer serviceTypeId) {
+        log.debug("Getting public services for category ID: {} and type ID: {}", categoryId, serviceTypeId);
+        List<Service> services = serviceRepository.findActiveCatalogServicesByCategoryAndType(categoryId, serviceTypeId);
+        return serviceMapper.toPublicResponseList(services);
+    }
+
+    @Override
+    public List<ServicePublicResponse> getPublicActiveServices() {
+        log.debug("Getting all public active services");
+        List<Service> services = serviceRepository.findActiveCatalogServices();
+        return serviceMapper.toPublicResponseList(services);
     }
 
     // ============ ADMIN LISTING ============
