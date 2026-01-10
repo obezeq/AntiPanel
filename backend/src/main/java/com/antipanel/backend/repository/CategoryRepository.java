@@ -69,7 +69,8 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
     // ============ WITH SERVICE COUNT ============
 
     /**
-     * Find active categories with count of active services
+     * Find active categories with count of active services.
+     * Only returns categories that have at least one active service.
      * Returns Object[] with [Category, Long serviceCount]
      *
      * @return List of Object arrays containing category and service count
@@ -78,6 +79,7 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
            "LEFT JOIN Service s ON s.category = c AND s.isActive = true " +
            "WHERE c.isActive = true " +
            "GROUP BY c " +
+           "HAVING COUNT(s) > 0 " +
            "ORDER BY c.sortOrder ASC")
     List<Object[]> findActiveCategoriesWithServiceCount();
 
