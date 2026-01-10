@@ -103,18 +103,14 @@
 
 .service-item-card__unit {
   font-family: var(--font-primary);
-  font-size: var(--font-size-caption);
+  font-size: var(--font-size-body); // 16px mobile (improved from caption)
   font-weight: var(--font-weight-medium);
   color: var(--color-text);
   line-height: var(--line-height-tight);
   margin: 0;
 
-  @include respond-to('sm') {
-    font-size: var(--font-size-body);
-  }
-
   @include respond-to('lg') {
-    font-size: var(--font-size-h6);
+    font-size: var(--font-size-h6); // 20px
   }
 }
 
@@ -159,41 +155,33 @@
 
 .service-item-card__quality {
   font-family: var(--font-primary);
-  font-size: var(--font-size-caption);
+  font-size: var(--font-size-body); // 16px mobile (improved from caption)
   font-weight: var(--font-weight-medium);
   color: var(--color-success);
   line-height: var(--line-height-tight);
 
-  @include respond-to('sm') {
-    font-size: var(--font-size-body);
-  }
-
   @include respond-to('md') {
-    font-size: var(--font-size-h6);
+    font-size: var(--font-size-h6); // 20px
   }
 
   @include respond-to('lg') {
-    font-size: var(--font-size-h5);
+    font-size: var(--font-size-h5); // 24px
   }
 }
 
 .service-item-card__speed {
   font-family: var(--font-primary);
-  font-size: var(--font-size-caption);
+  font-size: var(--font-size-body); // 16px mobile (improved from caption)
   font-weight: var(--font-weight-medium);
   color: var(--color-text);
   line-height: var(--line-height-tight);
 
-  @include respond-to('sm') {
-    font-size: var(--font-size-body);
-  }
-
   @include respond-to('md') {
-    font-size: var(--font-size-h6);
+    font-size: var(--font-size-h6); // 20px
   }
 
   @include respond-to('lg') {
-    font-size: var(--font-size-h5);
+    font-size: var(--font-size-h5); // 24px
   }
 }
 
