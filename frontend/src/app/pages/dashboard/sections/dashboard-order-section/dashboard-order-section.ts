@@ -261,8 +261,32 @@ export class DashboardOrderSection {
     return { quantity, platform, serviceType, target, matchPercentage };
   }
 
+  /**
+   * Extract quantity from text
+   * Supports: 1000, 1k, 50k, 1m, 1.5k
+   * Excludes numbers that are part of URLs or @usernames
+   */
   private extractQuantity(text: string): number | null {
-    const match = text.match(/(\d+(?:\.\d+)?)\s*(k|m)?/i);
+    // Remove URLs and usernames before extracting quantity
+    // This prevents matching numbers in @naruto2 or instagram.com/12489510248
+    let cleanText = text;
+
+    // Remove URLs with protocol (https://instagram.com/12489510248/12903)
+    cleanText = cleanText.replace(/https?:\/\/[^\s]+/gi, '');
+
+    // Remove URLs without protocol (instagram.com/naruto2, www.example.com/path)
+    cleanText = cleanText.replace(
+      /(?:www\.)?[\w-]+\.(?:com|net|org|io|co|me|tv|app|dev|link|bio|page)(?:\/[^\s]*)?/gi,
+      ''
+    );
+
+    // Remove @usernames (@naruto2, @user.name)
+    cleanText = cleanText.replace(/@[\w.]+/g, '');
+
+    // Now extract quantity from clean text
+    // Match patterns like: 1000, 1k, 50k, 1.5k, 1m
+    const match = cleanText.match(/(\d+(?:\.\d+)?)\s*(k|m)?/i);
+
     if (!match) return null;
 
     let value = parseFloat(match[1]);
