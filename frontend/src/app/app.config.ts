@@ -36,7 +36,9 @@ import {
   matQueryStats,
   // Theme toggle icons
   matLightMode,
-  matDarkMode
+  matDarkMode,
+  // Support page icons
+  matEmail
 } from '@ng-icons/material-icons/baseline';
 import {
   iconoirInstagram,
@@ -110,6 +112,8 @@ export const appConfig: ApplicationConfig = {
       // Material Icons - Theme Toggle
       matLightMode,
       matDarkMode,
+      // Material Icons - Support Page
+      matEmail,
       // Iconoir - Social Media
       iconoirInstagram,
       iconoirTiktok,

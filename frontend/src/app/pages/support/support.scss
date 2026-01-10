@@ -1,0 +1,105 @@
+// ==========================================================================
+// SUPPORT PAGE
+// ==========================================================================
+// Support page with contact options and coming soon section.
+// Features flat 2D grid background with ambient white glow effect.
+// ==========================================================================
+
+@use '../../../styles/01-tools/mixins' as *;
+
+.support {
+  @include flex-column;
+  position: relative;
+  overflow: hidden;
+  align-items: center;
+  gap: var(--spacing-20);
+  min-height: 100vh;
+  padding: var(--spacing-16) var(--spacing-6);
+  padding-bottom: var(--spacing-24);
+  background-color: var(--color-background);
+
+  // ---------------------------------------------------------------------------
+  // FLAT 2D GRID BACKGROUND
+  // ---------------------------------------------------------------------------
+  // Simple horizontal and vertical lines without 3D perspective.
+  // Matches login/register page pattern for consistency.
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image:
+      linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+    background-size: var(--grid-size) var(--grid-size);
+
+    // Fade out toward bottom for visual depth
+    mask-image: linear-gradient(to bottom, black 0%, black 50%, transparent 85%);
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 50%, transparent 85%);
+    pointer-events: none;
+  }
+
+  // ---------------------------------------------------------------------------
+  // AMBIENT WHITE GLOW FROM TOP
+  // ---------------------------------------------------------------------------
+  // White radial gradient light emanating from top center.
+  // Creates ambient lighting effect on the page title.
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: min(2000px, 95vw);
+    height: clamp(400px, 60vh, 900px);
+    background: radial-gradient(
+      ellipse 80% 50% at 50% 0%,
+      rgba(255, 255, 255, 0.10) 0%,
+      rgba(255, 255, 255, 0.04) 33%,
+      transparent 70%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  // Ensure content stays above background effects
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  @include respond-below('lg') {
+    gap: var(--spacing-16);
+    padding: var(--spacing-12) var(--spacing-4);
+    padding-bottom: var(--spacing-16);
+  }
+
+  @include respond-below('md') {
+    gap: var(--spacing-12);
+    padding: var(--spacing-8) var(--spacing-4);
+    padding-bottom: var(--spacing-12);
+
+    // Smaller grid cells on mobile
+    &::before {
+      background-size: 40px 40px;
+    }
+
+    // Smaller glow area on mobile
+    &::after {
+      height: clamp(250px, 40vh, 400px);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // ACCESSIBILITY: REDUCED MOTION
+  // ---------------------------------------------------------------------------
+
+  @media (prefers-reduced-motion: reduce) {
+    &::after {
+      opacity: 0.6;
+    }
+  }
+}

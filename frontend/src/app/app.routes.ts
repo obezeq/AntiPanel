@@ -58,6 +58,11 @@ export const routes: Routes = [
       import('./pages/terms/terms').then(m => m.Terms)
   },
   {
+    path: 'support',
+    loadComponent: () =>
+      import('./pages/support/support').then(m => m.Support)
+  },
+  {
     path: '',
     pathMatch: 'full',
     canActivate: [rootGuard],
