@@ -570,10 +570,11 @@
   margin: 0;
   padding: 0;
 
-  // CRITICAL: Explicit width needed for child percentage widths to resolve
-  // Without this, children's width: 100% can't calculate properly
-  // (CSS % widths require parent to have explicit width)
-  width: 100%;
+  // Make li a flex container so button stretches
+  // Default align-items: stretch forces children to full width
+  // This overrides button's intrinsic sizing (unlike width: 100% which fails)
+  display: flex;
+  flex-direction: column;
 
   // Separator between items
   & + & {
@@ -587,12 +588,12 @@
 // Using display: flex for reliable full-width hover areas
 
 .header__profile-menu-link {
-  // CRITICAL: Use flex for reliable full-width layout
-  // Flexbox ensures the element fills the container width
+  // CRITICAL: display: flex makes this a block-level flex container
+  // Block-level elements naturally expand to fill parent width
+  // NO width: 100% needed - that breaks the natural expansion!
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
 
   // WCAG 2.2 AAA: 44px minimum touch target
   min-height: 2.75rem;
@@ -644,13 +645,12 @@
   margin: 0;
   cursor: pointer;
 
-  // CRITICAL: Use flex for reliable full-width layout
-  // Flexbox ensures the element fills the container width
-  // width: 100% is REQUIRED for buttons due to intrinsic sizing
+  // CRITICAL: display: flex makes this a block-level flex container
+  // Block-level elements naturally expand to fill parent width
+  // NO width: 100% needed - that breaks the natural expansion!
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
 
   // WCAG 2.2 AAA: 44px minimum touch target
   min-height: 2.75rem;
@@ -761,6 +761,15 @@
   @include respond-to('md') {
     inline-size: 2.5rem;
     block-size: 2.5rem;
+  }
+
+  // Hide when menu is open - close button inside sidebar is sufficient
+  // Using visibility preserves layout space and prevents shift
+  &.header__menu-toggle--open {
+    @include respond-below('lg') {
+      visibility: hidden;
+      pointer-events: none;
+    }
   }
 
   @include focus-visible;
