@@ -12,11 +12,13 @@ import { Header } from '../../components/layout/header/header';
 import { Footer } from '../../components/layout/footer/footer';
 import { DashboardOverview } from './sections/dashboard-overview/dashboard-overview';
 import { DashboardOrderSection } from './sections/dashboard-order-section/dashboard-order-section';
+import { DashboardRecentOrdersSection } from './sections/dashboard-recent-orders-section/dashboard-recent-orders-section';
 import { ServicesSection } from '../home/sections/services-section/services-section';
 import { UserService, type UserStatisticsResponse } from '../../core/services/user.service';
 import { AuthService } from '../../core/services/auth.service';
 import type { OrderResponse } from '../../core/services/order.service';
 import type { ServiceItemData } from '../../components/shared/service-item-card/service-item-card';
+import type { RecentOrderData } from '../../components/shared/recent-order-card/recent-order-card';
 
 /**
  * Dashboard page component.
@@ -37,7 +39,7 @@ import type { ServiceItemData } from '../../components/shared/service-item-card/
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Header, Footer, DashboardOverview, DashboardOrderSection, ServicesSection]
+  imports: [Header, Footer, DashboardOverview, DashboardOrderSection, DashboardRecentOrdersSection, ServicesSection]
 })
 export class Dashboard implements OnInit {
   private readonly router = inject(Router);
@@ -205,5 +207,16 @@ export class Dashboard implements OnInit {
     // Scroll to services section
     const servicesSection = document.querySelector('app-services-section');
     servicesSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /**
+   * Handle order again from recent orders section.
+   * Creates a minimal ServiceItemData with just the name, as the quick order
+   * flow only uses the name to populate the input field.
+   */
+  protected onOrderAgain(order: RecentOrderData): void {
+    // The quick order flow only uses the name property to populate input text
+    const serviceData = { name: order.serviceName } as ServiceItemData;
+    this.onQuickOrder(serviceData);
   }
 }

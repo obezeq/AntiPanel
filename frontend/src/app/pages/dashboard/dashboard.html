@@ -48,6 +48,11 @@
         [shouldReset]="shouldResetPlatform()"
         (quickOrder)="onQuickOrder($event)"
       />
+
+      <!-- Recent Orders Section -->
+      <app-dashboard-recent-orders-section
+        (orderAgain)="onOrderAgain($event)"
+      />
     }
   </main>
 
