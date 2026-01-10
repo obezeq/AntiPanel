@@ -23,17 +23,6 @@ const PLATFORM_ICONS: Record<string, string> = {
   linkedin: 'iconoirLinkedin'
 };
 
-/**
- * Service types mapping (slug to ID)
- * Used for natural language parsing
- */
-const SERVICE_TYPE_SLUGS: Record<string, number> = {
-  followers: 1,
-  likes: 2,
-  comments: 3,
-  views: 4,
-  shares: 5
-};
 
 /**
  * CatalogService provides access to the service catalog via API.
@@ -67,6 +56,9 @@ export class CatalogService {
   /** Cached services by category ID */
   private readonly servicesCacheMap = signal<Map<number, Service[]>>(new Map());
 
+  /** Cached service types by category ID */
+  private readonly serviceTypesCache = signal<Map<number, ServiceType[]>>(new Map());
+
   /**
    * Get all active categories (platforms) with service counts
    * @returns Observable of categories sorted by sortOrder
@@ -87,13 +79,17 @@ export class CatalogService {
   }
 
   /**
-   * Get category by slug
+   * Get category by slug (case-insensitive)
    * @param slug Category slug (e.g., 'instagram')
    * @returns Observable of category or undefined
    */
   getCategoryBySlug(slug: string): Observable<CategoryWithCount | undefined> {
+    const normalized = slug.toLowerCase().replace(/-/g, '');
     return this.getCategories().pipe(
-      map(categories => categories.find(c => c.slug === slug))
+      map(categories => categories.find(c =>
+        c.slug.toLowerCase() === slug.toLowerCase() ||
+        c.slug.toLowerCase().replace(/-/g, '') === normalized
+      ))
     );
   }
 
@@ -118,8 +114,9 @@ export class CatalogService {
   }
 
   /**
-   * Get all service types
+   * Get all service types (legacy - returns common types)
    * @returns Observable of service types
+   * @deprecated Use getServiceTypesByCategory instead for accurate IDs
    */
   getServiceTypes(): Observable<ServiceType[]> {
     return of([
@@ -129,6 +126,30 @@ export class CatalogService {
       { id: 4, categoryId: 0, name: 'Views', slug: 'views', sortOrder: 4, isActive: true },
       { id: 5, categoryId: 0, name: 'Shares', slug: 'shares', sortOrder: 5, isActive: true }
     ]);
+  }
+
+  /**
+   * Get service types for a specific category (from API)
+   * @param categoryId Category ID
+   * @returns Observable of service types for this category
+   */
+  getServiceTypesByCategory(categoryId: number): Observable<ServiceType[]> {
+    const cached = this.serviceTypesCache().get(categoryId);
+    if (cached) {
+      return of(cached);
+    }
+
+    return this.http.get<ServiceType[]>(`${this.baseUrl}/categories/${categoryId}/service-types`).pipe(
+      tap(types => {
+        const newCache = new Map(this.serviceTypesCache());
+        newCache.set(categoryId, types);
+        this.serviceTypesCache.set(newCache);
+      }),
+      catchError(error => {
+        console.error(`Failed to fetch service types for category ${categoryId}:`, error);
+        return of([]);
+      })
+    );
   }
 
   /**
@@ -188,28 +209,36 @@ export class CatalogService {
 
   /**
    * Find service matching search criteria
-   * Used by the order input parser
+   * Uses dynamic service type lookup per category (not hardcoded IDs)
    * @param categorySlug Platform slug
    * @param serviceTypeSlug Service type slug (followers, likes, comments)
    * @returns Observable of matching service or undefined
    */
   findService(categorySlug: string, serviceTypeSlug: string): Observable<Service | undefined> {
-    const serviceTypeId = SERVICE_TYPE_SLUGS[serviceTypeSlug];
-    if (!serviceTypeId) {
-      return of(undefined);
-    }
-
     return this.getCategoryBySlug(categorySlug).pipe(
       switchMap(category => {
         if (!category) {
           return of(undefined);
         }
 
-        return this.http.get<Service[]>(
-          `${this.baseUrl}/categories/${category.id}/types/${serviceTypeId}/services`
-        ).pipe(
-          map(services => services.length > 0 ? services[0] : undefined),
-          catchError(() => of(undefined))
+        // Look up service type dynamically for this category
+        return this.getServiceTypesByCategory(category.id).pipe(
+          switchMap(serviceTypes => {
+            const serviceType = serviceTypes.find(st =>
+              st.slug.toLowerCase() === serviceTypeSlug.toLowerCase()
+            );
+
+            if (!serviceType) {
+              return of(undefined);
+            }
+
+            return this.http.get<Service[]>(
+              `${this.baseUrl}/categories/${category.id}/types/${serviceType.id}/services`
+            ).pipe(
+              map(services => services.length > 0 ? services[0] : undefined),
+              catchError(() => of(undefined))
+            );
+          })
         );
       })
     );
@@ -256,5 +285,6 @@ export class CatalogService {
   clearCache(): void {
     this.categoriesCache.set(null);
     this.servicesCacheMap.set(new Map());
+    this.serviceTypesCache.set(new Map());
   }
 }
