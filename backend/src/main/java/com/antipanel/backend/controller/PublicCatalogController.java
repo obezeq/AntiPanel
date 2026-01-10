@@ -6,11 +6,13 @@ import com.antipanel.backend.dto.paymentprocessor.PaymentProcessorResponse;
 import com.antipanel.backend.dto.service.ServiceDetailResponse;
 import com.antipanel.backend.dto.service.ServicePublicResponse;
 import com.antipanel.backend.dto.service.ServiceResponse;
+import com.antipanel.backend.dto.servicetype.ServiceTypeSummary;
 import com.antipanel.backend.entity.enums.ServiceQuality;
 import com.antipanel.backend.entity.enums.ServiceSpeed;
 import com.antipanel.backend.service.CatalogService;
 import com.antipanel.backend.service.CategoryService;
 import com.antipanel.backend.service.PaymentProcessorService;
+import com.antipanel.backend.service.ServiceTypeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -47,6 +49,7 @@ public class PublicCatalogController {
     private final CategoryService categoryService;
     private final CatalogService catalogService;
     private final PaymentProcessorService paymentProcessorService;
+    private final ServiceTypeService serviceTypeService;
 
     // ============ CATEGORY ENDPOINTS ============
 
@@ -90,6 +93,24 @@ public class PublicCatalogController {
         log.debug("Getting active categories with service count");
         List<CategoryResponse> categories = categoryService.getActiveCategoriesWithServiceCount();
         return ResponseEntity.ok(categories);
+    }
+
+    // ============ SERVICE TYPE ENDPOINTS ============
+
+    @Operation(summary = "Get service types by category",
+            description = "Returns all active service types for a specific category")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Service types retrieved successfully",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = ServiceTypeSummary.class)))),
+            @ApiResponse(responseCode = "404", description = "Category not found")
+    })
+    @GetMapping("/categories/{categoryId}/service-types")
+    public ResponseEntity<List<ServiceTypeSummary>> getServiceTypesByCategory(
+            @Parameter(description = "Category ID", example = "1")
+            @PathVariable Integer categoryId) {
+        log.debug("Getting service types for category: {}", categoryId);
+        List<ServiceTypeSummary> serviceTypes = serviceTypeService.getSummariesByCategory(categoryId);
+        return ResponseEntity.ok(serviceTypes);
     }
 
     // ============ SERVICE ENDPOINTS ============
