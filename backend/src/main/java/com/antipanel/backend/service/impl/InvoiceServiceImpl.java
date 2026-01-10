@@ -4,6 +4,7 @@ import com.antipanel.backend.dto.common.PageResponse;
 import com.antipanel.backend.dto.invoice.InvoiceCreateRequest;
 import com.antipanel.backend.dto.invoice.InvoiceResponse;
 import com.antipanel.backend.dto.invoice.InvoiceSummary;
+import com.antipanel.backend.dto.paymento.PaymentoPaymentResponse;
 import com.antipanel.backend.entity.Invoice;
 import com.antipanel.backend.entity.PaymentProcessor;
 import com.antipanel.backend.entity.Transaction;
@@ -11,6 +12,7 @@ import com.antipanel.backend.entity.User;
 import com.antipanel.backend.entity.enums.InvoiceStatus;
 import com.antipanel.backend.entity.enums.TransactionType;
 import com.antipanel.backend.exception.BadRequestException;
+import com.antipanel.backend.exception.PaymentoApiException;
 import com.antipanel.backend.exception.ResourceNotFoundException;
 import com.antipanel.backend.mapper.InvoiceMapper;
 import com.antipanel.backend.mapper.PageMapper;
@@ -19,6 +21,7 @@ import com.antipanel.backend.repository.PaymentProcessorRepository;
 import com.antipanel.backend.repository.TransactionRepository;
 import com.antipanel.backend.repository.UserRepository;
 import com.antipanel.backend.service.InvoiceService;
+import com.antipanel.backend.service.payment.PaymentoClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -40,12 +43,15 @@ import java.util.List;
 @Slf4j
 public class InvoiceServiceImpl implements InvoiceService {
 
+    private static final String PAYMENTO_PROCESSOR_CODE = "paymento";
+
     private final InvoiceRepository invoiceRepository;
     private final UserRepository userRepository;
     private final PaymentProcessorRepository paymentProcessorRepository;
     private final TransactionRepository transactionRepository;
     private final InvoiceMapper invoiceMapper;
     private final PageMapper pageMapper;
+    private final PaymentoClient paymentoClient;
 
     // ============ CREATE OPERATIONS ============
 
@@ -95,7 +101,41 @@ public class InvoiceServiceImpl implements InvoiceService {
 
         Invoice saved = invoiceRepository.save(invoice);
         log.info("Created invoice ID: {} for user ID: {}", saved.getId(), userId);
+
+        // Integrate with Paymento if processor is paymento
+        if (PAYMENTO_PROCESSOR_CODE.equalsIgnoreCase(processor.getCode())) {
+            saved = createPaymentoPayment(saved, processor);
+        }
+
         return invoiceMapper.toResponse(saved);
+    }
+
+    /**
+     * Creates a payment with Paymento and updates the invoice.
+     */
+    private Invoice createPaymentoPayment(Invoice invoice, PaymentProcessor processor) {
+        try {
+            log.debug("Creating Paymento payment for invoice ID: {}", invoice.getId());
+
+            PaymentoPaymentResponse paymentResponse = paymentoClient.createPayment(processor, invoice);
+
+            // Update invoice with token and payment URL
+            invoice.setProcessorInvoiceId(paymentResponse.getToken());
+            invoice.setPaymentUrl(paymentResponse.getPaymentUrl());
+            invoice.setStatus(InvoiceStatus.PROCESSING);
+
+            Invoice updated = invoiceRepository.save(invoice);
+            log.info("Paymento payment created for invoice ID: {} - Payment URL: {}",
+                    updated.getId(), updated.getPaymentUrl());
+
+            return updated;
+        } catch (PaymentoApiException e) {
+            log.error("Failed to create Paymento payment for invoice {}: {}",
+                    invoice.getId(), e.getMessage());
+            // Keep invoice as PENDING - user can retry or payment team can investigate
+            // Don't throw - return the invoice so user knows it was created
+            return invoice;
+        }
     }
 
     // ============ READ OPERATIONS ============
