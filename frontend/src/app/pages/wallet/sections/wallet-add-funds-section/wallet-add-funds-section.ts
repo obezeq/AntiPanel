@@ -39,6 +39,12 @@ export class WalletAddFundsSection {
   /** Whether the form is currently processing */
   readonly isLoading = input<boolean>(false);
 
+  /** Minimum deposit amount from processor */
+  readonly minAmount = input<number>(1);
+
+  /** Maximum deposit amount from processor (null = unlimited) */
+  readonly maxAmount = input<number | null>(null);
+
   /** Emits when form is submitted with valid data */
   readonly addFunds = output<AddFundsPayload>();
 
@@ -70,18 +76,25 @@ export class WalletAddFundsSection {
 
   /**
    * Handle form submission.
-   * Validates amount and emits addFunds event if valid.
+   * Validates amount against processor limits and emits addFunds event if valid.
    */
   protected onSubmit(): void {
     const amountValue = parseFloat(this.amount());
+    const min = this.minAmount();
+    const max = this.maxAmount();
 
     if (!this.amount() || isNaN(amountValue)) {
       this.amountError.set('Please enter an amount');
       return;
     }
 
-    if (amountValue <= 0) {
-      this.amountError.set('Amount must be greater than zero');
+    if (amountValue < min) {
+      this.amountError.set(`Minimum deposit is $${min.toFixed(2)}`);
+      return;
+    }
+
+    if (max !== null && amountValue > max) {
+      this.amountError.set(`Maximum deposit is $${max.toFixed(2)}`);
       return;
     }
 

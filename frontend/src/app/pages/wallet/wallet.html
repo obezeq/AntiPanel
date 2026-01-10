@@ -16,6 +16,8 @@
   <!-- Add Funds Section -->
   <app-wallet-add-funds-section
     [isLoading]="isAddingFunds()"
+    [minAmount]="processorLimits().min"
+    [maxAmount]="processorLimits().max"
     (addFunds)="onAddFunds($event)"
   />
 
