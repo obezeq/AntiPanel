@@ -1,0 +1,265 @@
+// ==========================================================================
+// WALLET ADD FUNDS SECTION
+// ==========================================================================
+// Form for adding funds via cryptocurrency.
+// Features responsive layout and validation states.
+// ==========================================================================
+
+@use '../../../../../styles/01-tools/mixins' as *;
+
+.wallet-add-funds {
+  @include flex-column;
+  align-items: center;
+  gap: var(--spacing-12);
+  width: 100%;
+  max-width: 58.375rem; // 934px from Figma
+
+  @include respond-below('md') {
+    gap: var(--spacing-8);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// TITLE
+// ---------------------------------------------------------------------------
+// "ADD FUNDS" - Montserrat Bold
+
+.wallet-add-funds__title {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  line-height: 1.15;
+  text-align: center;
+  text-transform: uppercase;
+  margin: 0;
+
+  @include respond-below('lg') {
+    font-size: var(--font-size-h2);
+  }
+
+  @include respond-below('md') {
+    font-size: var(--font-size-h3);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// FORM
+// ---------------------------------------------------------------------------
+
+.wallet-add-funds__form {
+  @include flex-column;
+  align-items: center;
+  gap: var(--spacing-4);
+  width: 100%;
+}
+
+.wallet-add-funds__fieldset {
+  @include flex-center;
+  gap: var(--spacing-4);
+  border: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  max-width: 100%;
+
+  @include respond-below('md') {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// CRYPTO SELECTION BUTTON
+// ---------------------------------------------------------------------------
+// Placeholder button for crypto dropdown
+
+.wallet-add-funds__crypto-btn {
+  @include flex-center;
+  height: var(--spacing-12);
+  padding: 0 var(--spacing-4);
+  background-color: #666;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h5);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: var(--transition-colors);
+  flex-shrink: 0;
+
+  &:hover {
+    background-color: #777;
+  }
+
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  @include respond-below('md') {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// AMOUNT INPUT FIELD
+// ---------------------------------------------------------------------------
+
+.wallet-add-funds__amount-field {
+  display: flex;
+  flex: 1;
+  max-width: 21.25rem; // 340px from Figma
+
+  @include respond-below('md') {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+.wallet-add-funds__amount-input {
+  width: 100%;
+  height: var(--spacing-12);
+  padding: var(--spacing-2) var(--spacing-6);
+  background-color: var(--color-information);
+  border: var(--border-width-medium) solid transparent;
+  border-radius: var(--radius-lg);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-h5);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.075em;
+  transition: var(--transition-colors);
+
+  &::placeholder {
+    color: var(--color-text);
+    opacity: 1;
+  }
+
+  &:hover {
+    background-color: #444;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-text);
+  }
+
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  // Error state
+  &--error {
+    border-color: var(--color-error);
+
+    &:focus {
+      border-color: var(--color-error);
+    }
+  }
+
+  // Hide number input spinners
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  &[type='number'] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// SUBMIT BUTTON
+// ---------------------------------------------------------------------------
+
+.wallet-add-funds__submit-btn {
+  @include flex-center;
+  height: var(--spacing-12);
+  padding: var(--spacing-2) var(--spacing-4);
+  background-color: var(--color-information);
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h5);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: var(--transition-colors);
+  flex-shrink: 0;
+
+  &:hover:not(:disabled) {
+    background-color: #444;
+  }
+
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  &--loading {
+    min-width: 10rem;
+  }
+
+  @include respond-below('md') {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.wallet-add-funds__loading-text {
+  animation: pulse-opacity 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-opacity {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// ERROR MESSAGE
+// ---------------------------------------------------------------------------
+
+.wallet-add-funds__error {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-error);
+  margin: 0;
+  margin-top: var(--spacing-2);
+  text-align: center;
+}
+
+// ---------------------------------------------------------------------------
+// ACCESSIBILITY: REDUCED MOTION
+// ---------------------------------------------------------------------------
+
+@media (prefers-reduced-motion: reduce) {
+  .wallet-add-funds__crypto-btn,
+  .wallet-add-funds__amount-input,
+  .wallet-add-funds__submit-btn {
+    transition: none;
+  }
+
+  .wallet-add-funds__loading-text {
+    animation: none;
+  }
+}

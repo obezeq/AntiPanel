@@ -1,0 +1,57 @@
+<section class="wallet-add-funds" aria-labelledby="add-funds-title">
+  <h2 id="add-funds-title" class="wallet-add-funds__title">ADD FUNDS</h2>
+
+  <form class="wallet-add-funds__form" (ngSubmit)="onSubmit()">
+    <fieldset class="wallet-add-funds__fieldset">
+      <legend class="visually-hidden">Add funds form</legend>
+
+      <!-- Crypto Selection Button -->
+      <button
+        type="button"
+        class="wallet-add-funds__crypto-btn"
+        aria-haspopup="listbox"
+        aria-label="Select cryptocurrency"
+      >
+        {{ selectedCrypto() | uppercase }}
+      </button>
+
+      <!-- Amount Input -->
+      <label class="wallet-add-funds__amount-field">
+        <span class="visually-hidden">Amount in USD</span>
+        <input
+          type="number"
+          class="wallet-add-funds__amount-input"
+          [class.wallet-add-funds__amount-input--error]="amountError()"
+          placeholder="AMOUNT"
+          [value]="amount()"
+          (input)="onAmountInput($event)"
+          min="0"
+          step="0.01"
+          inputmode="decimal"
+          [attr.aria-describedby]="amountError() ? 'amount-error' : null"
+          [attr.aria-invalid]="amountError() ? 'true' : null"
+        />
+      </label>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="wallet-add-funds__submit-btn"
+        [disabled]="isLoading()"
+        [class.wallet-add-funds__submit-btn--loading]="isLoading()"
+      >
+        @if (isLoading()) {
+          <span class="wallet-add-funds__loading-text">PROCESSING...</span>
+        } @else {
+          ADD FUNDS
+        }
+      </button>
+    </fieldset>
+
+    @if (amountError()) {
+      <p id="amount-error" class="wallet-add-funds__error" role="alert">
+        {{ amountError() }}
+      </p>
+    }
+  </form>
+</section>
