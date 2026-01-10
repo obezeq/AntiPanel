@@ -15,7 +15,7 @@
   max-width: 58.375rem; // 934px from Figma
 
   @include respond-below('md') {
-    gap: var(--spacing-8);
+    gap: var(--spacing-6);
   }
 }
 
@@ -39,7 +39,7 @@
   }
 
   @include respond-below('md') {
-    font-size: var(--font-size-h3);
+    font-size: var(--font-size-h4);
   }
 }
 
@@ -54,7 +54,7 @@
   width: 100%;
 
   @include respond-below('md') {
-    gap: var(--spacing-4);
+    gap: var(--spacing-3);
   }
 }
 
@@ -88,10 +88,14 @@
   }
 
   @include respond-below('md') {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-3);
-    padding: var(--spacing-4);
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-2) var(--spacing-3);
+    padding: var(--spacing-3) var(--spacing-4);
+    background-color: var(--color-tiny-info);
+    border-radius: var(--radius-md);
+    min-height: var(--spacing-12);
   }
 }
 
@@ -121,9 +125,10 @@
   }
 
   @include respond-below('md') {
-    font-size: var(--font-size-body);
-    width: 6rem;
-    height: 2rem;
+    width: auto;
+    padding: var(--spacing-1) var(--spacing-2);
+    font-size: var(--font-size-small);
+    height: auto;
   }
 
   // PENDING - Yellow
@@ -160,7 +165,8 @@
   flex-wrap: nowrap;
 
   @include respond-below('md') {
-    gap: var(--spacing-3);
+    flex: 1;
+    gap: var(--spacing-2);
     justify-content: flex-start;
     flex-wrap: wrap;
   }
@@ -185,7 +191,7 @@
   }
 
   @include respond-below('md') {
-    font-size: var(--font-size-body);
+    font-size: var(--font-size-small);
   }
 }
 
@@ -193,7 +199,7 @@
   color: var(--color-foreground);
 
   @include respond-below('md') {
-    display: none;
+    display: inline;
   }
 }
 

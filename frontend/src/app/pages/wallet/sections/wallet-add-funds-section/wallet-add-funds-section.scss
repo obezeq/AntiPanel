@@ -16,7 +16,7 @@
   max-width: 58.375rem; // 934px from Figma
 
   @include respond-below('md') {
-    gap: var(--spacing-8);
+    gap: var(--spacing-6);
   }
 }
 
@@ -40,7 +40,7 @@
   }
 
   @include respond-below('md') {
-    font-size: var(--font-size-h3);
+    font-size: var(--font-size-h4);
   }
 }
 
@@ -67,6 +67,10 @@
   @include respond-below('md') {
     flex-direction: column;
     align-items: stretch;
+    gap: var(--spacing-3);
+    padding: var(--spacing-4);
+    background-color: var(--color-tiny-info);
+    border-radius: var(--radius-lg);
   }
 }
 
@@ -104,6 +108,8 @@
   @include respond-below('md') {
     width: 100%;
     justify-content: center;
+    height: var(--spacing-12);
+    font-size: var(--font-size-body);
   }
 }
 
@@ -130,6 +136,8 @@
   @include respond-below('md') {
     max-width: 100%;
     width: 100%;
+    height: var(--spacing-12);
+    font-size: var(--font-size-body);
   }
 
   &::placeholder {

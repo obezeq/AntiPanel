@@ -19,9 +19,11 @@
   }
 
   @include respond-below('md') {
-    gap: var(--spacing-6);
-    flex-direction: column;
-    padding: 0 var(--spacing-4);
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spacing-4);
+    padding: 0;
   }
 }
 
@@ -57,7 +59,8 @@
 
   @include respond-below('md') {
     position: static;
-    align-self: flex-start;
+    width: var(--spacing-10);
+    height: var(--spacing-10);
   }
 }
 
@@ -85,8 +88,8 @@
   }
 
   @include respond-below('md') {
-    gap: var(--spacing-6);
-    flex-direction: column;
+    flex-direction: row;
+    gap: var(--spacing-4);
   }
 }
 
@@ -109,7 +112,7 @@
   }
 
   @include respond-below('md') {
-    font-size: var(--font-size-h4);
+    font-size: var(--font-size-h5);
   }
 }
 
@@ -130,7 +133,7 @@
   }
 
   @include respond-below('md') {
-    font-size: var(--font-size-h4);
+    font-size: var(--font-size-h5);
   }
 }
 
