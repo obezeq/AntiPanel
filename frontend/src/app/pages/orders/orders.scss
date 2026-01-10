@@ -243,7 +243,7 @@
 }
 
 // ==========================================================================
-// STATE DISPLAYS (Loading, Error, Empty)
+// STATE DISPLAYS (Loading, Error)
 // ==========================================================================
 
 .orders-page__state {
@@ -265,10 +265,6 @@
   &--error {
     border-color: var(--color-error);
     background-color: rgba(var(--color-error-rgb), 0.1);
-  }
-
-  &--empty {
-    border-color: var(--color-foreground);
   }
 }
 
@@ -324,6 +320,46 @@
   }
 
   @include focus-visible(var(--color-text));
+}
+
+// ==========================================================================
+// EMPTY STATE (Minimal Design)
+// ==========================================================================
+
+.orders-page__empty {
+  @include flex-column-center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-16) var(--spacing-4);
+  text-align: center;
+  width: 100%;
+}
+
+.orders-page__empty-title {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-foreground);
+  margin: 0;
+}
+
+.orders-page__empty-hint {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-body);
+  color: var(--color-secondary);
+  margin: 0;
+}
+
+.orders-page__empty-link {
+  color: var(--color-text);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: var(--transition-colors);
+
+  &:hover {
+    color: var(--color-success);
+  }
+
+  @include focus-visible;
 }
 
 // ==========================================================================

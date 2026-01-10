@@ -3,12 +3,14 @@ import {
   Component,
   computed,
   DestroyRef,
+  ElementRef,
   inject,
   OnInit,
-  signal
+  signal,
+  viewChild
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { NgIcon } from '@ng-icons/core';
 import { Header } from '../../components/layout/header/header';
 import { Footer } from '../../components/layout/footer/footer';
@@ -39,7 +41,7 @@ import { AuthService } from '../../core/services/auth.service';
   templateUrl: './orders.html',
   styleUrl: './orders.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Header, Footer, NgIcon, OrderCard, OrderFilters, OrderPagination]
+  imports: [Header, Footer, NgIcon, OrderCard, OrderFilters, OrderPagination, RouterLink]
 })
 export class Orders implements OnInit {
   private readonly router = inject(Router);
@@ -47,6 +49,9 @@ export class Orders implements OnInit {
   private readonly userService = inject(UserService);
   private readonly authService = inject(AuthService);
   private readonly destroyRef = inject(DestroyRef);
+
+  /** Reference to orders list for scroll behavior */
+  private readonly listRef = viewChild<ElementRef<HTMLElement>>('ordersList');
 
   // -------------------------------------------------------------------------
   // State Signals
@@ -268,8 +273,8 @@ export class Orders implements OnInit {
   protected onPageChange(page: number): void {
     this.currentPage.set(page);
     this.loadOrders();
-    // Scroll to top of list
-    document.querySelector('.orders-page__list')?.scrollIntoView({
+    // Scroll to top of list using viewChild reference
+    this.listRef()?.nativeElement.scrollIntoView({
       behavior: 'smooth',
       block: 'start'
     });
