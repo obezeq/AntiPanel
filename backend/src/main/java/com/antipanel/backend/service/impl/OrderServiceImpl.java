@@ -28,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -55,12 +56,26 @@ public class OrderServiceImpl implements OrderService {
 
     // ============ CREATE OPERATIONS ============
 
+    /**
+     * Creates a new order for a user.
+     * This method ONLY creates the order and deducts balance - it does NOT submit to provider.
+     * The transaction commits here, releasing the user lock.
+     * Call {@link #submitOrderToProvider(Long)} after this method returns to submit to external provider.
+     *
+     * IMPORTANT: Idempotency check is AFTER user lock to prevent race conditions.
+     */
     @Override
     @Transactional
     public OrderResponse create(Long userId, OrderCreateRequest request) {
         log.debug("Creating order for user ID: {} with service ID: {}", userId, request.getServiceId());
 
-        // Idempotency check: return existing order if idempotency key was already used
+        // 1. FIRST: Lock user with pessimistic lock for atomic balance operations
+        // Uses SELECT ... FOR UPDATE to prevent race conditions in concurrent order creation
+        // This MUST come before idempotency check to serialize concurrent requests
+        User user = userRepository.findByIdForUpdate(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+
+        // 2. THEN: Idempotency check (now serialized by user lock - no race condition)
         if (request.getIdempotencyKey() != null && !request.getIdempotencyKey().isBlank()) {
             var existingOrder = orderRepository.findByIdempotencyKey(request.getIdempotencyKey());
             if (existingOrder.isPresent()) {
@@ -69,11 +84,6 @@ public class OrderServiceImpl implements OrderService {
                 return orderMapper.toResponse(existingOrder.get());
             }
         }
-
-        // Validate user with pessimistic lock for atomic balance operations
-        // Uses SELECT ... FOR UPDATE to prevent race conditions in concurrent order creation
-        User user = userRepository.findByIdForUpdate(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
         if (user.getIsBanned()) {
             throw new BadRequestException("User is banned and cannot place orders");
@@ -148,24 +158,68 @@ public class OrderServiceImpl implements OrderService {
                 .build();
         transactionRepository.save(transaction);
 
-        log.info("Created order ID: {} for user ID: {}", saved.getId(), userId);
+        log.info("Created order ID: {} for user ID: {} (PENDING - not yet submitted to provider)",
+                saved.getId(), userId);
 
-        // Submit order to external provider
+        // DO NOT call external API here - return the order first
+        // The transaction commits after this return, releasing the user lock
+        // Call submitOrderToProvider() separately to submit to external provider
+        return orderMapper.toResponse(saved);
+    }
+
+    /**
+     * Submit an order to the external provider.
+     * Uses REQUIRES_NEW propagation to ensure this runs in a separate transaction.
+     * This allows the main create() transaction to commit first, releasing locks.
+     */
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public OrderResponse submitOrderToProvider(Long orderId) {
+        log.debug("Submitting order ID: {} to external provider", orderId);
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order", "id", orderId));
+
+        if (order.getStatus() != OrderStatus.PENDING) {
+            log.warn("Order ID: {} is not in PENDING status (current: {}), skipping provider submission",
+                    orderId, order.getStatus());
+            return orderMapper.toResponse(order);
+        }
+
         try {
-            return externalOrderService.submitOrder(saved);
+            OrderResponse response = externalOrderService.submitOrder(order);
+            log.info("Successfully submitted order ID: {} to provider", orderId);
+            return response;
         } catch (ProviderApiException e) {
-            // Compensation: refund balance and mark order as failed
-            log.error("Provider API failed for order ID: {}. Initiating compensation.", saved.getId(), e);
-            refundFailedOrder(user, saved, totalCharge);
+            log.error("Provider API failed for order ID: {}. Initiating compensation.", orderId, e);
+            // Compensation runs in its own REQUIRES_NEW transaction
+            compensateFailedOrder(orderId);
             throw e;
         }
     }
 
     /**
-     * Refunds the user balance when provider submission fails.
-     * Creates a refund transaction and marks the order as FAILED.
+     * Compensate a failed order by refunding the user.
+     * Uses REQUIRES_NEW propagation to ensure the refund is NOT rolled back
+     * even if the calling transaction fails/rolls back.
      */
-    private void refundFailedOrder(User user, Order order, BigDecimal amount) {
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void compensateFailedOrder(Long orderId) {
+        log.debug("Compensating failed order ID: {}", orderId);
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order", "id", orderId));
+
+        // Prevent double compensation
+        if (order.getStatus() == OrderStatus.FAILED || order.getStatus() == OrderStatus.REFUNDED) {
+            log.warn("Order ID: {} already compensated (status: {}), skipping", orderId, order.getStatus());
+            return;
+        }
+
+        User user = order.getUser();
+        BigDecimal amount = order.getTotalCharge();
+
         // Refund balance
         BigDecimal balanceBefore = user.getBalance();
         BigDecimal balanceAfter = balanceBefore.add(amount);
@@ -189,7 +243,8 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(OrderStatus.FAILED);
         orderRepository.save(order);
 
-        log.info("Refunded {} to user ID: {} for failed order ID: {}", amount, user.getId(), order.getId());
+        log.info("Compensated failed order ID: {}. Refunded {} to user ID: {}",
+                orderId, amount, user.getId());
     }
 
     // ============ READ OPERATIONS ============

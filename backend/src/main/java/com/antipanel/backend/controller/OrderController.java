@@ -46,21 +46,31 @@ public class OrderController {
     private final OrderService orderService;
 
     @Operation(summary = "Create a new order",
-            description = "Creates a new order for a service. Validates quantity limits and user balance.")
+            description = "Creates a new order for a service. Validates quantity limits and user balance. " +
+                    "Submits the order to the external provider after creation.")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Order created successfully",
                     content = @Content(schema = @Schema(implementation = OrderResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request or insufficient balance"),
             @ApiResponse(responseCode = "401", description = "Not authenticated"),
-            @ApiResponse(responseCode = "404", description = "Service not found")
+            @ApiResponse(responseCode = "404", description = "Service not found"),
+            @ApiResponse(responseCode = "502", description = "Provider API error (order refunded)")
     })
     @PostMapping
     public ResponseEntity<OrderResponse> createOrder(
             @CurrentUser CustomUserDetails currentUser,
             @Valid @RequestBody OrderCreateRequest request) {
         log.debug("Creating order for user ID: {} - service: {}", currentUser.getUserId(), request.getServiceId());
-        OrderResponse response = orderService.create(currentUser.getUserId(), request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+
+        // Step 1: Create order and deduct balance (main transaction)
+        // This commits the transaction, releasing the user lock
+        OrderResponse created = orderService.create(currentUser.getUserId(), request);
+
+        // Step 2: Submit to external provider (separate transaction via REQUIRES_NEW)
+        // If this fails, compensation is automatically triggered and ProviderApiException is thrown
+        OrderResponse submitted = orderService.submitOrderToProvider(created.getId());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(submitted);
     }
 
     @Operation(summary = "Get user's orders with pagination",

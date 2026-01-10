@@ -171,14 +171,14 @@ class OrderServiceTest {
     class CreateOperations {
 
         @Test
-        @DisplayName("Should create order successfully")
+        @DisplayName("Should create order successfully without calling external provider")
         void shouldCreateOrderSuccessfully() {
             when(userRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(testUser));
             when(serviceRepository.findById(1)).thenReturn(Optional.of(testService));
             when(orderRepository.save(any(Order.class))).thenReturn(testOrder);
             when(transactionRepository.save(any(Transaction.class))).thenReturn(Transaction.builder().build());
             when(userRepository.save(any(User.class))).thenReturn(testUser);
-            when(externalOrderService.submitOrder(any(Order.class))).thenReturn(testOrderResponse);
+            when(orderMapper.toResponse(any(Order.class))).thenReturn(testOrderResponse);
 
             OrderResponse result = orderService.create(1L, createRequest);
 
@@ -187,7 +187,8 @@ class OrderServiceTest {
             verify(orderRepository).save(any(Order.class));
             verify(transactionRepository).save(any(Transaction.class));
             verify(userRepository).save(any(User.class));
-            verify(externalOrderService).submitOrder(any(Order.class));
+            // create() should NOT call external provider - that's done in submitOrderToProvider()
+            verify(externalOrderService, never()).submitOrder(any(Order.class));
         }
 
         @Test
@@ -270,7 +271,7 @@ class OrderServiceTest {
             when(orderRepository.save(any(Order.class))).thenReturn(testOrder);
             when(transactionRepository.save(any(Transaction.class))).thenReturn(Transaction.builder().build());
             when(userRepository.save(any(User.class))).thenReturn(testUser);
-            when(externalOrderService.submitOrder(any(Order.class))).thenReturn(testOrderResponse);
+            when(orderMapper.toResponse(any(Order.class))).thenReturn(testOrderResponse);
 
             orderService.create(1L, createRequest);
 
@@ -290,6 +291,8 @@ class OrderServiceTest {
             createRequest.setIdempotencyKey(idempotencyKey);
             testOrder.setIdempotencyKey(idempotencyKey);
 
+            // User lock must be acquired FIRST (fixes race condition)
+            when(userRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(testUser));
             when(orderRepository.findByIdempotencyKey(idempotencyKey)).thenReturn(Optional.of(testOrder));
             when(orderMapper.toResponse(testOrder)).thenReturn(testOrderResponse);
 
@@ -302,28 +305,131 @@ class OrderServiceTest {
             verify(externalOrderService, never()).submitOrder(any(Order.class));
         }
 
-        @Test
-        @DisplayName("Should refund balance and mark order as FAILED when provider API fails")
-        void shouldRefundBalanceWhenProviderApiFails() {
-            BigDecimal initialBalance = new BigDecimal("100.00");
-            testUser.setBalance(initialBalance);
+    }
 
-            when(userRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(testUser));
-            when(serviceRepository.findById(1)).thenReturn(Optional.of(testService));
-            when(orderRepository.save(any(Order.class))).thenReturn(testOrder);
+    @Nested
+    @DisplayName("Submit To Provider Operations")
+    class SubmitToProviderOperations {
+
+        @Test
+        @DisplayName("Should submit order to provider successfully")
+        void shouldSubmitOrderToProviderSuccessfully() {
+            when(orderRepository.findById(1L)).thenReturn(Optional.of(testOrder));
+            when(externalOrderService.submitOrder(testOrder)).thenReturn(testOrderResponse);
+
+            OrderResponse result = orderService.submitOrderToProvider(1L);
+
+            assertThat(result).isNotNull();
+            verify(externalOrderService).submitOrder(testOrder);
+        }
+
+        @Test
+        @DisplayName("Should skip submission if order not in PENDING status")
+        void shouldSkipSubmissionIfNotPending() {
+            testOrder.setStatus(OrderStatus.PROCESSING);
+            when(orderRepository.findById(1L)).thenReturn(Optional.of(testOrder));
+            when(orderMapper.toResponse(testOrder)).thenReturn(testOrderResponse);
+
+            OrderResponse result = orderService.submitOrderToProvider(1L);
+
+            assertThat(result).isNotNull();
+            // Should NOT call external provider
+            verify(externalOrderService, never()).submitOrder(any(Order.class));
+        }
+
+        @Test
+        @DisplayName("Should compensate and throw when provider API fails")
+        void shouldCompensateWhenProviderApiFails() {
+            when(orderRepository.findById(1L)).thenReturn(Optional.of(testOrder));
+            when(externalOrderService.submitOrder(testOrder))
+                    .thenThrow(new ProviderApiException("TestProvider", "order", "API Error"));
             when(transactionRepository.save(any(Transaction.class))).thenReturn(Transaction.builder().build());
             when(userRepository.save(any(User.class))).thenReturn(testUser);
-            when(externalOrderService.submitOrder(any(Order.class)))
-                    .thenThrow(new ProviderApiException("TestProvider", "order", "API Error"));
+            when(orderRepository.save(any(Order.class))).thenReturn(testOrder);
 
-            assertThatThrownBy(() -> orderService.create(1L, createRequest))
+            assertThatThrownBy(() -> orderService.submitOrderToProvider(1L))
                     .isInstanceOf(ProviderApiException.class)
                     .hasMessageContaining("API Error");
 
-            // Verify refund transaction was created (2 saves: initial deduction + refund)
-            verify(transactionRepository, times(2)).save(any(Transaction.class));
-            // Verify order was saved twice (initial + marked as FAILED)
-            verify(orderRepository, times(2)).save(any(Order.class));
+            // Verify compensation was triggered
+            verify(orderRepository, times(2)).findById(1L); // Once in submit, once in compensate
+        }
+
+        @Test
+        @DisplayName("Should throw exception when order not found for submission")
+        void shouldThrowExceptionWhenOrderNotFoundForSubmission() {
+            when(orderRepository.findById(999L)).thenReturn(Optional.empty());
+
+            assertThatThrownBy(() -> orderService.submitOrderToProvider(999L))
+                    .isInstanceOf(ResourceNotFoundException.class)
+                    .hasMessageContaining("Order");
+        }
+    }
+
+    @Nested
+    @DisplayName("Compensation Operations")
+    class CompensationOperations {
+
+        @Test
+        @DisplayName("Should compensate failed order by refunding balance")
+        void shouldCompensateFailedOrderByRefundingBalance() {
+            BigDecimal initialBalance = new BigDecimal("99.00"); // After deduction
+            testUser.setBalance(initialBalance);
+
+            when(orderRepository.findById(1L)).thenReturn(Optional.of(testOrder));
+            when(transactionRepository.save(any(Transaction.class))).thenReturn(Transaction.builder().build());
+            when(userRepository.save(any(User.class))).thenReturn(testUser);
+            when(orderRepository.save(any(Order.class))).thenReturn(testOrder);
+
+            orderService.compensateFailedOrder(1L);
+
+            // Verify refund transaction was created
+            ArgumentCaptor<Transaction> transactionCaptor = ArgumentCaptor.forClass(Transaction.class);
+            verify(transactionRepository).save(transactionCaptor.capture());
+            Transaction refundTransaction = transactionCaptor.getValue();
+            assertThat(refundTransaction.getType()).isEqualTo(TransactionType.REFUND);
+            assertThat(refundTransaction.getAmount()).isPositive();
+
+            // Verify order was marked as FAILED
+            ArgumentCaptor<Order> orderCaptor = ArgumentCaptor.forClass(Order.class);
+            verify(orderRepository).save(orderCaptor.capture());
+            assertThat(orderCaptor.getValue().getStatus()).isEqualTo(OrderStatus.FAILED);
+        }
+
+        @Test
+        @DisplayName("Should skip compensation if order already FAILED")
+        void shouldSkipCompensationIfAlreadyFailed() {
+            testOrder.setStatus(OrderStatus.FAILED);
+            when(orderRepository.findById(1L)).thenReturn(Optional.of(testOrder));
+
+            orderService.compensateFailedOrder(1L);
+
+            // Should NOT create refund or save order again
+            verify(transactionRepository, never()).save(any(Transaction.class));
+            verify(orderRepository, never()).save(any(Order.class));
+        }
+
+        @Test
+        @DisplayName("Should skip compensation if order already REFUNDED")
+        void shouldSkipCompensationIfAlreadyRefunded() {
+            testOrder.setStatus(OrderStatus.REFUNDED);
+            when(orderRepository.findById(1L)).thenReturn(Optional.of(testOrder));
+
+            orderService.compensateFailedOrder(1L);
+
+            // Should NOT create refund or save order again
+            verify(transactionRepository, never()).save(any(Transaction.class));
+            verify(orderRepository, never()).save(any(Order.class));
+        }
+
+        @Test
+        @DisplayName("Should throw exception when order not found for compensation")
+        void shouldThrowExceptionWhenOrderNotFoundForCompensation() {
+            when(orderRepository.findById(999L)).thenReturn(Optional.empty());
+
+            assertThatThrownBy(() -> orderService.compensateFailedOrder(999L))
+                    .isInstanceOf(ResourceNotFoundException.class)
+                    .hasMessageContaining("Order");
         }
     }
 

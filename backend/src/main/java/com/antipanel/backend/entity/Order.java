@@ -39,6 +39,14 @@ public class Order {
     @Column(name = "id")
     private Long id;
 
+    /**
+     * Version field for optimistic locking.
+     * Prevents concurrent modification issues (lost updates).
+     */
+    @Version
+    @Column(name = "version")
+    private Long version;
+
     @NotNull(message = "El usuario no puede ser nulo")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false,
