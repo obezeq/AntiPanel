@@ -310,6 +310,25 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(builder.build());
     }
 
+    @ExceptionHandler(PaymentoApiException.class)
+    public ResponseEntity<ErrorResponse> handlePaymentoApi(PaymentoApiException ex, HttpServletRequest request) {
+        log.error("Paymento API error: {}", ex.getMessage());
+
+        ErrorResponse.ErrorResponseBuilder builder = ErrorResponse.builder()
+                .timestamp(java.time.LocalDateTime.now())
+                .status(HttpStatus.BAD_GATEWAY.value())
+                .error("Payment Gateway Error")
+                .message("Payment processing failed. Please try again later.")
+                .path(request.getRequestURI());
+
+        builder.details(Map.of(
+                "provider", "Paymento",
+                "operation", ex.getOperation() != null ? ex.getOperation() : "unknown"
+        ));
+
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(builder.build());
+    }
+
     // ==================== Database Exceptions ====================
 
     @ExceptionHandler(DataIntegrityViolationException.class)
