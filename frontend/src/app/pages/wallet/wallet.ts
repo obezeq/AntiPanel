@@ -4,6 +4,7 @@ import { Header } from '../../components/layout/header/header';
 import { Footer } from '../../components/layout/footer/footer';
 import { AuthService } from '../../core/services/auth.service';
 import { UserService } from '../../core/services/user.service';
+import { InvoiceService, InvoiceResponse, PaymentProcessor } from '../../core/services/invoice.service';
 import { WalletBalanceSection } from './sections/wallet-balance-section/wallet-balance-section';
 import { WalletAddFundsSection, AddFundsPayload } from './sections/wallet-add-funds-section/wallet-add-funds-section';
 import { WalletInvoicesSection, Invoice } from './sections/wallet-invoices-section/wallet-invoices-section';
@@ -38,6 +39,7 @@ export class Wallet implements OnInit {
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
   private readonly userService = inject(UserService);
+  private readonly invoiceService = inject(InvoiceService);
 
   /** Current wallet balance formatted as currency */
   protected readonly balance = signal<string>('$0.00');
@@ -47,6 +49,9 @@ export class Wallet implements OnInit {
 
   /** Whether add funds form is processing */
   protected readonly isAddingFunds = signal<boolean>(false);
+
+  /** Active payment processors */
+  private paymentProcessors: PaymentProcessor[] = [];
 
   ngOnInit(): void {
     this.loadWalletData();
@@ -72,28 +77,52 @@ export class Wallet implements OnInit {
 
   /**
    * Handle add funds form submission.
-   * Creates payment invoice for the specified amount.
+   * Creates payment invoice and redirects to payment page.
    */
   protected onAddFunds(payload: AddFundsPayload): void {
     this.isAddingFunds.set(true);
 
-    // TODO: Integrate with payment service when backend is ready
-    // For now, simulate a brief loading state
-    console.log('Adding funds:', payload);
+    // Find the Paymento processor (crypto)
+    const processor = this.paymentProcessors.find(p => p.code === 'paymento');
 
-    setTimeout(() => {
+    if (!processor) {
+      console.error('Paymento processor not found');
       this.isAddingFunds.set(false);
-      // TODO: Navigate to payment page or show invoice modal
-    }, 1500);
+      return;
+    }
+
+    this.invoiceService.createInvoice({
+      processorId: processor.id,
+      amount: payload.amount,
+      currency: 'USD'
+    }).subscribe({
+      next: (invoice) => {
+        this.isAddingFunds.set(false);
+
+        // Redirect to payment page if URL is available
+        if (invoice.paymentUrl) {
+          window.location.href = invoice.paymentUrl;
+        } else {
+          // Reload invoices to show the new pending invoice
+          this.loadInvoices();
+        }
+      },
+      error: (err) => {
+        console.error('Failed to create invoice:', err);
+        this.isAddingFunds.set(false);
+      }
+    });
   }
 
   /**
    * Handle invoice click.
-   * Opens invoice details or payment link.
+   * Opens payment link for pending/processing invoices.
    */
   protected onInvoiceClick(invoice: Invoice): void {
-    // TODO: Open invoice details modal or navigate to payment page
-    console.log('Invoice clicked:', invoice);
+    // If invoice has a payment URL, redirect to it
+    if (invoice.paymentUrl) {
+      window.location.href = invoice.paymentUrl;
+    }
   }
 
   /**
@@ -110,49 +139,47 @@ export class Wallet implements OnInit {
       }
     });
 
-    // TODO: Load invoices from invoice service when backend is ready
-    // For now, show mock data for demonstration
-    this.invoices.set([
-      {
-        id: '1',
-        invoiceNumber: '00001',
-        amount: 369.33,
-        currency: 'CRYPTO',
-        status: 'pending',
-        createdAt: new Date('2025-11-11T03:33:00')
+    // Load payment processors
+    this.invoiceService.getPaymentProcessors().subscribe({
+      next: (processors) => {
+        this.paymentProcessors = processors;
       },
-      {
-        id: '2',
-        invoiceNumber: '00002',
-        amount: 69.33,
-        currency: 'CRYPTO',
-        status: 'pending',
-        createdAt: new Date('2025-11-11T03:33:00')
-      },
-      {
-        id: '3',
-        invoiceNumber: '00003',
-        amount: 33.00,
-        currency: 'CRYPTO',
-        status: 'paid',
-        createdAt: new Date('2025-11-11T03:33:00')
-      },
-      {
-        id: '4',
-        invoiceNumber: '00004',
-        amount: 33.00,
-        currency: 'CRYPTO',
-        status: 'paid',
-        createdAt: new Date('2025-11-11T03:33:00')
-      },
-      {
-        id: '5',
-        invoiceNumber: '00005',
-        amount: 25.00,
-        currency: 'CRYPTO',
-        status: 'expired',
-        createdAt: new Date('2025-11-10T15:20:00')
+      error: (err) => {
+        console.error('Failed to load payment processors:', err);
       }
-    ]);
+    });
+
+    // Load invoices
+    this.loadInvoices();
+  }
+
+  /**
+   * Load invoices from the API.
+   */
+  private loadInvoices(): void {
+    this.invoiceService.getInvoices(0, 50).subscribe({
+      next: (response) => {
+        const mappedInvoices = response.content.map(inv => this.mapInvoice(inv));
+        this.invoices.set(mappedInvoices);
+      },
+      error: (err) => {
+        console.error('Failed to load invoices:', err);
+      }
+    });
+  }
+
+  /**
+   * Map API invoice response to component Invoice interface.
+   */
+  private mapInvoice(inv: InvoiceResponse): Invoice {
+    return {
+      id: inv.id.toString(),
+      invoiceNumber: inv.id.toString().padStart(5, '0'),
+      amount: inv.amount,
+      currency: inv.processor.code === 'paymento' ? 'CRYPTO' : inv.currency,
+      status: this.invoiceService.mapStatus(inv.status),
+      createdAt: new Date(inv.createdAt),
+      paymentUrl: inv.paymentUrl ?? undefined
+    };
   }
 }

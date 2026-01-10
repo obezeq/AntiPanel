@@ -136,6 +136,13 @@
     color: var(--color-status-yellow);
   }
 
+  // PROCESSING - Blue
+  &--processing {
+    background-color: rgba(var(--color-info-rgb), 0.11);
+    border-color: rgba(var(--color-info-rgb), 0.66);
+    color: var(--color-info);
+  }
+
   // PAID - Green
   &--paid {
     background-color: rgba(var(--color-success-rgb), 0.11);
@@ -143,11 +150,25 @@
     color: var(--color-success);
   }
 
-  // EXPIRED - Red
+  // FAILED - Red
+  &--failed {
+    background-color: rgba(var(--color-error-rgb), 0.11);
+    border-color: rgba(var(--color-error-rgb), 0.66);
+    color: var(--color-error);
+  }
+
+  // EXPIRED - Red/Orange
   &--expired {
     background-color: rgba(var(--color-error-rgb), 0.11);
     border-color: rgba(var(--color-error-rgb), 0.66);
     color: var(--color-error);
+  }
+
+  // CANCELLED - Gray
+  &--cancelled {
+    background-color: rgba(var(--color-foreground-rgb), 0.11);
+    border-color: rgba(var(--color-foreground-rgb), 0.66);
+    color: var(--color-foreground);
   }
 }
 

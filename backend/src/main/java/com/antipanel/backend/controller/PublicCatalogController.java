@@ -2,12 +2,14 @@ package com.antipanel.backend.controller;
 
 import com.antipanel.backend.dto.category.CategoryResponse;
 import com.antipanel.backend.dto.common.PageResponse;
+import com.antipanel.backend.dto.paymentprocessor.PaymentProcessorResponse;
 import com.antipanel.backend.dto.service.ServiceDetailResponse;
 import com.antipanel.backend.dto.service.ServiceResponse;
 import com.antipanel.backend.entity.enums.ServiceQuality;
 import com.antipanel.backend.entity.enums.ServiceSpeed;
 import com.antipanel.backend.service.CatalogService;
 import com.antipanel.backend.service.CategoryService;
+import com.antipanel.backend.service.PaymentProcessorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -43,6 +45,7 @@ public class PublicCatalogController {
 
     private final CategoryService categoryService;
     private final CatalogService catalogService;
+    private final PaymentProcessorService paymentProcessorService;
 
     // ============ CATEGORY ENDPOINTS ============
 
@@ -181,5 +184,20 @@ public class PublicCatalogController {
         log.debug("Getting services for category: {} and type: {}", categoryId, serviceTypeId);
         List<ServiceResponse> services = catalogService.getActiveCatalogServicesByCategoryAndType(categoryId, serviceTypeId);
         return ResponseEntity.ok(services);
+    }
+
+    // ============ PAYMENT PROCESSOR ENDPOINTS ============
+
+    @Operation(summary = "Get all active payment processors",
+            description = "Returns all active payment processors available for deposits")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Payment processors retrieved successfully",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = PaymentProcessorResponse.class))))
+    })
+    @GetMapping("/payment-processors")
+    public ResponseEntity<List<PaymentProcessorResponse>> getActivePaymentProcessors() {
+        log.debug("Getting all active payment processors");
+        List<PaymentProcessorResponse> processors = paymentProcessorService.getAllActive();
+        return ResponseEntity.ok(processors);
     }
 }

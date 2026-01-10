@@ -4,7 +4,7 @@ import { DatePipe, DecimalPipe, UpperCasePipe } from '@angular/common';
 /**
  * Invoice status type.
  */
-export type InvoiceStatus = 'pending' | 'paid' | 'expired';
+export type InvoiceStatus = 'pending' | 'processing' | 'paid' | 'failed' | 'expired' | 'cancelled';
 
 /**
  * Invoice data interface.
@@ -22,6 +22,8 @@ export interface Invoice {
   status: InvoiceStatus;
   /** Creation timestamp */
   createdAt: Date;
+  /** Payment URL for redirect (optional) */
+  paymentUrl?: string;
 }
 
 /**
@@ -51,8 +53,11 @@ export class WalletInvoicesSection {
   /** Status labels for display */
   protected readonly statusLabels: Record<InvoiceStatus, string> = {
     pending: 'PENDING',
+    processing: 'PROCESSING',
     paid: 'PAID',
-    expired: 'EXPIRED'
+    failed: 'FAILED',
+    expired: 'EXPIRED',
+    cancelled: 'CANCELLED'
   };
 
   /**
