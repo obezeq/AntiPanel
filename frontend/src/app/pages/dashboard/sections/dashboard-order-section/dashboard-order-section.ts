@@ -2,12 +2,14 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   effect,
   inject,
   input,
   output,
   signal
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DashboardSectionHeader } from '../../../../components/shared/dashboard-section-header/dashboard-section-header';
 import {
   OrderReady,
@@ -92,6 +94,7 @@ const SERVICE_TYPE_KEYWORDS: Record<string, string> = {
 export class DashboardOrderSection {
   private readonly catalogService = inject(CatalogService);
   private readonly orderService = inject(OrderService);
+  private readonly destroyRef = inject(DestroyRef);
 
   /** Track last processed quick order to avoid re-processing */
   private lastProcessedQuickOrder: ServiceItemData | null = null;
@@ -225,9 +228,11 @@ export class DashboardOrderSection {
     effect(() => {
       const parsed = this.parsedOrder();
       if (parsed.platform && parsed.serviceType) {
-        this.catalogService.findService(parsed.platform, parsed.serviceType).subscribe(service => {
-          this.matchedService.set(service ?? null);
-        });
+        this.catalogService.findService(parsed.platform, parsed.serviceType)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe(service => {
+            this.matchedService.set(service ?? null);
+          });
       } else {
         this.matchedService.set(null);
       }
@@ -493,22 +498,24 @@ export class DashboardOrderSection {
     this.orderState.set('loading');
     this.errorMessage.set(null);
 
-    this.orderService.createOrder(request).subscribe({
-      next: (response) => {
-        this.orderState.set('success');
-        this.successMessage.set(`Order #${response.id} created successfully!`);
-        this.inputText.set('');
-        this.orderCreated.emit(response);
-      },
-      error: (error) => {
-        this.orderState.set('error');
-        if (this.orderService.isInsufficientBalanceError(error)) {
-          this.errorMessage.set('Insufficient balance. Please add funds to continue.');
-        } else {
-          this.errorMessage.set(error.error?.message || 'Failed to create order. Please try again.');
+    this.orderService.createOrder(request)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          this.orderState.set('success');
+          this.successMessage.set(`Order #${response.id} created successfully!`);
+          this.inputText.set('');
+          this.orderCreated.emit(response);
+        },
+        error: (error) => {
+          this.orderState.set('error');
+          if (this.orderService.isInsufficientBalanceError(error)) {
+            this.errorMessage.set('Insufficient balance. Please add funds to continue.');
+          } else {
+            this.errorMessage.set(error.error?.message || 'Failed to create order. Please try again.');
+          }
         }
-      }
-    });
+      });
   }
 
   /**

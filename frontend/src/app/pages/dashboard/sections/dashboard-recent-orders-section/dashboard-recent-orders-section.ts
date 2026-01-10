@@ -2,11 +2,13 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   inject,
   input,
   output,
   signal
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { DashboardSectionHeader } from '../../../../components/shared/dashboard-section-header/dashboard-section-header';
 import {
@@ -46,6 +48,7 @@ import {
 })
 export class DashboardRecentOrdersSection {
   private readonly orderService = inject(OrderService);
+  private readonly destroyRef = inject(DestroyRef);
 
   // -------------------------------------------------------------------------
   // Inputs
@@ -97,16 +100,18 @@ export class DashboardRecentOrdersSection {
    * Load recent orders from API
    */
   private loadRecentOrders(): void {
-    this.orderService.getOrders(0, this.maxOrders()).subscribe({
-      next: (response) => {
-        this.orders.set(this.mapToRecentOrderData(response.content));
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.hasError.set(true);
-        this.isLoading.set(false);
-      }
-    });
+    this.orderService.getOrders(0, this.maxOrders())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          this.orders.set(this.mapToRecentOrderData(response.content));
+          this.isLoading.set(false);
+        },
+        error: () => {
+          this.hasError.set(true);
+          this.isLoading.set(false);
+        }
+      });
   }
 
   /**

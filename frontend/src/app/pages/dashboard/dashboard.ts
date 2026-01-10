@@ -2,11 +2,13 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   inject,
   OnInit,
   signal,
   ViewChild
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { Header } from '../../components/layout/header/header';
 import { Footer } from '../../components/layout/footer/footer';
@@ -45,6 +47,7 @@ export class Dashboard implements OnInit {
   private readonly router = inject(Router);
   private readonly userService = inject(UserService);
   private readonly authService = inject(AuthService);
+  private readonly destroyRef = inject(DestroyRef);
 
   /** Reference to services section for programmatic interaction */
   @ViewChild(ServicesSection) servicesSection?: ServicesSection;
@@ -107,17 +110,19 @@ export class Dashboard implements OnInit {
     this.isLoading.set(true);
     this.error.set(null);
 
-    this.userService.getStatistics().subscribe({
-      next: (stats) => {
-        this.userStats.set(stats);
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        console.error('Failed to load user statistics:', err);
-        this.error.set('Failed to load dashboard data. Please try again.');
-        this.isLoading.set(false);
-      }
-    });
+    this.userService.getStatistics()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (stats) => {
+          this.userStats.set(stats);
+          this.isLoading.set(false);
+        },
+        error: (err) => {
+          console.error('Failed to load user statistics:', err);
+          this.error.set('Failed to load dashboard data. Please try again.');
+          this.isLoading.set(false);
+        }
+      });
   }
 
   // -------------------------------------------------------------------------
