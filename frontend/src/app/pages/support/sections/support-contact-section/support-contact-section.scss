@@ -1,0 +1,278 @@
+// ==========================================================================
+// SUPPORT CONTACT SECTION
+// ==========================================================================
+// Contact option cards with interactive hover effects.
+// Awwwards-quality design with smooth transitions and subtle glows.
+// ==========================================================================
+
+@use '../../../../../styles/01-tools/mixins' as *;
+
+.support-contact {
+  width: 100%;
+  max-width: 73.125rem; // 1170px
+
+  // ---------------------------------------------------------------------------
+  // VISUALLY HIDDEN HEADING (for screen readers)
+  // ---------------------------------------------------------------------------
+
+  &__heading {
+    @include visually-hidden;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// CARD LIST
+// ---------------------------------------------------------------------------
+
+.support-contact__list {
+  @include reset-list;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-6);
+
+  @include respond-to('md') {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-8);
+  }
+
+  @include respond-to('lg') {
+    gap: var(--spacing-12);
+  }
+}
+
+.support-contact__item {
+  display: flex;
+}
+
+// ---------------------------------------------------------------------------
+// CONTACT CARD
+// ---------------------------------------------------------------------------
+// Interactive card with hover effects and accessible focus states.
+
+.support-contact__card {
+  @include flex-column;
+  align-items: center;
+  text-align: center;
+  gap: var(--spacing-6);
+  width: 100%;
+  padding: var(--spacing-10) var(--spacing-6);
+  background-color: transparent;
+  border: var(--border-width-medium) solid var(--color-information);
+  border-radius: var(--radius-2xl);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    border-color var(--transition-base),
+    box-shadow var(--transition-base),
+    transform var(--transition-base);
+
+  @include respond-to('md') {
+    padding: var(--spacing-12) var(--spacing-8);
+    gap: var(--spacing-8);
+  }
+
+  @include respond-to('lg') {
+    padding: var(--spacing-14) var(--spacing-10);
+  }
+
+  // ---------------------------------------------------------------------------
+  // HOVER STATE
+  // ---------------------------------------------------------------------------
+
+  &:hover {
+    border-color: var(--color-text);
+    transform: translateY(-0.25rem);
+  }
+
+  // ---------------------------------------------------------------------------
+  // ACTIVE STATE
+  // ---------------------------------------------------------------------------
+
+  &:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  // ---------------------------------------------------------------------------
+  // FOCUS STATE (Accessibility)
+  // ---------------------------------------------------------------------------
+
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  // ---------------------------------------------------------------------------
+  // TELEGRAM VARIANT
+  // ---------------------------------------------------------------------------
+
+  &--telegram {
+    &:hover {
+      border-color: var(--color-stats-blue);
+      box-shadow:
+        0 0 40px 0 rgba(var(--color-stats-blue-rgb), 0.15),
+        0 0 80px 0 rgba(var(--color-stats-blue-rgb), 0.08);
+    }
+
+    .support-contact__icon {
+      color: var(--color-stats-blue);
+    }
+
+    .support-contact__action {
+      color: var(--color-stats-blue);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // EMAIL VARIANT
+  // ---------------------------------------------------------------------------
+
+  &--email {
+    &:hover {
+      border-color: var(--color-success);
+      box-shadow:
+        0 0 40px 0 rgba(var(--color-success-rgb), 0.15),
+        0 0 80px 0 rgba(var(--color-success-rgb), 0.08);
+    }
+
+    .support-contact__icon {
+      color: var(--color-success);
+    }
+
+    .support-contact__action {
+      color: var(--color-success);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// ICON
+// ---------------------------------------------------------------------------
+
+.support-contact__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  font-size: 3rem; // 48px base
+
+  @include respond-to('md') {
+    font-size: 3.5rem; // 56px
+  }
+
+  @include respond-to('lg') {
+    font-size: 4rem; // 64px
+  }
+}
+
+// ---------------------------------------------------------------------------
+// HEADER & TITLE
+// ---------------------------------------------------------------------------
+
+.support-contact__card-header {
+  margin: 0;
+}
+
+.support-contact__title {
+  @include typography('h4', 'bold', 'primary');
+  color: var(--color-text);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+
+  @include respond-to('md') {
+    font-size: var(--font-size-h3);
+  }
+
+  @include respond-to('lg') {
+    font-size: var(--font-size-h2);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// DESCRIPTION
+// ---------------------------------------------------------------------------
+
+.support-contact__description {
+  @include typography('body', 'medium', 'secondary');
+  color: var(--color-foreground);
+  margin: 0;
+  max-width: 24rem;
+  line-height: var(--line-height-normal);
+
+  @include respond-to('md') {
+    font-size: var(--font-size-h6);
+    max-width: 28rem;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// ACTION LINK
+// ---------------------------------------------------------------------------
+
+.support-contact__action {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: gap var(--transition-base);
+
+  @include respond-to('md') {
+    font-size: var(--font-size-h6);
+    gap: var(--spacing-3);
+  }
+
+  // Arrow animation on card hover
+  .support-contact__card:hover & {
+    gap: var(--spacing-4);
+  }
+
+  ng-icon {
+    transition: transform var(--transition-base);
+  }
+
+  .support-contact__card:hover & ng-icon {
+    transform: translateX(0.25rem);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// ACCESSIBILITY: REDUCED MOTION
+// ---------------------------------------------------------------------------
+
+@media (prefers-reduced-motion: reduce) {
+  .support-contact__card {
+    transition: border-color var(--transition-base), box-shadow var(--transition-base);
+
+    &:hover {
+      transform: none;
+    }
+
+    &:active {
+      transform: none;
+    }
+  }
+
+  .support-contact__action {
+    transition: none;
+
+    .support-contact__card:hover & {
+      gap: var(--spacing-2);
+
+      @include respond-to('md') {
+        gap: var(--spacing-3);
+      }
+    }
+
+    ng-icon {
+      transition: none;
+    }
+
+    .support-contact__card:hover & ng-icon {
+      transform: none;
+    }
+  }
+}
