@@ -121,19 +121,24 @@ services:
     container_name: antipanel-pgadmin
     restart: unless-stopped
 
+    # USE HOST NETWORK to match postgres (which is also on host network)
+    network_mode: host
+
+    # Override base config networks (incompatible with network_mode)
+    networks: !reset []
+
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@antipanel.local
+      # Use .com domain since .local is rejected by newer pgAdmin email validation
+      PGADMIN_DEFAULT_EMAIL: admin@antipanel.dev
       PGADMIN_DEFAULT_PASSWORD: admin
       PGADMIN_CONFIG_SERVER_MODE: "False"
+      # Set listen port since default 80 may conflict
+      PGADMIN_LISTEN_PORT: 5050
 
-    ports:
-      - "5050:80"
+    # ports: not needed with host network - access via localhost:5050
 
     volumes:
       - pgadmin_data:/var/lib/pgadmin
-
-    networks:
-      - antipanel-network
 
     depends_on:
       - postgres
