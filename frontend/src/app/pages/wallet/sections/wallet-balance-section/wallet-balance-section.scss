@@ -1,0 +1,149 @@
+// ==========================================================================
+// WALLET BALANCE SECTION
+// ==========================================================================
+// Displays current balance with back navigation button.
+// Features responsive typography and semantic HTML structure.
+// ==========================================================================
+
+@use '../../../../../styles/01-tools/mixins' as *;
+
+.wallet-balance {
+  @include flex-center;
+  gap: var(--spacing-16);
+  width: 100%;
+  max-width: var(--container-max-width);
+  padding: 0 var(--spacing-6);
+
+  @include respond-below('lg') {
+    gap: var(--spacing-12);
+  }
+
+  @include respond-below('md') {
+    gap: var(--spacing-8);
+    flex-direction: column;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// BACK BUTTON
+// ---------------------------------------------------------------------------
+// White rounded button with "<" symbol for navigation
+
+.wallet-balance__back-btn {
+  @include flex-center;
+  width: var(--spacing-12);
+  height: var(--spacing-12);
+  padding: 0;
+  background-color: var(--color-text);
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: var(--transition-colors);
+  flex-shrink: 0;
+
+  &:hover {
+    background-color: var(--color-foreground);
+  }
+
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  @include respond-below('md') {
+    position: absolute;
+    left: var(--spacing-4);
+    top: calc(var(--header-height) + var(--spacing-6));
+  }
+}
+
+.wallet-balance__back-icon {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-background);
+  line-height: 1;
+  letter-spacing: 0.075em;
+}
+
+// ---------------------------------------------------------------------------
+// BALANCE INFO
+// ---------------------------------------------------------------------------
+// Figure element containing label and amount
+
+.wallet-balance__info {
+  @include flex-center;
+  gap: var(--spacing-16);
+  margin: 0;
+
+  @include respond-below('lg') {
+    gap: var(--spacing-12);
+  }
+
+  @include respond-below('md') {
+    gap: var(--spacing-6);
+    flex-direction: column;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// BALANCE LABEL
+// ---------------------------------------------------------------------------
+// "BALANCE" text - IBM Plex Mono SemiBold
+
+.wallet-balance__label {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  line-height: 1.15;
+  text-transform: uppercase;
+  margin: 0;
+
+  @include respond-below('lg') {
+    font-size: var(--font-size-h3);
+  }
+
+  @include respond-below('md') {
+    font-size: var(--font-size-h4);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// BALANCE AMOUNT
+// ---------------------------------------------------------------------------
+// Currency value - IBM Plex Mono Regular
+
+.wallet-balance__amount {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text);
+  line-height: 1.15;
+
+  @include respond-below('lg') {
+    font-size: var(--font-size-h3);
+  }
+
+  @include respond-below('md') {
+    font-size: var(--font-size-h4);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// ACCESSIBILITY: REDUCED MOTION
+// ---------------------------------------------------------------------------
+
+@media (prefers-reduced-motion: reduce) {
+  .wallet-balance__back-btn {
+    transition: none;
+
+    &:active {
+      transform: none;
+    }
+  }
+}
