@@ -1,5 +1,6 @@
 package com.antipanel.backend.service.provider.impl;
 
+import com.antipanel.backend.config.DripfeedPanelConfig;
 import com.antipanel.backend.dto.provider.api.*;
 import com.antipanel.backend.entity.Provider;
 import com.antipanel.backend.exception.ProviderApiException;
@@ -36,6 +37,7 @@ public class DripfeedPanelClient implements ProviderApiClient {
 
     private final RestClient.Builder restClientBuilder;
     private final ObjectMapper objectMapper;
+    private final DripfeedPanelConfig dripfeedPanelConfig;
 
     @Override
     public List<DripfeedServiceDto> getServices(Provider provider) {
@@ -338,8 +340,21 @@ public class DripfeedPanelClient implements ProviderApiClient {
      */
     private MultiValueMap<String, String> createBaseForm(Provider provider) {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-        formData.add("key", provider.getApiKey());
+        formData.add("key", getApiKey(provider));
         return formData;
+    }
+
+    /**
+     * Gets API key from config or provider.
+     * SECURITY: Environment variable takes priority over database values.
+     */
+    private String getApiKey(Provider provider) {
+        // SECURITY: Environment variable takes priority
+        if (dripfeedPanelConfig.apiKey() != null && !dripfeedPanelConfig.apiKey().isBlank()) {
+            return dripfeedPanelConfig.apiKey();
+        }
+        // Fall back to database (for admin-configured values)
+        return provider.getApiKey();
     }
 
     /**

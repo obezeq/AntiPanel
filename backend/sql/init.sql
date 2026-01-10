@@ -221,19 +221,19 @@ CREATE TABLE providers (
     name VARCHAR(100) NOT NULL,
     website VARCHAR(255),
     api_url VARCHAR(255) NOT NULL,
-    api_key VARCHAR(255) NOT NULL,
+    api_key VARCHAR(255),  -- SECURITY: Set via environment variable, NULL in database
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     balance DECIMAL(12, 4),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    
+
     -- Constraints
     CONSTRAINT chk_providers_balance_non_negative CHECK (balance IS NULL OR balance >= 0)
 );
 
 COMMENT ON TABLE providers IS 'Proveedores externos de servicios SMM';
 COMMENT ON COLUMN providers.api_url IS 'Endpoint base de la API del proveedor';
-COMMENT ON COLUMN providers.api_key IS 'API Key del proveedor (encriptar en producción)';
+COMMENT ON COLUMN providers.api_key IS 'API Key - prefer environment variables for security';
 COMMENT ON COLUMN providers.balance IS 'Balance actual con el proveedor (opcional)';
 
 -- ----------------------------------------------------------------------------

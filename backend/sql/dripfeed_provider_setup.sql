@@ -21,9 +21,10 @@ ON CONFLICT DO NOTHING;
 -- ============================================================================
 -- 2. PROVEEDOR DRIPFEED PANEL
 -- ============================================================================
+-- SECURITY: API key must be set via DRIPFEED_PANEL_API_KEY environment variable
 
 INSERT INTO providers (name, website, api_url, api_key, is_active, balance) VALUES
-('DripfeedPanel', 'https://dripfeedpanel.com', 'https://dripfeedpanel.com/api/v2', '2fa121263f7f87057e47376fcb655b18', TRUE, 0.0000);
+('DripfeedPanel', 'https://dripfeedpanel.com', 'https://dripfeedpanel.com/api/v2', NULL, TRUE, 0.0000);
 
 -- ============================================================================
 -- 3. SERVICIOS DEL PROVEEDOR (provider_services)
@@ -193,77 +194,77 @@ BEGIN
     VALUES (1, st_instagram_followers, ps_instagram_followers,
             'Instagram Followers - Real',
             'High-quality real Instagram followers with profile pictures. 30-day refill guarantee.',
-            'high', 'medium', 10, 300000, 1.99, 30, '1-24 hours', TRUE, 10);
+            'HIGH', 'MEDIUM', 10, 300000, 1.99, 30, '1-24 hours', TRUE, 10);
 
     -- Instagram Likes - Sell: $0.49/K
     INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order)
     VALUES (1, st_instagram_likes, ps_instagram_likes,
             'Instagram Likes - Real',
             'Real Instagram likes from active accounts. Non-drop quality.',
-            'high', 'fast', 10, 300000, 0.49, 0, '0-2 hours', TRUE, 10);
+            'HIGH', 'FAST', 10, 300000, 0.49, 0, '0-2 hours', TRUE, 10);
 
     -- TikTok Followers - Sell: $2.99/K
     INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order)
     VALUES (2, st_tiktok_followers, ps_tiktok_followers,
             'TikTok Followers - Real',
             'Real TikTok followers with profile pictures. 30-day refill guarantee.',
-            'high', 'medium', 10, 100000, 2.99, 30, '1-24 hours', TRUE, 10);
+            'HIGH', 'MEDIUM', 10, 100000, 2.99, 30, '1-24 hours', TRUE, 10);
 
     -- TikTok Likes - Sell: $0.33/K
     INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order)
     VALUES (2, st_tiktok_likes, ps_tiktok_likes,
             'TikTok Likes - Real',
             'Real TikTok likes from active users. Fast delivery.',
-            'high', 'fast', 10, 100000, 0.33, 0, '0-1 hours', TRUE, 10);
+            'HIGH', 'FAST', 10, 100000, 0.33, 0, '0-1 hours', TRUE, 10);
 
     -- TikTok Views - Sell: $0.05/K
     INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order)
     VALUES (2, st_tiktok_views, ps_tiktok_views,
             'TikTok Views - Instant',
             'Instant TikTok views. Start within seconds.',
-            'medium', 'instant', 100, 10000000, 0.05, 0, '0-5 minutes', TRUE, 10);
+            'MEDIUM', 'INSTANT', 100, 10000000, 0.05, 0, '0-5 minutes', TRUE, 10);
 
     -- Twitter Followers - Sell: $15.00/K
     INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order)
     VALUES (4, st_twitter_followers, ps_twitter_followers,
             'Twitter Followers - Real',
             'Premium Twitter followers with avatars and tweets. 30-day refill guarantee.',
-            'premium', 'slow', 10, 100000, 15.00, 30, '24-72 hours', TRUE, 10);
+            'PREMIUM', 'SLOW', 10, 100000, 15.00, 30, '24-72 hours', TRUE, 10);
 
     -- Twitter Likes - Sell: $4.99/K
     INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order)
     VALUES (4, st_twitter_likes, ps_twitter_likes,
             'Twitter Likes - Real',
             'Real Twitter likes from active accounts.',
-            'high', 'medium', 10, 100000, 4.99, 0, '1-12 hours', TRUE, 10);
+            'HIGH', 'MEDIUM', 10, 100000, 4.99, 0, '1-12 hours', TRUE, 10);
 
     -- LinkedIn Profile Followers - Sell: $19.99/K
     INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order)
     VALUES (6, st_linkedin_followers, ps_linkedin_profile_followers,
             'LinkedIn Profile Followers - Real',
             'Real LinkedIn followers for your personal profile. 30-day refill guarantee.',
-            'premium', 'slow', 10, 10000, 19.99, 30, '24-72 hours', TRUE, 10);
+            'PREMIUM', 'SLOW', 10, 10000, 19.99, 30, '24-72 hours', TRUE, 10);
 
     -- LinkedIn Company Followers - Sell: $19.99/K
     INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order)
     VALUES (6, st_linkedin_company_followers, ps_linkedin_company_followers,
             'LinkedIn Company Followers - Real',
             'Real LinkedIn followers for your company page. 30-day refill guarantee.',
-            'premium', 'slow', 10, 10000, 19.99, 30, '24-72 hours', TRUE, 10);
+            'PREMIUM', 'SLOW', 10, 10000, 19.99, 30, '24-72 hours', TRUE, 10);
 
     -- LinkedIn Connections - Sell: $25.00/K
     INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order)
     VALUES (6, st_linkedin_connections, ps_linkedin_connections,
             'LinkedIn Connections - Real',
             'Real LinkedIn connections. Expand your professional network. 30-day refill.',
-            'premium', 'slow', 10, 5000, 25.00, 30, '24-72 hours', TRUE, 10);
+            'PREMIUM', 'SLOW', 10, 5000, 25.00, 30, '24-72 hours', TRUE, 10);
 
     -- LinkedIn Reposts - Sell: $15.00/K
     INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order)
     VALUES (6, st_linkedin_reposts, ps_linkedin_reposts,
             'LinkedIn Reposts - Real',
             'Real LinkedIn reposts from active professional accounts.',
-            'high', 'medium', 10, 10000, 15.00, 0, '1-24 hours', TRUE, 10);
+            'HIGH', 'MEDIUM', 10, 10000, 15.00, 0, '1-24 hours', TRUE, 10);
 
     RAISE NOTICE 'DripfeedPanel public services created successfully';
 END $$;

@@ -84,3 +84,10 @@ paymento:
   base-url: ${PAYMENTO_BASE_URL:https://api.paymento.io/v1}
   return-url: ${PAYMENTO_RETURN_URL:http://localhost:4200/wallet}
   default-speed: ${PAYMENTO_DEFAULT_SPEED:0}
+
+# ========================================
+# DripfeedPanel Provider Configuration
+# ========================================
+dripfeed-panel:
+  api-key: ${DRIPFEED_PANEL_API_KEY:}
+  base-url: ${DRIPFEED_PANEL_BASE_URL:https://dripfeedpanel.com/api/v2}
