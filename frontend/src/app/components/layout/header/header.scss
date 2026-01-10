@@ -523,7 +523,7 @@
 // PROFILE DROPDOWN MENU (Disclosure Pattern)
 // ==========================================================================
 // Follows WAI-ARIA Disclosure Pattern for accessible navigation dropdowns.
-// Uses display: block for reliable full-width clickable areas.
+// Uses display: flex for reliable full-width clickable areas.
 // See: https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/
 // ==========================================================================
 
@@ -583,7 +583,7 @@
 // ---------------------------------------------------------------------------
 // MENU LINK (for navigation like ORDERS)
 // ---------------------------------------------------------------------------
-// Using display: block instead of flex for reliable full-width hover areas
+// Using display: flex for reliable full-width hover areas
 
 .header__profile-menu-link {
   // CRITICAL: Use flex for reliable full-width layout
@@ -591,6 +591,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
 
   // WCAG 2.2 AAA: 44px minimum touch target
   min-height: 2.75rem;
@@ -635,15 +636,19 @@
 // Separate styling for button vs link for consistent cross-browser behavior
 
 .header__profile-menu-button {
-  // Reset button styles (not using mixin for clarity)
+  // Reset button styles
   appearance: none;
   background: none;
   border: none;
   margin: 0;
   cursor: pointer;
 
-  // CRITICAL: display: block + width: 100% ensures full-width clickable area
-  display: block;
+  // CRITICAL: Use flex for reliable full-width layout
+  // Flexbox ensures the element fills the container width
+  // width: 100% is REQUIRED for buttons due to intrinsic sizing
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
 
   // WCAG 2.2 AAA: 44px minimum touch target
@@ -656,8 +661,7 @@
   font-weight: var(--font-weight-semibold);
   color: var(--color-text);
   text-transform: uppercase;
-  text-align: center;
-  line-height: 1.5;
+  white-space: nowrap;
 
   // Transitions
   transition:
