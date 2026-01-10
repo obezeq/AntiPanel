@@ -9,7 +9,7 @@
 
 .support-contact {
   width: 100%;
-  max-width: 73.125rem; // 1170px
+  max-width: var(--container-max-width); // 1440px - use design token
 
   // ---------------------------------------------------------------------------
   // VISUALLY HIDDEN HEADING (for screen readers)
@@ -81,7 +81,7 @@
 
   &:hover {
     border-color: var(--color-text);
-    transform: translateY(-0.25rem);
+    transform: translateY(calc(-1 * var(--spacing-1)));
   }
 
   // ---------------------------------------------------------------------------
@@ -153,14 +153,14 @@
   align-items: center;
   justify-content: center;
   margin: 0;
-  font-size: 3rem; // 48px base
+  font-size: var(--font-size-h3); // 48px base
 
   @include respond-to('md') {
-    font-size: 3.5rem; // 56px
+    font-size: var(--spacing-14); // 56px
   }
 
   @include respond-to('lg') {
-    font-size: 4rem; // 64px
+    font-size: var(--font-size-h2); // 64px
   }
 }
 
@@ -235,7 +235,7 @@
   }
 
   .support-contact__card:hover & ng-icon {
-    transform: translateX(0.25rem);
+    transform: translateX(var(--spacing-1));
   }
 }
 

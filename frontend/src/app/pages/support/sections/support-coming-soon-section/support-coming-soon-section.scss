@@ -136,8 +136,8 @@
 
 .coming-soon__status-indicator {
   position: relative;
-  width: 0.75rem;
-  height: 0.75rem;
+  width: var(--spacing-3);
+  height: var(--spacing-3);
   background-color: var(--color-status-yellow);
   border-radius: var(--radius-full);
 
@@ -145,8 +145,8 @@
   &::before {
     content: '';
     position: absolute;
-    inset: -4px;
-    border: 2px solid var(--color-status-yellow);
+    inset: calc(-1 * var(--spacing-1));
+    border: var(--border-width-medium) solid var(--color-status-yellow);
     border-radius: var(--radius-full);
     opacity: 0;
     animation: pulse 2s ease-out infinite;
