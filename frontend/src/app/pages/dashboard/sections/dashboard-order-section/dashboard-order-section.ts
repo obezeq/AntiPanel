@@ -42,24 +42,44 @@ type OrderState = 'idle' | 'loading' | 'success' | 'error';
 
 /**
  * Platform keyword mappings for parsing
+ * Includes common abbreviations and variations
  */
 const PLATFORM_KEYWORDS: Record<string, string> = {
+  // Instagram
   instagram: 'instagram',
   insta: 'instagram',
   ig: 'instagram',
+
+  // TikTok - expanded for better matching
   tiktok: 'tiktok',
+  'tik-tok': 'tiktok',
   tik: 'tiktok',
   tok: 'tiktok',
+  tt: 'tiktok',
+
+  // Twitter/X
   twitter: 'twitter',
   x: 'twitter',
+  tweet: 'twitter',
+
+  // YouTube
   youtube: 'youtube',
   yt: 'youtube',
+
+  // Snapchat
   snapchat: 'snapchat',
   snap: 'snapchat',
+
+  // Facebook
   facebook: 'facebook',
   fb: 'facebook',
+
+  // Discord
   discord: 'discord',
-  linkedin: 'linkedin'
+
+  // LinkedIn
+  linkedin: 'linkedin',
+  li: 'linkedin'
 };
 
 /**
