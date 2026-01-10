@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
 import { UpperCasePipe } from '@angular/common';
 import { Button } from '../../../../components/shared/button/button';
 
@@ -64,6 +64,32 @@ export class WalletAddFundsSection {
 
   /** Error message for amount validation */
   protected readonly amountError = signal<string>('');
+
+  /** Computed signal for form validity - disables submit button when invalid */
+  protected readonly isFormValid = computed(() => {
+    const amountStr = this.amount();
+    if (!amountStr) {
+      return false;
+    }
+
+    const amountValue = parseFloat(amountStr);
+    if (isNaN(amountValue) || amountValue <= 0) {
+      return false;
+    }
+
+    const min = this.minAmount();
+    const max = this.maxAmount();
+
+    if (amountValue < min) {
+      return false;
+    }
+
+    if (max !== null && amountValue > max) {
+      return false;
+    }
+
+    return true;
+  });
 
   /**
    * Handle amount input changes.

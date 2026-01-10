@@ -36,6 +36,12 @@ export class Button {
   readonly buttonClick = output<MouseEvent>();
 
   protected onClick(event: MouseEvent): void {
+    // For submit buttons inside forms, prevent native form submission
+    // The form's (ngSubmit) will handle the actual submission
+    if (this.type() === 'submit') {
+      event.preventDefault();
+    }
+
     if (!this.disabled() && !this.loading()) {
       this.buttonClick.emit(event);
     }

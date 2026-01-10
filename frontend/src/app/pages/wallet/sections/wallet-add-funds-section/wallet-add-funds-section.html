@@ -1,7 +1,7 @@
 <section class="wallet-add-funds" aria-labelledby="add-funds-title">
   <h2 id="add-funds-title" class="wallet-add-funds__title">ADD FUNDS</h2>
 
-  <form class="wallet-add-funds__form" (ngSubmit)="onSubmit($event)">
+  <form class="wallet-add-funds__form" (ngSubmit)="onSubmit($event)" (submit)="onSubmit($event)">
     <fieldset class="wallet-add-funds__fieldset">
       <legend class="sr-only">Add funds form</legend>
 
@@ -32,15 +32,16 @@
         [attr.aria-describedby]="amountError() ? 'amount-error' : null"
         [attr.aria-invalid]="amountError() ? 'true' : null"
         [disabled]="disabled()"
+        required
       />
 
-      <!-- Submit Button -->
+      <!-- Submit Button - disabled when form is invalid -->
       <app-button
         variant="ghost"
         size="lg"
         type="submit"
         [loading]="isLoading()"
-        [disabled]="isLoading() || disabled()"
+        [disabled]="isLoading() || disabled() || !isFormValid()"
       >
         ADD FUNDS
       </app-button>
