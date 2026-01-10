@@ -27,7 +27,8 @@ const SKIP_AUTH_URLS = [
   '/auth/login',
   '/auth/register',
   '/auth/refresh',
-  '/auth/check-email'
+  '/auth/check-email',
+  '/public/'
 ];
 
 /**

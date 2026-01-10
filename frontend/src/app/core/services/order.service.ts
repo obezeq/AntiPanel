@@ -30,6 +30,8 @@ export interface OrderCreateRequest {
   target: string;
   /** Quantity to order */
   quantity: number;
+  /** Optional idempotency key to prevent duplicate orders */
+  idempotencyKey?: string;
 }
 
 /**
@@ -127,15 +129,21 @@ export class OrderService {
   // -------------------------------------------------------------------------
 
   /**
-   * Creates a new order.
+   * Creates a new order with automatic idempotency key generation.
    *
    * @param request - Order creation request with serviceId, target, and quantity
    * @returns Observable with created order response
    * @throws HTTP 402 if user has insufficient balance
    * @throws HTTP 400 if validation fails (quantity limits, inactive service, etc.)
+   * @throws HTTP 409 if duplicate order (same idempotency key)
    */
   createOrder(request: OrderCreateRequest): Observable<OrderResponse> {
-    return this.http.post<OrderResponse>(this.baseUrl, request).pipe(
+    const requestWithKey: OrderCreateRequest = {
+      ...request,
+      idempotencyKey: request.idempotencyKey ?? crypto.randomUUID()
+    };
+
+    return this.http.post<OrderResponse>(this.baseUrl, requestWithKey).pipe(
       catchError(this.handleError)
     );
   }
@@ -200,6 +208,16 @@ export class OrderService {
   }
 
   /**
+   * Checks if error is a duplicate order error (HTTP 409).
+   *
+   * @param error - Error to check
+   * @returns true if error is due to duplicate order
+   */
+  isDuplicateOrderError(error: unknown): error is HttpErrorResponse {
+    return error instanceof HttpErrorResponse && error.status === 409;
+  }
+
+  /**
    * Handles HTTP errors for order operations.
    */
   private handleError(error: HttpErrorResponse): Observable<never> {
@@ -211,6 +229,8 @@ export class OrderService {
       errorMessage = error.error?.message || 'Invalid order request. Please check your inputs.';
     } else if (error.status === 404) {
       errorMessage = 'Service not found.';
+    } else if (error.status === 409) {
+      errorMessage = error.error?.message || 'Duplicate order detected. Please wait before trying again.';
     }
 
     console.error('Order error:', errorMessage, error);

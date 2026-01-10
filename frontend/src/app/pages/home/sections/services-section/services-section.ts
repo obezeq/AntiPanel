@@ -55,10 +55,28 @@ export class ServicesSection {
   /** Whether expanded view is active */
   protected readonly isExpanded = computed(() => this.selectedCategory() !== null);
 
+  /** Whether categories are loading */
+  protected readonly isLoadingCategories = signal<boolean>(true);
+
+  /** Whether services are loading */
+  protected readonly isLoadingServices = signal<boolean>(false);
+
+  /** Error message for failed API calls */
+  protected readonly errorMessage = signal<string | null>(null);
+
   constructor() {
     // Load categories on init
-    this.catalogService.getCategories().subscribe(categories => {
-      this.categories.set(categories);
+    this.isLoadingCategories.set(true);
+    this.errorMessage.set(null);
+    this.catalogService.getCategories().subscribe({
+      next: (categories) => {
+        this.categories.set(categories);
+        this.isLoadingCategories.set(false);
+      },
+      error: () => {
+        this.isLoadingCategories.set(false);
+        this.errorMessage.set('Failed to load services. Please try again.');
+      }
     });
 
     // Watch for platform selection from parent
@@ -145,8 +163,17 @@ export class ServicesSection {
    * Load services for a category
    */
   private loadCategoryServices(categoryId: number): void {
-    this.catalogService.getServicesByCategory(categoryId).subscribe(services => {
-      this.categoryServices.set(services);
+    this.isLoadingServices.set(true);
+    this.errorMessage.set(null);
+    this.catalogService.getServicesByCategory(categoryId).subscribe({
+      next: (services) => {
+        this.categoryServices.set(services);
+        this.isLoadingServices.set(false);
+      },
+      error: () => {
+        this.isLoadingServices.set(false);
+        this.errorMessage.set('Failed to load services. Please try again.');
+      }
     });
   }
 

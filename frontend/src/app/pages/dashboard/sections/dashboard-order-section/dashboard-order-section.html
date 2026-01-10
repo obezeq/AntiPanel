@@ -101,3 +101,9 @@
     />
   }
 </section>
+
+<!-- Order Placed Success Modal -->
+<app-order-placed
+  [isOpen]="showOrderPlacedModal()"
+  (continueClick)="onOrderPlacedContinue()"
+/>

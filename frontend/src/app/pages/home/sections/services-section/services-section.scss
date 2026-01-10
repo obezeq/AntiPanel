@@ -193,6 +193,75 @@
       gap: var(--spacing-4);
     }
   }
+
+  // ---------------------------------------------------------------------------
+  // LOADING STATE
+  // ---------------------------------------------------------------------------
+
+  &__loading {
+    @include flex-center;
+    flex-direction: column;
+    gap: var(--spacing-4);
+    padding: var(--spacing-12) var(--spacing-4);
+    width: 100%;
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  &__spinner {
+    width: var(--spacing-10);
+    height: var(--spacing-10);
+    color: var(--color-information);
+    animation: spin 1s linear infinite;
+
+    @include respond-to('sm') {
+      width: var(--spacing-12);
+      height: var(--spacing-12);
+    }
+  }
+
+  &__loading-text {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-body);
+    color: var(--color-foreground);
+  }
+
+  // ---------------------------------------------------------------------------
+  // ERROR STATE
+  // ---------------------------------------------------------------------------
+
+  &__error {
+    padding: var(--spacing-4);
+    background-color: var(--color-tiny-error);
+    border: var(--border-width-thin) solid var(--color-error);
+    border-radius: var(--radius-md);
+    width: 100%;
+
+    p {
+      margin: 0;
+      font-family: var(--font-secondary);
+      font-size: var(--font-size-body);
+      color: var(--color-error);
+      text-align: center;
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // EMPTY STATE
+  // ---------------------------------------------------------------------------
+
+  &__empty {
+    @include flex-center;
+    padding: var(--spacing-12) var(--spacing-4);
+    width: 100%;
+
+    p {
+      margin: 0;
+      font-family: var(--font-secondary);
+      font-size: var(--font-size-body);
+      color: var(--color-foreground);
+      text-align: center;
+    }
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -205,5 +274,14 @@
   }
   to {
     opacity: 1;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }

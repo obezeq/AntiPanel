@@ -16,6 +16,7 @@ import {
   type OrderReadyData,
   type QuantityValidationError
 } from '../../../../components/shared/order-ready/order-ready';
+import { OrderPlaced } from '../../../../components/shared/order-placed/order-placed';
 import { CatalogService } from '../../../../services/catalog.service';
 import { OrderService, type OrderCreateRequest, type OrderResponse } from '../../../../core/services/order.service';
 import type { Service } from '../../../../models';
@@ -89,7 +90,7 @@ const SERVICE_TYPE_KEYWORDS: Record<string, string> = {
   templateUrl: './dashboard-order-section.html',
   styleUrl: './dashboard-order-section.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DashboardSectionHeader, OrderReady]
+  imports: [DashboardSectionHeader, OrderReady, OrderPlaced]
 })
 export class DashboardOrderSection {
   private readonly catalogService = inject(CatalogService);
@@ -146,6 +147,9 @@ export class DashboardOrderSection {
 
   /** Service matching the parsed order */
   protected readonly matchedService = signal<Service | null>(null);
+
+  /** Whether to show the order placed success modal */
+  protected readonly showOrderPlacedModal = signal<boolean>(false);
 
   // -------------------------------------------------------------------------
   // Computed
@@ -503,14 +507,15 @@ export class DashboardOrderSection {
       .subscribe({
         next: (response) => {
           this.orderState.set('success');
-          this.successMessage.set(`Order #${response.id} created successfully!`);
-          this.inputText.set('');
+          this.showOrderPlacedModal.set(true);
           this.orderCreated.emit(response);
         },
         error: (error) => {
           this.orderState.set('error');
           if (this.orderService.isInsufficientBalanceError(error)) {
             this.errorMessage.set('Insufficient balance. Please add funds to continue.');
+          } else if (this.orderService.isDuplicateOrderError(error)) {
+            this.errorMessage.set('Duplicate order detected. Please wait before trying again.');
           } else {
             this.errorMessage.set(error.error?.message || 'Failed to create order. Please try again.');
           }
@@ -523,5 +528,18 @@ export class DashboardOrderSection {
    */
   protected onAddFundsClick(): void {
     this.navigateToWallet.emit();
+  }
+
+  /**
+   * Handle order placed modal continue button.
+   * Resets the form state for a new order.
+   */
+  protected onOrderPlacedContinue(): void {
+    this.showOrderPlacedModal.set(false);
+    this.orderState.set('idle');
+    this.inputText.set('');
+    this.successMessage.set(null);
+    this.matchedService.set(null);
+    this.lastProcessedQuickOrder = null;
   }
 }

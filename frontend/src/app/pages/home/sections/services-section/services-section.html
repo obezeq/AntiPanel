@@ -4,6 +4,13 @@
   [class.services-section--expanded]="isExpanded()"
   aria-labelledby="services-title"
 >
+  <!-- Error Message -->
+  @if (errorMessage()) {
+    <aside class="services-section__error" role="alert">
+      <p>{{ errorMessage() }}</p>
+    </aside>
+  }
+
   <!-- Platform Grid View -->
   @if (!isExpanded()) {
     <!-- Section Header -->
@@ -12,19 +19,38 @@
       subtitle="Choose your platform to see all available services"
     />
 
+    <!-- Loading State for Categories -->
+    @if (isLoadingCategories()) {
+      <div class="services-section__loading" role="status" aria-label="Loading platforms">
+        <svg class="services-section__spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" stroke-dasharray="60" stroke-dashoffset="20" />
+        </svg>
+        <span class="services-section__loading-text">Loading platforms...</span>
+      </div>
+    }
+
     <!-- Platform Cards Grid -->
-    <div
-      class="services-section__grid"
-      role="list"
-      aria-label="Social media platforms"
-    >
-      @for (category of categories(); track category.id) {
-        <app-service-card
-          [service]="mapCategoryToServiceCardData(category)"
-          (cardClick)="onPlatformClick($event)"
-        />
-      }
-    </div>
+    @if (!isLoadingCategories() && categories().length > 0) {
+      <div
+        class="services-section__grid"
+        role="list"
+        aria-label="Social media platforms"
+      >
+        @for (category of categories(); track category.id) {
+          <app-service-card
+            [service]="mapCategoryToServiceCardData(category)"
+            (cardClick)="onPlatformClick($event)"
+          />
+        }
+      </div>
+    }
+
+    <!-- Empty State -->
+    @if (!isLoadingCategories() && categories().length === 0 && !errorMessage()) {
+      <div class="services-section__empty" role="status">
+        <p>No platforms available at this time.</p>
+      </div>
+    }
   }
 
   <!-- Expanded Services View -->
@@ -46,22 +72,45 @@
       </h2>
 
       <span class="services-section__service-count">
-        {{ categoryServices().length }} SERVICES
+        @if (isLoadingServices()) {
+          Loading...
+        } @else {
+          {{ categoryServices().length }} SERVICES
+        }
       </span>
     </header>
 
+    <!-- Loading State for Services -->
+    @if (isLoadingServices()) {
+      <div class="services-section__loading" role="status" aria-label="Loading services">
+        <svg class="services-section__spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" stroke-dasharray="60" stroke-dashoffset="20" />
+        </svg>
+        <span class="services-section__loading-text">Loading services...</span>
+      </div>
+    }
+
     <!-- Services List -->
-    <div
-      class="services-section__services-list"
-      role="list"
-      [attr.aria-label]="selectedCategory()!.name + ' services'"
-    >
-      @for (service of categoryServices(); track service.id) {
-        <app-service-item-card
-          [service]="mapServiceToItemData(service)"
-          (quickOrder)="onQuickOrder($event)"
-        />
-      }
-    </div>
+    @if (!isLoadingServices() && categoryServices().length > 0) {
+      <div
+        class="services-section__services-list"
+        role="list"
+        [attr.aria-label]="selectedCategory()!.name + ' services'"
+      >
+        @for (service of categoryServices(); track service.id) {
+          <app-service-item-card
+            [service]="mapServiceToItemData(service)"
+            (quickOrder)="onQuickOrder($event)"
+          />
+        }
+      </div>
+    }
+
+    <!-- Empty State for Services -->
+    @if (!isLoadingServices() && categoryServices().length === 0 && !errorMessage()) {
+      <div class="services-section__empty" role="status">
+        <p>No services available for this platform at this time.</p>
+      </div>
+    }
   }
 </section>

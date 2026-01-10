@@ -1,5 +1,7 @@
-import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Injectable, inject, signal, computed } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of, tap, catchError, map, switchMap } from 'rxjs';
+import { environment } from '../../environments/environment';
 import type {
   CategoryWithCount,
   ServiceType,
@@ -22,165 +24,20 @@ const PLATFORM_ICONS: Record<string, string> = {
 };
 
 /**
- * Mock categories (social media platforms)
+ * Service types mapping (slug to ID)
+ * Used for natural language parsing
  */
-const MOCK_CATEGORIES: CategoryWithCount[] = [
-  {
-    id: 1,
-    name: 'Instagram',
-    slug: 'instagram',
-    sortOrder: 1,
-    isActive: true,
-    serviceCount: 3
-  },
-  {
-    id: 2,
-    name: 'TikTok',
-    slug: 'tiktok',
-    sortOrder: 2,
-    isActive: true,
-    serviceCount: 3
-  },
-  {
-    id: 3,
-    name: 'Twitter/X',
-    slug: 'twitter',
-    sortOrder: 3,
-    isActive: true,
-    serviceCount: 3
-  },
-  {
-    id: 4,
-    name: 'YouTube',
-    slug: 'youtube',
-    sortOrder: 4,
-    isActive: true,
-    serviceCount: 3
-  },
-  {
-    id: 5,
-    name: 'Snapchat',
-    slug: 'snapchat',
-    sortOrder: 5,
-    isActive: true,
-    serviceCount: 3
-  },
-  {
-    id: 6,
-    name: 'Facebook',
-    slug: 'facebook',
-    sortOrder: 6,
-    isActive: true,
-    serviceCount: 3
-  },
-  {
-    id: 7,
-    name: 'Discord',
-    slug: 'discord',
-    sortOrder: 7,
-    isActive: true,
-    serviceCount: 3
-  },
-  {
-    id: 8,
-    name: 'LinkedIn',
-    slug: 'linkedin',
-    sortOrder: 8,
-    isActive: true,
-    serviceCount: 3
-  }
-];
+const SERVICE_TYPE_SLUGS: Record<string, number> = {
+  followers: 1,
+  likes: 2,
+  comments: 3,
+  views: 4,
+  shares: 5
+};
 
 /**
- * Mock service types (Followers, Likes, Comments)
- */
-const MOCK_SERVICE_TYPES: ServiceType[] = [
-  { id: 1, categoryId: 0, name: 'Followers', slug: 'followers', sortOrder: 1, isActive: true },
-  { id: 2, categoryId: 0, name: 'Likes', slug: 'likes', sortOrder: 2, isActive: true },
-  { id: 3, categoryId: 0, name: 'Comments', slug: 'comments', sortOrder: 3, isActive: true }
-];
-
-/**
- * Generate mock services for all platforms
- * Platform-specific minimum quantities:
- * - Instagram Followers: 1 (lowest minimum for testing)
- * - TikTok Followers: 33 (custom minimum for testing)
- * - Other platforms: 100 (default)
- */
-function generateMockServices(): Service[] {
-  const services: Service[] = [];
-  let serviceId = 1;
-
-  for (const category of MOCK_CATEGORIES) {
-    // Platform-specific minimum quantity for followers
-    const followerMinQty =
-      category.slug === 'instagram' ? 1 :
-      category.slug === 'tiktok' ? 33 :
-      100;
-
-    // Followers
-    services.push({
-      id: serviceId++,
-      categoryId: category.id,
-      serviceTypeId: 1,
-      name: `${category.name} Followers`,
-      description: `High-quality ${category.name} followers with fast delivery`,
-      quality: 'HIGH',
-      speed: 'FAST',
-      minQuantity: followerMinQty,
-      maxQuantity: 100000,
-      pricePerK: 1.10,
-      refillDays: 30,
-      averageTime: '1-24 hours',
-      isActive: true,
-      sortOrder: 1
-    });
-
-    // Likes
-    services.push({
-      id: serviceId++,
-      categoryId: category.id,
-      serviceTypeId: 2,
-      name: `${category.name} Likes`,
-      description: `Real ${category.name} likes from active accounts`,
-      quality: 'HIGH',
-      speed: 'INSTANT',
-      minQuantity: 50,
-      maxQuantity: 50000,
-      pricePerK: 0.80,
-      refillDays: 0,
-      averageTime: '0-1 hours',
-      isActive: true,
-      sortOrder: 2
-    });
-
-    // Comments
-    services.push({
-      id: serviceId++,
-      categoryId: category.id,
-      serviceTypeId: 3,
-      name: `${category.name} Comments`,
-      description: `Custom ${category.name} comments from real users`,
-      quality: 'PREMIUM',
-      speed: 'MEDIUM',
-      minQuantity: 10,
-      maxQuantity: 5000,
-      pricePerK: 15.00,
-      refillDays: 0,
-      averageTime: '1-6 hours',
-      isActive: true,
-      sortOrder: 3
-    });
-  }
-
-  return services;
-}
-
-const MOCK_SERVICES = generateMockServices();
-
-/**
- * CatalogService provides access to the service catalog.
- * Currently uses mock data, prepared for future API integration.
+ * CatalogService provides access to the service catalog via API.
+ * Uses signals for caching and reactive state management.
  *
  * @example
  * ```typescript
@@ -201,17 +58,32 @@ const MOCK_SERVICES = generateMockServices();
   providedIn: 'root'
 })
 export class CatalogService {
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = `${environment.apiUrl}/public`;
+
+  /** Cached categories with service counts */
+  private readonly categoriesCache = signal<CategoryWithCount[] | null>(null);
+
+  /** Cached services by category ID */
+  private readonly servicesCacheMap = signal<Map<number, Service[]>>(new Map());
+
   /**
    * Get all active categories (platforms) with service counts
    * @returns Observable of categories sorted by sortOrder
    */
   getCategories(): Observable<CategoryWithCount[]> {
-    // TODO: Replace with API call: GET /api/v1/public/categories/with-counts
-    const categories = MOCK_CATEGORIES
-      .filter(c => c.isActive)
-      .sort((a, b) => a.sortOrder - b.sortOrder);
+    const cached = this.categoriesCache();
+    if (cached) {
+      return of(cached);
+    }
 
-    return of(categories);
+    return this.http.get<CategoryWithCount[]>(`${this.baseUrl}/categories/with-counts`).pipe(
+      tap(categories => this.categoriesCache.set(categories)),
+      catchError(error => {
+        console.error('Failed to fetch categories:', error);
+        return of([]);
+      })
+    );
   }
 
   /**
@@ -220,11 +92,9 @@ export class CatalogService {
    * @returns Observable of category or undefined
    */
   getCategoryBySlug(slug: string): Observable<CategoryWithCount | undefined> {
-    // TODO: Replace with API call: GET /api/v1/public/categories/{slug}
-    const category = MOCK_CATEGORIES.find(
-      c => c.slug === slug && c.isActive
+    return this.getCategories().pipe(
+      map(categories => categories.find(c => c.slug === slug))
     );
-    return of(category);
   }
 
   /**
@@ -233,11 +103,9 @@ export class CatalogService {
    * @returns Observable of category or undefined
    */
   getCategoryById(id: number): Observable<CategoryWithCount | undefined> {
-    // TODO: Replace with API call: GET /api/v1/public/categories/{id}
-    const category = MOCK_CATEGORIES.find(
-      c => c.id === id && c.isActive
+    return this.getCategories().pipe(
+      map(categories => categories.find(c => c.id === id))
     );
-    return of(category);
   }
 
   /**
@@ -254,7 +122,13 @@ export class CatalogService {
    * @returns Observable of service types
    */
   getServiceTypes(): Observable<ServiceType[]> {
-    return of(MOCK_SERVICE_TYPES.filter(t => t.isActive));
+    return of([
+      { id: 1, categoryId: 0, name: 'Followers', slug: 'followers', sortOrder: 1, isActive: true },
+      { id: 2, categoryId: 0, name: 'Likes', slug: 'likes', sortOrder: 2, isActive: true },
+      { id: 3, categoryId: 0, name: 'Comments', slug: 'comments', sortOrder: 3, isActive: true },
+      { id: 4, categoryId: 0, name: 'Views', slug: 'views', sortOrder: 4, isActive: true },
+      { id: 5, categoryId: 0, name: 'Shares', slug: 'shares', sortOrder: 5, isActive: true }
+    ]);
   }
 
   /**
@@ -263,12 +137,23 @@ export class CatalogService {
    * @returns Observable of services sorted by sortOrder
    */
   getServicesByCategory(categoryId: number): Observable<Service[]> {
-    // TODO: Replace with API call: GET /api/v1/public/categories/{categoryId}/services
-    const services = MOCK_SERVICES
-      .filter(s => s.categoryId === categoryId && s.isActive)
-      .sort((a, b) => a.sortOrder - b.sortOrder);
+    const cached = this.servicesCacheMap().get(categoryId);
+    if (cached) {
+      return of(cached);
+    }
 
-    return of(services);
+    return this.http.get<Service[]>(`${this.baseUrl}/categories/${categoryId}/services`).pipe(
+      tap(services => {
+        const currentCache = this.servicesCacheMap();
+        const newCache = new Map(currentCache);
+        newCache.set(categoryId, services);
+        this.servicesCacheMap.set(newCache);
+      }),
+      catchError(error => {
+        console.error(`Failed to fetch services for category ${categoryId}:`, error);
+        return of([]);
+      })
+    );
   }
 
   /**
@@ -277,11 +162,14 @@ export class CatalogService {
    * @returns Observable of services
    */
   getServicesByCategorySlug(slug: string): Observable<Service[]> {
-    const category = MOCK_CATEGORIES.find(c => c.slug === slug);
-    if (!category) {
-      return of([]);
-    }
-    return this.getServicesByCategory(category.id);
+    return this.getCategoryBySlug(slug).pipe(
+      switchMap(category => {
+        if (!category) {
+          return of([]);
+        }
+        return this.getServicesByCategory(category.id);
+      })
+    );
   }
 
   /**
@@ -290,9 +178,12 @@ export class CatalogService {
    * @returns Observable of service or undefined
    */
   getServiceById(id: number): Observable<Service | undefined> {
-    // TODO: Replace with API call: GET /api/v1/public/services/{id}
-    const service = MOCK_SERVICES.find(s => s.id === id && s.isActive);
-    return of(service);
+    return this.http.get<Service>(`${this.baseUrl}/services/${id}`).pipe(
+      catchError(error => {
+        console.error(`Failed to fetch service ${id}:`, error);
+        return of(undefined);
+      })
+    );
   }
 
   /**
@@ -303,20 +194,25 @@ export class CatalogService {
    * @returns Observable of matching service or undefined
    */
   findService(categorySlug: string, serviceTypeSlug: string): Observable<Service | undefined> {
-    const category = MOCK_CATEGORIES.find(c => c.slug === categorySlug);
-    const serviceType = MOCK_SERVICE_TYPES.find(t => t.slug === serviceTypeSlug);
-
-    if (!category || !serviceType) {
+    const serviceTypeId = SERVICE_TYPE_SLUGS[serviceTypeSlug];
+    if (!serviceTypeId) {
       return of(undefined);
     }
 
-    const service = MOCK_SERVICES.find(
-      s => s.categoryId === category.id &&
-           s.serviceTypeId === serviceType.id &&
-           s.isActive
-    );
+    return this.getCategoryBySlug(categorySlug).pipe(
+      switchMap(category => {
+        if (!category) {
+          return of(undefined);
+        }
 
-    return of(service);
+        return this.http.get<Service[]>(
+          `${this.baseUrl}/categories/${category.id}/types/${serviceTypeId}/services`
+        ).pipe(
+          map(services => services.length > 0 ? services[0] : undefined),
+          catchError(() => of(undefined))
+        );
+      })
+    );
   }
 
   /**
@@ -331,33 +227,34 @@ export class CatalogService {
     speed?: string;
     search?: string;
   }): Observable<Service[]> {
-    // TODO: Replace with API call: GET /api/v1/public/services/search
-    let services = MOCK_SERVICES.filter(s => s.isActive);
+    const queryParams = new URLSearchParams();
 
-    if (params.categoryId) {
-      services = services.filter(s => s.categoryId === params.categoryId);
-    }
+    if (params.categoryId) queryParams.set('categoryId', params.categoryId.toString());
+    if (params.serviceTypeId) queryParams.set('serviceTypeId', params.serviceTypeId.toString());
+    if (params.quality) queryParams.set('quality', params.quality);
+    if (params.speed) queryParams.set('speed', params.speed);
+    if (params.search) queryParams.set('search', params.search);
 
-    if (params.serviceTypeId) {
-      services = services.filter(s => s.serviceTypeId === params.serviceTypeId);
-    }
+    const queryString = queryParams.toString();
+    const url = queryString
+      ? `${this.baseUrl}/services/search?${queryString}`
+      : `${this.baseUrl}/services/search`;
 
-    if (params.quality) {
-      services = services.filter(s => s.quality === params.quality);
-    }
+    return this.http.get<{ content: Service[] }>(url).pipe(
+      map(response => response.content),
+      catchError(error => {
+        console.error('Failed to search services:', error);
+        return of([]);
+      })
+    );
+  }
 
-    if (params.speed) {
-      services = services.filter(s => s.speed === params.speed);
-    }
-
-    if (params.search) {
-      const searchLower = params.search.toLowerCase();
-      services = services.filter(
-        s => s.name.toLowerCase().includes(searchLower) ||
-             s.description.toLowerCase().includes(searchLower)
-      );
-    }
-
-    return of(services.sort((a, b) => a.sortOrder - b.sortOrder));
+  /**
+   * Clear all cached data
+   * Call this when data might be stale (e.g., after admin updates)
+   */
+  clearCache(): void {
+    this.categoriesCache.set(null);
+    this.servicesCacheMap.set(new Map());
   }
 }
