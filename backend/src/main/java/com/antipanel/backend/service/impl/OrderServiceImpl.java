@@ -15,12 +15,14 @@ import com.antipanel.backend.entity.enums.TransactionType;
 import com.antipanel.backend.exception.BadRequestException;
 import com.antipanel.backend.exception.InsufficientBalanceException;
 import com.antipanel.backend.exception.ResourceNotFoundException;
+import com.antipanel.backend.exception.ProviderApiException;
 import com.antipanel.backend.mapper.OrderMapper;
 import com.antipanel.backend.mapper.PageMapper;
 import com.antipanel.backend.repository.OrderRepository;
 import com.antipanel.backend.repository.ServiceRepository;
 import com.antipanel.backend.repository.TransactionRepository;
 import com.antipanel.backend.repository.UserRepository;
+import com.antipanel.backend.service.ExternalOrderService;
 import com.antipanel.backend.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +51,7 @@ public class OrderServiceImpl implements OrderService {
     private final TransactionRepository transactionRepository;
     private final OrderMapper orderMapper;
     private final PageMapper pageMapper;
+    private final ExternalOrderService externalOrderService;
 
     // ============ CREATE OPERATIONS ============
 
@@ -57,8 +60,19 @@ public class OrderServiceImpl implements OrderService {
     public OrderResponse create(Long userId, OrderCreateRequest request) {
         log.debug("Creating order for user ID: {} with service ID: {}", userId, request.getServiceId());
 
-        // Validate user
-        User user = userRepository.findById(userId)
+        // Idempotency check: return existing order if idempotency key was already used
+        if (request.getIdempotencyKey() != null && !request.getIdempotencyKey().isBlank()) {
+            var existingOrder = orderRepository.findByIdempotencyKey(request.getIdempotencyKey());
+            if (existingOrder.isPresent()) {
+                log.info("Returning existing order ID: {} for idempotency key: {}",
+                        existingOrder.get().getId(), request.getIdempotencyKey());
+                return orderMapper.toResponse(existingOrder.get());
+            }
+        }
+
+        // Validate user with pessimistic lock for atomic balance operations
+        // Uses SELECT ... FOR UPDATE to prevent race conditions in concurrent order creation
+        User user = userRepository.findByIdForUpdate(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
         if (user.getIsBanned()) {
@@ -100,6 +114,7 @@ public class OrderServiceImpl implements OrderService {
                 .service(service)
                 .serviceName(service.getName())
                 .providerService(providerService)
+                .idempotencyKey(request.getIdempotencyKey())
                 .target(request.getTarget())
                 .quantity(request.getQuantity())
                 .remains(request.getQuantity())
@@ -134,7 +149,47 @@ public class OrderServiceImpl implements OrderService {
         transactionRepository.save(transaction);
 
         log.info("Created order ID: {} for user ID: {}", saved.getId(), userId);
-        return orderMapper.toResponse(saved);
+
+        // Submit order to external provider
+        try {
+            return externalOrderService.submitOrder(saved);
+        } catch (ProviderApiException e) {
+            // Compensation: refund balance and mark order as failed
+            log.error("Provider API failed for order ID: {}. Initiating compensation.", saved.getId(), e);
+            refundFailedOrder(user, saved, totalCharge);
+            throw e;
+        }
+    }
+
+    /**
+     * Refunds the user balance when provider submission fails.
+     * Creates a refund transaction and marks the order as FAILED.
+     */
+    private void refundFailedOrder(User user, Order order, BigDecimal amount) {
+        // Refund balance
+        BigDecimal balanceBefore = user.getBalance();
+        BigDecimal balanceAfter = balanceBefore.add(amount);
+        user.setBalance(balanceAfter);
+        userRepository.save(user);
+
+        // Create refund transaction
+        Transaction refundTransaction = Transaction.builder()
+                .user(user)
+                .type(TransactionType.REFUND)
+                .amount(amount)
+                .balanceBefore(balanceBefore)
+                .balanceAfter(balanceAfter)
+                .referenceType("ORDER")
+                .referenceId(order.getId())
+                .description("Auto-refund: Order #" + order.getId() + " - provider submission failed")
+                .build();
+        transactionRepository.save(refundTransaction);
+
+        // Mark order as failed
+        order.setStatus(OrderStatus.FAILED);
+        orderRepository.save(order);
+
+        log.info("Refunded {} to user ID: {} for failed order ID: {}", amount, user.getId(), order.getId());
     }
 
     // ============ READ OPERATIONS ============

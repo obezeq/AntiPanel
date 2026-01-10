@@ -84,6 +84,14 @@ public class User {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    /**
+     * Version field for optimistic locking.
+     * Prevents race conditions in concurrent balance updates.
+     */
+    @Version
+    @Column(name = "version")
+    private Long version;
+
     // Métodos de utilidad
 
     /**

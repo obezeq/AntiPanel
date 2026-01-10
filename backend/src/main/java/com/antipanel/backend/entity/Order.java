@@ -25,7 +25,8 @@ import java.time.LocalDateTime;
     @Index(name = "idx_orders_status", columnList = "status"),
     @Index(name = "idx_orders_created", columnList = "created_at"),
     @Index(name = "idx_orders_user_status", columnList = "user_id, status"),
-    @Index(name = "idx_orders_user_created", columnList = "user_id, created_at")
+    @Index(name = "idx_orders_user_created", columnList = "user_id, created_at"),
+    @Index(name = "idx_orders_idempotency_key", columnList = "idempotency_key")
 })
 @Data
 @Builder
@@ -64,6 +65,14 @@ public class Order {
     @Size(max = 100, message = "El provider order ID no puede exceder 100 caracteres")
     @Column(name = "provider_order_id", length = 100)
     private String providerOrderId;
+
+    /**
+     * Idempotency key for duplicate prevention.
+     * Client-generated UUID to ensure idempotent order creation.
+     */
+    @Size(max = 64, message = "El idempotency key no puede exceder 64 caracteres")
+    @Column(name = "idempotency_key", length = 64, unique = true)
+    private String idempotencyKey;
 
     @NotBlank(message = "El target no puede estar vacío")
     @Size(max = 500, message = "El target no puede exceder 500 caracteres")

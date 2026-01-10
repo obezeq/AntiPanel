@@ -131,6 +131,15 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Optional<Order> findByProviderOrderId(String providerOrderId);
 
     /**
+     * Find order by idempotency key.
+     * Used to prevent duplicate order submissions.
+     *
+     * @param idempotencyKey Client-provided idempotency key
+     * @return Optional order if exists with this key
+     */
+    Optional<Order> findByIdempotencyKey(String idempotencyKey);
+
+    /**
      * Find orders needing provider update (stale orders in progress)
      *
      * @param threshold Timestamp threshold for last update

@@ -15,6 +15,7 @@ import com.antipanel.backend.entity.enums.OrderStatus;
 import com.antipanel.backend.entity.enums.TransactionType;
 import com.antipanel.backend.exception.BadRequestException;
 import com.antipanel.backend.exception.InsufficientBalanceException;
+import com.antipanel.backend.exception.ProviderApiException;
 import com.antipanel.backend.exception.ResourceNotFoundException;
 import com.antipanel.backend.mapper.OrderMapper;
 import com.antipanel.backend.mapper.PageMapper;
@@ -22,6 +23,7 @@ import com.antipanel.backend.repository.OrderRepository;
 import com.antipanel.backend.repository.ServiceRepository;
 import com.antipanel.backend.repository.TransactionRepository;
 import com.antipanel.backend.repository.UserRepository;
+import com.antipanel.backend.service.ExternalOrderService;
 import com.antipanel.backend.service.impl.OrderServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -70,6 +72,9 @@ class OrderServiceTest {
 
     @Mock
     private PageMapper pageMapper;
+
+    @Mock
+    private ExternalOrderService externalOrderService;
 
     @InjectMocks
     private OrderServiceImpl orderService;
@@ -168,12 +173,12 @@ class OrderServiceTest {
         @Test
         @DisplayName("Should create order successfully")
         void shouldCreateOrderSuccessfully() {
-            when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+            when(userRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(testUser));
             when(serviceRepository.findById(1)).thenReturn(Optional.of(testService));
             when(orderRepository.save(any(Order.class))).thenReturn(testOrder);
             when(transactionRepository.save(any(Transaction.class))).thenReturn(Transaction.builder().build());
             when(userRepository.save(any(User.class))).thenReturn(testUser);
-            when(orderMapper.toResponse(any(Order.class))).thenReturn(testOrderResponse);
+            when(externalOrderService.submitOrder(any(Order.class))).thenReturn(testOrderResponse);
 
             OrderResponse result = orderService.create(1L, createRequest);
 
@@ -182,12 +187,13 @@ class OrderServiceTest {
             verify(orderRepository).save(any(Order.class));
             verify(transactionRepository).save(any(Transaction.class));
             verify(userRepository).save(any(User.class));
+            verify(externalOrderService).submitOrder(any(Order.class));
         }
 
         @Test
         @DisplayName("Should throw exception when user not found")
         void shouldThrowExceptionWhenUserNotFound() {
-            when(userRepository.findById(999L)).thenReturn(Optional.empty());
+            when(userRepository.findByIdForUpdate(999L)).thenReturn(Optional.empty());
 
             assertThatThrownBy(() -> orderService.create(999L, createRequest))
                     .isInstanceOf(ResourceNotFoundException.class)
@@ -198,7 +204,7 @@ class OrderServiceTest {
         @DisplayName("Should throw exception when user is banned")
         void shouldThrowExceptionWhenUserIsBanned() {
             testUser.setIsBanned(true);
-            when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+            when(userRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(testUser));
 
             assertThatThrownBy(() -> orderService.create(1L, createRequest))
                     .isInstanceOf(BadRequestException.class)
@@ -208,7 +214,7 @@ class OrderServiceTest {
         @Test
         @DisplayName("Should throw exception when service not found")
         void shouldThrowExceptionWhenServiceNotFound() {
-            when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+            when(userRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(testUser));
             when(serviceRepository.findById(999)).thenReturn(Optional.empty());
             createRequest.setServiceId(999);
 
@@ -221,7 +227,7 @@ class OrderServiceTest {
         @DisplayName("Should throw exception when service is not active")
         void shouldThrowExceptionWhenServiceNotActive() {
             testService.setIsActive(false);
-            when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+            when(userRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(testUser));
             when(serviceRepository.findById(1)).thenReturn(Optional.of(testService));
 
             assertThatThrownBy(() -> orderService.create(1L, createRequest))
@@ -233,7 +239,7 @@ class OrderServiceTest {
         @DisplayName("Should throw exception when quantity is invalid")
         void shouldThrowExceptionWhenQuantityInvalid() {
             createRequest.setQuantity(50); // Below min of 100
-            when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+            when(userRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(testUser));
             when(serviceRepository.findById(1)).thenReturn(Optional.of(testService));
 
             assertThatThrownBy(() -> orderService.create(1L, createRequest))
@@ -245,7 +251,7 @@ class OrderServiceTest {
         @DisplayName("Should throw exception when user has insufficient balance")
         void shouldThrowExceptionWhenInsufficientBalance() {
             testUser.setBalance(new BigDecimal("0.01")); // Very low balance
-            when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+            when(userRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(testUser));
             when(serviceRepository.findById(1)).thenReturn(Optional.of(testService));
 
             assertThatThrownBy(() -> orderService.create(1L, createRequest))
@@ -259,12 +265,12 @@ class OrderServiceTest {
             BigDecimal initialBalance = new BigDecimal("100.00");
             testUser.setBalance(initialBalance);
 
-            when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+            when(userRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(testUser));
             when(serviceRepository.findById(1)).thenReturn(Optional.of(testService));
             when(orderRepository.save(any(Order.class))).thenReturn(testOrder);
             when(transactionRepository.save(any(Transaction.class))).thenReturn(Transaction.builder().build());
             when(userRepository.save(any(User.class))).thenReturn(testUser);
-            when(orderMapper.toResponse(any(Order.class))).thenReturn(testOrderResponse);
+            when(externalOrderService.submitOrder(any(Order.class))).thenReturn(testOrderResponse);
 
             orderService.create(1L, createRequest);
 
@@ -275,6 +281,49 @@ class OrderServiceTest {
             assertThat(savedTransaction.getType()).isEqualTo(TransactionType.ORDER);
             assertThat(savedTransaction.getAmount()).isNegative();
             assertThat(savedTransaction.getReferenceType()).isEqualTo("ORDER");
+        }
+
+        @Test
+        @DisplayName("Should return existing order when idempotency key already exists")
+        void shouldReturnExistingOrderWhenIdempotencyKeyExists() {
+            String idempotencyKey = "test-idempotency-key-123";
+            createRequest.setIdempotencyKey(idempotencyKey);
+            testOrder.setIdempotencyKey(idempotencyKey);
+
+            when(orderRepository.findByIdempotencyKey(idempotencyKey)).thenReturn(Optional.of(testOrder));
+            when(orderMapper.toResponse(testOrder)).thenReturn(testOrderResponse);
+
+            OrderResponse result = orderService.create(1L, createRequest);
+
+            assertThat(result).isNotNull();
+            assertThat(result.getId()).isEqualTo(1L);
+            // Should NOT call save or external service - just return existing order
+            verify(orderRepository, never()).save(any(Order.class));
+            verify(externalOrderService, never()).submitOrder(any(Order.class));
+        }
+
+        @Test
+        @DisplayName("Should refund balance and mark order as FAILED when provider API fails")
+        void shouldRefundBalanceWhenProviderApiFails() {
+            BigDecimal initialBalance = new BigDecimal("100.00");
+            testUser.setBalance(initialBalance);
+
+            when(userRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(testUser));
+            when(serviceRepository.findById(1)).thenReturn(Optional.of(testService));
+            when(orderRepository.save(any(Order.class))).thenReturn(testOrder);
+            when(transactionRepository.save(any(Transaction.class))).thenReturn(Transaction.builder().build());
+            when(userRepository.save(any(User.class))).thenReturn(testUser);
+            when(externalOrderService.submitOrder(any(Order.class)))
+                    .thenThrow(new ProviderApiException("TestProvider", "order", "API Error"));
+
+            assertThatThrownBy(() -> orderService.create(1L, createRequest))
+                    .isInstanceOf(ProviderApiException.class)
+                    .hasMessageContaining("API Error");
+
+            // Verify refund transaction was created (2 saves: initial deduction + refund)
+            verify(transactionRepository, times(2)).save(any(Transaction.class));
+            // Verify order was saved twice (initial + marked as FAILED)
+            verify(orderRepository, times(2)).save(any(Order.class));
         }
     }
 
