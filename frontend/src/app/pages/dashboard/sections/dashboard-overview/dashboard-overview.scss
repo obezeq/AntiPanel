@@ -9,7 +9,7 @@
 
 .dashboard-overview {
   @include flex-column;
-  gap: 6rem; // 96px as per Figma
+  gap: var(--spacing-24); // 96px as per Figma
   width: 100%;
   max-width: var(--container-max-width, 73.125rem);
   margin: 0 auto;
@@ -47,7 +47,7 @@
 .dashboard-overview__branding {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem; // 8px
+  gap: var(--spacing-2); // 8px
   text-align: center;
 
   @include respond-to('lg') {
@@ -93,7 +93,7 @@
   @include respond-to('lg') {
     flex: 1;
     justify-content: flex-end;
-    gap: 6rem; // 96px as per Figma
+    gap: var(--spacing-24); // 96px as per Figma
   }
 }
 

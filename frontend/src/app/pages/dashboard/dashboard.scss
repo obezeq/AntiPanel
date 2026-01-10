@@ -7,7 +7,7 @@
 
 @use '../../../styles/01-tools/mixins' as *;
 
-.dashboard-page {
+.dashboard {
   @include flex-column;
   position: relative;
   overflow: hidden;
@@ -97,10 +97,10 @@
 // MAIN CONTENT AREA
 // ---------------------------------------------------------------------------
 
-.dashboard-page__content {
+.dashboard__content {
   @include flex-column;
   flex: 1;
-  gap: 6rem; // 96px as per Figma
+  gap: var(--spacing-24); // 96px as per Figma
   padding: var(--spacing-8) var(--spacing-4);
   padding-top: calc(var(--header-height) + var(--spacing-8));
   width: 100%;
@@ -122,14 +122,14 @@
 // LOADING STATE
 // ---------------------------------------------------------------------------
 
-.dashboard-page__loading {
+.dashboard__loading {
   @include flex-column-center;
   flex: 1;
   justify-content: center;
   min-height: 50vh;
 }
 
-.dashboard-page__loading-text {
+.dashboard__loading-text {
   font-family: var(--font-secondary);
   font-size: var(--font-size-body);
   color: var(--color-foreground);
@@ -149,7 +149,7 @@
 // ERROR STATE
 // ---------------------------------------------------------------------------
 
-.dashboard-page__error {
+.dashboard__error {
   @include flex-column-center;
   flex: 1;
   justify-content: center;
@@ -157,14 +157,14 @@
   min-height: 50vh;
 }
 
-.dashboard-page__error-text {
+.dashboard__error-text {
   font-family: var(--font-secondary);
   font-size: var(--font-size-body);
   color: var(--color-error);
   text-align: center;
 }
 
-.dashboard-page__retry-btn {
+.dashboard__retry-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -195,7 +195,7 @@
 // ---------------------------------------------------------------------------
 
 @include respond-below('sm') {
-  .dashboard-page__content {
+  .dashboard__content {
     gap: var(--spacing-8);
   }
 }
@@ -205,7 +205,7 @@
 // ---------------------------------------------------------------------------
 
 @media (prefers-reduced-motion: reduce) {
-  .dashboard-page__loading-text {
+  .dashboard__loading-text {
     animation: none;
   }
 }
