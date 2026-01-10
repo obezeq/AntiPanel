@@ -53,14 +53,6 @@ export class Wallet implements OnInit {
   }
 
   /**
-   * Handle wallet click from header.
-   * Already on wallet page, no action needed.
-   */
-  protected onWalletClick(): void {
-    // Already on wallet page
-  }
-
-  /**
    * Handle logout click from header.
    * Subscribes to logout observable to properly notify backend.
    */

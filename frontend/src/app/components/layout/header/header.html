@@ -83,14 +83,14 @@
       <!-- Mobile-only: Wallet and Profile options (visible on md breakpoint) -->
       @if (isAuthenticated() && variant() !== 'admin') {
         <div class="header__mobile-actions">
-          <button
-            type="button"
+          <a
+            routerLink="/wallet"
             class="header__mobile-wallet"
-            (click)="onWalletClick(); closeMobileMenu()"
-            [attr.aria-label]="'Wallet: ' + walletBalance()"
+            (click)="closeMobileMenu()"
+            aria-label="Go to wallet"
           >
             WALLET: {{ walletBalance() }}
-          </button>
+          </a>
           <a
             routerLink="/orders"
             class="header__mobile-link"
@@ -164,14 +164,13 @@
   <section class="header__actions">
     <!-- Authenticated: Wallet + Profile (dashboard/loggedIn) -->
     @if (isAuthenticated() && variant() !== 'admin') {
-      <button
-        type="button"
+      <a
+        routerLink="/wallet"
         class="header__wallet"
-        (click)="onWalletClick()"
-        aria-label="Wallet balance: {{ walletBalance() }}"
+        aria-label="Go to wallet"
       >
         <span class="header__wallet-text">WALLET</span>
-      </button>
+      </a>
 
       <div #profileContainer class="header__profile-container">
         <button

@@ -59,9 +59,6 @@ export class Header {
   /** Panel name (for admin variant) */
   readonly panelName = input<string>('PANEL NAME');
 
-  /** Emits when wallet button is clicked */
-  readonly walletClick = output<void>();
-
   /** Emits when profile button is clicked */
   readonly profileClick = output<void>();
 
@@ -161,11 +158,6 @@ export class Header {
 
   protected closeProfileDropdown(): void {
     this.isProfileDropdownOpen.set(false);
-  }
-
-  protected onWalletClick(): void {
-    this.walletClick.emit();
-    this.closeMobileMenu();
   }
 
   protected onProfileClick(): void {

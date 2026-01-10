@@ -1,12 +1,11 @@
-<main class="orders-page">
-  <!-- Header (Dashboard Variant) -->
-  <app-header
-    variant="dashboard"
-    walletBalance="$0.00"
-    (walletClick)="onWalletClick()"
-    (logoutClick)="onLogoutClick()"
-  />
+<!-- Header (Dashboard Variant) -->
+<app-header
+  variant="dashboard"
+  walletBalance="$0.00"
+  (logoutClick)="onLogoutClick()"
+/>
 
+<main class="orders-page">
   <!-- Main Content -->
   <section class="orders-page__content" aria-labelledby="orders-title">
     <article class="orders-page__placeholder">
@@ -25,7 +24,7 @@
       </button>
     </article>
   </section>
-
-  <!-- Footer -->
-  <app-footer />
 </main>
+
+<!-- Footer -->
+<app-footer />

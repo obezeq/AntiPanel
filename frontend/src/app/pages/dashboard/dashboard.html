@@ -1,24 +1,23 @@
-<div class="dashboard-page">
-  <!-- Header (Dashboard Variant) -->
-  <app-header
-    variant="dashboard"
-    [walletBalance]="balance()"
-    (walletClick)="onWalletClick()"
-    (logoutClick)="onLogoutClick()"
-  />
+<!-- Header (Dashboard Variant) -->
+<app-header
+  variant="dashboard"
+  [walletBalance]="balance()"
+  (logoutClick)="onLogoutClick()"
+/>
 
-  <!-- Main Content -->
-  <main class="dashboard-page__content">
+<!-- Main Content -->
+<main class="dashboard">
+  <div class="dashboard__content">
     @if (isLoading()) {
-      <section class="dashboard-page__loading" aria-label="Loading dashboard">
-        <p class="dashboard-page__loading-text">Loading dashboard...</p>
+      <section class="dashboard__loading" aria-label="Loading dashboard">
+        <p class="dashboard__loading-text">Loading dashboard...</p>
       </section>
     } @else if (error()) {
-      <section class="dashboard-page__error" role="alert">
-        <p class="dashboard-page__error-text">{{ error() }}</p>
+      <section class="dashboard__error" role="alert">
+        <p class="dashboard__error-text">{{ error() }}</p>
         <button
           type="button"
-          class="dashboard-page__retry-btn"
+          class="dashboard__retry-btn"
           (click)="loadUserStatistics()"
         >
           Try Again
@@ -54,8 +53,8 @@
         (orderAgain)="onOrderAgain($event)"
       />
     }
-  </main>
+  </div>
+</main>
 
-  <!-- Footer -->
-  <app-footer />
-</div>
+<!-- Footer -->
+<app-footer />

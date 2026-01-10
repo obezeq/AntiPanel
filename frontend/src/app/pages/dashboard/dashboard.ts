@@ -137,13 +137,6 @@ export class Dashboard implements OnInit {
   }
 
   /**
-   * Handle wallet click from header
-   */
-  protected onWalletClick(): void {
-    this.router.navigate(['/wallet']);
-  }
-
-  /**
    * Handle logout click from header.
    * Subscribes to logout observable to properly notify backend.
    */
