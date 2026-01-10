@@ -1,7 +1,7 @@
 <section class="wallet-add-funds" aria-labelledby="add-funds-title">
   <h2 id="add-funds-title" class="wallet-add-funds__title">ADD FUNDS</h2>
 
-  <form class="wallet-add-funds__form" (ngSubmit)="onSubmit()">
+  <form class="wallet-add-funds__form" (ngSubmit)="onSubmit($event)">
     <fieldset class="wallet-add-funds__fieldset">
       <legend class="sr-only">Add funds form</legend>
 
@@ -11,6 +11,7 @@
         class="wallet-add-funds__crypto-btn"
         aria-haspopup="listbox"
         aria-label="Select cryptocurrency"
+        [disabled]="disabled()"
       >
         {{ selectedCrypto() | uppercase }}
       </button>
@@ -30,6 +31,7 @@
         aria-label="Amount in USD"
         [attr.aria-describedby]="amountError() ? 'amount-error' : null"
         [attr.aria-invalid]="amountError() ? 'true' : null"
+        [disabled]="disabled()"
       />
 
       <!-- Submit Button -->
@@ -38,7 +40,7 @@
         size="lg"
         type="submit"
         [loading]="isLoading()"
-        [disabled]="isLoading()"
+        [disabled]="isLoading() || disabled()"
       >
         ADD FUNDS
       </app-button>

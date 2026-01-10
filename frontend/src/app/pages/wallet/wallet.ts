@@ -58,6 +58,9 @@ export class Wallet implements OnInit {
     max: null
   });
 
+  /** Whether payment processors have been loaded */
+  protected readonly processorsLoaded = signal<boolean>(false);
+
   /** Active payment processors */
   private paymentProcessors: PaymentProcessor[] = [];
 
@@ -158,6 +161,7 @@ export class Wallet implements OnInit {
     this.invoiceService.getPaymentProcessors().subscribe({
       next: (processors) => {
         this.paymentProcessors = processors;
+        this.processorsLoaded.set(true);
 
         // Set processor limits for validation in the add-funds form
         const paymento = processors.find(p => p.code === 'paymento');
@@ -170,6 +174,10 @@ export class Wallet implements OnInit {
       },
       error: (err) => {
         console.error('Failed to load payment processors:', err);
+        this.notificationService.error(
+          'Failed to load payment options. Please refresh the page.',
+          { title: 'Error', duration: 0 }
+        );
       }
     });
 

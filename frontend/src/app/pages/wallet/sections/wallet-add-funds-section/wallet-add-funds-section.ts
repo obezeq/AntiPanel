@@ -39,6 +39,9 @@ export class WalletAddFundsSection {
   /** Whether the form is currently processing */
   readonly isLoading = input<boolean>(false);
 
+  /** Whether the form should be disabled (e.g., processors not loaded) */
+  readonly disabled = input<boolean>(false);
+
   /** Minimum deposit amount from processor */
   readonly minAmount = input<number>(1);
 
@@ -76,9 +79,14 @@ export class WalletAddFundsSection {
 
   /**
    * Handle form submission.
+   * Explicitly prevents default to avoid page refresh.
    * Validates amount against processor limits and emits addFunds event if valid.
    */
-  protected onSubmit(): void {
+  protected onSubmit(event: Event): void {
+    // Prevent native form submission (page refresh)
+    event.preventDefault();
+    event.stopPropagation();
+
     const amountValue = parseFloat(this.amount());
     const min = this.minAmount();
     const max = this.maxAmount();
