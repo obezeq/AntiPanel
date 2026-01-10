@@ -102,12 +102,22 @@ const MOCK_SERVICE_TYPES: ServiceType[] = [
 
 /**
  * Generate mock services for all platforms
+ * Platform-specific minimum quantities:
+ * - Instagram Followers: 1 (lowest minimum for testing)
+ * - TikTok Followers: 33 (custom minimum for testing)
+ * - Other platforms: 100 (default)
  */
 function generateMockServices(): Service[] {
   const services: Service[] = [];
   let serviceId = 1;
 
   for (const category of MOCK_CATEGORIES) {
+    // Platform-specific minimum quantity for followers
+    const followerMinQty =
+      category.slug === 'instagram' ? 1 :
+      category.slug === 'tiktok' ? 33 :
+      100;
+
     // Followers
     services.push({
       id: serviceId++,
@@ -117,7 +127,7 @@ function generateMockServices(): Service[] {
       description: `High-quality ${category.name} followers with fast delivery`,
       quality: 'HIGH',
       speed: 'FAST',
-      minQuantity: 100,
+      minQuantity: followerMinQty,
       maxQuantity: 100000,
       pricePerK: 1.10,
       refillDays: 30,
