@@ -1,0 +1,53 @@
+<section class="wallet-invoices" aria-labelledby="invoices-title">
+  <h2 id="invoices-title" class="wallet-invoices__title">INVOICES</h2>
+
+  <ul class="wallet-invoices__list" role="list" aria-label="Invoice list">
+    @for (invoice of invoices(); track invoice.id) {
+      <li class="wallet-invoices__item">
+        <article
+          class="wallet-invoices__invoice"
+          [attr.aria-label]="'Invoice ' + invoice.invoiceNumber + ', ' + statusLabels[invoice.status]"
+          (click)="onInvoiceClick(invoice)"
+          (keydown.enter)="onInvoiceClick(invoice)"
+          (keydown.space)="onInvoiceClick(invoice)"
+          tabindex="0"
+          role="button"
+        >
+          <mark
+            class="wallet-invoices__status wallet-invoices__status--{{ invoice.status }}"
+            [attr.aria-label]="statusLabels[invoice.status]"
+          >
+            {{ statusLabels[invoice.status] }}
+          </mark>
+
+          <dl class="wallet-invoices__details">
+            <dt class="visually-hidden">Invoice number</dt>
+            <dd class="wallet-invoices__number">#{{ invoice.invoiceNumber }}</dd>
+
+            <dd class="wallet-invoices__separator" aria-hidden="true">-</dd>
+
+            <dt class="visually-hidden">Amount</dt>
+            <dd class="wallet-invoices__amount">
+              ${{ invoice.amount | number:'1.2-2' }} {{ invoice.currency | uppercase }}
+            </dd>
+
+            <dd class="wallet-invoices__separator" aria-hidden="true">-</dd>
+
+            <dt class="visually-hidden">Date</dt>
+            <dd class="wallet-invoices__date">
+              <time [attr.datetime]="invoice.createdAt | date:'yyyy-MM-ddTHH:mm'">
+                {{ invoice.createdAt | date:'yyyy-MM-dd HH:mm' }}.
+              </time>
+            </dd>
+          </dl>
+        </article>
+      </li>
+    } @empty {
+      <li class="wallet-invoices__empty">
+        <p class="wallet-invoices__empty-text">
+          No invoices yet. Add funds to create your first invoice.
+        </p>
+      </li>
+    }
+  </ul>
+</section>
