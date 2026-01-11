@@ -177,7 +177,7 @@
 
   // Sobrescribir estilos de form-input para coincidir con Figma
   ::ng-deep .form-input__field {
-    background-color: var(--color-information);
+    background-color: var(--color-tiny-info);
     border: none;
     border-radius: var(--radius-md);
     padding: var(--spacing-3) var(--spacing-4);
