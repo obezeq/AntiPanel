@@ -69,7 +69,7 @@
 
 .wallet-invoices__invoice {
   display: grid;
-  grid-template-columns: 8rem minmax(5rem, auto) minmax(9rem, auto) auto;
+  grid-template-columns: 9rem minmax(5rem, auto) minmax(9rem, auto) auto;
   align-items: center;
   gap: var(--spacing-4);
   width: 100%;
@@ -88,11 +88,11 @@
   }
 
   @include respond-below('lg') {
-    grid-template-columns: 7rem minmax(4.5rem, auto) minmax(8rem, auto) auto;
+    grid-template-columns: 8rem minmax(4.5rem, auto) minmax(8rem, auto) auto;
   }
 
   @include respond-below('md') {
-    grid-template-columns: 5rem 1fr;
+    grid-template-columns: 6rem 1fr;
     grid-template-rows: auto auto;
     gap: var(--spacing-2) var(--spacing-3);
     padding: var(--spacing-3) var(--spacing-4);
@@ -117,6 +117,10 @@
   font-weight: var(--font-weight-semibold);
   line-height: 1.15;
   text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   @include respond-below('lg') {
     font-size: var(--font-size-h6);
