@@ -75,6 +75,13 @@ app:
     allow-credentials: true
     max-age: 3600
 
+  # ========================================
+  # Scheduler Configuration
+  # ========================================
+  scheduler:
+    order-status:
+      delay: ${APP_SCHEDULER_ORDER_STATUS_DELAY:120000}  # 2 minutes in milliseconds
+
 # ========================================
 # Paymento Payment Gateway Configuration
 # ========================================
