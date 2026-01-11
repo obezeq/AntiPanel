@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Request DTO for creating a payment with Paymento API.
@@ -20,9 +21,10 @@ public class PaymentoPaymentRequest {
 
     /**
      * Amount in fiat currency.
+     * Paymento API expects this as a string, not a number.
      */
     @JsonProperty("fiatAmount")
-    private BigDecimal fiatAmount;
+    private String fiatAmount;
 
     /**
      * Fiat currency code (e.g., USD, EUR).
@@ -57,10 +59,11 @@ public class PaymentoPaymentRequest {
     private BigDecimal cryptoAmount;
 
     /**
-     * Optional additional metadata as JSON string.
+     * Optional additional metadata as array of key-value pairs.
+     * Paymento expects: [{"key": "name", "value": "value"}, ...]
      */
     @JsonProperty("additionalData")
-    private String additionalData;
+    private List<PaymentoAdditionalData> additionalData;
 
     /**
      * Optional customer email address.

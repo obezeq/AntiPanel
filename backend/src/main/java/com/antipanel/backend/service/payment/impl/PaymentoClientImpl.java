@@ -47,7 +47,7 @@ public class PaymentoClientImpl implements PaymentoClient {
         log.debug("Creating Paymento payment for invoice ID: {}", invoice.getId());
 
         PaymentoPaymentRequest request = PaymentoPaymentRequest.builder()
-                .fiatAmount(invoice.getAmount())
+                .fiatAmount(invoice.getAmount().toPlainString())
                 .fiatCurrency(invoice.getCurrency())
                 .returnUrl(getReturnUrl(processor))
                 .orderId(invoice.getId().toString())
@@ -304,11 +304,13 @@ public class PaymentoClientImpl implements PaymentoClient {
     }
 
     /**
-     * Builds additional data string for the payment request.
+     * Builds additional data for the payment request.
+     * Paymento expects an array of key-value pairs.
      */
-    private String buildAdditionalData(Invoice invoice) {
-        return String.format("user_id:%d,invoice_id:%d",
-                invoice.getUser().getId(),
-                invoice.getId());
+    private List<PaymentoAdditionalData> buildAdditionalData(Invoice invoice) {
+        return List.of(
+            new PaymentoAdditionalData("user_id", invoice.getUser().getId().toString()),
+            new PaymentoAdditionalData("invoice_id", invoice.getId().toString())
+        );
     }
 }
