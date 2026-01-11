@@ -98,6 +98,21 @@
 }
 
 // ---------------------------------------------------------------------------
+// RESPONSIVE SIZES
+// ---------------------------------------------------------------------------
+// Mobile-specific size adjustments for consistent form layouts.
+// Uses max-width query to override desktop sizes on smaller screens.
+
+@media screen and (max-width: 767px) {
+  // Large button becomes fixed 48px height on mobile to match inputs
+  .button--lg {
+    height: var(--spacing-12); // 48px - matches form inputs
+    padding: 0 var(--spacing-6);
+    font-size: var(--font-size-caption);
+  }
+}
+
+// ---------------------------------------------------------------------------
 // MODIFIERS
 // ---------------------------------------------------------------------------
 

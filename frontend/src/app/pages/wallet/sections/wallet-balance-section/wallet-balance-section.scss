@@ -23,7 +23,7 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: var(--spacing-4);
-    padding: 0;
+    padding: 0 var(--spacing-4); // Internal padding for content breathing room
   }
 }
 

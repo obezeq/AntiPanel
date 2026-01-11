@@ -18,6 +18,7 @@
   @include respond-below('md') {
     gap: var(--spacing-6);
     max-width: 100%; // Full width on mobile
+    padding: 0 var(--spacing-4); // Internal padding for content breathing room
   }
 }
 
@@ -72,20 +73,14 @@
     padding: var(--spacing-2); // Minimal padding
     background-color: var(--color-tiny-info);
     border-radius: var(--radius-lg);
-  }
 
-  // Make app-button full width on mobile
-  app-button {
-    @include respond-below('md') {
+    // Ensure app-button custom element stretches to full width
+    app-button {
       display: block;
       width: 100%;
 
-      // Pierce encapsulation to style internal button
-      ::ng-deep .button {
-        width: 100% !important;
-        height: var(--spacing-12) !important; // 48px - consistent with inputs
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
+      .button {
+        width: 100%;
       }
     }
   }
