@@ -67,7 +67,7 @@
     flex-direction: column;
     align-items: stretch;
     gap: var(--spacing-3);
-    padding: var(--spacing-4);
+    padding: var(--spacing-3); // Reduced for more content width
     background-color: var(--color-tiny-info);
     border-radius: var(--radius-lg);
   }
