@@ -86,9 +86,27 @@ public class OrderCreationFacadeImpl implements OrderCreationFacade {
                     createPendingOrderInternal(userId, request, hold, service, totalCharge)
             );
         } catch (Exception e) {
+            // CRITICAL: Check if another concurrent request already created the order for this hold
+            // This handles the race condition where two requests with the same idempotency key
+            // both get the same hold, but one succeeds in creating the order first
+            Optional<Order> concurrentOrder = orderRepository.findByBalanceHoldId(hold.getId());
+            if (concurrentOrder.isPresent()) {
+                log.info("Concurrent request created order {} for hold {}, returning it",
+                        concurrentOrder.get().getId(), hold.getId());
+                return orderMapper.toResponse(concurrentOrder.get());
+            }
+
+            // No concurrent order exists - this is a genuine failure, release the hold
             log.error("Failed to create order for hold {}: {}", hold.getId(), e.getMessage());
             balanceHoldService.releaseHold(hold.getId(), "Order creation failed: " + e.getMessage());
             throw e;
+        }
+
+        // Safety check - should never happen but ensures no NPE
+        if (order == null) {
+            log.error("CRITICAL: Order creation returned null for hold {}", hold.getId());
+            balanceHoldService.releaseHold(hold.getId(), "Order creation returned null");
+            throw new IllegalStateException("Order creation failed - null result");
         }
 
         // Step 5: Submit to provider (NO transaction - external call)
@@ -156,21 +174,29 @@ public class OrderCreationFacadeImpl implements OrderCreationFacade {
     /**
      * Handle submission failure by releasing hold and marking order as failed.
      * Uses REQUIRES_NEW semantics via new TransactionTemplate.
+     * Failures during cleanup are logged but don't prevent the original exception from being thrown.
      */
     private void handleSubmissionFailure(Long holdId, Long orderId, String reason) {
-        TransactionTemplate requiresNew = new TransactionTemplate(transactionManager);
-        requiresNew.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+        try {
+            TransactionTemplate requiresNew = new TransactionTemplate(transactionManager);
+            requiresNew.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
 
-        requiresNew.executeWithoutResult(status -> {
-            balanceHoldService.releaseHold(holdId, reason);
+            requiresNew.executeWithoutResult(status -> {
+                balanceHoldService.releaseHold(holdId, reason);
 
-            Order order = orderRepository.findById(orderId).orElse(null);
-            if (order != null && order.getStatus() == OrderStatus.PENDING) {
-                order.setStatus(OrderStatus.FAILED);
-                orderRepository.save(order);
-                log.info("Marked order {} as FAILED due to: {}", orderId, reason);
-            }
-        });
+                Order order = orderRepository.findById(orderId).orElse(null);
+                if (order != null && order.getStatus() == OrderStatus.PENDING) {
+                    order.setStatus(OrderStatus.FAILED);
+                    orderRepository.save(order);
+                    log.info("Marked order {} as FAILED due to: {}", orderId, reason);
+                }
+            });
+        } catch (Exception cleanupEx) {
+            // Log cleanup failure but don't mask the original exception
+            // The hold will be cleaned up by the scheduled cleanup task
+            log.error("CRITICAL: Cleanup failed for hold {} order {}. Manual review required. Error: {}",
+                    holdId, orderId, cleanupEx.getMessage(), cleanupEx);
+        }
     }
 
     private void validateServiceAndQuantity(Service service, Integer quantity) {
