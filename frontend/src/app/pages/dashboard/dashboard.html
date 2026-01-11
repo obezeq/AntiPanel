@@ -37,7 +37,7 @@
         [quickOrderService]="quickOrderService()"
         [initialInputText]="pendingOrderText()"
         (orderCreated)="onOrderCreated($event)"
-        (navigateToWallet)="onNavigateToWallet()"
+        (navigateToWallet)="onNavigateToWallet($event)"
         (selectPlatform)="onSelectPlatform($event)"
         (resetPlatform)="onResetPlatform()"
       />

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, fromEvent, filter, throttleTime, take } from 'rxjs';
 import { Header } from '../../components/layout/header/header';
 import { Footer } from '../../components/layout/footer/footer';
@@ -40,6 +40,7 @@ import { WalletInvoicesSection, Invoice } from './sections/wallet-invoices-secti
 })
 export class Wallet implements OnInit {
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly authService = inject(AuthService);
   private readonly userService = inject(UserService);
   private readonly invoiceService = inject(InvoiceService);
@@ -67,7 +68,14 @@ export class Wallet implements OnInit {
   /** Active payment processors */
   private paymentProcessors: PaymentProcessor[] = [];
 
+  /** Pre-fill amount from query params (insufficient balance flow) */
+  protected readonly prefillAmount = signal<string>('');
+
+  /** Return URL for back navigation (defaults to /dashboard) */
+  protected readonly returnUrl = signal<string>('/dashboard');
+
   ngOnInit(): void {
+    this.readQueryParams();
     this.loadWalletData();
     this.setupPaymentPolling();
   }
@@ -85,6 +93,23 @@ export class Wallet implements OnInit {
     ).subscribe(() => {
       this.checkProcessingInvoices();
     });
+  }
+
+  /**
+   * Read query params for pre-fill amount and return URL.
+   */
+  private readQueryParams(): void {
+    const params = this.route.snapshot.queryParamMap;
+
+    const amount = params.get('amount');
+    if (amount) {
+      this.prefillAmount.set(amount);
+    }
+
+    const returnUrl = params.get('returnUrl');
+    if (returnUrl) {
+      this.returnUrl.set(returnUrl);
+    }
   }
 
   /**
@@ -138,10 +163,10 @@ export class Wallet implements OnInit {
   }
 
   /**
-   * Navigate back to dashboard.
+   * Navigate back to the previous page (dynamic based on returnUrl query param).
    */
   protected onBackClick(): void {
-    this.router.navigate(['/dashboard']);
+    this.router.navigateByUrl(this.returnUrl());
   }
 
   /**
