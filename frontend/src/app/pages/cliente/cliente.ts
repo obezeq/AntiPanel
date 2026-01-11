@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { Breadcrumb } from '../../components/shared/breadcrumb/breadcrumb';
 import { DomEventsSection } from './sections/dom-events-section/dom-events-section';
 import { FormsSection } from './sections/forms-section/forms-section';
@@ -9,6 +10,7 @@ import { ServicesSection } from './sections/services-section/services-section';
   selector: 'app-cliente',
   standalone: true,
   imports: [
+    RouterLink,
     Breadcrumb,
     DomEventsSection,
     FormsSection,
