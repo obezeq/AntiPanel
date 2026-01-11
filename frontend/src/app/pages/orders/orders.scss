@@ -90,7 +90,7 @@
   padding-top: calc(var(--header-height) + var(--spacing-16));
   padding-bottom: var(--spacing-16);
   width: 100%;
-  max-width: 73.125rem; // 1170px (Figma exact)
+  max-width: 73rem; // 1168px - normalized to base-8
   margin: 0 auto;
 
   @include respond-to('md') {

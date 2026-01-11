@@ -13,7 +13,7 @@
   align-items: center;
   gap: var(--spacing-12);
   width: 100%;
-  max-width: 58.375rem; // Match invoices section
+  max-width: 58.5rem; // 936px - normalized to base-8
 
   @include respond-below('md') {
     // Fluid width: scales from 280px minimum to 85vw for optimal mobile reading

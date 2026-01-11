@@ -11,7 +11,7 @@
   @include flex-column;
   gap: var(--spacing-16);
   width: 100%;
-  max-width: 73.125rem; // 1170px from Figma
+  max-width: 73rem; // 1168px - normalized to base-8
   padding: var(--spacing-16);
   border: var(--border-width-medium) solid var(--color-information);
   border-radius: var(--radius-2xl);

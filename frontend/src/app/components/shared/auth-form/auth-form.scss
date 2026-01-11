@@ -96,7 +96,7 @@
   }
 
   @include respond-to('lg') {
-    max-width: 43.5625rem; // 697px según Figma
+    max-width: 43.5rem; // 696px - normalized to base-8
   }
 }
 

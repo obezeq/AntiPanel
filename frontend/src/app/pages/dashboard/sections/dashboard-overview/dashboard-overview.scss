@@ -140,8 +140,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 13.8125rem; // 221px as per Figma
-  height: 4.3385rem; // ~69px as per Figma
+  min-width: 14rem; // 224px - normalized to base-8
+  height: 4.25rem; // 68px - normalized to base-8
   padding: var(--spacing-3);
   background-color: var(--color-text);
   color: var(--color-background);
@@ -170,7 +170,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5625rem; // 9px as per Figma
+  gap: 0.5rem; // 8px - normalized to base-8
   font-family: var(--font-secondary);
   font-size: clamp(1rem, 1.5vw, 1.5rem); // 16px - 24px
   font-weight: var(--font-weight-semibold);

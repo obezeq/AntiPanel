@@ -21,7 +21,7 @@
   gap: var(--spacing-8);
   padding: var(--spacing-8) var(--spacing-4);
   width: 100%;
-  max-width: 58.375rem; // 934px from Figma
+  max-width: 58.5rem; // 936px - normalized to base-8
   margin: 0 auto;
 
   @include respond-to('md') {

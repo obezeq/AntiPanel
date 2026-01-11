@@ -12,7 +12,7 @@
   align-items: center;
   gap: var(--spacing-12);
   width: 100%;
-  max-width: 58.375rem; // 934px from Figma
+  max-width: 58.5rem; // 936px - normalized to base-8
 
   @include respond-below('md') {
     // Fluid width: scales from 280px minimum to 85vw for optimal mobile reading
@@ -223,6 +223,12 @@
   @include flex-center;
   width: 100%;
   padding: var(--spacing-8);
+
+  @include respond-below('md') {
+    padding: var(--spacing-6) var(--spacing-4);
+    background-color: var(--color-tiny-info);
+    border-radius: var(--radius-lg);
+  }
 }
 
 .wallet-invoices__empty-text {
@@ -232,6 +238,8 @@
   color: var(--color-foreground);
   text-align: center;
   margin: 0;
+  // Fluid typography for empty state
+  font-size: clamp(var(--font-size-small), 3.5vw, var(--font-size-body));
 }
 
 // ---------------------------------------------------------------------------

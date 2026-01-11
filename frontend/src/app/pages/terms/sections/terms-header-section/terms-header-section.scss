@@ -13,7 +13,7 @@
   gap: var(--spacing-6);
   text-align: center;
   width: 100%;
-  max-width: 73.375rem; // 1174px - matches home hero
+  max-width: 73.5rem; // 1176px - normalized to base-8
   padding: var(--spacing-8) var(--spacing-4);
 
   // ---------------------------------------------------------------------------
@@ -80,7 +80,7 @@
     z-index: 1;
     color: var(--color-foreground);
     margin: 0;
-    max-width: 43.625rem; // 698px from Figma
+    max-width: 43.5rem; // 696px - normalized to base-8
     line-height: var(--line-height-tight);
 
     @include respond-below('lg') {

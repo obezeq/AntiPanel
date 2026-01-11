@@ -127,7 +127,7 @@
   }
 
   @include respond-to('xl') {
-    inline-size: 4.4375rem; // 71px original
+    inline-size: 4.5rem; // 72px - normalized to base-8
   }
 }
 
@@ -400,7 +400,7 @@
   }
 
   @include respond-to('xl') {
-    min-inline-size: 9.375rem;
+    min-inline-size: 9.5rem; // 152px - normalized to base-8
     padding: var(--spacing-3) var(--spacing-6);
     font-size: var(--font-size-h5);
   }
