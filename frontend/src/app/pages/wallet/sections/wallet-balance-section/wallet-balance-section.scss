@@ -19,11 +19,13 @@
   }
 
   @include respond-below('md') {
+    // Fluid width: scales from 280px minimum to 85vw for optimal mobile reading
+    width: clamp(17.5rem, 85vw, 100%);
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
     gap: var(--spacing-4);
-    padding: 0 var(--spacing-2); // 8px - minimal padding for maximum width (base-8)
+    padding: 0 var(--spacing-2); // 8px - base-8 spacing
   }
 }
 
@@ -66,15 +68,12 @@
 
 .wallet-balance__back-icon {
   font-family: var(--font-secondary);
-  font-size: var(--font-size-h4);
+  // Fluid typography: scales smoothly from h5 (24px) to h4 (32px)
+  font-size: clamp(var(--font-size-h5), 3vw, var(--font-size-h4));
   font-weight: var(--font-weight-bold);
   color: var(--color-background);
   line-height: 1;
   letter-spacing: 0.075em;
-
-  @include respond-below('md') {
-    font-size: var(--font-size-h5);
-  }
 }
 
 // ---------------------------------------------------------------------------
@@ -84,16 +83,12 @@
 
 .wallet-balance__info {
   @include flex-center;
-  gap: var(--spacing-16);
+  // Fluid gap: scales smoothly based on viewport
+  gap: clamp(var(--spacing-4), 4vw, var(--spacing-16));
   margin: 0;
-
-  @include respond-below('lg') {
-    gap: var(--spacing-12);
-  }
 
   @include respond-below('md') {
     flex-direction: row;
-    gap: var(--spacing-4);
   }
 }
 
@@ -104,20 +99,13 @@
 
 .wallet-balance__label {
   font-family: var(--font-secondary);
-  font-size: var(--font-size-h2);
+  // Fluid typography: scales smoothly from h5 (24px) to h2 (64px) based on viewport
+  font-size: clamp(var(--font-size-h5), 5vw, var(--font-size-h2));
   font-weight: var(--font-weight-semibold);
   color: var(--color-text);
   line-height: 1.15;
   text-transform: uppercase;
   margin: 0;
-
-  @include respond-below('lg') {
-    font-size: var(--font-size-h3);
-  }
-
-  @include respond-below('md') {
-    font-size: var(--font-size-h5);
-  }
 }
 
 // ---------------------------------------------------------------------------
@@ -127,18 +115,11 @@
 
 .wallet-balance__amount {
   font-family: var(--font-secondary);
-  font-size: var(--font-size-h2);
+  // Fluid typography: scales smoothly from h5 (24px) to h2 (64px) based on viewport
+  font-size: clamp(var(--font-size-h5), 5vw, var(--font-size-h2));
   font-weight: var(--font-weight-regular);
   color: var(--color-text);
   line-height: 1.15;
-
-  @include respond-below('lg') {
-    font-size: var(--font-size-h3);
-  }
-
-  @include respond-below('md') {
-    font-size: var(--font-size-h5);
-  }
 }
 
 // ---------------------------------------------------------------------------

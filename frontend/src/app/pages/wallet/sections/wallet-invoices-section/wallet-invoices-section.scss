@@ -15,9 +15,11 @@
   max-width: 58.375rem; // 934px from Figma
 
   @include respond-below('md') {
+    // Fluid width: scales from 280px minimum to 85vw for optimal mobile reading
+    width: clamp(17.5rem, 85vw, 100%);
+    max-width: 100%;
     gap: var(--spacing-6);
-    max-width: 100%; // Full width on mobile
-    padding: 0 var(--spacing-2); // 8px - minimal padding for maximum width (base-8)
+    padding: 0 var(--spacing-2); // 8px - base-8 spacing
   }
 }
 
@@ -28,21 +30,14 @@
 
 .wallet-invoices__title {
   font-family: var(--font-primary);
-  font-size: var(--font-size-h1);
+  // Fluid typography: scales smoothly from h4 (32px) to h1 (96px) based on viewport
+  font-size: clamp(var(--font-size-h4), 8vw, var(--font-size-h1));
   font-weight: var(--font-weight-bold);
   color: var(--color-text);
   line-height: 1.15;
   text-align: center;
   text-transform: uppercase;
   margin: 0;
-
-  @include respond-below('lg') {
-    font-size: var(--font-size-h2);
-  }
-
-  @include respond-below('md') {
-    font-size: var(--font-size-h4);
-  }
 }
 
 // ---------------------------------------------------------------------------
@@ -110,12 +105,14 @@
 .wallet-invoices__status {
   @include flex-center;
   width: 100%; // Fill grid cell - grid controls width
-  height: 2.5rem;
+  // Fluid height: scales from 2rem to 2.5rem
+  height: clamp(2rem, 5vw, 2.5rem);
   padding: var(--spacing-1) var(--spacing-3);
   border-radius: var(--radius-md);
   border: var(--border-width-medium) solid;
   font-family: var(--font-secondary);
-  font-size: var(--font-size-h5);
+  // Fluid typography: scales from caption (14px) to h5 (24px)
+  font-size: clamp(var(--font-size-caption), 2.5vw, var(--font-size-h5));
   font-weight: var(--font-weight-semibold);
   line-height: 1.15;
   text-align: center;
@@ -124,16 +121,10 @@
   overflow: hidden;
   text-overflow: ellipsis;
 
-  @include respond-below('lg') {
-    font-size: var(--font-size-h6);
-    height: 2.25rem;
-  }
-
   @include respond-below('md') {
     padding: var(--spacing-2);
-    font-size: var(--font-size-caption); // Increased from small for readability
-    min-height: 2.5rem;
     height: auto;
+    min-height: 2rem;
   }
 
   // PENDING - Yellow
@@ -188,21 +179,14 @@
 .wallet-invoices__amount,
 .wallet-invoices__date {
   font-family: var(--font-secondary);
-  font-size: var(--font-size-h5);
+  // Fluid typography: scales from small (12px) to h5 (24px)
+  font-size: clamp(var(--font-size-small), 2vw, var(--font-size-h5));
   font-weight: var(--font-weight-medium);
   color: var(--color-text);
   line-height: 1;
   text-transform: uppercase;
   letter-spacing: 0.075em;
   white-space: nowrap;
-
-  @include respond-below('lg') {
-    font-size: var(--font-size-h6);
-  }
-
-  @include respond-below('md') {
-    font-size: var(--font-size-small);
-  }
 }
 
 // Mobile: Position data fields in 3-row stacked layout

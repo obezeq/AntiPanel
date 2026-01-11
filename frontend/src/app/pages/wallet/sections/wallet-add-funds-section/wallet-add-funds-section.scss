@@ -16,9 +16,11 @@
   max-width: 58.375rem; // Match invoices section
 
   @include respond-below('md') {
+    // Fluid width: scales from 280px minimum to 85vw for optimal mobile reading
+    width: clamp(17.5rem, 85vw, 100%);
+    max-width: 100%;
     gap: var(--spacing-6);
-    max-width: 100%; // Full width on mobile
-    padding: 0 var(--spacing-2); // 8px - minimal padding for maximum width (base-8)
+    padding: 0 var(--spacing-2); // 8px - base-8 spacing
   }
 }
 
@@ -29,21 +31,14 @@
 
 .wallet-add-funds__title {
   font-family: var(--font-primary);
-  font-size: var(--font-size-h1);
+  // Fluid typography: scales smoothly from h4 (32px) to h1 (96px) based on viewport
+  font-size: clamp(var(--font-size-h4), 8vw, var(--font-size-h1));
   font-weight: var(--font-weight-bold);
   color: var(--color-text);
   line-height: 1.15;
   text-align: center;
   text-transform: uppercase;
   margin: 0;
-
-  @include respond-below('lg') {
-    font-size: var(--font-size-h2);
-  }
-
-  @include respond-below('md') {
-    font-size: var(--font-size-h4);
-  }
 }
 
 // ---------------------------------------------------------------------------
@@ -99,7 +94,8 @@
   border: var(--border-width-medium) solid var(--color-secondary);
   border-radius: var(--radius-lg);
   font-family: var(--font-primary);
-  font-size: var(--font-size-h5);
+  // Fluid typography: scales from body (16px) to h5 (24px)
+  font-size: clamp(var(--font-size-body), 2.5vw, var(--font-size-h5));
   font-weight: var(--font-weight-semibold);
   color: var(--color-text);
   text-transform: uppercase;
@@ -120,8 +116,6 @@
   @include respond-below('md') {
     width: 100%;
     justify-content: center;
-    height: var(--spacing-12);
-    font-size: var(--font-size-body);
   }
 }
 
@@ -134,11 +128,11 @@
   max-width: 21.25rem; // 340px from Figma
   height: var(--spacing-12);
   padding: var(--spacing-2) var(--spacing-6);
-  // background-color: var(--color-information);
   border: var(--border-width-medium) solid var(--color-foreground);
   border-radius: var(--radius-lg);
   font-family: var(--font-secondary);
-  font-size: var(--font-size-h5);
+  // Fluid typography: scales from body (16px) to h5 (24px)
+  font-size: clamp(var(--font-size-body), 2.5vw, var(--font-size-h5));
   font-weight: var(--font-weight-medium);
   color: var(--color-foreground);
   text-transform: uppercase;
@@ -149,7 +143,6 @@
     max-width: 100%;
     width: 100%;
     height: var(--spacing-12);
-    font-size: var(--font-size-body);
   }
 
   &::placeholder {
