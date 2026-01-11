@@ -15,11 +15,11 @@
 INSERT INTO categories (name, slug, icon_url, sort_order, is_active) VALUES
 ('Instagram', 'instagram', 'https://cdn.antipanel.com/icons/instagram.svg', 1, TRUE),
 ('TikTok', 'tiktok', 'https://cdn.antipanel.com/icons/tiktok.svg', 2, TRUE),
-('YouTube', 'youtube', 'https://cdn.antipanel.com/icons/youtube.svg', 3, TRUE),
+('YouTube', 'youtube', 'https://cdn.antipanel.com/icons/youtube.svg', 3, FALSE),
 ('Twitter', 'twitter', 'https://cdn.antipanel.com/icons/twitter.svg', 4, TRUE),
-('Facebook', 'facebook', 'https://cdn.antipanel.com/icons/facebook.svg', 5, TRUE),
+('Facebook', 'facebook', 'https://cdn.antipanel.com/icons/facebook.svg', 5, FALSE),
 ('LinkedIn', 'linkedin', 'https://cdn.antipanel.com/icons/linkedin.svg', 6, TRUE),
-('Spotify', 'spotify', 'https://cdn.antipanel.com/icons/spotify.svg', 7, TRUE),
+('Spotify', 'spotify', 'https://cdn.antipanel.com/icons/spotify.svg', 7, FALSE),
 ('Twitch', 'twitch', 'https://cdn.antipanel.com/icons/twitch.svg', 8, FALSE);
 
 -- ============================================================================
@@ -75,7 +75,9 @@ INSERT INTO service_types (category_id, name, slug, sort_order, is_active) VALUE
 (6, 'Followers', 'followers', 1, TRUE),
 (6, 'Connections', 'connections', 2, TRUE),
 (6, 'Post Likes', 'post-likes', 3, TRUE),
-(6, 'Comments', 'comments', 4, TRUE);
+(6, 'Comments', 'comments', 4, TRUE),
+(6, 'Company Followers', 'company-followers', 5, TRUE),
+(6, 'Reposts', 'reposts', 6, TRUE);
 
 -- Spotify (category_id = 7)
 INSERT INTO service_types (category_id, name, slug, sort_order, is_active) VALUES
@@ -85,137 +87,95 @@ INSERT INTO service_types (category_id, name, slug, sort_order, is_active) VALUE
 (7, 'Playlist Followers', 'playlist-followers', 4, TRUE);
 
 -- ============================================================================
--- 3. PROVEEDORES
+-- 3. PROVEEDORES (DripFeedPanel)
 -- ============================================================================
 
-INSERT INTO providers (name, website, api_url, api_key, is_active, balance) VALUES
-('SMMKings', 'https://smmkings.com', 'https://smmkings.com/api/v2', 'sk_live_abc123def456', TRUE, 500.0000),
-('PerfectPanel', 'https://perfectpanel.com', 'https://perfectpanel.com/api/v1', 'pp_key_xyz789', TRUE, 250.0000),
-('SocialBoost', 'https://socialboost.io', 'https://api.socialboost.io/v3', 'sb_prod_key_111', TRUE, 1000.0000),
-('FastSMM', 'https://fastsmm.net', 'https://fastsmm.net/api', 'fs_apikey_222', TRUE, 150.0000),
-('PromoSMM', 'https://promosmm.com', 'https://promosmm.com/api/v2', 'promo_333_key', FALSE, 0.0000);
+INSERT INTO providers (id, name, website, api_url, api_key, is_active, balance) VALUES
+(1, 'DripFeedPanel', 'https://dripfeedpanel.com', 'https://dripfeedpanel.com/api/v2', NULL, TRUE, 0.0000);
 
 -- ============================================================================
--- 4. SERVICIOS DEL PROVEEDOR (provider_services)
+-- 4. SERVICIOS DEL PROVEEDOR (DripFeedPanel - IDs reales)
 -- ============================================================================
 
--- SMMKings (provider_id = 1) - Instagram
 INSERT INTO provider_services (provider_id, provider_service_id, name, min_quantity, max_quantity, cost_per_k, refill_days, is_active) VALUES
-(1, '1001', 'Instagram Followers - HQ Real', 100, 100000, 0.4500, 30, TRUE),
-(1, '1002', 'Instagram Followers - Premium', 50, 50000, 0.9000, 90, TRUE),
-(1, '1003', 'Instagram Followers - Bot/Cheap', 500, 500000, 0.1500, 0, TRUE),
-(1, '1010', 'Instagram Likes - Real', 50, 50000, 0.2500, 0, TRUE),
-(1, '1011', 'Instagram Likes - Premium HQ', 20, 20000, 0.5000, 30, TRUE),
-(1, '1020', 'Instagram Comments - Custom', 10, 5000, 2.5000, 0, TRUE),
-(1, '1021', 'Instagram Comments - Random', 10, 10000, 1.2000, 0, TRUE),
-(1, '1030', 'Instagram Views - Fast', 100, 10000000, 0.0500, 0, TRUE),
-(1, '1031', 'Instagram Reels Views', 100, 5000000, 0.0800, 0, TRUE);
-
--- SMMKings (provider_id = 1) - TikTok
-INSERT INTO provider_services (provider_id, provider_service_id, name, min_quantity, max_quantity, cost_per_k, refill_days, is_active) VALUES
-(1, '2001', 'TikTok Followers - Real', 100, 100000, 0.5500, 30, TRUE),
-(1, '2002', 'TikTok Followers - Premium', 50, 50000, 1.2000, 60, TRUE),
-(1, '2010', 'TikTok Likes - Fast', 50, 100000, 0.2000, 0, TRUE),
-(1, '2020', 'TikTok Views - Instant', 500, 50000000, 0.0200, 0, TRUE),
-(1, '2021', 'TikTok Views - Retention', 500, 10000000, 0.0500, 0, TRUE);
-
--- PerfectPanel (provider_id = 2) - YouTube
-INSERT INTO provider_services (provider_id, provider_service_id, name, min_quantity, max_quantity, cost_per_k, refill_days, is_active) VALUES
-(2, '3001', 'YouTube Subscribers - Real', 100, 50000, 2.0000, 30, TRUE),
-(2, '3002', 'YouTube Subscribers - Premium', 50, 10000, 5.0000, 90, TRUE),
-(2, '3010', 'YouTube Views - Fast', 500, 1000000, 0.8000, 0, TRUE),
-(2, '3011', 'YouTube Views - High Retention', 100, 100000, 2.5000, 0, TRUE),
-(2, '3020', 'YouTube Likes - Real', 50, 50000, 1.0000, 0, TRUE),
-(2, '3030', 'YouTube Comments - Custom', 10, 5000, 8.0000, 0, TRUE);
-
--- SocialBoost (provider_id = 3) - Twitter
-INSERT INTO provider_services (provider_id, provider_service_id, name, min_quantity, max_quantity, cost_per_k, refill_days, is_active) VALUES
-(3, '4001', 'Twitter Followers - HQ', 100, 100000, 0.6000, 30, TRUE),
-(3, '4010', 'Twitter Likes - Fast', 50, 50000, 0.3000, 0, TRUE),
-(3, '4020', 'Twitter Retweets', 50, 50000, 0.4000, 0, TRUE),
-(3, '4030', 'Twitter Views', 500, 10000000, 0.0100, 0, TRUE);
-
--- SocialBoost (provider_id = 3) - Facebook
-INSERT INTO provider_services (provider_id, provider_service_id, name, min_quantity, max_quantity, cost_per_k, refill_days, is_active) VALUES
-(3, '5001', 'Facebook Page Likes', 100, 100000, 0.8000, 30, TRUE),
-(3, '5010', 'Facebook Post Likes', 50, 50000, 0.2500, 0, TRUE),
-(3, '5020', 'Facebook Video Views', 500, 10000000, 0.0300, 0, TRUE);
-
--- FastSMM (provider_id = 4) - LinkedIn & Spotify
-INSERT INTO provider_services (provider_id, provider_service_id, name, min_quantity, max_quantity, cost_per_k, refill_days, is_active) VALUES
-(4, '6001', 'LinkedIn Followers - Real', 100, 50000, 3.0000, 30, TRUE),
-(4, '6010', 'LinkedIn Post Likes', 20, 10000, 1.5000, 0, TRUE),
-(4, '7001', 'Spotify Followers', 100, 100000, 1.0000, 30, TRUE),
-(4, '7010', 'Spotify Plays', 1000, 10000000, 0.5000, 0, TRUE),
-(4, '7020', 'Spotify Monthly Listeners', 1000, 1000000, 2.0000, 0, TRUE);
+-- Instagram
+(1, '13311', 'Instagram Followers', 10, 100000, 1.0000, 30, TRUE),
+(1, '15856', 'Instagram Likes', 10, 50000, 0.3100, 0, TRUE),
+-- TikTok
+(1, '16132', 'TikTok Followers', 10, 100000, 1.6900, 30, TRUE),
+(1, '7169', 'TikTok Likes', 10, 50000, 0.1760, 0, TRUE),
+(1, '8228', 'TikTok Views', 100, 1000000, 0.0200, 0, TRUE),
+-- Twitter
+(1, '11811', 'Twitter Followers', 10, 50000, 12.5000, 30, TRUE),
+(1, '3662', 'Twitter Likes', 10, 50000, 4.2200, 0, TRUE),
+-- LinkedIn
+(1, '16136', 'LinkedIn Profile Followers', 10, 10000, 16.2500, 30, TRUE),
+(1, '16137', 'LinkedIn Company Followers', 10, 10000, 16.2500, 30, TRUE),
+(1, '16142', 'LinkedIn Connections', 10, 5000, 18.7500, 30, TRUE),
+(1, '16141', 'LinkedIn Reposts', 10, 10000, 11.2500, 0, TRUE);
 
 -- ============================================================================
--- 5. SERVICIOS PÚBLICOS (services) - Lo que ve el usuario
+-- 5. SERVICIOS PÚBLICOS (11 servicios DripFeedPanel)
 -- ============================================================================
 
--- Instagram Followers
-INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order) VALUES
-(1, 1, 1, 'Instagram Followers - HQ', 'Seguidores de alta calidad con fotos de perfil reales. Ideal para cuentas personales y pequeños negocios.', 'HIGH', 'MEDIUM', 100, 100000, 0.99, 30, '1-24 hours', TRUE, 1),
-(1, 1, 2, 'Instagram Followers - Premium', 'Seguidores premium con perfiles completos, fotos y publicaciones. Máxima calidad disponible.', 'PREMIUM', 'SLOW', 50, 50000, 1.99, 90, '24-72 hours', TRUE, 2),
-(1, 1, 3, 'Instagram Followers - Starter', 'Seguidores económicos para empezar. Sin garantía de refill.', 'LOW', 'FAST', 500, 500000, 0.35, 0, '0-6 hours', TRUE, 3);
+-- Instagram Services
+INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, price_per_k, quality, speed, min_quantity, max_quantity, refill_days, is_active, sort_order)
+SELECT c.id, st.id, ps.id, 'Instagram Followers', 'High quality Instagram followers with 30 days refill guarantee', 1.9900, 'HIGH', 'MEDIUM', 10, 100000, 30, TRUE, 1
+FROM categories c, service_types st, provider_services ps
+WHERE c.slug = 'instagram' AND st.slug = 'followers' AND st.category_id = c.id AND ps.provider_service_id = '13311';
 
--- Instagram Likes
-INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order) VALUES
-(1, 2, 4, 'Instagram Likes - Real', 'Likes de cuentas reales. Entrega rápida y estable.', 'HIGH', 'FAST', 50, 50000, 0.55, 0, '0-1 hours', TRUE, 1),
-(1, 2, 5, 'Instagram Likes - Premium', 'Likes de cuentas premium con engagement real. Incluye garantía.', 'PREMIUM', 'MEDIUM', 20, 20000, 1.10, 30, '1-12 hours', TRUE, 2);
-
--- Instagram Comments
-INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order) VALUES
-(1, 3, 6, 'Instagram Comments - Custom', 'Comentarios personalizados. Puedes elegir los textos que quieras.', 'PREMIUM', 'SLOW', 10, 5000, 5.50, 0, '1-24 hours', TRUE, 1),
-(1, 3, 7, 'Instagram Comments - Random', 'Comentarios aleatorios positivos (emojis, felicitaciones, etc.).', 'MEDIUM', 'MEDIUM', 10, 10000, 2.65, 0, '0-6 hours', TRUE, 2);
-
--- Instagram Views
-INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order) VALUES
-(1, 4, 8, 'Instagram Views - Fast', 'Views rápidas para posts y videos. Entrega inmediata.', 'MEDIUM', 'INSTANT', 100, 10000000, 0.12, 0, '0-30 minutes', TRUE, 1);
-
--- Instagram Reels Views
-INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order) VALUES
-(1, 5, 9, 'Instagram Reels Views', 'Views para Reels. Ayuda a impulsar el algoritmo.', 'HIGH', 'FAST', 100, 5000000, 0.18, 0, '0-1 hours', TRUE, 1);
+INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, price_per_k, quality, speed, min_quantity, max_quantity, refill_days, is_active, sort_order)
+SELECT c.id, st.id, ps.id, 'Instagram Likes', 'Fast Instagram likes for posts and reels', 0.4900, 'HIGH', 'FAST', 10, 50000, 0, TRUE, 2
+FROM categories c, service_types st, provider_services ps
+WHERE c.slug = 'instagram' AND st.slug = 'likes' AND st.category_id = c.id AND ps.provider_service_id = '15856';
 
 -- TikTok Services
-INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order) VALUES
-(2, 8, 10, 'TikTok Followers - Real', 'Seguidores reales de TikTok con fotos de perfil.', 'HIGH', 'MEDIUM', 100, 100000, 1.20, 30, '1-24 hours', TRUE, 1),
-(2, 8, 11, 'TikTok Followers - Premium', 'Seguidores premium con videos propios y engagement activo.', 'PREMIUM', 'SLOW', 50, 50000, 2.50, 60, '24-72 hours', TRUE, 2),
-(2, 9, 12, 'TikTok Likes - Fast', 'Likes rápidos para tus videos de TikTok.', 'HIGH', 'INSTANT', 50, 100000, 0.45, 0, '0-30 minutes', TRUE, 1),
-(2, 10, 13, 'TikTok Views - Instant', 'Views instantáneas. Empieza a recibir en segundos.', 'MEDIUM', 'INSTANT', 500, 50000000, 0.05, 0, '0-5 minutes', TRUE, 1),
-(2, 10, 14, 'TikTok Views - High Retention', 'Views con alta retención. Mejor para el algoritmo.', 'HIGH', 'FAST', 500, 10000000, 0.12, 0, '0-1 hours', TRUE, 2);
+INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, price_per_k, quality, speed, min_quantity, max_quantity, refill_days, is_active, sort_order)
+SELECT c.id, st.id, ps.id, 'TikTok Followers', 'Real TikTok followers with 30 days refill guarantee', 2.9900, 'HIGH', 'MEDIUM', 10, 100000, 30, TRUE, 1
+FROM categories c, service_types st, provider_services ps
+WHERE c.slug = 'tiktok' AND st.slug = 'followers' AND st.category_id = c.id AND ps.provider_service_id = '16132';
 
--- YouTube Services
-INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order) VALUES
-(3, 14, 15, 'YouTube Subscribers - Real', 'Suscriptores reales con canales activos.', 'HIGH', 'MEDIUM', 100, 50000, 4.50, 30, '1-48 hours', TRUE, 1),
-(3, 14, 16, 'YouTube Subscribers - Premium', 'Suscriptores premium con historial de actividad.', 'PREMIUM', 'SLOW', 50, 10000, 11.00, 90, '48-96 hours', TRUE, 2),
-(3, 15, 17, 'YouTube Views - Fast', 'Views rápidas para tu video.', 'MEDIUM', 'FAST', 500, 1000000, 1.80, 0, '0-12 hours', TRUE, 1),
-(3, 15, 18, 'YouTube Views - High Retention', 'Views con alta retención (60-80%). Mejor para monetización.', 'PREMIUM', 'MEDIUM', 100, 100000, 5.50, 0, '1-24 hours', TRUE, 2),
-(3, 16, 19, 'YouTube Likes - Real', 'Likes de cuentas reales de YouTube.', 'HIGH', 'MEDIUM', 50, 50000, 2.20, 0, '0-12 hours', TRUE, 1);
+INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, price_per_k, quality, speed, min_quantity, max_quantity, refill_days, is_active, sort_order)
+SELECT c.id, st.id, ps.id, 'TikTok Likes', 'Fast TikTok likes for videos', 0.3300, 'HIGH', 'FAST', 10, 50000, 0, TRUE, 2
+FROM categories c, service_types st, provider_services ps
+WHERE c.slug = 'tiktok' AND st.slug = 'likes' AND st.category_id = c.id AND ps.provider_service_id = '7169';
+
+INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, price_per_k, quality, speed, min_quantity, max_quantity, refill_days, is_active, sort_order)
+SELECT c.id, st.id, ps.id, 'TikTok Views', 'High retention TikTok views', 0.0500, 'HIGH', 'INSTANT', 100, 1000000, 0, TRUE, 3
+FROM categories c, service_types st, provider_services ps
+WHERE c.slug = 'tiktok' AND st.slug = 'views' AND st.category_id = c.id AND ps.provider_service_id = '8228';
 
 -- Twitter Services
-INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order) VALUES
-(4, 21, 21, 'Twitter Followers - HQ', 'Seguidores de alta calidad con avatares y tweets.', 'HIGH', 'MEDIUM', 100, 100000, 1.30, 30, '1-24 hours', TRUE, 1),
-(4, 22, 22, 'Twitter Likes - Fast', 'Likes rápidos para tus tweets.', 'HIGH', 'INSTANT', 50, 50000, 0.65, 0, '0-30 minutes', TRUE, 1),
-(4, 23, 23, 'Twitter Retweets', 'Retweets de cuentas reales.', 'HIGH', 'FAST', 50, 50000, 0.85, 0, '0-2 hours', TRUE, 1),
-(4, 25, 24, 'Twitter Views', 'Views para tus tweets y videos.', 'MEDIUM', 'INSTANT', 500, 10000000, 0.03, 0, '0-15 minutes', TRUE, 1);
+INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, price_per_k, quality, speed, min_quantity, max_quantity, refill_days, is_active, sort_order)
+SELECT c.id, st.id, ps.id, 'Twitter Followers', 'Premium Twitter/X followers with 30 days refill', 15.0000, 'PREMIUM', 'MEDIUM', 10, 50000, 30, TRUE, 1
+FROM categories c, service_types st, provider_services ps
+WHERE c.slug = 'twitter' AND st.slug = 'followers' AND st.category_id = c.id AND ps.provider_service_id = '11811';
 
--- Facebook Services
-INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order) VALUES
-(5, 26, 25, 'Facebook Page Likes', 'Likes para tu página de Facebook.', 'HIGH', 'MEDIUM', 100, 100000, 1.75, 30, '1-24 hours', TRUE, 1),
-(5, 28, 26, 'Facebook Post Likes', 'Likes para tus publicaciones.', 'HIGH', 'FAST', 50, 50000, 0.55, 0, '0-2 hours', TRUE, 1),
-(5, 30, 27, 'Facebook Video Views', 'Views para tus videos de Facebook.', 'MEDIUM', 'INSTANT', 500, 10000000, 0.08, 0, '0-1 hours', TRUE, 1);
+INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, price_per_k, quality, speed, min_quantity, max_quantity, refill_days, is_active, sort_order)
+SELECT c.id, st.id, ps.id, 'Twitter Likes', 'Fast Twitter/X likes for tweets', 4.9900, 'HIGH', 'FAST', 10, 50000, 0, TRUE, 2
+FROM categories c, service_types st, provider_services ps
+WHERE c.slug = 'twitter' AND st.slug = 'likes' AND st.category_id = c.id AND ps.provider_service_id = '3662';
 
 -- LinkedIn Services
-INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order) VALUES
-(6, 31, 28, 'LinkedIn Followers - Real', 'Seguidores profesionales reales para tu perfil o página.', 'PREMIUM', 'SLOW', 100, 50000, 6.50, 30, '24-72 hours', TRUE, 1),
-(6, 33, 29, 'LinkedIn Post Likes', 'Likes profesionales para tus publicaciones.', 'HIGH', 'MEDIUM', 20, 10000, 3.25, 0, '1-12 hours', TRUE, 1);
+INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, price_per_k, quality, speed, min_quantity, max_quantity, refill_days, is_active, sort_order)
+SELECT c.id, st.id, ps.id, 'LinkedIn Profile Followers', 'Professional LinkedIn profile followers', 19.9900, 'PREMIUM', 'SLOW', 10, 10000, 30, TRUE, 1
+FROM categories c, service_types st, provider_services ps
+WHERE c.slug = 'linkedin' AND st.slug = 'followers' AND st.category_id = c.id AND ps.provider_service_id = '16136';
 
--- Spotify Services
-INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order) VALUES
-(7, 35, 30, 'Spotify Followers', 'Seguidores para tu perfil de artista o playlist.', 'HIGH', 'MEDIUM', 100, 100000, 2.20, 30, '1-24 hours', TRUE, 1),
-(7, 36, 31, 'Spotify Plays', 'Reproducciones para tus canciones.', 'HIGH', 'FAST', 1000, 10000000, 1.10, 0, '0-12 hours', TRUE, 1),
-(7, 37, 32, 'Spotify Monthly Listeners', 'Oyentes mensuales para tu perfil de artista.', 'PREMIUM', 'SLOW', 1000, 1000000, 4.40, 0, '24-72 hours', TRUE, 2);
+INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, price_per_k, quality, speed, min_quantity, max_quantity, refill_days, is_active, sort_order)
+SELECT c.id, st.id, ps.id, 'LinkedIn Company Followers', 'Boost your company page with followers', 19.9900, 'PREMIUM', 'SLOW', 10, 10000, 30, TRUE, 2
+FROM categories c, service_types st, provider_services ps
+WHERE c.slug = 'linkedin' AND st.slug = 'company-followers' AND st.category_id = c.id AND ps.provider_service_id = '16137';
+
+INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, price_per_k, quality, speed, min_quantity, max_quantity, refill_days, is_active, sort_order)
+SELECT c.id, st.id, ps.id, 'LinkedIn Connections', 'Expand your professional network', 25.0000, 'PREMIUM', 'SLOW', 10, 5000, 30, TRUE, 3
+FROM categories c, service_types st, provider_services ps
+WHERE c.slug = 'linkedin' AND st.slug = 'connections' AND st.category_id = c.id AND ps.provider_service_id = '16142';
+
+INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, price_per_k, quality, speed, min_quantity, max_quantity, refill_days, is_active, sort_order)
+SELECT c.id, st.id, ps.id, 'LinkedIn Reposts', 'Increase reach with post reposts', 15.0000, 'HIGH', 'MEDIUM', 10, 10000, 0, TRUE, 4
+FROM categories c, service_types st, provider_services ps
+WHERE c.slug = 'linkedin' AND st.slug = 'reposts' AND st.category_id = c.id AND ps.provider_service_id = '16141';
 
 -- ============================================================================
 -- 6. PROCESADORES DE PAGO
@@ -292,96 +252,112 @@ INSERT INTO transactions (user_id, type, amount, balance_before, balance_after, 
 (7, 'DEPOSIT', 96.8000, 0.0000, 96.8000, 'invoice', 8, 'Depósito vía PayPal', NOW() - INTERVAL '1 day');
 
 -- ============================================================================
--- 10. ÓRDENES
+-- 10. ÓRDENES (usando servicios DripFeedPanel)
 -- ============================================================================
+-- Nota: service_id referencias son dinámicas. Las órdenes de ejemplo usan
+-- service_name como descripción y provider_service_id referencia a provider_services.
 
--- Órdenes de Marcos (user_id = 3) - El buscador de validación social
-INSERT INTO orders (user_id, service_id, service_name, provider_service_id, provider_order_id, target, quantity, start_count, remains, status, price_per_k, cost_per_k, total_charge, total_cost, profit, is_refillable, refill_days, refill_deadline, created_at, completed_at) VALUES
-(3, 1, 'Instagram Followers - HQ', 1, 'SMM-10001', 'https://instagram.com/marcos_garcia', 1000, 369, 0, 'COMPLETED', 0.99, 0.45, 0.9900, 0.4500, 0.5400, TRUE, 30, NOW() + INTERVAL '23 days', NOW() - INTERVAL '7 days', NOW() - INTERVAL '6 days' + INTERVAL '18 hours'),
-(3, 4, 'Instagram Likes - Real', 4, 'SMM-10002', 'https://instagram.com/p/ABC123', 500, NULL, 0, 'COMPLETED', 0.55, 0.25, 0.2750, 0.1250, 0.1500, FALSE, 0, NULL, NOW() - INTERVAL '5 days', NOW() - INTERVAL '5 days' + INTERVAL '45 minutes'),
-(3, 4, 'Instagram Likes - Real', 4, 'SMM-10003', 'https://instagram.com/p/DEF456', 500, NULL, 0, 'COMPLETED', 0.55, 0.25, 0.2750, 0.1250, 0.1500, FALSE, 0, NULL, NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days' + INTERVAL '30 minutes'),
-(3, 9, 'Instagram Reels Views', 9, 'SMM-10004', 'https://instagram.com/reel/GHI789', 10000, NULL, 0, 'COMPLETED', 0.18, 0.08, 1.8000, 0.8000, 1.0000, FALSE, 0, NULL, NOW() - INTERVAL '2 days', NOW() - INTERVAL '2 days' + INTERVAL '2 hours');
+-- Órdenes de Marcos (user_id = 3) - Instagram
+INSERT INTO orders (user_id, service_id, service_name, provider_service_id, provider_order_id, target, quantity, start_count, remains, status, price_per_k, cost_per_k, total_charge, total_cost, profit, is_refillable, refill_days, refill_deadline, created_at, completed_at)
+SELECT 3, s.id, 'Instagram Followers', ps.id, 'DFP-10001', 'https://instagram.com/marcos_garcia', 1000, 369, 0, 'COMPLETED', 1.99, 1.00, 1.9900, 1.0000, 0.9900, TRUE, 30, NOW() + INTERVAL '23 days', NOW() - INTERVAL '7 days', NOW() - INTERVAL '6 days' + INTERVAL '18 hours'
+FROM services s JOIN provider_services ps ON s.provider_service_id = ps.id WHERE ps.provider_service_id = '13311';
 
--- Órdenes de Laura (user_id = 4) - La dueña de tienda
-INSERT INTO orders (user_id, service_id, service_name, provider_service_id, provider_order_id, target, quantity, start_count, remains, status, price_per_k, cost_per_k, total_charge, total_cost, profit, is_refillable, refill_days, refill_deadline, created_at, completed_at) VALUES
-(4, 2, 'Instagram Followers - Premium', 2, 'SMM-20001', 'https://instagram.com/laura_tienda', 10000, 11, 0, 'COMPLETED', 1.99, 0.90, 19.9000, 9.0000, 10.9000, TRUE, 90, NOW() + INTERVAL '76 days', NOW() - INTERVAL '14 days', NOW() - INTERVAL '12 days'),
-(4, 1, 'Instagram Followers - HQ', 1, 'SMM-20002', 'https://instagram.com/laura_tienda', 5000, 10011, 0, 'COMPLETED', 0.99, 0.45, 4.9500, 2.2500, 2.7000, TRUE, 30, NOW() + INTERVAL '16 days', NOW() - INTERVAL '14 days', NOW() - INTERVAL '13 days' + INTERVAL '20 hours'),
-(4, 5, 'Instagram Likes - Premium', 5, 'SMM-20003', 'https://instagram.com/p/TIENDA001', 1000, NULL, 0, 'COMPLETED', 1.10, 0.50, 1.1000, 0.5000, 0.6000, TRUE, 30, NOW() + INTERVAL '25 days', NOW() - INTERVAL '5 days', NOW() - INTERVAL '5 days' + INTERVAL '8 hours'),
-(4, 8, 'Instagram Views - Fast', 8, 'SMM-20004', 'https://instagram.com/p/TIENDA002', 50000, NULL, 0, 'COMPLETED', 0.12, 0.05, 6.0000, 2.5000, 3.5000, FALSE, 0, NULL, NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days' + INTERVAL '25 minutes');
+INSERT INTO orders (user_id, service_id, service_name, provider_service_id, provider_order_id, target, quantity, start_count, remains, status, price_per_k, cost_per_k, total_charge, total_cost, profit, is_refillable, refill_days, created_at, completed_at)
+SELECT 3, s.id, 'Instagram Likes', ps.id, 'DFP-10002', 'https://instagram.com/p/ABC123', 500, NULL, 0, 'COMPLETED', 0.49, 0.31, 0.2450, 0.1550, 0.0900, FALSE, 0, NOW() - INTERVAL '5 days', NOW() - INTERVAL '5 days' + INTERVAL '45 minutes'
+FROM services s JOIN provider_services ps ON s.provider_service_id = ps.id WHERE ps.provider_service_id = '15856';
 
--- Órdenes de Carlos (user_id = 5) - El influencer
-INSERT INTO orders (user_id, service_id, service_name, provider_service_id, provider_order_id, target, quantity, start_count, remains, status, price_per_k, cost_per_k, total_charge, total_cost, profit, is_refillable, refill_days, refill_deadline, created_at, completed_at) VALUES
-(5, 10, 'TikTok Followers - Real', 10, 'SMM-30001', 'https://tiktok.com/@carlos_influencer', 50000, 125000, 0, 'COMPLETED', 1.20, 0.55, 60.0000, 27.5000, 32.5000, TRUE, 30, NOW() + INTERVAL '20 days', NOW() - INTERVAL '10 days', NOW() - INTERVAL '9 days'),
-(5, 13, 'TikTok Views - Instant', 13, 'SMM-30002', 'https://tiktok.com/@carlos_influencer/video/123', 1000000, NULL, 0, 'COMPLETED', 0.05, 0.02, 50.0000, 20.0000, 30.0000, FALSE, 0, NULL, NOW() - INTERVAL '8 days', NOW() - INTERVAL '8 days' + INTERVAL '15 minutes'),
-(5, 12, 'TikTok Likes - Fast', 12, 'SMM-30003', 'https://tiktok.com/@carlos_influencer/video/123', 25000, NULL, 0, 'COMPLETED', 0.45, 0.20, 11.2500, 5.0000, 6.2500, FALSE, 0, NULL, NOW() - INTERVAL '8 days', NOW() - INTERVAL '8 days' + INTERVAL '20 minutes'),
-(5, 15, 'YouTube Subscribers - Real', 15, 'SMM-30004', 'https://youtube.com/@CarlosInfluencer', 5000, 45000, 1250, 'IN_PROGRESS', 4.50, 2.00, 22.5000, 10.0000, 12.5000, TRUE, 30, NOW() + INTERVAL '28 days', NOW() - INTERVAL '2 days', NULL),
-(5, 17, 'YouTube Views - Fast', 17, NULL, 'https://youtube.com/watch?v=ABC123XYZ', 100000, NULL, 100000, 'PENDING', 1.80, 0.80, 180.0000, 80.0000, 100.0000, FALSE, 0, NULL, NOW() - INTERVAL '1 hour', NULL);
+-- Órdenes de Laura (user_id = 4) - TikTok
+INSERT INTO orders (user_id, service_id, service_name, provider_service_id, provider_order_id, target, quantity, start_count, remains, status, price_per_k, cost_per_k, total_charge, total_cost, profit, is_refillable, refill_days, refill_deadline, created_at, completed_at)
+SELECT 4, s.id, 'TikTok Followers', ps.id, 'DFP-20001', 'https://tiktok.com/@laura_tienda', 5000, 1234, 0, 'COMPLETED', 2.99, 1.69, 14.9500, 8.4500, 6.5000, TRUE, 30, NOW() + INTERVAL '23 days', NOW() - INTERVAL '14 days', NOW() - INTERVAL '12 days'
+FROM services s JOIN provider_services ps ON s.provider_service_id = ps.id WHERE ps.provider_service_id = '16132';
 
--- Órdenes de María (user_id = 6) - La startup
-INSERT INTO orders (user_id, service_id, service_name, provider_service_id, provider_order_id, target, quantity, start_count, remains, status, price_per_k, cost_per_k, total_charge, total_cost, profit, is_refillable, refill_days, refill_deadline, created_at, completed_at) VALUES
-(6, 28, 'LinkedIn Followers - Real', 28, 'SMM-40001', 'https://linkedin.com/company/maria-startup', 1000, 50, 0, 'COMPLETED', 6.50, 3.00, 6.5000, 3.0000, 3.5000, TRUE, 30, NOW() + INTERVAL '10 days', NOW() - INTERVAL '20 days', NOW() - INTERVAL '18 days'),
-(6, 29, 'LinkedIn Post Likes', 29, 'SMM-40002', 'https://linkedin.com/posts/activity-123', 500, NULL, 0, 'COMPLETED', 3.25, 1.50, 1.6250, 0.7500, 0.8750, FALSE, 0, NULL, NOW() - INTERVAL '15 days', NOW() - INTERVAL '15 days' + INTERVAL '6 hours');
+INSERT INTO orders (user_id, service_id, service_name, provider_service_id, provider_order_id, target, quantity, start_count, remains, status, price_per_k, cost_per_k, total_charge, total_cost, profit, is_refillable, refill_days, created_at, completed_at)
+SELECT 4, s.id, 'TikTok Likes', ps.id, 'DFP-20002', 'https://tiktok.com/@laura_tienda/video/123', 2000, NULL, 0, 'COMPLETED', 0.33, 0.176, 0.6600, 0.3520, 0.3080, FALSE, 0, NOW() - INTERVAL '5 days', NOW() - INTERVAL '5 days' + INTERVAL '30 minutes'
+FROM services s JOIN provider_services ps ON s.provider_service_id = ps.id WHERE ps.provider_service_id = '7169';
+
+INSERT INTO orders (user_id, service_id, service_name, provider_service_id, provider_order_id, target, quantity, start_count, remains, status, price_per_k, cost_per_k, total_charge, total_cost, profit, is_refillable, refill_days, created_at, completed_at)
+SELECT 4, s.id, 'TikTok Views', ps.id, 'DFP-20003', 'https://tiktok.com/@laura_tienda/video/123', 100000, NULL, 0, 'COMPLETED', 0.05, 0.02, 5.0000, 2.0000, 3.0000, FALSE, 0, NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days' + INTERVAL '15 minutes'
+FROM services s JOIN provider_services ps ON s.provider_service_id = ps.id WHERE ps.provider_service_id = '8228';
+
+-- Órdenes de Carlos (user_id = 5) - Twitter
+INSERT INTO orders (user_id, service_id, service_name, provider_service_id, provider_order_id, target, quantity, start_count, remains, status, price_per_k, cost_per_k, total_charge, total_cost, profit, is_refillable, refill_days, refill_deadline, created_at, completed_at)
+SELECT 5, s.id, 'Twitter Followers', ps.id, 'DFP-30001', 'https://twitter.com/carlos_influencer', 1000, 50000, 0, 'COMPLETED', 15.00, 12.50, 15.0000, 12.5000, 2.5000, TRUE, 30, NOW() + INTERVAL '20 days', NOW() - INTERVAL '10 days', NOW() - INTERVAL '9 days'
+FROM services s JOIN provider_services ps ON s.provider_service_id = ps.id WHERE ps.provider_service_id = '11811';
+
+INSERT INTO orders (user_id, service_id, service_name, provider_service_id, provider_order_id, target, quantity, start_count, remains, status, price_per_k, cost_per_k, total_charge, total_cost, profit, is_refillable, refill_days, created_at, completed_at)
+SELECT 5, s.id, 'Twitter Likes', ps.id, 'DFP-30002', 'https://twitter.com/carlos_influencer/status/123', 500, NULL, 0, 'COMPLETED', 4.99, 4.22, 2.4950, 2.1100, 0.3850, FALSE, 0, NOW() - INTERVAL '8 days', NOW() - INTERVAL '8 days' + INTERVAL '20 minutes'
+FROM services s JOIN provider_services ps ON s.provider_service_id = ps.id WHERE ps.provider_service_id = '3662';
+
+-- Órdenes de María (user_id = 6) - LinkedIn
+INSERT INTO orders (user_id, service_id, service_name, provider_service_id, provider_order_id, target, quantity, start_count, remains, status, price_per_k, cost_per_k, total_charge, total_cost, profit, is_refillable, refill_days, refill_deadline, created_at, completed_at)
+SELECT 6, s.id, 'LinkedIn Profile Followers', ps.id, 'DFP-40001', 'https://linkedin.com/in/maria-startup', 500, 50, 0, 'COMPLETED', 19.99, 16.25, 9.9950, 8.1250, 1.8700, TRUE, 30, NOW() + INTERVAL '10 days', NOW() - INTERVAL '20 days', NOW() - INTERVAL '18 days'
+FROM services s JOIN provider_services ps ON s.provider_service_id = ps.id WHERE ps.provider_service_id = '16136';
+
+INSERT INTO orders (user_id, service_id, service_name, provider_service_id, provider_order_id, target, quantity, start_count, remains, status, price_per_k, cost_per_k, total_charge, total_cost, profit, is_refillable, refill_days, refill_deadline, created_at, completed_at)
+SELECT 6, s.id, 'LinkedIn Company Followers', ps.id, 'DFP-40002', 'https://linkedin.com/company/maria-startup', 200, 10, 0, 'COMPLETED', 19.99, 16.25, 3.9980, 3.2500, 0.7480, TRUE, 30, NOW() + INTERVAL '15 days', NOW() - INTERVAL '15 days', NOW() - INTERVAL '13 days'
+FROM services s JOIN provider_services ps ON s.provider_service_id = ps.id WHERE ps.provider_service_id = '16137';
+
+-- Orden en progreso
+INSERT INTO orders (user_id, service_id, service_name, provider_service_id, provider_order_id, target, quantity, start_count, remains, status, price_per_k, cost_per_k, total_charge, total_cost, profit, is_refillable, refill_days, refill_deadline, created_at, completed_at)
+SELECT 5, s.id, 'LinkedIn Connections', ps.id, 'DFP-30003', 'https://linkedin.com/in/carlos-influencer', 100, 500, 50, 'IN_PROGRESS', 25.00, 18.75, 2.5000, 1.8750, 0.6250, TRUE, 30, NOW() + INTERVAL '28 days', NOW() - INTERVAL '2 days', NULL
+FROM services s JOIN provider_services ps ON s.provider_service_id = ps.id WHERE ps.provider_service_id = '16142';
+
+-- Orden pendiente
+INSERT INTO orders (user_id, service_id, service_name, provider_service_id, provider_order_id, target, quantity, start_count, remains, status, price_per_k, cost_per_k, total_charge, total_cost, profit, is_refillable, refill_days, created_at, completed_at)
+SELECT 7, s.id, 'LinkedIn Reposts', ps.id, NULL, 'https://linkedin.com/posts/activity-456', 100, NULL, 100, 'PENDING', 15.00, 11.25, 1.5000, 1.1250, 0.3750, FALSE, 0, NOW() - INTERVAL '1 hour', NULL
+FROM services s JOIN provider_services ps ON s.provider_service_id = ps.id WHERE ps.provider_service_id = '16141';
 
 -- Orden cancelada
-INSERT INTO orders (user_id, service_id, service_name, provider_service_id, provider_order_id, target, quantity, remains, status, price_per_k, cost_per_k, total_charge, total_cost, profit, is_refillable, refill_days, created_at) VALUES
-(6, 1, 'Instagram Followers - HQ', 1, NULL, 'https://instagram.com/invalid_user_404', 1000, 1000, 'CANCELLED', 0.99, 0.45, 0.9900, 0.4500, 0.5400, TRUE, 30, NOW() - INTERVAL '10 days');
-
--- Orden reembolsada
-INSERT INTO orders (user_id, service_id, service_name, provider_service_id, provider_order_id, target, quantity, start_count, remains, status, price_per_k, cost_per_k, total_charge, total_cost, profit, is_refillable, refill_days, created_at, completed_at) VALUES
-(7, 3, 'Instagram Followers - Starter', 3, 'SMM-50001', 'https://instagram.com/test_account', 5000, 100, 3500, 'REFUNDED', 0.35, 0.15, 1.7500, 0.7500, 1.0000, FALSE, 0, NOW() - INTERVAL '5 days', NULL);
+INSERT INTO orders (user_id, service_id, service_name, provider_service_id, provider_order_id, target, quantity, remains, status, price_per_k, cost_per_k, total_charge, total_cost, profit, is_refillable, refill_days, created_at)
+SELECT 6, s.id, 'Instagram Followers', ps.id, NULL, 'https://instagram.com/invalid_user_404', 1000, 1000, 'CANCELLED', 1.99, 1.00, 1.9900, 1.0000, 0.9900, TRUE, 30, NOW() - INTERVAL '10 days'
+FROM services s JOIN provider_services ps ON s.provider_service_id = ps.id WHERE ps.provider_service_id = '13311';
 
 -- Orden parcialmente completada
-INSERT INTO orders (user_id, service_id, service_name, provider_service_id, provider_order_id, target, quantity, start_count, remains, status, price_per_k, cost_per_k, total_charge, total_cost, profit, is_refillable, refill_days, created_at, completed_at) VALUES
-(7, 4, 'Instagram Likes - Real', 4, 'SMM-50002', 'https://instagram.com/p/TEST123', 1000, NULL, 250, 'PARTIAL', 0.55, 0.25, 0.5500, 0.2500, 0.3000, FALSE, 0, NOW() - INTERVAL '3 days', NOW() - INTERVAL '2 days');
+INSERT INTO orders (user_id, service_id, service_name, provider_service_id, provider_order_id, target, quantity, start_count, remains, status, price_per_k, cost_per_k, total_charge, total_cost, profit, is_refillable, refill_days, created_at, completed_at)
+SELECT 7, s.id, 'Instagram Likes', ps.id, 'DFP-50001', 'https://instagram.com/p/TEST123', 1000, NULL, 250, 'PARTIAL', 0.49, 0.31, 0.4900, 0.3100, 0.1800, FALSE, 0, NOW() - INTERVAL '3 days', NOW() - INTERVAL '2 days'
+FROM services s JOIN provider_services ps ON s.provider_service_id = ps.id WHERE ps.provider_service_id = '15856';
 
 -- ============================================================================
 -- 11. TRANSACCIONES DE ÓRDENES
 -- ============================================================================
 
--- Cargos por órdenes (balance negativo)
+-- Cargos por órdenes (balance negativo) - usando IDs dinámicos
 INSERT INTO transactions (user_id, type, amount, balance_before, balance_after, reference_type, reference_id, description, created_at) VALUES
--- Marcos
-(3, 'ORDER', -0.9900, 48.2500, 47.2600, 'order', 1, 'Order #1 - Instagram Followers - HQ', NOW() - INTERVAL '7 days'),
-(3, 'ORDER', -0.2750, 72.2200, 71.9450, 'order', 2, 'Order #2 - Instagram Likes - Real', NOW() - INTERVAL '5 days'),
-(3, 'ORDER', -0.2750, 71.9450, 71.6700, 'order', 3, 'Order #3 - Instagram Likes - Real', NOW() - INTERVAL '3 days'),
-(3, 'ORDER', -1.8000, 71.6700, 69.8700, 'order', 4, 'Order #4 - Instagram Reels Views', NOW() - INTERVAL '2 days'),
--- Laura
-(4, 'ORDER', -19.9000, 195.8000, 175.9000, 'order', 5, 'Order #5 - Instagram Followers - Premium', NOW() - INTERVAL '14 days'),
-(4, 'ORDER', -4.9500, 175.9000, 170.9500, 'order', 6, 'Order #6 - Instagram Followers - HQ', NOW() - INTERVAL '14 days'),
-(4, 'ORDER', -1.1000, 170.9500, 169.8500, 'order', 7, 'Order #7 - Instagram Likes - Premium', NOW() - INTERVAL '5 days'),
-(4, 'ORDER', -6.0000, 169.8500, 163.8500, 'order', 8, 'Order #8 - Instagram Views - Fast', NOW() - INTERVAL '3 days'),
--- Carlos
-(5, 'ORDER', -60.0000, 679.1000, 619.1000, 'order', 9, 'Order #9 - TikTok Followers - Real', NOW() - INTERVAL '10 days'),
-(5, 'ORDER', -50.0000, 619.1000, 569.1000, 'order', 10, 'Order #10 - TikTok Views - Instant', NOW() - INTERVAL '8 days'),
-(5, 'ORDER', -11.2500, 569.1000, 557.8500, 'order', 11, 'Order #11 - TikTok Likes - Fast', NOW() - INTERVAL '8 days'),
-(5, 'ORDER', -22.5000, 557.8500, 535.3500, 'order', 12, 'Order #12 - YouTube Subscribers - Real', NOW() - INTERVAL '2 days'),
-(5, 'ORDER', -180.0000, 535.3500, 355.3500, 'order', 13, 'Order #13 - YouTube Views - Fast', NOW() - INTERVAL '1 hour'),
--- María
-(6, 'ORDER', -6.5000, 48.2500, 41.7500, 'order', 14, 'Order #14 - LinkedIn Followers - Real', NOW() - INTERVAL '20 days'),
-(6, 'ORDER', -1.6250, 41.7500, 40.1250, 'order', 15, 'Order #15 - LinkedIn Post Likes', NOW() - INTERVAL '15 days'),
-(6, 'ORDER', -0.9900, 40.1250, 39.1350, 'order', 16, 'Order #16 - Instagram Followers - HQ (Cancelled)', NOW() - INTERVAL '10 days'),
--- Test user
-(7, 'ORDER', -1.7500, 96.8000, 95.0500, 'order', 17, 'Order #17 - Instagram Followers - Starter', NOW() - INTERVAL '5 days'),
-(7, 'ORDER', -0.5500, 95.0500, 94.5000, 'order', 18, 'Order #18 - Instagram Likes - Real', NOW() - INTERVAL '3 days');
+-- Marcos (Instagram)
+(3, 'ORDER', -1.9900, 48.2500, 46.2600, 'order', 1, 'Instagram Followers', NOW() - INTERVAL '7 days'),
+(3, 'ORDER', -0.2450, 46.2600, 46.0150, 'order', 2, 'Instagram Likes', NOW() - INTERVAL '5 days'),
+-- Laura (TikTok)
+(4, 'ORDER', -14.9500, 195.8000, 180.8500, 'order', 3, 'TikTok Followers', NOW() - INTERVAL '14 days'),
+(4, 'ORDER', -0.6600, 180.8500, 180.1900, 'order', 4, 'TikTok Likes', NOW() - INTERVAL '5 days'),
+(4, 'ORDER', -5.0000, 180.1900, 175.1900, 'order', 5, 'TikTok Views', NOW() - INTERVAL '3 days'),
+-- Carlos (Twitter & LinkedIn)
+(5, 'ORDER', -15.0000, 679.1000, 664.1000, 'order', 6, 'Twitter Followers', NOW() - INTERVAL '10 days'),
+(5, 'ORDER', -2.4950, 664.1000, 661.6050, 'order', 7, 'Twitter Likes', NOW() - INTERVAL '8 days'),
+(5, 'ORDER', -2.5000, 661.6050, 659.1050, 'order', 9, 'LinkedIn Connections', NOW() - INTERVAL '2 days'),
+-- María (LinkedIn)
+(6, 'ORDER', -9.9950, 48.2500, 38.2550, 'order', 8, 'LinkedIn Profile Followers', NOW() - INTERVAL '20 days'),
+(6, 'ORDER', -3.9980, 38.2550, 34.2570, 'order', 9, 'LinkedIn Company Followers', NOW() - INTERVAL '15 days'),
+(6, 'ORDER', -1.9900, 34.2570, 32.2670, 'order', 11, 'Instagram Followers (Cancelled)', NOW() - INTERVAL '10 days'),
+-- Test user (LinkedIn)
+(7, 'ORDER', -1.5000, 96.8000, 95.3000, 'order', 10, 'LinkedIn Reposts', NOW() - INTERVAL '1 hour'),
+(7, 'ORDER', -0.4900, 95.3000, 94.8100, 'order', 12, 'Instagram Likes', NOW() - INTERVAL '3 days');
 
 -- Reembolsos
 INSERT INTO transactions (user_id, type, amount, balance_before, balance_after, reference_type, reference_id, description, created_at) VALUES
-(6, 'REFUND', 0.9900, 39.1350, 40.1250, 'order', 16, 'Refund for Order #16 - Target not found', NOW() - INTERVAL '10 days' + INTERVAL '1 hour'),
-(7, 'REFUND', 1.2250, 94.5000, 95.7250, 'order', 17, 'Partial refund for Order #17 - 70% delivered', NOW() - INTERVAL '4 days');
+(6, 'REFUND', 1.9900, 32.2670, 34.2570, 'order', 11, 'Refund - Target not found', NOW() - INTERVAL '10 days' + INTERVAL '1 hour');
 
 -- Ajuste manual de admin
 INSERT INTO transactions (user_id, type, amount, balance_before, balance_after, reference_type, reference_id, description, created_at) VALUES
-(7, 'ADJUSTMENT', 4.2750, 95.7250, 100.0000, NULL, NULL, 'Compensation for service delay - Admin adjustment', NOW() - INTERVAL '3 days');
+(7, 'ADJUSTMENT', 5.1900, 94.8100, 100.0000, NULL, NULL, 'Compensation for service delay', NOW() - INTERVAL '3 days');
 
 -- ============================================================================
 -- 12. ORDER REFILLS
 -- ============================================================================
 
+-- Order refills reference dynamic order IDs (first Instagram Followers order)
 INSERT INTO order_refills (order_id, provider_refill_id, quantity, status, created_at, completed_at) VALUES
-(1, 'REFILL-10001', 150, 'COMPLETED', NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days' + INTERVAL '12 hours'),
-(5, 'REFILL-20001', 500, 'COMPLETED', NOW() - INTERVAL '7 days', NOW() - INTERVAL '6 days'),
-(5, 'REFILL-20002', 200, 'PENDING', NOW() - INTERVAL '1 day', NULL),
-(9, NULL, 1000, 'PROCESSING', NOW() - INTERVAL '2 hours', NULL);
+(1, 'DFP-REFILL-10001', 100, 'COMPLETED', NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days' + INTERVAL '12 hours'),
+(3, 'DFP-REFILL-20001', 500, 'COMPLETED', NOW() - INTERVAL '7 days', NOW() - INTERVAL '6 days');
 
 -- ============================================================================
 -- 13. ACTUALIZAR BALANCES FINALES DE USUARIOS
@@ -405,18 +381,23 @@ DECLARE
     services_count INTEGER;
     invoices_count INTEGER;
     transactions_count INTEGER;
+    active_categories INTEGER;
 BEGIN
     SELECT COUNT(*) INTO users_count FROM users;
     SELECT COUNT(*) INTO orders_count FROM orders;
     SELECT COUNT(*) INTO services_count FROM services;
     SELECT COUNT(*) INTO invoices_count FROM invoices;
     SELECT COUNT(*) INTO transactions_count FROM transactions;
-    
+    SELECT COUNT(*) INTO active_categories FROM categories WHERE is_active = true;
+
     RAISE NOTICE '============================================';
-    RAISE NOTICE 'DATOS DE EJEMPLO INSERTADOS CORRECTAMENTE';
+    RAISE NOTICE 'ANTIPANEL - DRIPFEEDPANEL SERVICES';
+    RAISE NOTICE '============================================';
+    RAISE NOTICE 'Provider: DripFeedPanel';
+    RAISE NOTICE 'Active Categories: % (Instagram, TikTok, Twitter, LinkedIn)', active_categories;
+    RAISE NOTICE 'Services: % (expected: 11)', services_count;
     RAISE NOTICE '============================================';
     RAISE NOTICE 'Usuarios: %', users_count;
-    RAISE NOTICE 'Servicios: %', services_count;
     RAISE NOTICE 'Órdenes: %', orders_count;
     RAISE NOTICE 'Facturas: %', invoices_count;
     RAISE NOTICE 'Transacciones: %', transactions_count;
@@ -430,7 +411,6 @@ BEGIN
     RAISE NOTICE '  - test.user@test.com (user - $100.00)';
     RAISE NOTICE '============================================';
     RAISE NOTICE 'Password hash para todos: "password123"';
-    RAISE NOTICE '(bcrypt hash de ejemplo, cambiar en producción)';
     RAISE NOTICE '============================================';
 END $$;
 
