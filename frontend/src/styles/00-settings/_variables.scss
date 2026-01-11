@@ -282,7 +282,7 @@ $font-size-names: ('title', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'body', 'caption
 
 @media screen and (min-width: 1280px) {
   :root {
-    --header-height: 7.25rem;          // 116px (xl)
+    --header-height: 7.5rem;           // 120px (xl) - normalized to base-8 grid
   }
 }
 

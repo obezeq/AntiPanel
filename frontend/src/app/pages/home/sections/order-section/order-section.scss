@@ -23,7 +23,7 @@
   gap: var(--spacing-12);
   padding: var(--spacing-12) var(--spacing-6);
   width: 100%;
-  max-width: 58.375rem; // 934px from Figma
+  max-width: 58.5rem; // 936px - normalized to base-8 grid
   margin: 0 auto;
 
   @include respond-below('md') {
