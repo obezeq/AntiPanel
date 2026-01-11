@@ -35,6 +35,7 @@
       <app-dashboard-order-section
         [userBalance]="userBalance()"
         [quickOrderService]="quickOrderService()"
+        [initialInputText]="pendingOrderText()"
         (orderCreated)="onOrderCreated($event)"
         (navigateToWallet)="onNavigateToWallet()"
         (selectPlatform)="onSelectPlatform($event)"

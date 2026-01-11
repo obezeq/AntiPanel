@@ -132,6 +132,9 @@ export class DashboardOrderSection {
   /** Quick order service passed from ServicesSection via Dashboard */
   readonly quickOrderService = input<ServiceItemData | null>(null);
 
+  /** Initial input text for pre-filling (from pending order flow) */
+  readonly initialInputText = input<string | null>(null);
+
   // -------------------------------------------------------------------------
   // Outputs
   // -------------------------------------------------------------------------
@@ -281,6 +284,16 @@ export class DashboardOrderSection {
         const text = `1k ${quickOrder.name}`;
         this.inputText.set(text);
         // Clear any previous messages
+        this.errorMessage.set(null);
+        this.successMessage.set(null);
+      }
+    });
+
+    // Watch initialInputText for pending order flow
+    effect(() => {
+      const text = this.initialInputText();
+      if (text) {
+        this.inputText.set(text);
         this.errorMessage.set(null);
         this.successMessage.set(null);
       }
