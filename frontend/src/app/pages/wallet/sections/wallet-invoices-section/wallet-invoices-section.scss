@@ -136,11 +136,11 @@
     color: var(--color-status-yellow);
   }
 
-  // PROCESSING - Blue
+  // PROCESSING - Blue (uses stats-blue)
   &--processing {
-    background-color: rgba(var(--color-info-rgb), 0.11);
-    border-color: rgba(var(--color-info-rgb), 0.66);
-    color: var(--color-info);
+    background-color: rgba(var(--color-stats-blue-rgb), 0.11);
+    border-color: rgba(var(--color-stats-blue-rgb), 0.66);
+    color: var(--color-stats-blue);
   }
 
   // PAID - Green
@@ -164,10 +164,10 @@
     color: var(--color-error);
   }
 
-  // CANCELLED - Gray
+  // CANCELLED - Gray (using secondary #666666)
   &--cancelled {
-    background-color: rgba(var(--color-foreground-rgb), 0.11);
-    border-color: rgba(var(--color-foreground-rgb), 0.66);
+    background-color: rgba(102, 102, 102, 0.11);
+    border-color: rgba(102, 102, 102, 0.66);
     color: var(--color-foreground);
   }
 }
