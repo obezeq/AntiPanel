@@ -68,6 +68,14 @@ services:
       # CORS - Allow frontend access
       APP_CORS_ALLOWED_ORIGINS: ${APP_CORS_ALLOWED_ORIGINS:-http://localhost:4200}
 
+      # Paymento Payment Gateway
+      PAYMENTO_API_KEY: ${PAYMENTO_API_KEY:-}
+      PAYMENTO_API_SECRET: ${PAYMENTO_API_SECRET:-}
+      PAYMENTO_RETURN_URL: ${PAYMENTO_RETURN_URL:-http://localhost:4200/wallet}
+
+      # DripFeedPanel Provider
+      DRIPFEED_PANEL_API_KEY: ${DRIPFEED_PANEL_API_KEY:-}
+
     ports:
       - "8080:8080"
 
