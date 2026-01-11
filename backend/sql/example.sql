@@ -155,67 +155,67 @@ INSERT INTO provider_services (provider_id, provider_service_id, name, min_quant
 
 -- Instagram Followers
 INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order) VALUES
-(1, 1, 1, 'Instagram Followers - HQ', 'Seguidores de alta calidad con fotos de perfil reales. Ideal para cuentas personales y pequeños negocios.', 'high', 'medium', 100, 100000, 0.99, 30, '1-24 hours', TRUE, 1),
-(1, 1, 2, 'Instagram Followers - Premium', 'Seguidores premium con perfiles completos, fotos y publicaciones. Máxima calidad disponible.', 'premium', 'slow', 50, 50000, 1.99, 90, '24-72 hours', TRUE, 2),
-(1, 1, 3, 'Instagram Followers - Starter', 'Seguidores económicos para empezar. Sin garantía de refill.', 'low', 'fast', 500, 500000, 0.35, 0, '0-6 hours', TRUE, 3);
+(1, 1, 1, 'Instagram Followers - HQ', 'Seguidores de alta calidad con fotos de perfil reales. Ideal para cuentas personales y pequeños negocios.', 'HIGH', 'MEDIUM', 100, 100000, 0.99, 30, '1-24 hours', TRUE, 1),
+(1, 1, 2, 'Instagram Followers - Premium', 'Seguidores premium con perfiles completos, fotos y publicaciones. Máxima calidad disponible.', 'PREMIUM', 'SLOW', 50, 50000, 1.99, 90, '24-72 hours', TRUE, 2),
+(1, 1, 3, 'Instagram Followers - Starter', 'Seguidores económicos para empezar. Sin garantía de refill.', 'LOW', 'FAST', 500, 500000, 0.35, 0, '0-6 hours', TRUE, 3);
 
 -- Instagram Likes
 INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order) VALUES
-(1, 2, 4, 'Instagram Likes - Real', 'Likes de cuentas reales. Entrega rápida y estable.', 'high', 'fast', 50, 50000, 0.55, 0, '0-1 hours', TRUE, 1),
-(1, 2, 5, 'Instagram Likes - Premium', 'Likes de cuentas premium con engagement real. Incluye garantía.', 'premium', 'medium', 20, 20000, 1.10, 30, '1-12 hours', TRUE, 2);
+(1, 2, 4, 'Instagram Likes - Real', 'Likes de cuentas reales. Entrega rápida y estable.', 'HIGH', 'FAST', 50, 50000, 0.55, 0, '0-1 hours', TRUE, 1),
+(1, 2, 5, 'Instagram Likes - Premium', 'Likes de cuentas premium con engagement real. Incluye garantía.', 'PREMIUM', 'MEDIUM', 20, 20000, 1.10, 30, '1-12 hours', TRUE, 2);
 
 -- Instagram Comments
 INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order) VALUES
-(1, 3, 6, 'Instagram Comments - Custom', 'Comentarios personalizados. Puedes elegir los textos que quieras.', 'premium', 'slow', 10, 5000, 5.50, 0, '1-24 hours', TRUE, 1),
-(1, 3, 7, 'Instagram Comments - Random', 'Comentarios aleatorios positivos (emojis, felicitaciones, etc.).', 'medium', 'medium', 10, 10000, 2.65, 0, '0-6 hours', TRUE, 2);
+(1, 3, 6, 'Instagram Comments - Custom', 'Comentarios personalizados. Puedes elegir los textos que quieras.', 'PREMIUM', 'SLOW', 10, 5000, 5.50, 0, '1-24 hours', TRUE, 1),
+(1, 3, 7, 'Instagram Comments - Random', 'Comentarios aleatorios positivos (emojis, felicitaciones, etc.).', 'MEDIUM', 'MEDIUM', 10, 10000, 2.65, 0, '0-6 hours', TRUE, 2);
 
 -- Instagram Views
 INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order) VALUES
-(1, 4, 8, 'Instagram Views - Fast', 'Views rápidas para posts y videos. Entrega inmediata.', 'medium', 'instant', 100, 10000000, 0.12, 0, '0-30 minutes', TRUE, 1);
+(1, 4, 8, 'Instagram Views - Fast', 'Views rápidas para posts y videos. Entrega inmediata.', 'MEDIUM', 'INSTANT', 100, 10000000, 0.12, 0, '0-30 minutes', TRUE, 1);
 
 -- Instagram Reels Views
 INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order) VALUES
-(1, 5, 9, 'Instagram Reels Views', 'Views para Reels. Ayuda a impulsar el algoritmo.', 'high', 'fast', 100, 5000000, 0.18, 0, '0-1 hours', TRUE, 1);
+(1, 5, 9, 'Instagram Reels Views', 'Views para Reels. Ayuda a impulsar el algoritmo.', 'HIGH', 'FAST', 100, 5000000, 0.18, 0, '0-1 hours', TRUE, 1);
 
 -- TikTok Services
 INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order) VALUES
-(2, 8, 10, 'TikTok Followers - Real', 'Seguidores reales de TikTok con fotos de perfil.', 'high', 'medium', 100, 100000, 1.20, 30, '1-24 hours', TRUE, 1),
-(2, 8, 11, 'TikTok Followers - Premium', 'Seguidores premium con videos propios y engagement activo.', 'premium', 'slow', 50, 50000, 2.50, 60, '24-72 hours', TRUE, 2),
-(2, 9, 12, 'TikTok Likes - Fast', 'Likes rápidos para tus videos de TikTok.', 'high', 'instant', 50, 100000, 0.45, 0, '0-30 minutes', TRUE, 1),
-(2, 10, 13, 'TikTok Views - Instant', 'Views instantáneas. Empieza a recibir en segundos.', 'medium', 'instant', 500, 50000000, 0.05, 0, '0-5 minutes', TRUE, 1),
-(2, 10, 14, 'TikTok Views - High Retention', 'Views con alta retención. Mejor para el algoritmo.', 'high', 'fast', 500, 10000000, 0.12, 0, '0-1 hours', TRUE, 2);
+(2, 8, 10, 'TikTok Followers - Real', 'Seguidores reales de TikTok con fotos de perfil.', 'HIGH', 'MEDIUM', 100, 100000, 1.20, 30, '1-24 hours', TRUE, 1),
+(2, 8, 11, 'TikTok Followers - Premium', 'Seguidores premium con videos propios y engagement activo.', 'PREMIUM', 'SLOW', 50, 50000, 2.50, 60, '24-72 hours', TRUE, 2),
+(2, 9, 12, 'TikTok Likes - Fast', 'Likes rápidos para tus videos de TikTok.', 'HIGH', 'INSTANT', 50, 100000, 0.45, 0, '0-30 minutes', TRUE, 1),
+(2, 10, 13, 'TikTok Views - Instant', 'Views instantáneas. Empieza a recibir en segundos.', 'MEDIUM', 'INSTANT', 500, 50000000, 0.05, 0, '0-5 minutes', TRUE, 1),
+(2, 10, 14, 'TikTok Views - High Retention', 'Views con alta retención. Mejor para el algoritmo.', 'HIGH', 'FAST', 500, 10000000, 0.12, 0, '0-1 hours', TRUE, 2);
 
 -- YouTube Services
 INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order) VALUES
-(3, 14, 15, 'YouTube Subscribers - Real', 'Suscriptores reales con canales activos.', 'high', 'medium', 100, 50000, 4.50, 30, '1-48 hours', TRUE, 1),
-(3, 14, 16, 'YouTube Subscribers - Premium', 'Suscriptores premium con historial de actividad.', 'premium', 'slow', 50, 10000, 11.00, 90, '48-96 hours', TRUE, 2),
-(3, 15, 17, 'YouTube Views - Fast', 'Views rápidas para tu video.', 'medium', 'fast', 500, 1000000, 1.80, 0, '0-12 hours', TRUE, 1),
-(3, 15, 18, 'YouTube Views - High Retention', 'Views con alta retención (60-80%). Mejor para monetización.', 'premium', 'medium', 100, 100000, 5.50, 0, '1-24 hours', TRUE, 2),
-(3, 16, 19, 'YouTube Likes - Real', 'Likes de cuentas reales de YouTube.', 'high', 'medium', 50, 50000, 2.20, 0, '0-12 hours', TRUE, 1);
+(3, 14, 15, 'YouTube Subscribers - Real', 'Suscriptores reales con canales activos.', 'HIGH', 'MEDIUM', 100, 50000, 4.50, 30, '1-48 hours', TRUE, 1),
+(3, 14, 16, 'YouTube Subscribers - Premium', 'Suscriptores premium con historial de actividad.', 'PREMIUM', 'SLOW', 50, 10000, 11.00, 90, '48-96 hours', TRUE, 2),
+(3, 15, 17, 'YouTube Views - Fast', 'Views rápidas para tu video.', 'MEDIUM', 'FAST', 500, 1000000, 1.80, 0, '0-12 hours', TRUE, 1),
+(3, 15, 18, 'YouTube Views - High Retention', 'Views con alta retención (60-80%). Mejor para monetización.', 'PREMIUM', 'MEDIUM', 100, 100000, 5.50, 0, '1-24 hours', TRUE, 2),
+(3, 16, 19, 'YouTube Likes - Real', 'Likes de cuentas reales de YouTube.', 'HIGH', 'MEDIUM', 50, 50000, 2.20, 0, '0-12 hours', TRUE, 1);
 
 -- Twitter Services
 INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order) VALUES
-(4, 21, 21, 'Twitter Followers - HQ', 'Seguidores de alta calidad con avatares y tweets.', 'high', 'medium', 100, 100000, 1.30, 30, '1-24 hours', TRUE, 1),
-(4, 22, 22, 'Twitter Likes - Fast', 'Likes rápidos para tus tweets.', 'high', 'instant', 50, 50000, 0.65, 0, '0-30 minutes', TRUE, 1),
-(4, 23, 23, 'Twitter Retweets', 'Retweets de cuentas reales.', 'high', 'fast', 50, 50000, 0.85, 0, '0-2 hours', TRUE, 1),
-(4, 25, 24, 'Twitter Views', 'Views para tus tweets y videos.', 'medium', 'instant', 500, 10000000, 0.03, 0, '0-15 minutes', TRUE, 1);
+(4, 21, 21, 'Twitter Followers - HQ', 'Seguidores de alta calidad con avatares y tweets.', 'HIGH', 'MEDIUM', 100, 100000, 1.30, 30, '1-24 hours', TRUE, 1),
+(4, 22, 22, 'Twitter Likes - Fast', 'Likes rápidos para tus tweets.', 'HIGH', 'INSTANT', 50, 50000, 0.65, 0, '0-30 minutes', TRUE, 1),
+(4, 23, 23, 'Twitter Retweets', 'Retweets de cuentas reales.', 'HIGH', 'FAST', 50, 50000, 0.85, 0, '0-2 hours', TRUE, 1),
+(4, 25, 24, 'Twitter Views', 'Views para tus tweets y videos.', 'MEDIUM', 'INSTANT', 500, 10000000, 0.03, 0, '0-15 minutes', TRUE, 1);
 
 -- Facebook Services
 INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order) VALUES
-(5, 26, 25, 'Facebook Page Likes', 'Likes para tu página de Facebook.', 'high', 'medium', 100, 100000, 1.75, 30, '1-24 hours', TRUE, 1),
-(5, 28, 26, 'Facebook Post Likes', 'Likes para tus publicaciones.', 'high', 'fast', 50, 50000, 0.55, 0, '0-2 hours', TRUE, 1),
-(5, 30, 27, 'Facebook Video Views', 'Views para tus videos de Facebook.', 'medium', 'instant', 500, 10000000, 0.08, 0, '0-1 hours', TRUE, 1);
+(5, 26, 25, 'Facebook Page Likes', 'Likes para tu página de Facebook.', 'HIGH', 'MEDIUM', 100, 100000, 1.75, 30, '1-24 hours', TRUE, 1),
+(5, 28, 26, 'Facebook Post Likes', 'Likes para tus publicaciones.', 'HIGH', 'FAST', 50, 50000, 0.55, 0, '0-2 hours', TRUE, 1),
+(5, 30, 27, 'Facebook Video Views', 'Views para tus videos de Facebook.', 'MEDIUM', 'INSTANT', 500, 10000000, 0.08, 0, '0-1 hours', TRUE, 1);
 
 -- LinkedIn Services
 INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order) VALUES
-(6, 31, 28, 'LinkedIn Followers - Real', 'Seguidores profesionales reales para tu perfil o página.', 'premium', 'slow', 100, 50000, 6.50, 30, '24-72 hours', TRUE, 1),
-(6, 33, 29, 'LinkedIn Post Likes', 'Likes profesionales para tus publicaciones.', 'high', 'medium', 20, 10000, 3.25, 0, '1-12 hours', TRUE, 1);
+(6, 31, 28, 'LinkedIn Followers - Real', 'Seguidores profesionales reales para tu perfil o página.', 'PREMIUM', 'SLOW', 100, 50000, 6.50, 30, '24-72 hours', TRUE, 1),
+(6, 33, 29, 'LinkedIn Post Likes', 'Likes profesionales para tus publicaciones.', 'HIGH', 'MEDIUM', 20, 10000, 3.25, 0, '1-12 hours', TRUE, 1);
 
 -- Spotify Services
 INSERT INTO services (category_id, service_type_id, provider_service_id, name, description, quality, speed, min_quantity, max_quantity, price_per_k, refill_days, average_time, is_active, sort_order) VALUES
-(7, 35, 30, 'Spotify Followers', 'Seguidores para tu perfil de artista o playlist.', 'high', 'medium', 100, 100000, 2.20, 30, '1-24 hours', TRUE, 1),
-(7, 36, 31, 'Spotify Plays', 'Reproducciones para tus canciones.', 'high', 'fast', 1000, 10000000, 1.10, 0, '0-12 hours', TRUE, 1),
-(7, 37, 32, 'Spotify Monthly Listeners', 'Oyentes mensuales para tu perfil de artista.', 'premium', 'slow', 1000, 1000000, 4.40, 0, '24-72 hours', TRUE, 2);
+(7, 35, 30, 'Spotify Followers', 'Seguidores para tu perfil de artista o playlist.', 'HIGH', 'MEDIUM', 100, 100000, 2.20, 30, '1-24 hours', TRUE, 1),
+(7, 36, 31, 'Spotify Plays', 'Reproducciones para tus canciones.', 'HIGH', 'FAST', 1000, 10000000, 1.10, 0, '0-12 hours', TRUE, 1),
+(7, 37, 32, 'Spotify Monthly Listeners', 'Oyentes mensuales para tu perfil de artista.', 'PREMIUM', 'SLOW', 1000, 1000000, 4.40, 0, '24-72 hours', TRUE, 2);
 
 -- ============================================================================
 -- 6. PROCESADORES DE PAGO
@@ -234,21 +234,21 @@ INSERT INTO payment_processors (name, code, website, api_key, api_secret, min_am
 
 -- Admin principal
 INSERT INTO users (email, password_hash, role, department, balance, is_banned, login_count) VALUES
-('admin@antipanel.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4P1VH9ggPJvXYvMK', 'admin', 'Management', 0.0000, FALSE, 150);
+('admin@antipanel.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4P1VH9ggPJvXYvMK', 'ADMIN', 'Management', 0.0000, FALSE, 150);
 
 -- Soporte
 INSERT INTO users (email, password_hash, role, department, balance, is_banned, login_count) VALUES
-('support@antipanel.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4P1VH9ggPJvXYvMK', 'support', 'Customer Support', 0.0000, FALSE, 89);
+('support@antipanel.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4P1VH9ggPJvXYvMK', 'SUPPORT', 'Customer Support', 0.0000, FALSE, 89);
 
 -- Usuarios de prueba
 INSERT INTO users (email, password_hash, role, balance, is_banned, login_count, last_login_at) VALUES
-('marcos.garcia@gmail.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4P1VH9ggPJvXYvMK', 'user', 45.5000, FALSE, 23, NOW() - INTERVAL '2 hours'),
-('laura.tienda@outlook.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4P1VH9ggPJvXYvMK', 'user', 150.0000, FALSE, 67, NOW() - INTERVAL '1 day'),
-('carlos.influencer@gmail.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4P1VH9ggPJvXYvMK', 'user', 500.0000, FALSE, 156, NOW() - INTERVAL '30 minutes'),
-('maria.startup@empresa.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4P1VH9ggPJvXYvMK', 'user', 25.0000, FALSE, 12, NOW() - INTERVAL '3 days'),
-('test.user@test.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4P1VH9ggPJvXYvMK', 'user', 100.0000, FALSE, 5, NOW() - INTERVAL '5 hours'),
-('banned.user@example.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4P1VH9ggPJvXYvMK', 'user', 0.0000, TRUE, 3, NOW() - INTERVAL '30 days'),
-('nuevo.usuario@gmail.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4P1VH9ggPJvXYvMK', 'user', 0.0000, FALSE, 1, NOW());
+('marcos.garcia@gmail.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4P1VH9ggPJvXYvMK', 'USER', 45.5000, FALSE, 23, NOW() - INTERVAL '2 hours'),
+('laura.tienda@outlook.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4P1VH9ggPJvXYvMK', 'USER', 150.0000, FALSE, 67, NOW() - INTERVAL '1 day'),
+('carlos.influencer@gmail.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4P1VH9ggPJvXYvMK', 'USER', 500.0000, FALSE, 156, NOW() - INTERVAL '30 minutes'),
+('maria.startup@empresa.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4P1VH9ggPJvXYvMK', 'USER', 25.0000, FALSE, 12, NOW() - INTERVAL '3 days'),
+('test.user@test.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4P1VH9ggPJvXYvMK', 'USER', 100.0000, FALSE, 5, NOW() - INTERVAL '5 hours'),
+('banned.user@example.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4P1VH9ggPJvXYvMK', 'USER', 0.0000, TRUE, 3, NOW() - INTERVAL '30 days'),
+('nuevo.usuario@gmail.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4P1VH9ggPJvXYvMK', 'USER', 0.0000, FALSE, 1, NOW());
 
 -- Actualizar banned_reason para usuario baneado
 UPDATE users SET banned_reason = 'Fraude con tarjeta de crédito' WHERE email = 'banned.user@example.com';
@@ -259,22 +259,22 @@ UPDATE users SET banned_reason = 'Fraude con tarjeta de crédito' WHERE email = 
 
 -- Facturas completadas
 INSERT INTO invoices (user_id, processor_id, processor_invoice_id, amount, fee, net_amount, currency, status, paid_at, created_at) VALUES
-(3, 1, 'PAY-1AB23456CD789012E', 50.00, 1.75, 48.25, 'USD', 'completed', NOW() - INTERVAL '7 days', NOW() - INTERVAL '7 days'),
-(3, 2, 'pi_3NxyzABCDEFGHIJK', 25.00, 1.03, 23.97, 'USD', 'completed', NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days'),
-(4, 1, 'PAY-2BC34567DE890123F', 100.00, 3.20, 96.80, 'USD', 'completed', NOW() - INTERVAL '14 days', NOW() - INTERVAL '14 days'),
-(4, 3, 'COINBASE-ABC123', 100.00, 1.00, 99.00, 'USD', 'completed', NOW() - INTERVAL '5 days', NOW() - INTERVAL '5 days'),
-(5, 2, 'pi_4OyzaBCDEFGHIJKL', 500.00, 14.80, 485.20, 'USD', 'completed', NOW() - INTERVAL '2 days', NOW() - INTERVAL '2 days'),
-(5, 1, 'PAY-3CD45678EF901234G', 200.00, 6.10, 193.90, 'USD', 'completed', NOW() - INTERVAL '10 days', NOW() - INTERVAL '10 days'),
-(6, 2, 'pi_5PzabCDEFGHIJKLM', 50.00, 1.75, 48.25, 'USD', 'completed', NOW() - INTERVAL '20 days', NOW() - INTERVAL '20 days'),
-(7, 1, 'PAY-4DE56789FG012345H', 100.00, 3.20, 96.80, 'USD', 'completed', NOW() - INTERVAL '1 day', NOW() - INTERVAL '1 day');
+(3, 1, 'PAY-1AB23456CD789012E', 50.00, 1.75, 48.25, 'USD', 'COMPLETED', NOW() - INTERVAL '7 days', NOW() - INTERVAL '7 days'),
+(3, 2, 'pi_3NxyzABCDEFGHIJK', 25.00, 1.03, 23.97, 'USD', 'COMPLETED', NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days'),
+(4, 1, 'PAY-2BC34567DE890123F', 100.00, 3.20, 96.80, 'USD', 'COMPLETED', NOW() - INTERVAL '14 days', NOW() - INTERVAL '14 days'),
+(4, 3, 'COINBASE-ABC123', 100.00, 1.00, 99.00, 'USD', 'COMPLETED', NOW() - INTERVAL '5 days', NOW() - INTERVAL '5 days'),
+(5, 2, 'pi_4OyzaBCDEFGHIJKL', 500.00, 14.80, 485.20, 'USD', 'COMPLETED', NOW() - INTERVAL '2 days', NOW() - INTERVAL '2 days'),
+(5, 1, 'PAY-3CD45678EF901234G', 200.00, 6.10, 193.90, 'USD', 'COMPLETED', NOW() - INTERVAL '10 days', NOW() - INTERVAL '10 days'),
+(6, 2, 'pi_5PzabCDEFGHIJKLM', 50.00, 1.75, 48.25, 'USD', 'COMPLETED', NOW() - INTERVAL '20 days', NOW() - INTERVAL '20 days'),
+(7, 1, 'PAY-4DE56789FG012345H', 100.00, 3.20, 96.80, 'USD', 'COMPLETED', NOW() - INTERVAL '1 day', NOW() - INTERVAL '1 day');
 
 -- Factura pendiente
 INSERT INTO invoices (user_id, processor_id, processor_invoice_id, amount, fee, net_amount, currency, status, payment_url, created_at) VALUES
-(6, 3, 'COINBASE-PENDING123', 50.00, 0.50, 49.50, 'USD', 'pending', 'https://commerce.coinbase.com/charges/PENDING123', NOW() - INTERVAL '2 hours');
+(6, 3, 'COINBASE-PENDING123', 50.00, 0.50, 49.50, 'USD', 'PENDING', 'https://commerce.coinbase.com/charges/PENDING123', NOW() - INTERVAL '2 hours');
 
 -- Factura fallida
 INSERT INTO invoices (user_id, processor_id, processor_invoice_id, amount, fee, net_amount, currency, status, created_at) VALUES
-(8, 2, 'pi_FAILED123', 25.00, 1.03, 23.97, 'USD', 'failed', NOW() - INTERVAL '35 days');
+(8, 2, 'pi_FAILED123', 25.00, 1.03, 23.97, 'USD', 'FAILED', NOW() - INTERVAL '35 days');
 
 -- ============================================================================
 -- 9. TRANSACCIONES
@@ -282,14 +282,14 @@ INSERT INTO invoices (user_id, processor_id, processor_invoice_id, amount, fee, 
 
 -- Depósitos (corresponden a las facturas completadas)
 INSERT INTO transactions (user_id, type, amount, balance_before, balance_after, reference_type, reference_id, description, created_at) VALUES
-(3, 'deposit', 48.2500, 0.0000, 48.2500, 'invoice', 1, 'Depósito vía PayPal', NOW() - INTERVAL '7 days'),
-(3, 'deposit', 23.9700, 48.2500, 72.2200, 'invoice', 2, 'Depósito vía Stripe', NOW() - INTERVAL '3 days'),
-(4, 'deposit', 96.8000, 0.0000, 96.8000, 'invoice', 3, 'Depósito vía PayPal', NOW() - INTERVAL '14 days'),
-(4, 'deposit', 99.0000, 96.8000, 195.8000, 'invoice', 4, 'Depósito vía Coinbase', NOW() - INTERVAL '5 days'),
-(5, 'deposit', 485.2000, 0.0000, 485.2000, 'invoice', 5, 'Depósito vía Stripe', NOW() - INTERVAL '2 days'),
-(5, 'deposit', 193.9000, 485.2000, 679.1000, 'invoice', 6, 'Depósito vía PayPal', NOW() - INTERVAL '10 days'),
-(6, 'deposit', 48.2500, 0.0000, 48.2500, 'invoice', 7, 'Depósito vía Stripe', NOW() - INTERVAL '20 days'),
-(7, 'deposit', 96.8000, 0.0000, 96.8000, 'invoice', 8, 'Depósito vía PayPal', NOW() - INTERVAL '1 day');
+(3, 'DEPOSIT', 48.2500, 0.0000, 48.2500, 'invoice', 1, 'Depósito vía PayPal', NOW() - INTERVAL '7 days'),
+(3, 'DEPOSIT', 23.9700, 48.2500, 72.2200, 'invoice', 2, 'Depósito vía Stripe', NOW() - INTERVAL '3 days'),
+(4, 'DEPOSIT', 96.8000, 0.0000, 96.8000, 'invoice', 3, 'Depósito vía PayPal', NOW() - INTERVAL '14 days'),
+(4, 'DEPOSIT', 99.0000, 96.8000, 195.8000, 'invoice', 4, 'Depósito vía Coinbase', NOW() - INTERVAL '5 days'),
+(5, 'DEPOSIT', 485.2000, 0.0000, 485.2000, 'invoice', 5, 'Depósito vía Stripe', NOW() - INTERVAL '2 days'),
+(5, 'DEPOSIT', 193.9000, 485.2000, 679.1000, 'invoice', 6, 'Depósito vía PayPal', NOW() - INTERVAL '10 days'),
+(6, 'DEPOSIT', 48.2500, 0.0000, 48.2500, 'invoice', 7, 'Depósito vía Stripe', NOW() - INTERVAL '20 days'),
+(7, 'DEPOSIT', 96.8000, 0.0000, 96.8000, 'invoice', 8, 'Depósito vía PayPal', NOW() - INTERVAL '1 day');
 
 -- ============================================================================
 -- 10. ÓRDENES
@@ -297,42 +297,42 @@ INSERT INTO transactions (user_id, type, amount, balance_before, balance_after, 
 
 -- Órdenes de Marcos (user_id = 3) - El buscador de validación social
 INSERT INTO orders (user_id, service_id, service_name, provider_service_id, provider_order_id, target, quantity, start_count, remains, status, price_per_k, cost_per_k, total_charge, total_cost, profit, is_refillable, refill_days, refill_deadline, created_at, completed_at) VALUES
-(3, 1, 'Instagram Followers - HQ', 1, 'SMM-10001', 'https://instagram.com/marcos_garcia', 1000, 369, 0, 'completed', 0.99, 0.45, 0.9900, 0.4500, 0.5400, TRUE, 30, NOW() + INTERVAL '23 days', NOW() - INTERVAL '7 days', NOW() - INTERVAL '6 days' + INTERVAL '18 hours'),
-(3, 4, 'Instagram Likes - Real', 4, 'SMM-10002', 'https://instagram.com/p/ABC123', 500, NULL, 0, 'completed', 0.55, 0.25, 0.2750, 0.1250, 0.1500, FALSE, 0, NULL, NOW() - INTERVAL '5 days', NOW() - INTERVAL '5 days' + INTERVAL '45 minutes'),
-(3, 4, 'Instagram Likes - Real', 4, 'SMM-10003', 'https://instagram.com/p/DEF456', 500, NULL, 0, 'completed', 0.55, 0.25, 0.2750, 0.1250, 0.1500, FALSE, 0, NULL, NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days' + INTERVAL '30 minutes'),
-(3, 9, 'Instagram Reels Views', 9, 'SMM-10004', 'https://instagram.com/reel/GHI789', 10000, NULL, 0, 'completed', 0.18, 0.08, 1.8000, 0.8000, 1.0000, FALSE, 0, NULL, NOW() - INTERVAL '2 days', NOW() - INTERVAL '2 days' + INTERVAL '2 hours');
+(3, 1, 'Instagram Followers - HQ', 1, 'SMM-10001', 'https://instagram.com/marcos_garcia', 1000, 369, 0, 'COMPLETED', 0.99, 0.45, 0.9900, 0.4500, 0.5400, TRUE, 30, NOW() + INTERVAL '23 days', NOW() - INTERVAL '7 days', NOW() - INTERVAL '6 days' + INTERVAL '18 hours'),
+(3, 4, 'Instagram Likes - Real', 4, 'SMM-10002', 'https://instagram.com/p/ABC123', 500, NULL, 0, 'COMPLETED', 0.55, 0.25, 0.2750, 0.1250, 0.1500, FALSE, 0, NULL, NOW() - INTERVAL '5 days', NOW() - INTERVAL '5 days' + INTERVAL '45 minutes'),
+(3, 4, 'Instagram Likes - Real', 4, 'SMM-10003', 'https://instagram.com/p/DEF456', 500, NULL, 0, 'COMPLETED', 0.55, 0.25, 0.2750, 0.1250, 0.1500, FALSE, 0, NULL, NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days' + INTERVAL '30 minutes'),
+(3, 9, 'Instagram Reels Views', 9, 'SMM-10004', 'https://instagram.com/reel/GHI789', 10000, NULL, 0, 'COMPLETED', 0.18, 0.08, 1.8000, 0.8000, 1.0000, FALSE, 0, NULL, NOW() - INTERVAL '2 days', NOW() - INTERVAL '2 days' + INTERVAL '2 hours');
 
 -- Órdenes de Laura (user_id = 4) - La dueña de tienda
 INSERT INTO orders (user_id, service_id, service_name, provider_service_id, provider_order_id, target, quantity, start_count, remains, status, price_per_k, cost_per_k, total_charge, total_cost, profit, is_refillable, refill_days, refill_deadline, created_at, completed_at) VALUES
-(4, 2, 'Instagram Followers - Premium', 2, 'SMM-20001', 'https://instagram.com/laura_tienda', 10000, 11, 0, 'completed', 1.99, 0.90, 19.9000, 9.0000, 10.9000, TRUE, 90, NOW() + INTERVAL '76 days', NOW() - INTERVAL '14 days', NOW() - INTERVAL '12 days'),
-(4, 1, 'Instagram Followers - HQ', 1, 'SMM-20002', 'https://instagram.com/laura_tienda', 5000, 10011, 0, 'completed', 0.99, 0.45, 4.9500, 2.2500, 2.7000, TRUE, 30, NOW() + INTERVAL '16 days', NOW() - INTERVAL '14 days', NOW() - INTERVAL '13 days' + INTERVAL '20 hours'),
-(4, 5, 'Instagram Likes - Premium', 5, 'SMM-20003', 'https://instagram.com/p/TIENDA001', 1000, NULL, 0, 'completed', 1.10, 0.50, 1.1000, 0.5000, 0.6000, TRUE, 30, NOW() + INTERVAL '25 days', NOW() - INTERVAL '5 days', NOW() - INTERVAL '5 days' + INTERVAL '8 hours'),
-(4, 8, 'Instagram Views - Fast', 8, 'SMM-20004', 'https://instagram.com/p/TIENDA002', 50000, NULL, 0, 'completed', 0.12, 0.05, 6.0000, 2.5000, 3.5000, FALSE, 0, NULL, NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days' + INTERVAL '25 minutes');
+(4, 2, 'Instagram Followers - Premium', 2, 'SMM-20001', 'https://instagram.com/laura_tienda', 10000, 11, 0, 'COMPLETED', 1.99, 0.90, 19.9000, 9.0000, 10.9000, TRUE, 90, NOW() + INTERVAL '76 days', NOW() - INTERVAL '14 days', NOW() - INTERVAL '12 days'),
+(4, 1, 'Instagram Followers - HQ', 1, 'SMM-20002', 'https://instagram.com/laura_tienda', 5000, 10011, 0, 'COMPLETED', 0.99, 0.45, 4.9500, 2.2500, 2.7000, TRUE, 30, NOW() + INTERVAL '16 days', NOW() - INTERVAL '14 days', NOW() - INTERVAL '13 days' + INTERVAL '20 hours'),
+(4, 5, 'Instagram Likes - Premium', 5, 'SMM-20003', 'https://instagram.com/p/TIENDA001', 1000, NULL, 0, 'COMPLETED', 1.10, 0.50, 1.1000, 0.5000, 0.6000, TRUE, 30, NOW() + INTERVAL '25 days', NOW() - INTERVAL '5 days', NOW() - INTERVAL '5 days' + INTERVAL '8 hours'),
+(4, 8, 'Instagram Views - Fast', 8, 'SMM-20004', 'https://instagram.com/p/TIENDA002', 50000, NULL, 0, 'COMPLETED', 0.12, 0.05, 6.0000, 2.5000, 3.5000, FALSE, 0, NULL, NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days' + INTERVAL '25 minutes');
 
 -- Órdenes de Carlos (user_id = 5) - El influencer
 INSERT INTO orders (user_id, service_id, service_name, provider_service_id, provider_order_id, target, quantity, start_count, remains, status, price_per_k, cost_per_k, total_charge, total_cost, profit, is_refillable, refill_days, refill_deadline, created_at, completed_at) VALUES
-(5, 10, 'TikTok Followers - Real', 10, 'SMM-30001', 'https://tiktok.com/@carlos_influencer', 50000, 125000, 0, 'completed', 1.20, 0.55, 60.0000, 27.5000, 32.5000, TRUE, 30, NOW() + INTERVAL '20 days', NOW() - INTERVAL '10 days', NOW() - INTERVAL '9 days'),
-(5, 13, 'TikTok Views - Instant', 13, 'SMM-30002', 'https://tiktok.com/@carlos_influencer/video/123', 1000000, NULL, 0, 'completed', 0.05, 0.02, 50.0000, 20.0000, 30.0000, FALSE, 0, NULL, NOW() - INTERVAL '8 days', NOW() - INTERVAL '8 days' + INTERVAL '15 minutes'),
-(5, 12, 'TikTok Likes - Fast', 12, 'SMM-30003', 'https://tiktok.com/@carlos_influencer/video/123', 25000, NULL, 0, 'completed', 0.45, 0.20, 11.2500, 5.0000, 6.2500, FALSE, 0, NULL, NOW() - INTERVAL '8 days', NOW() - INTERVAL '8 days' + INTERVAL '20 minutes'),
-(5, 15, 'YouTube Subscribers - Real', 15, 'SMM-30004', 'https://youtube.com/@CarlosInfluencer', 5000, 45000, 1250, 'in_progress', 4.50, 2.00, 22.5000, 10.0000, 12.5000, TRUE, 30, NOW() + INTERVAL '28 days', NOW() - INTERVAL '2 days', NULL),
-(5, 17, 'YouTube Views - Fast', 17, NULL, 'https://youtube.com/watch?v=ABC123XYZ', 100000, NULL, 100000, 'pending', 1.80, 0.80, 180.0000, 80.0000, 100.0000, FALSE, 0, NULL, NOW() - INTERVAL '1 hour', NULL);
+(5, 10, 'TikTok Followers - Real', 10, 'SMM-30001', 'https://tiktok.com/@carlos_influencer', 50000, 125000, 0, 'COMPLETED', 1.20, 0.55, 60.0000, 27.5000, 32.5000, TRUE, 30, NOW() + INTERVAL '20 days', NOW() - INTERVAL '10 days', NOW() - INTERVAL '9 days'),
+(5, 13, 'TikTok Views - Instant', 13, 'SMM-30002', 'https://tiktok.com/@carlos_influencer/video/123', 1000000, NULL, 0, 'COMPLETED', 0.05, 0.02, 50.0000, 20.0000, 30.0000, FALSE, 0, NULL, NOW() - INTERVAL '8 days', NOW() - INTERVAL '8 days' + INTERVAL '15 minutes'),
+(5, 12, 'TikTok Likes - Fast', 12, 'SMM-30003', 'https://tiktok.com/@carlos_influencer/video/123', 25000, NULL, 0, 'COMPLETED', 0.45, 0.20, 11.2500, 5.0000, 6.2500, FALSE, 0, NULL, NOW() - INTERVAL '8 days', NOW() - INTERVAL '8 days' + INTERVAL '20 minutes'),
+(5, 15, 'YouTube Subscribers - Real', 15, 'SMM-30004', 'https://youtube.com/@CarlosInfluencer', 5000, 45000, 1250, 'IN_PROGRESS', 4.50, 2.00, 22.5000, 10.0000, 12.5000, TRUE, 30, NOW() + INTERVAL '28 days', NOW() - INTERVAL '2 days', NULL),
+(5, 17, 'YouTube Views - Fast', 17, NULL, 'https://youtube.com/watch?v=ABC123XYZ', 100000, NULL, 100000, 'PENDING', 1.80, 0.80, 180.0000, 80.0000, 100.0000, FALSE, 0, NULL, NOW() - INTERVAL '1 hour', NULL);
 
 -- Órdenes de María (user_id = 6) - La startup
 INSERT INTO orders (user_id, service_id, service_name, provider_service_id, provider_order_id, target, quantity, start_count, remains, status, price_per_k, cost_per_k, total_charge, total_cost, profit, is_refillable, refill_days, refill_deadline, created_at, completed_at) VALUES
-(6, 28, 'LinkedIn Followers - Real', 28, 'SMM-40001', 'https://linkedin.com/company/maria-startup', 1000, 50, 0, 'completed', 6.50, 3.00, 6.5000, 3.0000, 3.5000, TRUE, 30, NOW() + INTERVAL '10 days', NOW() - INTERVAL '20 days', NOW() - INTERVAL '18 days'),
-(6, 29, 'LinkedIn Post Likes', 29, 'SMM-40002', 'https://linkedin.com/posts/activity-123', 500, NULL, 0, 'completed', 3.25, 1.50, 1.6250, 0.7500, 0.8750, FALSE, 0, NULL, NOW() - INTERVAL '15 days', NOW() - INTERVAL '15 days' + INTERVAL '6 hours');
+(6, 28, 'LinkedIn Followers - Real', 28, 'SMM-40001', 'https://linkedin.com/company/maria-startup', 1000, 50, 0, 'COMPLETED', 6.50, 3.00, 6.5000, 3.0000, 3.5000, TRUE, 30, NOW() + INTERVAL '10 days', NOW() - INTERVAL '20 days', NOW() - INTERVAL '18 days'),
+(6, 29, 'LinkedIn Post Likes', 29, 'SMM-40002', 'https://linkedin.com/posts/activity-123', 500, NULL, 0, 'COMPLETED', 3.25, 1.50, 1.6250, 0.7500, 0.8750, FALSE, 0, NULL, NOW() - INTERVAL '15 days', NOW() - INTERVAL '15 days' + INTERVAL '6 hours');
 
 -- Orden cancelada
 INSERT INTO orders (user_id, service_id, service_name, provider_service_id, provider_order_id, target, quantity, remains, status, price_per_k, cost_per_k, total_charge, total_cost, profit, is_refillable, refill_days, created_at) VALUES
-(6, 1, 'Instagram Followers - HQ', 1, NULL, 'https://instagram.com/invalid_user_404', 1000, 1000, 'cancelled', 0.99, 0.45, 0.9900, 0.4500, 0.5400, TRUE, 30, NOW() - INTERVAL '10 days');
+(6, 1, 'Instagram Followers - HQ', 1, NULL, 'https://instagram.com/invalid_user_404', 1000, 1000, 'CANCELLED', 0.99, 0.45, 0.9900, 0.4500, 0.5400, TRUE, 30, NOW() - INTERVAL '10 days');
 
 -- Orden reembolsada
 INSERT INTO orders (user_id, service_id, service_name, provider_service_id, provider_order_id, target, quantity, start_count, remains, status, price_per_k, cost_per_k, total_charge, total_cost, profit, is_refillable, refill_days, created_at, completed_at) VALUES
-(7, 3, 'Instagram Followers - Starter', 3, 'SMM-50001', 'https://instagram.com/test_account', 5000, 100, 3500, 'refunded', 0.35, 0.15, 1.7500, 0.7500, 1.0000, FALSE, 0, NOW() - INTERVAL '5 days', NULL);
+(7, 3, 'Instagram Followers - Starter', 3, 'SMM-50001', 'https://instagram.com/test_account', 5000, 100, 3500, 'REFUNDED', 0.35, 0.15, 1.7500, 0.7500, 1.0000, FALSE, 0, NOW() - INTERVAL '5 days', NULL);
 
 -- Orden parcialmente completada
 INSERT INTO orders (user_id, service_id, service_name, provider_service_id, provider_order_id, target, quantity, start_count, remains, status, price_per_k, cost_per_k, total_charge, total_cost, profit, is_refillable, refill_days, created_at, completed_at) VALUES
-(7, 4, 'Instagram Likes - Real', 4, 'SMM-50002', 'https://instagram.com/p/TEST123', 1000, NULL, 250, 'partial', 0.55, 0.25, 0.5500, 0.2500, 0.3000, FALSE, 0, NOW() - INTERVAL '3 days', NOW() - INTERVAL '2 days');
+(7, 4, 'Instagram Likes - Real', 4, 'SMM-50002', 'https://instagram.com/p/TEST123', 1000, NULL, 250, 'PARTIAL', 0.55, 0.25, 0.5500, 0.2500, 0.3000, FALSE, 0, NOW() - INTERVAL '3 days', NOW() - INTERVAL '2 days');
 
 -- ============================================================================
 -- 11. TRANSACCIONES DE ÓRDENES
@@ -341,47 +341,47 @@ INSERT INTO orders (user_id, service_id, service_name, provider_service_id, prov
 -- Cargos por órdenes (balance negativo)
 INSERT INTO transactions (user_id, type, amount, balance_before, balance_after, reference_type, reference_id, description, created_at) VALUES
 -- Marcos
-(3, 'order', -0.9900, 48.2500, 47.2600, 'order', 1, 'Order #1 - Instagram Followers - HQ', NOW() - INTERVAL '7 days'),
-(3, 'order', -0.2750, 72.2200, 71.9450, 'order', 2, 'Order #2 - Instagram Likes - Real', NOW() - INTERVAL '5 days'),
-(3, 'order', -0.2750, 71.9450, 71.6700, 'order', 3, 'Order #3 - Instagram Likes - Real', NOW() - INTERVAL '3 days'),
-(3, 'order', -1.8000, 71.6700, 69.8700, 'order', 4, 'Order #4 - Instagram Reels Views', NOW() - INTERVAL '2 days'),
+(3, 'ORDER', -0.9900, 48.2500, 47.2600, 'order', 1, 'Order #1 - Instagram Followers - HQ', NOW() - INTERVAL '7 days'),
+(3, 'ORDER', -0.2750, 72.2200, 71.9450, 'order', 2, 'Order #2 - Instagram Likes - Real', NOW() - INTERVAL '5 days'),
+(3, 'ORDER', -0.2750, 71.9450, 71.6700, 'order', 3, 'Order #3 - Instagram Likes - Real', NOW() - INTERVAL '3 days'),
+(3, 'ORDER', -1.8000, 71.6700, 69.8700, 'order', 4, 'Order #4 - Instagram Reels Views', NOW() - INTERVAL '2 days'),
 -- Laura
-(4, 'order', -19.9000, 195.8000, 175.9000, 'order', 5, 'Order #5 - Instagram Followers - Premium', NOW() - INTERVAL '14 days'),
-(4, 'order', -4.9500, 175.9000, 170.9500, 'order', 6, 'Order #6 - Instagram Followers - HQ', NOW() - INTERVAL '14 days'),
-(4, 'order', -1.1000, 170.9500, 169.8500, 'order', 7, 'Order #7 - Instagram Likes - Premium', NOW() - INTERVAL '5 days'),
-(4, 'order', -6.0000, 169.8500, 163.8500, 'order', 8, 'Order #8 - Instagram Views - Fast', NOW() - INTERVAL '3 days'),
+(4, 'ORDER', -19.9000, 195.8000, 175.9000, 'order', 5, 'Order #5 - Instagram Followers - Premium', NOW() - INTERVAL '14 days'),
+(4, 'ORDER', -4.9500, 175.9000, 170.9500, 'order', 6, 'Order #6 - Instagram Followers - HQ', NOW() - INTERVAL '14 days'),
+(4, 'ORDER', -1.1000, 170.9500, 169.8500, 'order', 7, 'Order #7 - Instagram Likes - Premium', NOW() - INTERVAL '5 days'),
+(4, 'ORDER', -6.0000, 169.8500, 163.8500, 'order', 8, 'Order #8 - Instagram Views - Fast', NOW() - INTERVAL '3 days'),
 -- Carlos
-(5, 'order', -60.0000, 679.1000, 619.1000, 'order', 9, 'Order #9 - TikTok Followers - Real', NOW() - INTERVAL '10 days'),
-(5, 'order', -50.0000, 619.1000, 569.1000, 'order', 10, 'Order #10 - TikTok Views - Instant', NOW() - INTERVAL '8 days'),
-(5, 'order', -11.2500, 569.1000, 557.8500, 'order', 11, 'Order #11 - TikTok Likes - Fast', NOW() - INTERVAL '8 days'),
-(5, 'order', -22.5000, 557.8500, 535.3500, 'order', 12, 'Order #12 - YouTube Subscribers - Real', NOW() - INTERVAL '2 days'),
-(5, 'order', -180.0000, 535.3500, 355.3500, 'order', 13, 'Order #13 - YouTube Views - Fast', NOW() - INTERVAL '1 hour'),
+(5, 'ORDER', -60.0000, 679.1000, 619.1000, 'order', 9, 'Order #9 - TikTok Followers - Real', NOW() - INTERVAL '10 days'),
+(5, 'ORDER', -50.0000, 619.1000, 569.1000, 'order', 10, 'Order #10 - TikTok Views - Instant', NOW() - INTERVAL '8 days'),
+(5, 'ORDER', -11.2500, 569.1000, 557.8500, 'order', 11, 'Order #11 - TikTok Likes - Fast', NOW() - INTERVAL '8 days'),
+(5, 'ORDER', -22.5000, 557.8500, 535.3500, 'order', 12, 'Order #12 - YouTube Subscribers - Real', NOW() - INTERVAL '2 days'),
+(5, 'ORDER', -180.0000, 535.3500, 355.3500, 'order', 13, 'Order #13 - YouTube Views - Fast', NOW() - INTERVAL '1 hour'),
 -- María
-(6, 'order', -6.5000, 48.2500, 41.7500, 'order', 14, 'Order #14 - LinkedIn Followers - Real', NOW() - INTERVAL '20 days'),
-(6, 'order', -1.6250, 41.7500, 40.1250, 'order', 15, 'Order #15 - LinkedIn Post Likes', NOW() - INTERVAL '15 days'),
-(6, 'order', -0.9900, 40.1250, 39.1350, 'order', 16, 'Order #16 - Instagram Followers - HQ (Cancelled)', NOW() - INTERVAL '10 days'),
+(6, 'ORDER', -6.5000, 48.2500, 41.7500, 'order', 14, 'Order #14 - LinkedIn Followers - Real', NOW() - INTERVAL '20 days'),
+(6, 'ORDER', -1.6250, 41.7500, 40.1250, 'order', 15, 'Order #15 - LinkedIn Post Likes', NOW() - INTERVAL '15 days'),
+(6, 'ORDER', -0.9900, 40.1250, 39.1350, 'order', 16, 'Order #16 - Instagram Followers - HQ (Cancelled)', NOW() - INTERVAL '10 days'),
 -- Test user
-(7, 'order', -1.7500, 96.8000, 95.0500, 'order', 17, 'Order #17 - Instagram Followers - Starter', NOW() - INTERVAL '5 days'),
-(7, 'order', -0.5500, 95.0500, 94.5000, 'order', 18, 'Order #18 - Instagram Likes - Real', NOW() - INTERVAL '3 days');
+(7, 'ORDER', -1.7500, 96.8000, 95.0500, 'order', 17, 'Order #17 - Instagram Followers - Starter', NOW() - INTERVAL '5 days'),
+(7, 'ORDER', -0.5500, 95.0500, 94.5000, 'order', 18, 'Order #18 - Instagram Likes - Real', NOW() - INTERVAL '3 days');
 
 -- Reembolsos
 INSERT INTO transactions (user_id, type, amount, balance_before, balance_after, reference_type, reference_id, description, created_at) VALUES
-(6, 'refund', 0.9900, 39.1350, 40.1250, 'order', 16, 'Refund for Order #16 - Target not found', NOW() - INTERVAL '10 days' + INTERVAL '1 hour'),
-(7, 'refund', 1.2250, 94.5000, 95.7250, 'order', 17, 'Partial refund for Order #17 - 70% delivered', NOW() - INTERVAL '4 days');
+(6, 'REFUND', 0.9900, 39.1350, 40.1250, 'order', 16, 'Refund for Order #16 - Target not found', NOW() - INTERVAL '10 days' + INTERVAL '1 hour'),
+(7, 'REFUND', 1.2250, 94.5000, 95.7250, 'order', 17, 'Partial refund for Order #17 - 70% delivered', NOW() - INTERVAL '4 days');
 
 -- Ajuste manual de admin
 INSERT INTO transactions (user_id, type, amount, balance_before, balance_after, reference_type, reference_id, description, created_at) VALUES
-(7, 'adjustment', 4.2750, 95.7250, 100.0000, NULL, NULL, 'Compensation for service delay - Admin adjustment', NOW() - INTERVAL '3 days');
+(7, 'ADJUSTMENT', 4.2750, 95.7250, 100.0000, NULL, NULL, 'Compensation for service delay - Admin adjustment', NOW() - INTERVAL '3 days');
 
 -- ============================================================================
 -- 12. ORDER REFILLS
 -- ============================================================================
 
 INSERT INTO order_refills (order_id, provider_refill_id, quantity, status, created_at, completed_at) VALUES
-(1, 'REFILL-10001', 150, 'completed', NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days' + INTERVAL '12 hours'),
-(5, 'REFILL-20001', 500, 'completed', NOW() - INTERVAL '7 days', NOW() - INTERVAL '6 days'),
-(5, 'REFILL-20002', 200, 'pending', NOW() - INTERVAL '1 day', NULL),
-(9, NULL, 1000, 'processing', NOW() - INTERVAL '2 hours', NULL);
+(1, 'REFILL-10001', 150, 'COMPLETED', NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days' + INTERVAL '12 hours'),
+(5, 'REFILL-20001', 500, 'COMPLETED', NOW() - INTERVAL '7 days', NOW() - INTERVAL '6 days'),
+(5, 'REFILL-20002', 200, 'PENDING', NOW() - INTERVAL '1 day', NULL),
+(9, NULL, 1000, 'PROCESSING', NOW() - INTERVAL '2 hours', NULL);
 
 -- ============================================================================
 -- 13. ACTUALIZAR BALANCES FINALES DE USUARIOS
