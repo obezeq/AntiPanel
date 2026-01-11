@@ -166,8 +166,8 @@ export class DashboardOrderSection {
   /** Emits when order is successfully created */
   readonly orderCreated = output<OrderResponse>();
 
-  /** Emits when user needs to navigate to wallet (insufficient balance) */
-  readonly navigateToWallet = output<void>();
+  /** Emits required amount when user needs to navigate to wallet (insufficient balance) */
+  readonly navigateToWallet = output<number>();
 
   /** Emits platform selection for services section */
   readonly selectPlatform = output<string>();
@@ -632,10 +632,14 @@ export class DashboardOrderSection {
   }
 
   /**
-   * Navigate to wallet to add funds
+   * Navigate to wallet to add funds.
+   * Emits the required amount (order price - current balance, minimum $1).
    */
   protected onAddFundsClick(): void {
-    this.navigateToWallet.emit();
+    const data = this.orderReadyData();
+    const price = data ? parseFloat(data.price.replace('$', '')) : 0;
+    const needed = Math.max(1, price - this.userBalance());
+    this.navigateToWallet.emit(needed);
   }
 
   /**
