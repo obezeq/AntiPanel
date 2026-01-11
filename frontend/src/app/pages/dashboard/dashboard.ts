@@ -18,6 +18,7 @@ import { DashboardRecentOrdersSection } from './sections/dashboard-recent-orders
 import { ServicesSection } from '../home/sections/services-section/services-section';
 import { UserService, type UserStatisticsResponse } from '../../core/services/user.service';
 import { AuthService } from '../../core/services/auth.service';
+import { PendingOrderService } from '../../core/services/pending-order.service';
 import type { OrderResponse } from '../../core/services/order.service';
 import type { ServiceItemData } from '../../components/shared/service-item-card/service-item-card';
 import type { RecentOrderData } from '../../components/shared/recent-order-card/recent-order-card';
@@ -47,6 +48,7 @@ export class Dashboard implements OnInit {
   private readonly router = inject(Router);
   private readonly userService = inject(UserService);
   private readonly authService = inject(AuthService);
+  private readonly pendingOrderService = inject(PendingOrderService);
   private readonly destroyRef = inject(DestroyRef);
 
   /** Reference to services section for programmatic interaction */
@@ -74,6 +76,9 @@ export class Dashboard implements OnInit {
   /** Whether to reset platform selection (from OrderReady "Explore More") */
   protected readonly shouldResetPlatform = signal(false);
 
+  /** Initial input text from pending order (home page flow) */
+  protected readonly pendingOrderText = signal<string | null>(null);
+
   // -------------------------------------------------------------------------
   // Computed
   // -------------------------------------------------------------------------
@@ -97,6 +102,7 @@ export class Dashboard implements OnInit {
 
   ngOnInit(): void {
     this.loadUserStatistics();
+    this.processPendingOrder();
   }
 
   // -------------------------------------------------------------------------
@@ -123,6 +129,46 @@ export class Dashboard implements OnInit {
           this.isLoading.set(false);
         }
       });
+  }
+
+  /**
+   * Process pending order from home page flow.
+   * Consumes the pending order and pre-fills the order section input.
+   */
+  private processPendingOrder(): void {
+    const pendingOrder = this.pendingOrderService.consume();
+    if (pendingOrder) {
+      // Reconstruct input text from parsed order data
+      const quantity = this.formatQuantityForInput(pendingOrder.quantity);
+      const platform = pendingOrder.service.platform.toLowerCase();
+      const type = pendingOrder.service.type;
+      const target = pendingOrder.target ?? '';
+
+      // Format: "1k instagram Followers @username"
+      const inputText = `${quantity} ${platform} ${type} ${target}`.trim();
+      this.pendingOrderText.set(inputText);
+
+      // Scroll to order section after a tick
+      setTimeout(() => {
+        const orderSection = document.querySelector('app-dashboard-order-section');
+        orderSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  }
+
+  /**
+   * Format quantity for input (1000 -> "1k", 1500 -> "1.5k")
+   */
+  private formatQuantityForInput(qty: number): string {
+    if (qty >= 1000000) {
+      const value = qty / 1000000;
+      return Number.isInteger(value) ? `${value}m` : `${value.toFixed(1)}m`;
+    }
+    if (qty >= 1000) {
+      const value = qty / 1000;
+      return Number.isInteger(value) ? `${value}k` : `${value.toFixed(1)}k`;
+    }
+    return qty.toString();
   }
 
   // -------------------------------------------------------------------------
