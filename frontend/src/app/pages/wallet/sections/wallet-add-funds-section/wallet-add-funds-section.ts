@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, input, output, signal } from '@angular/core';
 import { UpperCasePipe } from '@angular/common';
 import { Button } from '../../../../components/shared/button/button';
 
@@ -48,6 +48,9 @@ export class WalletAddFundsSection {
   /** Maximum deposit amount from processor (null = unlimited) */
   readonly maxAmount = input<number | null>(null);
 
+  /** Initial amount to pre-fill (from insufficient balance flow) */
+  readonly initialAmount = input<string>('');
+
   /** Emits when form is submitted with valid data */
   readonly addFunds = output<AddFundsPayload>();
 
@@ -64,6 +67,16 @@ export class WalletAddFundsSection {
 
   /** Error message for amount validation */
   protected readonly amountError = signal<string>('');
+
+  constructor() {
+    // Pre-fill amount from query params (insufficient balance flow)
+    effect(() => {
+      const initial = this.initialAmount();
+      if (initial && !this.amount()) {
+        this.amount.set(initial);
+      }
+    });
+  }
 
   /** Computed signal for form validity - disables submit button when invalid */
   protected readonly isFormValid = computed(() => {

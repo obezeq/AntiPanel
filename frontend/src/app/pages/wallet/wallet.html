@@ -19,6 +19,7 @@
     [disabled]="!processorsLoaded()"
     [minAmount]="processorLimits().min"
     [maxAmount]="processorLimits().max"
+    [initialAmount]="prefillAmount()"
     (addFunds)="onAddFunds($event)"
   />
 
