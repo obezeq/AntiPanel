@@ -332,13 +332,35 @@ public class GlobalExceptionHandler {
 
     // ==================== Database Exceptions ====================
 
+    /**
+     * Handle balance hold already released/captured exception.
+     * Critical error - indicates order needs manual review.
+     */
+    @ExceptionHandler(HoldAlreadyReleasedException.class)
+    public ResponseEntity<ErrorResponse> handleHoldAlreadyReleased(HoldAlreadyReleasedException ex, HttpServletRequest request) {
+        log.error("Hold already released: {}", ex.getMessage());
+
+        ErrorResponse error = ErrorResponse.of(
+                HttpStatus.CONFLICT.value(),
+                "Conflict",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex, HttpServletRequest request) {
         log.error("Data integrity violation: {}", ex.getMessage());
 
         String message = "Database constraint violation";
-        if (ex.getMessage() != null && ex.getMessage().contains("duplicate key")) {
-            message = "A resource with this value already exists";
+        if (ex.getMessage() != null) {
+            if (ex.getMessage().contains("idempotency_key")) {
+                message = "Request is being processed. Please wait and retry.";
+            } else if (ex.getMessage().contains("duplicate key")) {
+                message = "A resource with this value already exists";
+            }
         }
 
         ErrorResponse error = ErrorResponse.of(
