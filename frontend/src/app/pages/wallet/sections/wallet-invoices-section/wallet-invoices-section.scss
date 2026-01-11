@@ -128,8 +128,9 @@
   }
 
   @include respond-below('md') {
-    padding: var(--spacing-1) var(--spacing-2);
-    font-size: var(--font-size-small);
+    padding: var(--spacing-2);
+    font-size: var(--font-size-caption); // Increased from small for readability
+    min-height: 2.5rem;
     height: auto;
   }
 
