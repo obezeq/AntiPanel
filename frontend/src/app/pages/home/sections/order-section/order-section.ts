@@ -56,13 +56,37 @@ const PLATFORM_KEYWORDS: Record<string, string> = {
  * Service type keyword mappings for parsing
  */
 const SERVICE_TYPE_KEYWORDS: Record<string, string> = {
+  // Followers
   followers: 'followers',
   follower: 'followers',
   follow: 'followers',
+  // Likes
   likes: 'likes',
   like: 'likes',
+  // Comments
   comments: 'comments',
-  comment: 'comments'
+  comment: 'comments',
+  // Views
+  views: 'views',
+  view: 'views',
+  // Subscribers
+  subscribers: 'subscribers',
+  subscriber: 'subscribers',
+  subs: 'subscribers',
+  sub: 'subscribers',
+  // Shares
+  shares: 'shares',
+  share: 'shares',
+  // Retweets (Twitter/X)
+  retweets: 'retweets',
+  retweet: 'retweets',
+  // Connections (LinkedIn)
+  connections: 'connections',
+  connection: 'connections',
+  connect: 'connections',
+  // Reposts (LinkedIn)
+  reposts: 'reposts',
+  repost: 'reposts'
 };
 
 /**
@@ -305,8 +329,22 @@ export class OrderSection {
 
   /**
    * Extract service type from text
+   * Handles compound types like "company followers" and "profile followers"
    */
   private extractServiceType(text: string): string | null {
+    const lowerText = text.toLowerCase();
+
+    // Check compound types FIRST (before single words)
+    // "company followers" should match as company-followers, not just followers
+    if (lowerText.includes('company') && lowerText.includes('followers')) {
+      return 'company-followers';
+    }
+    // "profile followers" = regular followers
+    if (lowerText.includes('profile') && lowerText.includes('followers')) {
+      return 'followers';
+    }
+
+    // Then check single keywords
     const words = text.split(/\s+/);
 
     for (const word of words) {
@@ -324,22 +362,24 @@ export class OrderSection {
 
   /**
    * Extract target (@username or URL) from text
+   * Priority: Full URL > URL without protocol > @username
+   * This ensures URLs like https://tiktok.com/@user/video/123 are captured fully
    */
   private extractTarget(text: string): string | null {
-    // Match @username pattern
-    const usernameMatch = text.match(/@[\w.]+/);
-    if (usernameMatch) return usernameMatch[0];
-
-    // Match URL pattern with protocol
+    // Priority 1: Match URL pattern with protocol (captures TikTok @username in URL)
     const urlWithProtocol = text.match(/https?:\/\/[^\s]+/i);
     if (urlWithProtocol) return urlWithProtocol[0];
 
-    // Match URL pattern without protocol - any domain with common TLDs
+    // Priority 2: Match URL pattern without protocol - any domain with common TLDs
     // Handles: instagram.com/p/ABC, youtube.com/watch?v=xyz, example.com/path, etc.
     const urlWithoutProtocol = text.match(
       /(?:www\.)?[\w-]+\.(?:com|net|org|io|co|me|tv|app|dev|link|bio|page)(?:\/[^\s]*)?/i
     );
     if (urlWithoutProtocol) return urlWithoutProtocol[0];
+
+    // Priority 3: Match @username pattern (only if no URL found)
+    const usernameMatch = text.match(/@[\w.]+/);
+    if (usernameMatch) return usernameMatch[0];
 
     return null;
   }
@@ -368,7 +408,14 @@ export class OrderSection {
     const names: Record<string, string> = {
       followers: 'Followers',
       likes: 'Likes',
-      comments: 'Comments'
+      comments: 'Comments',
+      views: 'Views',
+      subscribers: 'Subscribers',
+      shares: 'Shares',
+      retweets: 'Retweets',
+      connections: 'Connections',
+      reposts: 'Reposts',
+      'company-followers': 'Company Followers'
     };
     return names[slug] ?? slug.charAt(0).toUpperCase() + slug.slice(1);
   }
