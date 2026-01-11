@@ -53,6 +53,9 @@ services:
       SPRING_JPA_SHOW_SQL: "true"
       SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: "true"
 
+      # Development: Auto-update schema to match entities (prevents missing column errors)
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+
       # Development: Auto-reload support (requires spring-boot-devtools)
       SPRING_DEVTOOLS_RESTART_ENABLED: "true"
 

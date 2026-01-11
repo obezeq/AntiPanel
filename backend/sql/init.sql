@@ -141,7 +141,8 @@ CREATE TABLE users (
     login_count INTEGER NOT NULL DEFAULT 0,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    
+    version BIGINT NOT NULL DEFAULT 0,
+
     -- Constraints
     CONSTRAINT uq_users_email UNIQUE (email),
     CONSTRAINT chk_users_balance_non_negative CHECK (balance >= 0),
@@ -386,12 +387,14 @@ CREATE TABLE orders (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     completed_at TIMESTAMPTZ,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    
+    idempotency_key VARCHAR(64) UNIQUE,
+    version BIGINT NOT NULL DEFAULT 0,
+
     -- Foreign Keys
-    CONSTRAINT fk_orders_user 
-        FOREIGN KEY (user_id) 
-        REFERENCES users(id) 
-        ON DELETE RESTRICT 
+    CONSTRAINT fk_orders_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE RESTRICT
         ON UPDATE CASCADE,
     CONSTRAINT fk_orders_service 
         FOREIGN KEY (service_id) 
@@ -471,7 +474,8 @@ CREATE TABLE invoices (
     paid_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    
+    version BIGINT NOT NULL DEFAULT 0,
+
     -- Foreign Keys
     CONSTRAINT fk_invoices_user 
         FOREIGN KEY (user_id) 
@@ -496,6 +500,7 @@ COMMENT ON TABLE invoices IS 'Registro de facturas/depósitos de usuarios';
 COMMENT ON COLUMN invoices.processor_invoice_id IS 'ID de la transacción en el procesador de pago';
 COMMENT ON COLUMN invoices.net_amount IS 'Cantidad neta a acreditar después de comisiones';
 COMMENT ON COLUMN invoices.payment_url IS 'URL de pago generada (si aplica)';
+COMMENT ON COLUMN invoices.version IS 'Optimistic locking version for concurrent payment completion';
 
 -- ----------------------------------------------------------------------------
 -- Tabla: transactions
@@ -602,8 +607,10 @@ CREATE INDEX idx_orders_user_created ON orders(user_id, created_at DESC);
 CREATE INDEX idx_orders_refill_deadline ON orders(refill_deadline) 
     WHERE is_refillable = TRUE AND refill_deadline IS NOT NULL AND status = 'COMPLETED';
 -- Índice para reportes de profit
-CREATE INDEX idx_orders_completed_at ON orders(completed_at DESC) 
-    WHERE status = 'COMPLETED';
+CREATE INDEX idx_orders_completed_at ON orders(completed_at DESC)
+    WHERE completed_at IS NOT NULL;
+CREATE UNIQUE INDEX idx_orders_idempotency_key ON orders(idempotency_key)
+    WHERE idempotency_key IS NOT NULL;
 
 -- ---------------------------------------------------------------------------
 -- Índices para order_refills
@@ -763,7 +770,7 @@ INSERT INTO payment_processors (
     'https://paymento.io',
     NULL,  -- Set via PAYMENTO_API_KEY environment variable
     NULL,  -- Set via PAYMENTO_API_SECRET environment variable
-    '{"baseUrl": "https://api.paymento.io/v1", "speed": 0, "returnUrl": "http://localhost:4200/wallet"}',
+    '{"baseUrl": "https://api.paymento.io/v1", "speed": 0}',
     1.00,
     10000.00,
     0.50,

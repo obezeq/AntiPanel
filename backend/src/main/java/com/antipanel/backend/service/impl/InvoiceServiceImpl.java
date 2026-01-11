@@ -5,6 +5,7 @@ import com.antipanel.backend.dto.invoice.InvoiceCreateRequest;
 import com.antipanel.backend.dto.invoice.InvoiceResponse;
 import com.antipanel.backend.dto.invoice.InvoiceSummary;
 import com.antipanel.backend.dto.paymento.PaymentoPaymentResponse;
+import com.antipanel.backend.dto.paymento.PaymentoVerifyResponse;
 import com.antipanel.backend.entity.Invoice;
 import com.antipanel.backend.entity.PaymentProcessor;
 import com.antipanel.backend.entity.Transaction;
@@ -112,30 +113,24 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     /**
      * Creates a payment with Paymento and updates the invoice.
+     *
+     * @throws PaymentoApiException if Paymento API call fails (triggers transaction rollback)
      */
     private Invoice createPaymentoPayment(Invoice invoice, PaymentProcessor processor) {
-        try {
-            log.debug("Creating Paymento payment for invoice ID: {}", invoice.getId());
+        log.debug("Creating Paymento payment for invoice ID: {}", invoice.getId());
 
-            PaymentoPaymentResponse paymentResponse = paymentoClient.createPayment(processor, invoice);
+        PaymentoPaymentResponse paymentResponse = paymentoClient.createPayment(processor, invoice);
 
-            // Update invoice with token and payment URL
-            invoice.setProcessorInvoiceId(paymentResponse.getToken());
-            invoice.setPaymentUrl(paymentResponse.getPaymentUrl());
-            invoice.setStatus(InvoiceStatus.PROCESSING);
+        // Update invoice with token and payment URL
+        invoice.setProcessorInvoiceId(paymentResponse.getToken());
+        invoice.setPaymentUrl(paymentResponse.getPaymentUrl());
+        invoice.setStatus(InvoiceStatus.PROCESSING);
 
-            Invoice updated = invoiceRepository.save(invoice);
-            log.info("Paymento payment created for invoice ID: {} - Payment URL: {}",
-                    updated.getId(), updated.getPaymentUrl());
+        Invoice updated = invoiceRepository.save(invoice);
+        log.info("Paymento payment created for invoice ID: {} - Payment URL: {}",
+                updated.getId(), updated.getPaymentUrl());
 
-            return updated;
-        } catch (PaymentoApiException e) {
-            log.error("Failed to create Paymento payment for invoice {}: {}",
-                    invoice.getId(), e.getMessage());
-            // Keep invoice as PENDING - user can retry or payment team can investigate
-            // Don't throw - return the invoice so user knows it was created
-            return invoice;
-        }
+        return updated;
     }
 
     // ============ READ OPERATIONS ============
@@ -279,10 +274,15 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Transactional
     public InvoiceResponse completePayment(Long id) {
         log.debug("Completing payment for invoice ID: {}", id);
-        Invoice invoice = findInvoiceById(id);
+
+        // Use pessimistic lock to prevent race conditions (double credit)
+        Invoice invoice = invoiceRepository.findByIdForUpdate(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Invoice", "id", id));
 
         if (invoice.isFinal()) {
-            throw new BadRequestException("Invoice is already in final state");
+            // Already completed - return current state (idempotent)
+            log.debug("Invoice {} already in final state: {}", id, invoice.getStatus());
+            return invoiceMapper.toResponse(invoice);
         }
 
         invoice.setStatus(InvoiceStatus.COMPLETED);
@@ -311,6 +311,52 @@ public class InvoiceServiceImpl implements InvoiceService {
         Invoice saved = invoiceRepository.save(invoice);
         log.info("Completed payment for invoice ID: {} - Added {} to user balance", id, invoice.getNetAmount());
         return invoiceMapper.toResponse(saved);
+    }
+
+    @Override
+    @Transactional
+    public InvoiceResponse checkPaymentStatus(Long invoiceId) {
+        log.debug("Checking payment status for invoice ID: {}", invoiceId);
+        Invoice invoice = findInvoiceById(invoiceId);
+
+        // Already final - return current state (idempotency)
+        if (invoice.isFinal()) {
+            log.debug("Invoice {} already in final state: {}", invoiceId, invoice.getStatus());
+            return invoiceMapper.toResponse(invoice);
+        }
+
+        // Must be PROCESSING with token
+        if (invoice.getStatus() != InvoiceStatus.PROCESSING ||
+            invoice.getProcessorInvoiceId() == null) {
+            log.debug("Invoice {} not eligible for check (status={}, token={})",
+                invoiceId, invoice.getStatus(), invoice.getProcessorInvoiceId());
+            return invoiceMapper.toResponse(invoice);
+        }
+
+        // Verify with Paymento API
+        PaymentProcessor processor = paymentProcessorRepository.findByCode(PAYMENTO_PROCESSOR_CODE)
+            .orElseThrow(() -> new BadRequestException("Paymento processor not configured"));
+
+        try {
+            PaymentoVerifyResponse response = paymentoClient.verifyPayment(
+                processor, invoice.getProcessorInvoiceId());
+
+            if (response.isPaid()) {
+                // Payment is complete - add balance and update status
+                log.info("Payment verified as complete for invoice {}", invoiceId);
+                return completePayment(invoiceId);
+            }
+
+            // Verify returned but not paid yet (pending)
+            log.debug("Payment not yet complete for invoice {}", invoiceId);
+        } catch (PaymentoApiException e) {
+            // API error means payment not complete - this is expected for pending payments
+            log.debug("Verify returned error for invoice {} (expected if pending): {}",
+                invoiceId, e.getMessage());
+        }
+
+        // Still pending
+        return invoiceMapper.toResponse(invoice);
     }
 
     @Override

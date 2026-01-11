@@ -94,6 +94,14 @@ public class Invoice {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    /**
+     * Version for optimistic locking.
+     * Prevents race conditions in concurrent payment completion.
+     */
+    @Version
+    @Column(name = "version")
+    private Long version;
+
     // Métodos de utilidad
 
     /**

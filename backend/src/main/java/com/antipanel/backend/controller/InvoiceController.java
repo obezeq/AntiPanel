@@ -103,6 +103,35 @@ public class InvoiceController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Check and update payment status",
+            description = "Verifies payment status with Paymento API and updates invoice if paid. " +
+                         "Used for polling-based payment confirmation (no webhooks required).")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Status checked successfully",
+                    content = @Content(schema = @Schema(implementation = InvoiceResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Not authenticated"),
+            @ApiResponse(responseCode = "403", description = "Access denied - invoice belongs to another user"),
+            @ApiResponse(responseCode = "404", description = "Invoice not found")
+    })
+    @PostMapping("/{id}/check-status")
+    public ResponseEntity<InvoiceResponse> checkPaymentStatus(
+            @CurrentUser CustomUserDetails currentUser,
+            @Parameter(description = "Invoice ID", example = "1")
+            @PathVariable Long id) {
+        log.debug("Checking payment status for invoice {} requested by user {}", id, currentUser.getUserId());
+
+        // Security: verify the invoice belongs to the current user
+        InvoiceResponse existing = invoiceService.getById(id);
+        if (!existing.getUser().getId().equals(currentUser.getUserId())) {
+            log.warn("User {} attempted to check status of invoice {} belonging to user {}",
+                    currentUser.getUserId(), id, existing.getUser().getId());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        InvoiceResponse response = invoiceService.checkPaymentStatus(id);
+        return ResponseEntity.ok(response);
+    }
+
     @Operation(summary = "Get user's pending invoices",
             description = "Returns all invoices with pending payment status")
     @ApiResponses({

@@ -189,6 +189,20 @@ export class InvoiceService {
   }
 
   /**
+   * Checks and updates payment status by verifying with Paymento API.
+   * Used for polling-based payment confirmation (no webhooks required).
+   *
+   * @param invoiceId - Invoice ID to check
+   * @returns Observable with updated invoice response
+   */
+  checkPaymentStatus(invoiceId: number): Observable<InvoiceResponse> {
+    return this.http.post<InvoiceResponse>(
+      `${this.baseUrl}/${invoiceId}/check-status`,
+      {}
+    ).pipe(catchError(this.handleError));
+  }
+
+  /**
    * Gets user's pending invoices.
    *
    * @returns Observable with list of pending invoices

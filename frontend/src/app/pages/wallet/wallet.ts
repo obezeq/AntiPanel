@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
+import { forkJoin, fromEvent, filter, throttleTime, take } from 'rxjs';
 import { Header } from '../../components/layout/header/header';
 import { Footer } from '../../components/layout/footer/footer';
 import { AuthService } from '../../core/services/auth.service';
@@ -42,6 +44,7 @@ export class Wallet implements OnInit {
   private readonly userService = inject(UserService);
   private readonly invoiceService = inject(InvoiceService);
   private readonly notificationService = inject(NotificationService);
+  private readonly destroyRef = inject(DestroyRef);
 
   /** Current wallet balance formatted as currency */
   protected readonly balance = signal<string>('$0.00');
@@ -66,6 +69,59 @@ export class Wallet implements OnInit {
 
   ngOnInit(): void {
     this.loadWalletData();
+    this.setupPaymentPolling();
+  }
+
+  /**
+   * Set up payment polling when tab gains focus.
+   * Checks PROCESSING invoices for payment completion.
+   * Uses throttleTime to prevent spam on rapid tab switching.
+   */
+  private setupPaymentPolling(): void {
+    fromEvent(document, 'visibilitychange').pipe(
+      filter(() => document.visibilityState === 'visible'),
+      throttleTime(5000), // Prevent spam on rapid tab switching
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(() => {
+      this.checkProcessingInvoices();
+    });
+  }
+
+  /**
+   * Check all PROCESSING invoices for payment completion.
+   * Called when user returns to the tab.
+   * Uses forkJoin to batch requests and single subscription for cleanup.
+   */
+  private checkProcessingInvoices(): void {
+    const processing = this.invoices().filter(inv => inv.status === 'processing');
+
+    if (processing.length === 0) {
+      return;
+    }
+
+    // Use forkJoin to combine all checks into single subscription
+    forkJoin(
+      processing.map(inv =>
+        this.invoiceService.checkPaymentStatus(parseInt(inv.id, 10))
+      )
+    ).pipe(
+      take(1),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
+      next: (results) => {
+        if (results.some(r => r.status === 'COMPLETED')) {
+          this.notificationService.success(
+            'Payment completed successfully!',
+            { title: 'Payment Received' }
+          );
+          this.loadWalletData();
+        }
+      },
+      error: (err) => {
+        // Log but don't show to user - will retry on next focus
+        console.warn('Payment status check failed:', err);
+      }
+    });
   }
 
   /**

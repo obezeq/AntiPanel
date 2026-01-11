@@ -49,6 +49,16 @@ public class PaymentoVerifyResponse {
     }
 
     /**
+     * Checks if verification indicates payment is complete.
+     * success=true with body data means payment was made and confirmed on blockchain.
+     *
+     * @return true if payment is verified as paid
+     */
+    public boolean isPaid() {
+        return success && body != null && body.getToken() != null;
+    }
+
+    /**
      * Body of the verification response containing order details.
      */
     @Data

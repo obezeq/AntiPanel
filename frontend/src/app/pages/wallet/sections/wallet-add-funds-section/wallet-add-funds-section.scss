@@ -13,7 +13,6 @@
   align-items: center;
   gap: var(--spacing-12);
   width: 100%;
-  max-width: 58.375rem; // 934px from Figma
 
   @include respond-below('md') {
     gap: var(--spacing-6);
@@ -135,13 +134,13 @@
   max-width: 21.25rem; // 340px from Figma
   height: var(--spacing-12);
   padding: var(--spacing-2) var(--spacing-6);
-  background-color: var(--color-information);
-  border: var(--border-width-medium) solid transparent;
+  // background-color: var(--color-information);
+  border: var(--border-width-medium) solid var(--color-foreground);
   border-radius: var(--radius-lg);
   font-family: var(--font-secondary);
   font-size: var(--font-size-h5);
   font-weight: var(--font-weight-medium);
-  color: var(--color-text);
+  color: var(--color-foreground);
   text-transform: uppercase;
   letter-spacing: 0.075em;
   transition: var(--transition-colors);
