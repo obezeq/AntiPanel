@@ -17,7 +17,7 @@
   @include respond-below('md') {
     gap: var(--spacing-6);
     max-width: 100%; // Full width on mobile
-    padding: 0 var(--spacing-4); // Internal padding for content breathing room
+    padding: 0 var(--spacing-2); // 8px - minimal padding for maximum width (base-8)
   }
 }
 

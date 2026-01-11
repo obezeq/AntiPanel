@@ -23,7 +23,7 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: var(--spacing-4);
-    padding: 0 var(--spacing-4); // Internal padding for content breathing room
+    padding: 0 var(--spacing-2); // 8px - minimal padding for maximum width (base-8)
   }
 }
 

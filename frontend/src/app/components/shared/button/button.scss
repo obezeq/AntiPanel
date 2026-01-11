@@ -6,8 +6,28 @@
 // Reusable button with variants, sizes, and states.
 // ==========================================================================
 
+// ---------------------------------------------------------------------------
+// HOST ELEMENT STYLING
+// ---------------------------------------------------------------------------
+// Ensures the custom element behaves correctly in different layouts.
+
+:host {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+:host(.button--full-width-host) {
+  display: block;
+  width: 100%;
+}
+
+// ---------------------------------------------------------------------------
+// BASE BUTTON STYLES
+// ---------------------------------------------------------------------------
+
 .button {
   @include button-base;
+  width: 100%; // Fill the host element
 
   // Default styles (will be overridden by variant modifiers)
   background-color: var(--color-success);

@@ -18,7 +18,7 @@
   @include respond-below('md') {
     gap: var(--spacing-6);
     max-width: 100%; // Full width on mobile
-    padding: 0 var(--spacing-4); // Internal padding for content breathing room
+    padding: 0 var(--spacing-2); // 8px - minimal padding for maximum width (base-8)
   }
 }
 
@@ -68,20 +68,20 @@
 
   @include respond-below('md') {
     flex-direction: column;
-    align-items: stretch;
-    gap: var(--spacing-2); // Tighter gap
-    padding: var(--spacing-2); // Minimal padding
+    align-items: stretch; // Forces all children to stretch to full width
+    gap: var(--spacing-2); // 8px - tighter gap (base-8)
+    padding: var(--spacing-2); // 8px - minimal padding (base-8)
     background-color: var(--color-tiny-info);
     border-radius: var(--radius-lg);
 
-    // Ensure app-button custom element stretches to full width
-    app-button {
-      display: block;
+    // Make all direct children full width (works with Angular encapsulation)
+    > * {
       width: 100%;
+    }
 
-      .button {
-        width: 100%;
-      }
+    // Ensure custom elements display as block for proper width behavior
+    > app-button {
+      display: block;
     }
   }
 }
