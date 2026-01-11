@@ -13,9 +13,11 @@
   align-items: center;
   gap: var(--spacing-12);
   width: 100%;
+  max-width: 58.375rem; // Match invoices section
 
   @include respond-below('md') {
     gap: var(--spacing-6);
+    max-width: 100%; // Full width on mobile
   }
 }
 
@@ -66,8 +68,8 @@
   @include respond-below('md') {
     flex-direction: column;
     align-items: stretch;
-    gap: var(--spacing-3);
-    padding: var(--spacing-3); // Reduced for more content width
+    gap: var(--spacing-2); // Tighter gap
+    padding: var(--spacing-2); // Minimal padding
     background-color: var(--color-tiny-info);
     border-radius: var(--radius-lg);
   }
@@ -80,7 +82,10 @@
 
       // Pierce encapsulation to style internal button
       ::ng-deep .button {
-        width: 100%;
+        width: 100% !important;
+        height: var(--spacing-12) !important; // 48px - consistent with inputs
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
       }
     }
   }
