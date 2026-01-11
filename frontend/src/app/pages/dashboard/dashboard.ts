@@ -176,10 +176,13 @@ export class Dashboard implements OnInit {
   // -------------------------------------------------------------------------
 
   /**
-   * Handle add funds click from overview section
+   * Handle add funds click from overview section.
+   * Navigates to wallet with returnUrl for back navigation.
    */
   protected onAddFunds(): void {
-    this.router.navigate(['/wallet']);
+    this.router.navigate(['/wallet'], {
+      queryParams: { returnUrl: '/dashboard' }
+    });
   }
 
   /**
@@ -217,10 +220,16 @@ export class Dashboard implements OnInit {
   }
 
   /**
-   * Handle navigate to wallet from order section
+   * Handle navigate to wallet from order section.
+   * Passes required amount and returnUrl as query params.
    */
-  protected onNavigateToWallet(): void {
-    this.router.navigate(['/wallet']);
+  protected onNavigateToWallet(requiredAmount: number): void {
+    this.router.navigate(['/wallet'], {
+      queryParams: {
+        amount: requiredAmount.toFixed(2),
+        returnUrl: '/dashboard'
+      }
+    });
   }
 
   /**
