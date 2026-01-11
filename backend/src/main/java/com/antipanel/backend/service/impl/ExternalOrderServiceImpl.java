@@ -13,7 +13,7 @@ import com.antipanel.backend.repository.OrderRepository;
 import com.antipanel.backend.service.ExternalOrderService;
 import com.antipanel.backend.service.OrderService;
 import com.antipanel.backend.service.provider.ProviderApiClient;
-import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
  * Handles order submission and status updates with external provider APIs.
  */
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Slf4j
 public class ExternalOrderServiceImpl implements ExternalOrderService {
@@ -38,6 +37,21 @@ public class ExternalOrderServiceImpl implements ExternalOrderService {
     private final OrderService orderService;
     private final ProviderApiClient providerApiClient;
     private final OrderMapper orderMapper;
+
+    /**
+     * Constructor with @Lazy on OrderService to break circular dependency.
+     * OrderService -> ExternalOrderService -> OrderService
+     */
+    public ExternalOrderServiceImpl(
+            OrderRepository orderRepository,
+            @Lazy OrderService orderService,
+            ProviderApiClient providerApiClient,
+            OrderMapper orderMapper) {
+        this.orderRepository = orderRepository;
+        this.orderService = orderService;
+        this.providerApiClient = providerApiClient;
+        this.orderMapper = orderMapper;
+    }
 
     @Override
     @Transactional
