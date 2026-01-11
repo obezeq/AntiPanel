@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
+import { fromEvent, filter, throttleTime, take } from 'rxjs';
 import { NgIcon } from '@ng-icons/core';
 import { Header } from '../../components/layout/header/header';
 import { Footer } from '../../components/layout/footer/footer';
@@ -20,6 +21,7 @@ import { OrderPagination } from '../../components/shared/order-pagination/order-
 import { OrderService, type OrderResponse } from '../../core/services/order.service';
 import { UserService } from '../../core/services/user.service';
 import { AuthService } from '../../core/services/auth.service';
+import { NotificationService } from '../../services/notification.service';
 
 /**
  * Orders page component.
@@ -48,6 +50,7 @@ export class Orders implements OnInit {
   private readonly orderService = inject(OrderService);
   private readonly userService = inject(UserService);
   private readonly authService = inject(AuthService);
+  private readonly notificationService = inject(NotificationService);
   private readonly destroyRef = inject(DestroyRef);
 
   /** Reference to orders list for scroll behavior */
@@ -160,6 +163,7 @@ export class Orders implements OnInit {
   ngOnInit(): void {
     this.loadBalance();
     this.loadOrders();
+    this.setupOrderPolling();
   }
 
   // -------------------------------------------------------------------------
@@ -313,6 +317,14 @@ export class Orders implements OnInit {
     // TODO: Call refill API endpoint
   }
 
+  /**
+   * Handle order card click.
+   * Navigates to order detail page.
+   */
+  protected onOrderClick(order: OrderCardData): void {
+    this.router.navigate(['/orders', order.id]);
+  }
+
   // -------------------------------------------------------------------------
   // Event Handlers - Header
   // -------------------------------------------------------------------------
@@ -325,5 +337,77 @@ export class Orders implements OnInit {
       next: () => this.router.navigate(['/home']),
       error: () => this.router.navigate(['/home'])
     });
+  }
+
+  // -------------------------------------------------------------------------
+  // Order Status Polling
+  // -------------------------------------------------------------------------
+
+  /**
+   * Setup polling for order status updates.
+   * Polls when user returns to the tab (visibility change).
+   * Throttled to prevent excessive API calls.
+   */
+  private setupOrderPolling(): void {
+    fromEvent(document, 'visibilitychange').pipe(
+      filter(() => document.visibilityState === 'visible'),
+      throttleTime(10000), // 10 seconds minimum between checks
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(() => {
+      this.checkOrderStatusUpdates();
+    });
+  }
+
+  /**
+   * Check for order status updates from API.
+   * Only checks if there are active (non-final) orders.
+   */
+  private checkOrderStatusUpdates(): void {
+    const activeOrders = this.orders().filter(
+      o => ['pending', 'processing'].includes(o.status)
+    );
+
+    if (activeOrders.length === 0) return;
+
+    this.orderService.getActiveOrders().pipe(
+      take(1),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
+      next: orders => {
+        this.handleOrderUpdates(orders);
+      },
+      error: err => {
+        console.warn('Order status check failed:', err);
+      }
+    });
+  }
+
+  /**
+   * Handle order updates from API.
+   * Compares with current orders and notifies user of completions.
+   */
+  private handleOrderUpdates(updatedOrders: OrderResponse[]): void {
+    const currentOrders = this.orders();
+    let hasChanges = false;
+
+    updatedOrders.forEach(updated => {
+      const existing = currentOrders.find(o => o.id === updated.id.toString());
+      if (existing && existing.status !== this.mapStatus(updated.status)) {
+        hasChanges = true;
+
+        // Notify user of completion
+        if (updated.status === 'COMPLETED') {
+          this.notificationService.success(
+            `Order #${updated.id} has been completed!`,
+            { title: 'Order Complete' }
+          );
+        }
+      }
+    });
+
+    // Reload orders if any changed
+    if (hasChanges) {
+      this.loadOrders();
+    }
   }
 }
