@@ -5,6 +5,7 @@ import { Footer } from '../../components/layout/footer/footer';
 import { HeroSection } from './sections/hero-section/hero-section';
 import { OrderSection } from './sections/order-section/order-section';
 import { ServicesSection } from './sections/services-section/services-section';
+import { PendingOrderService } from '../../core/services/pending-order.service';
 import type { OrderReadyData } from '../../components/shared/order-ready/order-ready';
 import type { ServiceItemData } from '../../components/shared/service-item-card/service-item-card';
 
@@ -27,6 +28,7 @@ import type { ServiceItemData } from '../../components/shared/service-item-card/
 })
 export class Home {
   private readonly router = inject(Router);
+  private readonly pendingOrderService = inject(PendingOrderService);
 
   /** Reference to OrderSection for scrolling (Angular best practice) */
   @ViewChild('orderSection', { read: ElementRef })
@@ -47,13 +49,10 @@ export class Home {
 
   /**
    * Handle place order event from OrderSection.
-   * Redirects to registration page since user is not authenticated.
+   * Stores order in PendingOrderService and redirects to registration.
    */
   protected onPlaceOrder(data: OrderReadyData): void {
-    // Store order data in session storage for after registration
-    sessionStorage.setItem('pendingOrder', JSON.stringify(data));
-
-    // Redirect to registration
+    this.pendingOrderService.set(data);
     this.router.navigate(['/register']);
   }
 
