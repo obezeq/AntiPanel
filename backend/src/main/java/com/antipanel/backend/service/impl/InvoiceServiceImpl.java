@@ -122,9 +122,9 @@ public class InvoiceServiceImpl implements InvoiceService {
         PaymentoPaymentResponse paymentResponse = paymentoClient.createPayment(processor, invoice);
 
         // Update invoice with token and payment URL
+        // Keep PENDING status - user hasn't paid yet
         invoice.setProcessorInvoiceId(paymentResponse.getToken());
         invoice.setPaymentUrl(paymentResponse.getPaymentUrl());
-        invoice.setStatus(InvoiceStatus.PROCESSING);
 
         Invoice updated = invoiceRepository.save(invoice);
         log.info("Paymento payment created for invoice ID: {} - Payment URL: {}",

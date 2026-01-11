@@ -88,20 +88,22 @@ export class Wallet implements OnInit {
   }
 
   /**
-   * Check all PROCESSING invoices for payment completion.
-   * Called when user returns to the tab.
+   * Check all PENDING invoices with payment URLs for completion.
+   * Called when user returns to the tab after opening payment link.
    * Uses forkJoin to batch requests and single subscription for cleanup.
    */
   private checkProcessingInvoices(): void {
-    const processing = this.invoices().filter(inv => inv.status === 'processing');
+    const pending = this.invoices().filter(
+      inv => inv.status === 'pending' && inv.paymentUrl
+    );
 
-    if (processing.length === 0) {
+    if (pending.length === 0) {
       return;
     }
 
     // Use forkJoin to combine all checks into single subscription
     forkJoin(
-      processing.map(inv =>
+      pending.map(inv =>
         this.invoiceService.checkPaymentStatus(parseInt(inv.id, 10))
       )
     ).pipe(
