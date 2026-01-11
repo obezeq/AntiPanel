@@ -6,6 +6,7 @@ import com.antipanel.backend.dto.order.OrderDetailResponse;
 import com.antipanel.backend.dto.order.OrderResponse;
 import com.antipanel.backend.security.CurrentUser;
 import com.antipanel.backend.security.CustomUserDetails;
+import com.antipanel.backend.service.OrderCreationFacade;
 import com.antipanel.backend.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -44,6 +45,7 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
+    private final OrderCreationFacade orderCreationFacade;
 
     @Operation(summary = "Create a new order",
             description = "Creates a new order for a service. Validates quantity limits and user balance. " +
@@ -62,15 +64,12 @@ public class OrderController {
             @Valid @RequestBody OrderCreateRequest request) {
         log.debug("Creating order for user ID: {} - service: {}", currentUser.getUserId(), request.getServiceId());
 
-        // Step 1: Create order and deduct balance (main transaction)
-        // This commits the transaction, releasing the user lock
-        OrderResponse created = orderService.create(currentUser.getUserId(), request);
+        // Uses balance reservation pattern:
+        // 1. Reserve balance (hold) → 2. Create order → 3. Submit to provider → 4. Capture/Release hold
+        // If submission fails, balance is automatically refunded
+        OrderResponse response = orderCreationFacade.createOrder(currentUser.getUserId(), request);
 
-        // Step 2: Submit to external provider (separate transaction via REQUIRES_NEW)
-        // If this fails, compensation is automatically triggered and ProviderApiException is thrown
-        OrderResponse submitted = orderService.submitOrderToProvider(created.getId());
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(submitted);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @Operation(summary = "Get user's orders with pagination",

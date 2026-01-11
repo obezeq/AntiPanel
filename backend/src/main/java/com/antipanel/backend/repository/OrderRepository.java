@@ -140,6 +140,15 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Optional<Order> findByIdempotencyKey(String idempotencyKey);
 
     /**
+     * Find order by balance hold ID.
+     * Used for idempotent order creation with balance reservation pattern.
+     *
+     * @param balanceHoldId Balance hold ID
+     * @return Optional order if exists with this hold ID
+     */
+    Optional<Order> findByBalanceHoldId(Long balanceHoldId);
+
+    /**
      * Find orders needing provider update (stale orders in progress)
      *
      * @param threshold Timestamp threshold for last update

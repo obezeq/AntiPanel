@@ -82,6 +82,13 @@ public class Order {
     @Column(name = "idempotency_key", length = 64, unique = true)
     private String idempotencyKey;
 
+    /**
+     * Reference to the balance hold used for this order.
+     * Null for legacy orders created before balance hold system.
+     */
+    @Column(name = "balance_hold_id")
+    private Long balanceHoldId;
+
     @NotBlank(message = "El target no puede estar vacío")
     @Size(max = 500, message = "El target no puede exceder 500 caracteres")
     @Column(name = "target", length = 500, nullable = false)
