@@ -70,6 +70,7 @@ export class CatalogService {
     }
 
     return this.http.get<CategoryWithCount[]>(`${this.baseUrl}/categories/with-counts`).pipe(
+      map(categories => categories.filter(c => c.serviceCount > 0)),
       tap(categories => this.categoriesCache.set(categories)),
       catchError(error => {
         console.error('Failed to fetch categories:', error);
