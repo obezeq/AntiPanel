@@ -325,11 +325,17 @@ public class InvoiceServiceImpl implements InvoiceService {
             return invoiceMapper.toResponse(invoice);
         }
 
-        // Must be PROCESSING with token
-        if (invoice.getStatus() != InvoiceStatus.PROCESSING ||
-            invoice.getProcessorInvoiceId() == null) {
-            log.debug("Invoice {} not eligible for check (status={}, token={})",
-                invoiceId, invoice.getStatus(), invoice.getProcessorInvoiceId());
+        // Must have token to verify with Paymento
+        if (invoice.getProcessorInvoiceId() == null) {
+            log.debug("Invoice {} has no token, skipping payment check", invoiceId);
+            return invoiceMapper.toResponse(invoice);
+        }
+
+        // Only check PENDING or PROCESSING invoices (not already final)
+        if (invoice.getStatus() != InvoiceStatus.PENDING &&
+            invoice.getStatus() != InvoiceStatus.PROCESSING) {
+            log.debug("Invoice {} in status {} is not eligible for payment check",
+                invoiceId, invoice.getStatus());
             return invoiceMapper.toResponse(invoice);
         }
 

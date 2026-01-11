@@ -1,7 +1,6 @@
 package com.antipanel.backend.scheduler;
 
 import com.antipanel.backend.entity.Invoice;
-import com.antipanel.backend.entity.enums.InvoiceStatus;
 import com.antipanel.backend.repository.InvoiceRepository;
 import com.antipanel.backend.service.InvoiceService;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +12,7 @@ import java.util.List;
 
 /**
  * Background scheduler for polling pending Paymento payments.
- * Periodically checks PROCESSING invoices for payment completion.
+ * Periodically checks PENDING and PROCESSING invoices for payment completion.
  *
  * This is a fallback mechanism for when webhooks are unavailable
  * (e.g., localhost development without HTTPS).
@@ -27,20 +26,21 @@ public class PaymentPollingScheduler {
     private final InvoiceService invoiceService;
 
     /**
-     * Polls all PROCESSING invoices every 30 seconds.
-     * Checks each one against Paymento verify API.
+     * Polls all eligible invoices every 30 seconds.
+     * Uses fixedDelay to ensure previous poll completes before next starts.
+     * Includes both PENDING and PROCESSING invoices with payment tokens.
      */
-    @Scheduled(fixedRate = 30000)
+    @Scheduled(fixedDelay = 30000)
     public void pollProcessingPayments() {
-        List<Invoice> processing = invoiceRepository.findByStatusOrderByCreatedAtDesc(InvoiceStatus.PROCESSING);
+        List<Invoice> eligible = invoiceRepository.findInvoicesEligibleForPolling();
 
-        if (processing.isEmpty()) {
+        if (eligible.isEmpty()) {
             return;
         }
 
-        log.debug("Polling {} processing invoices for payment status", processing.size());
+        log.debug("Polling {} eligible invoices for payment status", eligible.size());
 
-        for (Invoice invoice : processing) {
+        for (Invoice invoice : eligible) {
             try {
                 invoiceService.checkPaymentStatus(invoice.getId());
             } catch (Exception e) {

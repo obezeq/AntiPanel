@@ -97,6 +97,21 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
      */
     Optional<Invoice> findByProcessorInvoiceId(String processorInvoiceId);
 
+    // ============ POLLING QUERIES ============
+
+    /**
+     * Find invoices eligible for payment polling.
+     * Includes PENDING and PROCESSING invoices that have a payment token.
+     * Used by PaymentPollingScheduler as fallback when webhooks unavailable.
+     *
+     * @return List of invoices eligible for payment verification
+     */
+    @Query("SELECT i FROM Invoice i " +
+           "WHERE i.status IN ('PENDING', 'PROCESSING') " +
+           "AND i.processorInvoiceId IS NOT NULL " +
+           "ORDER BY i.createdAt DESC")
+    List<Invoice> findInvoicesEligibleForPolling();
+
     // ============ LOCKING QUERIES ============
 
     /**
