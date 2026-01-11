@@ -1,7 +1,7 @@
 <section class="wallet-add-funds" aria-labelledby="add-funds-title">
   <h2 id="add-funds-title" class="wallet-add-funds__title">ADD FUNDS</h2>
 
-  <form class="wallet-add-funds__form" (ngSubmit)="onSubmit()">
+  <form class="wallet-add-funds__form" (submit)="onSubmit($event)">
     <fieldset class="wallet-add-funds__fieldset">
       <legend class="sr-only">Add funds form</legend>
 

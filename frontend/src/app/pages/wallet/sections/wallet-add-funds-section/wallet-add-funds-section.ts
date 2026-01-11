@@ -105,10 +105,12 @@ export class WalletAddFundsSection {
 
   /**
    * Handle form submission.
-   * Angular's (ngSubmit) already prevents default, so no manual prevention needed.
+   * Prevents default form submission to avoid page refresh.
    * Validates amount against processor limits and emits addFunds event if valid.
    */
-  protected onSubmit(): void {
+  protected onSubmit(event: Event): void {
+    event.preventDefault();
+
     const amountValue = parseFloat(this.amount());
     const min = this.minAmount();
     const max = this.maxAmount();
