@@ -4,6 +4,7 @@ import { Header } from '../../components/layout/header/header';
 import { Footer } from '../../components/layout/footer/footer';
 import { AuthForm, type AuthFormData } from '../../components/shared/auth-form/auth-form';
 import { AuthService } from '../../core/services/auth.service';
+import { PendingOrderService } from '../../core/services/pending-order.service';
 
 /**
  * Login page component.
@@ -36,6 +37,7 @@ export class Login implements OnInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly authService = inject(AuthService);
+  private readonly pendingOrderService = inject(PendingOrderService);
 
   /** Loading state during authentication */
   protected readonly isLoading = signal(false);
@@ -89,15 +91,10 @@ export class Login implements OnInit {
       next: () => {
         this.isLoading.set(false);
 
-        // Check for pending order from home page
-        const pendingOrder = sessionStorage.getItem('pendingOrder');
-        if (pendingOrder) {
-          sessionStorage.removeItem('pendingOrder');
-          this.router.navigate(['/new-order'], {
-            state: { orderData: JSON.parse(pendingOrder) }
-          });
+        // Check for pending order and redirect to dashboard
+        if (this.pendingOrderService.hasPendingOrder()) {
+          this.router.navigate(['/dashboard']);
         } else {
-          // Navigate to return URL or dashboard
           this.router.navigateByUrl(this.returnUrl);
         }
       },
