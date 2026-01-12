@@ -23,6 +23,7 @@ SET timezone = 'UTC';
 -- El orden es importante: primero tablas dependientes, luego las principales
 
 -- Eliminar triggers primero (dependen de la función)
+DROP TRIGGER IF EXISTS trg_balance_holds_updated_at ON balance_holds;
 DROP TRIGGER IF EXISTS trg_invoices_updated_at ON invoices;
 DROP TRIGGER IF EXISTS trg_orders_updated_at ON orders;
 DROP TRIGGER IF EXISTS trg_services_updated_at ON services;
@@ -33,6 +34,7 @@ DROP TRIGGER IF EXISTS trg_users_updated_at ON users;
 DROP FUNCTION IF EXISTS update_updated_at_column();
 
 -- Eliminar tablas en orden inverso de dependencias
+DROP TABLE IF EXISTS balance_holds CASCADE;
 DROP TABLE IF EXISTS transactions CASCADE;
 DROP TABLE IF EXISTS invoices CASCADE;
 DROP TABLE IF EXISTS order_refills CASCADE;
@@ -541,6 +543,39 @@ COMMENT ON COLUMN transactions.reference_id IS 'ID de la entidad relacionada';
 COMMENT ON COLUMN transactions.balance_before IS 'Balance del usuario antes del movimiento';
 COMMENT ON COLUMN transactions.balance_after IS 'Balance del usuario después del movimiento';
 
+-- ----------------------------------------------------------------------------
+-- Tabla: balance_holds
+-- Reservas temporales de saldo para creación de órdenes (ACID compliance)
+-- ----------------------------------------------------------------------------
+CREATE TABLE balance_holds (
+    id BIGSERIAL PRIMARY KEY,
+    version BIGINT DEFAULT 0,
+    user_id BIGINT NOT NULL,
+    amount NUMERIC(12, 4) NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'HELD',
+    idempotency_key VARCHAR(64) UNIQUE,
+    reference_type VARCHAR(50),
+    reference_id BIGINT,
+    expires_at TIMESTAMP NOT NULL,
+    release_reason VARCHAR(500),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    -- Foreign Keys
+    CONSTRAINT fk_balance_holds_user
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+
+    -- Constraints
+    CONSTRAINT chk_balance_holds_amount CHECK (amount > 0),
+    CONSTRAINT chk_balance_holds_status CHECK (status IN ('HELD', 'CAPTURED', 'RELEASED', 'EXPIRED'))
+);
+
+COMMENT ON TABLE balance_holds IS 'Reservas temporales de saldo para creación de órdenes (ACID compliance)';
+COMMENT ON COLUMN balance_holds.amount IS 'Cantidad reservada del balance del usuario';
+COMMENT ON COLUMN balance_holds.status IS 'Estado: HELD (activa), CAPTURED (usada), RELEASED (liberada), EXPIRED (expirada)';
+COMMENT ON COLUMN balance_holds.idempotency_key IS 'Clave única para prevenir reservas duplicadas';
+COMMENT ON COLUMN balance_holds.expires_at IS 'Fecha de expiración automática de la reserva';
+
 -- ============================================================================
 -- PASO 3: CREAR ÍNDICES
 -- ============================================================================
@@ -649,8 +684,15 @@ CREATE INDEX idx_transactions_created ON transactions(created_at DESC);
 -- Índice compuesto para historial del usuario
 CREATE INDEX idx_transactions_user_created ON transactions(user_id, created_at DESC);
 -- Índice para referencias (búsqueda por entidad relacionada)
-CREATE INDEX idx_transactions_reference ON transactions(reference_type, reference_id) 
+CREATE INDEX idx_transactions_reference ON transactions(reference_type, reference_id)
     WHERE reference_type IS NOT NULL;
+
+-- ---------------------------------------------------------------------------
+-- Índices para balance_holds
+-- ---------------------------------------------------------------------------
+CREATE INDEX idx_balance_holds_user_status ON balance_holds(user_id, status);
+CREATE INDEX idx_balance_holds_idempotency ON balance_holds(idempotency_key);
+CREATE INDEX idx_balance_holds_expires ON balance_holds(expires_at);
 
 -- ============================================================================
 -- PASO 4: CREAR FUNCIÓN Y TRIGGERS PARA updated_at
@@ -687,6 +729,10 @@ CREATE TRIGGER trg_orders_updated_at
 
 CREATE TRIGGER trg_invoices_updated_at
     BEFORE UPDATE ON invoices
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER trg_balance_holds_updated_at
+    BEFORE UPDATE ON balance_holds
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- ============================================================================
