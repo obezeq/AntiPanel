@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, linkedSignal, output, signal } from '@angular/core';
 import { UpperCasePipe } from '@angular/common';
 import { Button } from '../../../../components/shared/button/button';
 
@@ -62,21 +62,16 @@ export class WalletAddFundsSection {
   /** Currently selected cryptocurrency */
   protected readonly selectedCrypto = signal<string>('crypto');
 
-  /** Amount input value */
-  protected readonly amount = signal<string>('');
+  /**
+   * Amount input value.
+   * Uses linkedSignal to synchronously derive from initialAmount input
+   * while remaining writable for user input changes.
+   * Angular 21 best practice: linkedSignal over effect for derived state.
+   */
+  protected readonly amount = linkedSignal(() => this.initialAmount());
 
   /** Error message for amount validation */
   protected readonly amountError = signal<string>('');
-
-  constructor() {
-    // Pre-fill amount from query params (insufficient balance flow)
-    effect(() => {
-      const initial = this.initialAmount();
-      if (initial && !this.amount()) {
-        this.amount.set(initial);
-      }
-    });
-  }
 
   /** Computed signal for form validity - disables submit button when invalid */
   protected readonly isFormValid = computed(() => {

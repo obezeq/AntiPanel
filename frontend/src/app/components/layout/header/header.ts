@@ -205,6 +205,21 @@ export class Header {
     }
   }
 
+  /**
+   * Handles global ESC key to close mobile menu and dropdown.
+   * Complements document:click handler for complete keyboard accessibility.
+   * WCAG 2.1.1 (Keyboard), 2.1.2 (No Keyboard Trap)
+   */
+  @HostListener('document:keydown.escape')
+  onGlobalEscape(): void {
+    if (this.isMobileMenuOpen()) {
+      this.closeMobileMenu();
+    }
+    if (this.isProfileDropdownOpen()) {
+      this.closeProfileDropdown();
+    }
+  }
+
   // ---------------------------------------------------------------------------
   // Keyboard Navigation (WCAG 2.1.1, 2.4.3)
   // ---------------------------------------------------------------------------

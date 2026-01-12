@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Observable, throwError, timer } from 'rxjs';
+import { catchError, retry } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 
 // ============================================================================
@@ -124,6 +124,19 @@ export class OrderService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = `${environment.apiUrl}/orders`;
 
+  /** Retry configuration for GET requests */
+  private readonly retryConfig = {
+    count: 2,
+    delay: (error: HttpErrorResponse, retryCount: number) => {
+      // Only retry on 5xx errors (server errors) or network errors
+      if (error.status >= 500 || error.status === 0) {
+        return timer(1000 * retryCount); // Exponential backoff: 1s, 2s
+      }
+      // Don't retry on client errors (4xx)
+      throw error;
+    }
+  };
+
   // -------------------------------------------------------------------------
   // Order Creation
   // -------------------------------------------------------------------------
@@ -154,6 +167,7 @@ export class OrderService {
 
   /**
    * Gets paginated list of user's orders.
+   * Includes retry logic for temporary failures.
    *
    * @param page - Page number (0-based)
    * @param size - Page size (default 20)
@@ -162,35 +176,44 @@ export class OrderService {
   getOrders(page = 0, size = 20): Observable<PageResponse<OrderResponse>> {
     return this.http.get<PageResponse<OrderResponse>>(this.baseUrl, {
       params: { page: page.toString(), size: size.toString() }
-    });
+    }).pipe(retry(this.retryConfig));
   }
 
   /**
    * Gets a specific order by ID.
+   * Includes retry logic for temporary failures.
    *
    * @param id - Order ID
    * @returns Observable with order details
    */
   getOrderById(id: number): Observable<OrderResponse> {
-    return this.http.get<OrderResponse>(`${this.baseUrl}/${id}`);
+    return this.http.get<OrderResponse>(`${this.baseUrl}/${id}`).pipe(
+      retry(this.retryConfig)
+    );
   }
 
   /**
    * Gets user's active orders (not in final state).
+   * Includes retry logic for temporary failures.
    *
    * @returns Observable with list of active orders
    */
   getActiveOrders(): Observable<OrderResponse[]> {
-    return this.http.get<OrderResponse[]>(`${this.baseUrl}/active`);
+    return this.http.get<OrderResponse[]>(`${this.baseUrl}/active`).pipe(
+      retry(this.retryConfig)
+    );
   }
 
   /**
    * Gets user's refillable orders.
+   * Includes retry logic for temporary failures.
    *
    * @returns Observable with list of refillable orders
    */
   getRefillableOrders(): Observable<OrderResponse[]> {
-    return this.http.get<OrderResponse[]>(`${this.baseUrl}/refillable`);
+    return this.http.get<OrderResponse[]>(`${this.baseUrl}/refillable`).pipe(
+      retry(this.retryConfig)
+    );
   }
 
   // -------------------------------------------------------------------------

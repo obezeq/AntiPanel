@@ -1,5 +1,5 @@
 import { ApplicationConfig, APP_INITIALIZER, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideRouter, withInMemoryScrolling } from '@angular/router';
+import { PreloadAllModules, provideRouter, withInMemoryScrolling, withPreloading } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor, loadingInterceptor } from './core/interceptors';
 import { provideIcons } from '@ng-icons/core';
@@ -68,7 +68,11 @@ function initTokenRefresh(service: TokenRefreshService) {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes, withInMemoryScrolling({ anchorScrolling: 'enabled' })),
+    provideRouter(
+      routes,
+      withInMemoryScrolling({ anchorScrolling: 'enabled' }),
+      withPreloading(PreloadAllModules)
+    ),
     provideHttpClient(withInterceptors([authInterceptor, loadingInterceptor])),
     // Initialize token refresh service on app startup
     {

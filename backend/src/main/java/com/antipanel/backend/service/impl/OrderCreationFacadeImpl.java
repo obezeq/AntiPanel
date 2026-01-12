@@ -83,7 +83,7 @@ public class OrderCreationFacadeImpl implements OrderCreationFacade {
         Order order;
         try {
             order = transactionTemplate.execute(status ->
-                    createPendingOrderInternal(userId, request, hold, service, totalCharge)
+                    createPendingOrderInternal(userId, request, hold, request.getServiceId(), totalCharge)
             );
         } catch (Exception e) {
             // CRITICAL: Check if another concurrent request already created the order for this hold
@@ -109,9 +109,9 @@ public class OrderCreationFacadeImpl implements OrderCreationFacade {
             throw new IllegalStateException("Order creation failed - null result");
         }
 
-        // Step 5: Submit to provider (NO transaction - external call)
+        // Step 5: Submit to provider (uses orderId to re-fetch inside @Transactional)
         try {
-            OrderResponse response = externalOrderService.submitOrder(order);
+            OrderResponse response = externalOrderService.submitOrder(order.getId());
 
             // Step 6a: Capture hold on success
             balanceHoldService.captureHold(hold.getId(), order.getId());
@@ -139,8 +139,11 @@ public class OrderCreationFacadeImpl implements OrderCreationFacade {
      * Called inside a transaction template.
      */
     private Order createPendingOrderInternal(Long userId, OrderCreateRequest request,
-            BalanceHold hold, Service service, BigDecimal totalCharge) {
+            BalanceHold hold, Integer serviceId, BigDecimal totalCharge) {
 
+        // Re-fetch service inside transaction to ensure Hibernate session is available for lazy loading
+        Service service = serviceRepository.findById(serviceId)
+                .orElseThrow(() -> new ResourceNotFoundException("Service", "id", serviceId));
         ProviderService providerService = service.getProviderService();
         BigDecimal costPerK = providerService.getCostPerK();
         BigDecimal totalCost = calculateTotalAmount(costPerK, request.getQuantity());

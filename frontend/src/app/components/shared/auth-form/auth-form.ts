@@ -399,4 +399,12 @@ export class AuthForm {
     this.confirmPasswordDirty.set(false);
     this.termsAcceptedTouched.set(false);
   }
+
+  /**
+   * Check if form has been modified.
+   * Used by parent components to detect unsaved changes.
+   */
+  get isDirty(): boolean {
+    return this.form.dirty;
+  }
 }

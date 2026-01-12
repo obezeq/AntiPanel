@@ -2,10 +2,15 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
+  inject,
   input,
   output,
   signal
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 /** Available sort orders */
 export type SortOrder = 'latest' | 'oldest';
@@ -36,6 +41,11 @@ export type FilterCategory = 'ALL' | 'PENDING' | 'PROCESSING' | 'COMPLETED';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderFilters {
+  private readonly destroyRef = inject(DestroyRef);
+
+  /** Subject for debounced search input */
+  private readonly searchSubject = new Subject<string>();
+
   /** Available filter categories */
   readonly categories = input<FilterCategory[]>(['ALL', 'PENDING', 'PROCESSING', 'COMPLETED']);
 
@@ -59,6 +69,17 @@ export class OrderFilters {
 
   /** Whether category dropdown is open */
   protected readonly isCategoryOpen = signal(false);
+
+  constructor() {
+    // Debounce search input to avoid excessive filtering
+    this.searchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(value => {
+      this.searchChange.emit(value);
+    });
+  }
 
   /** Display text for sort button */
   protected readonly sortLabel = computed(() =>
@@ -87,10 +108,10 @@ export class OrderFilters {
     this.sortChange.emit(newOrder);
   }
 
-  /** Handle search input */
+  /** Handle search input with debounce */
   protected onSearchInput(event: Event): void {
     const target = event.target as HTMLInputElement;
-    this.searchChange.emit(target.value);
+    this.searchSubject.next(target.value);
   }
 
   /** Handle keyboard navigation */

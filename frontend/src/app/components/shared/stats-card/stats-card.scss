@@ -5,9 +5,26 @@
 // ==========================================================================
 // Card displaying a statistic with icon, title, value, and label.
 // Basado en el diseño de Figma: 265px ancho, 177px alto.
+//
+// CONTAINER QUERIES:
+// Este componente utiliza Container Queries para adaptar su layout
+// basandose en el tamano de su contenedor, no solo del viewport.
+// Esto permite que la misma tarjeta se adapte automaticamente cuando
+// se coloca en diferentes contextos de layout (sidebar estrecho vs
+// area principal ancha) sin depender del tamano de pantalla.
 // ==========================================================================
 
+// ---------------------------------------------------------------------------
+// CONTAINER QUERY SETUP
+// ---------------------------------------------------------------------------
+// Definimos el contenedor para que los elementos internos puedan
+// consultar su tamano. Usamos inline-size para queries basadas en ancho.
+
 .stats-card {
+  // Container Query: permite que los hijos consulten el tamano del card
+  container-type: inline-size;
+  container-name: stats-card;
+
   @include card-base;
   display: flex;
   flex-direction: row; // Horizontal on mobile
@@ -39,6 +56,65 @@
   @include respond-to('lg') {
     width: 16rem; // Fixed 256px on desktop (base-8)
     min-height: 11rem; // 176px (base-8)
+  }
+}
+
+// ---------------------------------------------------------------------------
+// CONTAINER QUERIES - Layout adaptativo basado en el contenedor
+// ---------------------------------------------------------------------------
+// Estos estilos se aplican basandose en el ancho del contenedor stats-card,
+// independientemente del viewport. Util cuando el componente se usa en
+// diferentes contextos de layout (sidebar, grid, modal, etc.)
+
+// Contenedor muy estrecho (< 180px): layout ultra compacto
+@container stats-card (max-width: 180px) {
+  .stats-card__header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .stats-card__info {
+    align-items: center;
+    text-align: center;
+  }
+
+  .stats-card__title {
+    font-size: var(--font-size-caption);
+  }
+
+  .stats-card__value {
+    font-size: var(--font-size-body);
+  }
+}
+
+// Contenedor mediano (180px - 240px): layout compacto horizontal
+@container stats-card (min-width: 180px) and (max-width: 240px) {
+  .stats-card__header {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--spacing-2);
+  }
+
+  .stats-card__info {
+    flex-direction: row;
+    align-items: baseline;
+    gap: var(--spacing-2);
+  }
+}
+
+// Contenedor amplio (> 280px): layout expandido con mas espacio
+@container stats-card (min-width: 280px) {
+  .stats-card__header {
+    gap: var(--spacing-3);
+  }
+
+  .stats-card__value {
+    font-size: var(--font-size-h3);
+  }
+
+  .stats-card__label {
+    font-size: var(--font-size-h6);
   }
 }
 
