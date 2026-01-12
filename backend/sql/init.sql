@@ -92,7 +92,8 @@ CREATE TYPE order_status_enum AS ENUM (
     'COMPLETED',    -- Orden completada exitosamente
     'PARTIAL',      -- Completada parcialmente
     'CANCELLED',    -- Cancelada antes de procesar
-    'REFUNDED'      -- Reembolsada al usuario
+    'REFUNDED',     -- Reembolsada al usuario
+    'FAILED'        -- Orden falló durante el envío al proveedor
 );
 
 -- Estado de una solicitud de refill
@@ -391,6 +392,7 @@ CREATE TABLE orders (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     idempotency_key VARCHAR(64) UNIQUE,
     version BIGINT NOT NULL DEFAULT 0,
+    balance_hold_id BIGINT,
 
     -- Foreign Keys
     CONSTRAINT fk_orders_user
