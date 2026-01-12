@@ -180,13 +180,8 @@ WHERE c.slug = 'linkedin' AND st.slug = 'reposts' AND st.category_id = c.id AND 
 -- ============================================================================
 -- 6. PROCESADORES DE PAGO
 -- ============================================================================
-
-INSERT INTO payment_processors (name, code, website, api_key, api_secret, min_amount, max_amount, fee_percentage, fee_fixed, is_active, sort_order) VALUES
-('PayPal', 'paypal', 'https://paypal.com', 'paypal_client_id_xxx', 'paypal_secret_xxx', 5.00, 1000.00, 2.90, 0.30, TRUE, 1),
-('Stripe', 'stripe', 'https://stripe.com', 'sk_live_xxx', 'whsec_xxx', 1.00, 5000.00, 2.90, 0.30, TRUE, 2),
-('Coinbase Commerce', 'coinbase', 'https://commerce.coinbase.com', 'coinbase_api_key_xxx', NULL, 10.00, NULL, 1.00, 0.00, TRUE, 3),
-('PayPal Friends', 'paypal-friends', 'https://paypal.com', NULL, NULL, 10.00, 500.00, 0.00, 0.00, TRUE, 4),
-('Bank Transfer', 'bank-transfer', NULL, NULL, NULL, 50.00, NULL, 0.00, 0.00, FALSE, 5);
+-- NOTE: Paymento is already seeded by init.sql
+-- Only Paymento is used in production - other processors removed
 
 -- ============================================================================
 -- 7. USUARIOS
@@ -217,39 +212,39 @@ UPDATE users SET banned_reason = 'Fraude con tarjeta de crédito' WHERE email = 
 -- 8. FACTURAS (INVOICES)
 -- ============================================================================
 
--- Facturas completadas
+-- Facturas completadas (all via Paymento, processor_id=1)
 INSERT INTO invoices (user_id, processor_id, processor_invoice_id, amount, fee, net_amount, currency, status, paid_at, created_at) VALUES
-(3, 1, 'PAY-1AB23456CD789012E', 50.00, 1.75, 48.25, 'USD', 'COMPLETED', NOW() - INTERVAL '7 days', NOW() - INTERVAL '7 days'),
-(3, 2, 'pi_3NxyzABCDEFGHIJK', 25.00, 1.03, 23.97, 'USD', 'COMPLETED', NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days'),
-(4, 1, 'PAY-2BC34567DE890123F', 100.00, 3.20, 96.80, 'USD', 'COMPLETED', NOW() - INTERVAL '14 days', NOW() - INTERVAL '14 days'),
-(4, 3, 'COINBASE-ABC123', 100.00, 1.00, 99.00, 'USD', 'COMPLETED', NOW() - INTERVAL '5 days', NOW() - INTERVAL '5 days'),
-(5, 2, 'pi_4OyzaBCDEFGHIJKL', 500.00, 14.80, 485.20, 'USD', 'COMPLETED', NOW() - INTERVAL '2 days', NOW() - INTERVAL '2 days'),
-(5, 1, 'PAY-3CD45678EF901234G', 200.00, 6.10, 193.90, 'USD', 'COMPLETED', NOW() - INTERVAL '10 days', NOW() - INTERVAL '10 days'),
-(6, 2, 'pi_5PzabCDEFGHIJKLM', 50.00, 1.75, 48.25, 'USD', 'COMPLETED', NOW() - INTERVAL '20 days', NOW() - INTERVAL '20 days'),
-(7, 1, 'PAY-4DE56789FG012345H', 100.00, 3.20, 96.80, 'USD', 'COMPLETED', NOW() - INTERVAL '1 day', NOW() - INTERVAL '1 day');
+(3, 1, 'PAYMENTO-1AB23456CD789012E', 50.00, 0.25, 49.75, 'USD', 'COMPLETED', NOW() - INTERVAL '7 days', NOW() - INTERVAL '7 days'),
+(3, 1, 'PAYMENTO-3NxyzABCDEFGHIJK', 25.00, 0.13, 24.87, 'USD', 'COMPLETED', NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days'),
+(4, 1, 'PAYMENTO-2BC34567DE890123F', 100.00, 0.50, 99.50, 'USD', 'COMPLETED', NOW() - INTERVAL '14 days', NOW() - INTERVAL '14 days'),
+(4, 1, 'PAYMENTO-ABC123', 100.00, 0.50, 99.50, 'USD', 'COMPLETED', NOW() - INTERVAL '5 days', NOW() - INTERVAL '5 days'),
+(5, 1, 'PAYMENTO-4OyzaBCDEFGHIJKL', 500.00, 2.50, 497.50, 'USD', 'COMPLETED', NOW() - INTERVAL '2 days', NOW() - INTERVAL '2 days'),
+(5, 1, 'PAYMENTO-3CD45678EF901234G', 200.00, 1.00, 199.00, 'USD', 'COMPLETED', NOW() - INTERVAL '10 days', NOW() - INTERVAL '10 days'),
+(6, 1, 'PAYMENTO-5PzabCDEFGHIJKLM', 50.00, 0.25, 49.75, 'USD', 'COMPLETED', NOW() - INTERVAL '20 days', NOW() - INTERVAL '20 days'),
+(7, 1, 'PAYMENTO-4DE56789FG012345H', 100.00, 0.50, 99.50, 'USD', 'COMPLETED', NOW() - INTERVAL '1 day', NOW() - INTERVAL '1 day');
 
 -- Factura pendiente
 INSERT INTO invoices (user_id, processor_id, processor_invoice_id, amount, fee, net_amount, currency, status, payment_url, created_at) VALUES
-(6, 3, 'COINBASE-PENDING123', 50.00, 0.50, 49.50, 'USD', 'PENDING', 'https://commerce.coinbase.com/charges/PENDING123', NOW() - INTERVAL '2 hours');
+(6, 1, 'PAYMENTO-PENDING123', 50.00, 0.25, 49.75, 'USD', 'PENDING', 'https://app.paymento.io/gateway?token=PENDING123', NOW() - INTERVAL '2 hours');
 
 -- Factura fallida
 INSERT INTO invoices (user_id, processor_id, processor_invoice_id, amount, fee, net_amount, currency, status, created_at) VALUES
-(8, 2, 'pi_FAILED123', 25.00, 1.03, 23.97, 'USD', 'FAILED', NOW() - INTERVAL '35 days');
+(8, 1, 'PAYMENTO-FAILED123', 25.00, 0.13, 24.87, 'USD', 'FAILED', NOW() - INTERVAL '35 days');
 
 -- ============================================================================
 -- 9. TRANSACCIONES
 -- ============================================================================
 
--- Depósitos (corresponden a las facturas completadas)
+-- Depósitos (corresponden a las facturas completadas - all via Paymento)
 INSERT INTO transactions (user_id, type, amount, balance_before, balance_after, reference_type, reference_id, description, created_at) VALUES
-(3, 'DEPOSIT', 48.2500, 0.0000, 48.2500, 'invoice', 1, 'Depósito vía PayPal', NOW() - INTERVAL '7 days'),
-(3, 'DEPOSIT', 23.9700, 48.2500, 72.2200, 'invoice', 2, 'Depósito vía Stripe', NOW() - INTERVAL '3 days'),
-(4, 'DEPOSIT', 96.8000, 0.0000, 96.8000, 'invoice', 3, 'Depósito vía PayPal', NOW() - INTERVAL '14 days'),
-(4, 'DEPOSIT', 99.0000, 96.8000, 195.8000, 'invoice', 4, 'Depósito vía Coinbase', NOW() - INTERVAL '5 days'),
-(5, 'DEPOSIT', 485.2000, 0.0000, 485.2000, 'invoice', 5, 'Depósito vía Stripe', NOW() - INTERVAL '2 days'),
-(5, 'DEPOSIT', 193.9000, 485.2000, 679.1000, 'invoice', 6, 'Depósito vía PayPal', NOW() - INTERVAL '10 days'),
-(6, 'DEPOSIT', 48.2500, 0.0000, 48.2500, 'invoice', 7, 'Depósito vía Stripe', NOW() - INTERVAL '20 days'),
-(7, 'DEPOSIT', 96.8000, 0.0000, 96.8000, 'invoice', 8, 'Depósito vía PayPal', NOW() - INTERVAL '1 day');
+(3, 'DEPOSIT', 49.7500, 0.0000, 49.7500, 'invoice', 1, 'Depósito vía Paymento', NOW() - INTERVAL '7 days'),
+(3, 'DEPOSIT', 24.8700, 49.7500, 74.6200, 'invoice', 2, 'Depósito vía Paymento', NOW() - INTERVAL '3 days'),
+(4, 'DEPOSIT', 99.5000, 0.0000, 99.5000, 'invoice', 3, 'Depósito vía Paymento', NOW() - INTERVAL '14 days'),
+(4, 'DEPOSIT', 99.5000, 99.5000, 199.0000, 'invoice', 4, 'Depósito vía Paymento', NOW() - INTERVAL '5 days'),
+(5, 'DEPOSIT', 497.5000, 0.0000, 497.5000, 'invoice', 5, 'Depósito vía Paymento', NOW() - INTERVAL '2 days'),
+(5, 'DEPOSIT', 199.0000, 497.5000, 696.5000, 'invoice', 6, 'Depósito vía Paymento', NOW() - INTERVAL '10 days'),
+(6, 'DEPOSIT', 49.7500, 0.0000, 49.7500, 'invoice', 7, 'Depósito vía Paymento', NOW() - INTERVAL '20 days'),
+(7, 'DEPOSIT', 99.5000, 0.0000, 99.5000, 'invoice', 8, 'Depósito vía Paymento', NOW() - INTERVAL '1 day');
 
 -- ============================================================================
 -- 10. ÓRDENES (usando servicios DripFeedPanel)
