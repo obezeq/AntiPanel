@@ -112,7 +112,12 @@ export class OrderReady implements AfterViewInit {
     effect(() => {
       if (this.isEditingQuantity()) {
         afterNextRender(() => {
-          this.quantityInputRef()?.nativeElement.focus();
+          const el = this.quantityInputRef()?.nativeElement;
+          if (el) {
+            el.focus();
+            // el.select();
+            // el.setSelectionRange(0, el.value.length);
+          }
         }, { injector: this.injector });
       }
     });

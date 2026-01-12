@@ -28,7 +28,7 @@
   justify-content: center;
   gap: var(--spacing-2);
   padding: var(--spacing-3) var(--spacing-8);
-  background-color: var(--color-information);
+  background-color: var(--color-tiny-info);
   border-radius: var(--radius-lg);
   cursor: pointer;
   transition: var(--transition-colors);
@@ -36,11 +36,11 @@
   @include focus-visible;
 
   &:hover {
-    background-color: var(--color-secondary);
+    background-color: var(--color-information);
   }
 
   &--open {
-    background-color: var(--color-secondary);
+    background-color: var(--color-information);
   }
 }
 
@@ -76,7 +76,7 @@
   left: 0;
   min-width: 100%;
   padding: var(--spacing-2);
-  background-color: var(--color-information);
+  background-color: var(--color-tiny-info);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
   z-index: var(--z-dropdown);
@@ -96,11 +96,11 @@
   transition: var(--transition-colors);
 
   &:hover {
-    background-color: var(--color-secondary);
+    background-color: var(--color-information);
   }
 
   &--selected {
-    background-color: var(--color-secondary);
+    background-color: var(--color-information);
     color: var(--color-high-contrast);
   }
 }
@@ -115,7 +115,7 @@
   align-items: center;
   justify-content: center;
   padding: var(--spacing-3) var(--spacing-8);
-  background-color: var(--color-information);
+  background-color: var(--color-tiny-info);
   border-radius: var(--radius-lg);
   cursor: pointer;
   flex-shrink: 0;
@@ -124,7 +124,7 @@
   @include focus-visible;
 
   &:hover {
-    background-color: var(--color-secondary);
+    background-color: var(--color-information);
   }
 }
 
@@ -150,12 +150,13 @@
   @include reset-input;
   width: 100%;
   padding: var(--spacing-2) var(--spacing-8);
-  background-color: var(--color-information);
+  background-color: var(--color-background);
   border-radius: var(--radius-full);
-  font-family: var(--font-primary);
+  border: var(--border-with-thick) solid var(--color-secondary);
+  font-family: var(--font-secondary);
   font-size: var(--font-size-h5);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-secondary);
   line-height: 2.5rem; // 40px - normalized to base-8
   text-transform: uppercase;
   transition: var(--transition-colors);
@@ -163,16 +164,16 @@
   @include focus-visible;
 
   &::placeholder {
-    color: var(--color-text);
+    color: var(--color-secondary);
     opacity: 1;
   }
 
   &:hover {
-    background-color: var(--color-secondary);
+    border: var(--border-with-thick) solid var(--color-foreground);
   }
 
   &:focus {
-    background-color: var(--color-secondary);
+    background-color: var(--color-text);
   }
 }
 
