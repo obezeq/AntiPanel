@@ -1,0 +1,25 @@
+@if (breadcrumbs().length > 0) {
+  <nav class="breadcrumb" aria-label="Breadcrumb navigation">
+    <ol class="breadcrumb__list">
+      <!-- Home/Dashboard link is always first -->
+      <li class="breadcrumb__item">
+        <a routerLink="/dashboard" class="breadcrumb__link">Dashboard</a>
+      </li>
+
+      @for (crumb of breadcrumbs(); track crumb.url; let last = $last) {
+        <li
+          class="breadcrumb__item"
+          [attr.aria-current]="last ? 'page' : null"
+        >
+          @if (!last) {
+            <a [routerLink]="crumb.url" class="breadcrumb__link">
+              {{ crumb.label }}
+            </a>
+          } @else {
+            <span class="breadcrumb__current">{{ crumb.label }}</span>
+          }
+        </li>
+      }
+    </ol>
+  </nav>
+}

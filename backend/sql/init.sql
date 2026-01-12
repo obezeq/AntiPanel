@@ -61,63 +61,63 @@ DROP TYPE IF EXISTS user_role_enum CASCADE;
 
 -- Rol de usuario en el sistema
 CREATE TYPE user_role_enum AS ENUM (
-    'user',      -- Usuario regular
-    'admin',     -- Administrador con acceso total
-    'support'    -- Personal de soporte con acceso limitado
+    'USER',      -- Usuario regular
+    'ADMIN',     -- Administrador con acceso total
+    'SUPPORT'    -- Personal de soporte con acceso limitado
 );
 
 -- Calidad del servicio ofrecido
 CREATE TYPE service_quality_enum AS ENUM (
-    'low',       -- Calidad básica, precio más bajo
-    'medium',    -- Calidad estándar
-    'high',      -- Calidad alta
-    'premium'    -- Máxima calidad disponible
+    'LOW',       -- Calidad básica, precio más bajo
+    'MEDIUM',    -- Calidad estándar
+    'HIGH',      -- Calidad alta
+    'PREMIUM'    -- Máxima calidad disponible
 );
 
 -- Velocidad de entrega del servicio
 CREATE TYPE service_speed_enum AS ENUM (
-    'slow',      -- Entrega lenta (varios días)
-    'medium',    -- Velocidad estándar (24-48h)
-    'fast',      -- Entrega rápida (1-24h)
-    'instant'    -- Entrega inmediata (minutos)
+    'SLOW',      -- Entrega lenta (varios días)
+    'MEDIUM',    -- Velocidad estándar (24-48h)
+    'FAST',      -- Entrega rápida (1-24h)
+    'INSTANT'    -- Entrega inmediata (minutos)
 );
 
 -- Estado de una orden
 CREATE TYPE order_status_enum AS ENUM (
-    'pending',      -- Orden recibida, pendiente de procesar
-    'processing',   -- Enviada al proveedor, en proceso
-    'in_progress',  -- El proveedor está entregando
-    'completed',    -- Orden completada exitosamente
-    'partial',      -- Completada parcialmente
-    'cancelled',    -- Cancelada antes de procesar
-    'refunded'      -- Reembolsada al usuario
+    'PENDING',      -- Orden recibida, pendiente de procesar
+    'PROCESSING',   -- Enviada al proveedor, en proceso
+    'IN_PROGRESS',  -- El proveedor está entregando
+    'COMPLETED',    -- Orden completada exitosamente
+    'PARTIAL',      -- Completada parcialmente
+    'CANCELLED',    -- Cancelada antes de procesar
+    'REFUNDED'      -- Reembolsada al usuario
 );
 
 -- Estado de una solicitud de refill
 CREATE TYPE refill_status_enum AS ENUM (
-    'pending',      -- Solicitud de refill recibida
-    'processing',   -- Enviada al proveedor
-    'completed',    -- Refill completado
-    'rejected',     -- Rechazada por el proveedor
-    'cancelled'     -- Cancelada
+    'PENDING',      -- Solicitud de refill recibida
+    'PROCESSING',   -- Enviada al proveedor
+    'COMPLETED',    -- Refill completado
+    'REJECTED',     -- Rechazada por el proveedor
+    'CANCELLED'     -- Cancelada
 );
 
 -- Estado de una factura/depósito
 CREATE TYPE invoice_status_enum AS ENUM (
-    'pending',      -- Factura creada, esperando pago
-    'processing',   -- Pago en proceso de verificación
-    'completed',    -- Pago completado y acreditado
-    'failed',       -- Pago fallido
-    'cancelled',    -- Cancelada por el usuario
-    'expired'       -- Expirada por tiempo
+    'PENDING',      -- Factura creada, esperando pago
+    'PROCESSING',   -- Pago en proceso de verificación
+    'COMPLETED',    -- Pago completado y acreditado
+    'FAILED',       -- Pago fallido
+    'CANCELLED',    -- Cancelada por el usuario
+    'EXPIRED'       -- Expirada por tiempo
 );
 
 -- Tipo de transacción de balance
 CREATE TYPE transaction_type_enum AS ENUM (
-    'deposit',      -- Depósito de fondos
-    'order',        -- Cargo por orden
-    'refund',       -- Reembolso
-    'adjustment'    -- Ajuste manual por administrador
+    'DEPOSIT',      -- Depósito de fondos
+    'ORDER',        -- Cargo por orden
+    'REFUND',       -- Reembolso
+    'ADJUSTMENT'    -- Ajuste manual por administrador
 );
 
 -- ============================================================================
@@ -132,7 +132,7 @@ CREATE TABLE users (
     id BIGSERIAL PRIMARY KEY,
     email VARCHAR(255) NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
-    role user_role_enum NOT NULL DEFAULT 'user',
+    role user_role_enum NOT NULL DEFAULT 'USER',
     department VARCHAR(100),
     balance DECIMAL(12, 4) NOT NULL DEFAULT 0.0000,
     is_banned BOOLEAN NOT NULL DEFAULT FALSE,
@@ -141,7 +141,8 @@ CREATE TABLE users (
     login_count INTEGER NOT NULL DEFAULT 0,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    
+    version BIGINT NOT NULL DEFAULT 0,
+
     -- Constraints
     CONSTRAINT uq_users_email UNIQUE (email),
     CONSTRAINT chk_users_balance_non_negative CHECK (balance >= 0),
@@ -221,19 +222,19 @@ CREATE TABLE providers (
     name VARCHAR(100) NOT NULL,
     website VARCHAR(255),
     api_url VARCHAR(255) NOT NULL,
-    api_key VARCHAR(255) NOT NULL,
+    api_key VARCHAR(255),  -- SECURITY: Set via environment variable, NULL in database
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     balance DECIMAL(12, 4),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    
+
     -- Constraints
     CONSTRAINT chk_providers_balance_non_negative CHECK (balance IS NULL OR balance >= 0)
 );
 
 COMMENT ON TABLE providers IS 'Proveedores externos de servicios SMM';
 COMMENT ON COLUMN providers.api_url IS 'Endpoint base de la API del proveedor';
-COMMENT ON COLUMN providers.api_key IS 'API Key del proveedor (encriptar en producción)';
+COMMENT ON COLUMN providers.api_key IS 'API Key - prefer environment variables for security';
 COMMENT ON COLUMN providers.balance IS 'Balance actual con el proveedor (opcional)';
 
 -- ----------------------------------------------------------------------------
@@ -374,7 +375,7 @@ CREATE TABLE orders (
     quantity INTEGER NOT NULL,
     start_count INTEGER,
     remains INTEGER NOT NULL DEFAULT 0,
-    status order_status_enum NOT NULL DEFAULT 'pending',
+    status order_status_enum NOT NULL DEFAULT 'PENDING',
     price_per_k DECIMAL(10, 4) NOT NULL,
     cost_per_k DECIMAL(10, 4) NOT NULL,
     total_charge DECIMAL(12, 4) NOT NULL,
@@ -386,12 +387,14 @@ CREATE TABLE orders (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     completed_at TIMESTAMPTZ,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    
+    idempotency_key VARCHAR(64) UNIQUE,
+    version BIGINT NOT NULL DEFAULT 0,
+
     -- Foreign Keys
-    CONSTRAINT fk_orders_user 
-        FOREIGN KEY (user_id) 
-        REFERENCES users(id) 
-        ON DELETE RESTRICT 
+    CONSTRAINT fk_orders_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE RESTRICT
         ON UPDATE CASCADE,
     CONSTRAINT fk_orders_service 
         FOREIGN KEY (service_id) 
@@ -435,7 +438,7 @@ CREATE TABLE order_refills (
     order_id BIGINT NOT NULL,
     provider_refill_id VARCHAR(100),
     quantity INTEGER NOT NULL,
-    status refill_status_enum NOT NULL DEFAULT 'pending',
+    status refill_status_enum NOT NULL DEFAULT 'PENDING',
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     completed_at TIMESTAMPTZ,
     
@@ -466,12 +469,13 @@ CREATE TABLE invoices (
     fee DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
     net_amount DECIMAL(10, 2) NOT NULL,
     currency VARCHAR(3) NOT NULL DEFAULT 'USD',
-    status invoice_status_enum NOT NULL DEFAULT 'pending',
+    status invoice_status_enum NOT NULL DEFAULT 'PENDING',
     payment_url VARCHAR(500),
     paid_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    
+    version BIGINT NOT NULL DEFAULT 0,
+
     -- Foreign Keys
     CONSTRAINT fk_invoices_user 
         FOREIGN KEY (user_id) 
@@ -496,6 +500,7 @@ COMMENT ON TABLE invoices IS 'Registro de facturas/depósitos de usuarios';
 COMMENT ON COLUMN invoices.processor_invoice_id IS 'ID de la transacción en el procesador de pago';
 COMMENT ON COLUMN invoices.net_amount IS 'Cantidad neta a acreditar después de comisiones';
 COMMENT ON COLUMN invoices.payment_url IS 'URL de pago generada (si aplica)';
+COMMENT ON COLUMN invoices.version IS 'Optimistic locking version for concurrent payment completion';
 
 -- ----------------------------------------------------------------------------
 -- Tabla: transactions
@@ -523,10 +528,10 @@ CREATE TABLE transactions (
     -- Constraints
     CONSTRAINT chk_transactions_balance_consistency 
         CHECK (
-            (type = 'deposit' AND amount > 0 AND balance_after = balance_before + amount) OR
-            (type = 'order' AND amount < 0 AND balance_after = balance_before + amount) OR
-            (type = 'refund' AND amount > 0 AND balance_after = balance_before + amount) OR
-            (type = 'adjustment' AND balance_after = balance_before + amount)
+            (type = 'DEPOSIT' AND amount > 0 AND balance_after = balance_before + amount) OR
+            (type = 'ORDER' AND amount < 0 AND balance_after = balance_before + amount) OR
+            (type = 'REFUND' AND amount > 0 AND balance_after = balance_before + amount) OR
+            (type = 'ADJUSTMENT' AND balance_after = balance_before + amount)
         )
 );
 
@@ -600,10 +605,12 @@ CREATE INDEX idx_orders_user_status ON orders(user_id, status);
 CREATE INDEX idx_orders_user_created ON orders(user_id, created_at DESC);
 -- Índice parcial para órdenes con refill pendiente
 CREATE INDEX idx_orders_refill_deadline ON orders(refill_deadline) 
-    WHERE is_refillable = TRUE AND refill_deadline IS NOT NULL AND status = 'completed';
+    WHERE is_refillable = TRUE AND refill_deadline IS NOT NULL AND status = 'COMPLETED';
 -- Índice para reportes de profit
-CREATE INDEX idx_orders_completed_at ON orders(completed_at DESC) 
-    WHERE status = 'completed';
+CREATE INDEX idx_orders_completed_at ON orders(completed_at DESC)
+    WHERE completed_at IS NOT NULL;
+CREATE UNIQUE INDEX idx_orders_idempotency_key ON orders(idempotency_key)
+    WHERE idempotency_key IS NOT NULL;
 
 -- ---------------------------------------------------------------------------
 -- Índices para order_refills
@@ -611,7 +618,7 @@ CREATE INDEX idx_orders_completed_at ON orders(completed_at DESC)
 CREATE INDEX idx_order_refills_order ON order_refills(order_id);
 CREATE INDEX idx_order_refills_status ON order_refills(status);
 CREATE INDEX idx_order_refills_pending ON order_refills(status) 
-    WHERE status IN ('pending', 'processing');
+    WHERE status IN ('PENDING', 'PROCESSING');
 
 -- ---------------------------------------------------------------------------
 -- Índices para payment_processors
@@ -631,7 +638,7 @@ CREATE INDEX idx_invoices_user_status ON invoices(user_id, status);
 CREATE INDEX idx_invoices_user_created ON invoices(user_id, created_at DESC);
 -- Índice parcial para facturas pendientes
 CREATE INDEX idx_invoices_pending ON invoices(status, created_at) 
-    WHERE status = 'pending';
+    WHERE status = 'PENDING';
 
 -- ---------------------------------------------------------------------------
 -- Índices para transactions
@@ -736,6 +743,43 @@ INNER JOIN users u ON o.user_id = u.id
 ORDER BY o.created_at DESC;
 
 COMMENT ON VIEW v_orders_summary IS 'Vista de órdenes con información del usuario';
+
+-- ============================================================================
+-- PASO 6: SEED DATA - Payment Processors
+-- ============================================================================
+
+-- Insert Paymento cryptocurrency payment processor
+-- NOTE: api_key and api_secret are NULL - credentials must be set via environment variables
+-- SECURITY: Never commit API credentials to version control
+INSERT INTO payment_processors (
+    name,
+    code,
+    website,
+    api_key,
+    api_secret,
+    config_json,
+    min_amount,
+    max_amount,
+    fee_percentage,
+    fee_fixed,
+    is_active,
+    sort_order
+) VALUES (
+    'Paymento',
+    'paymento',
+    'https://paymento.io',
+    NULL,  -- Set via PAYMENTO_API_KEY environment variable
+    NULL,  -- Set via PAYMENTO_API_SECRET environment variable
+    '{"baseUrl": "https://api.paymento.io/v1", "speed": 0}',
+    1.00,
+    10000.00,
+    0.50,
+    0.00,
+    true,
+    1
+) ON CONFLICT (code) DO NOTHING;
+
+COMMENT ON COLUMN payment_processors.api_secret IS 'API secret for webhook HMAC verification';
 
 -- ============================================================================
 -- VERIFICACIÓN FINAL

@@ -15,6 +15,7 @@ import com.antipanel.backend.entity.enums.OrderStatus;
 import com.antipanel.backend.entity.enums.TransactionType;
 import com.antipanel.backend.exception.BadRequestException;
 import com.antipanel.backend.exception.InsufficientBalanceException;
+import com.antipanel.backend.exception.ProviderApiException;
 import com.antipanel.backend.exception.ResourceNotFoundException;
 import com.antipanel.backend.mapper.OrderMapper;
 import com.antipanel.backend.mapper.PageMapper;
@@ -22,6 +23,7 @@ import com.antipanel.backend.repository.OrderRepository;
 import com.antipanel.backend.repository.ServiceRepository;
 import com.antipanel.backend.repository.TransactionRepository;
 import com.antipanel.backend.repository.UserRepository;
+import com.antipanel.backend.service.ExternalOrderService;
 import com.antipanel.backend.service.impl.OrderServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -70,6 +72,9 @@ class OrderServiceTest {
 
     @Mock
     private PageMapper pageMapper;
+
+    @Mock
+    private ExternalOrderService externalOrderService;
 
     @InjectMocks
     private OrderServiceImpl orderService;
@@ -166,9 +171,9 @@ class OrderServiceTest {
     class CreateOperations {
 
         @Test
-        @DisplayName("Should create order successfully")
+        @DisplayName("Should create order successfully without calling external provider")
         void shouldCreateOrderSuccessfully() {
-            when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+            when(userRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(testUser));
             when(serviceRepository.findById(1)).thenReturn(Optional.of(testService));
             when(orderRepository.save(any(Order.class))).thenReturn(testOrder);
             when(transactionRepository.save(any(Transaction.class))).thenReturn(Transaction.builder().build());
@@ -182,12 +187,14 @@ class OrderServiceTest {
             verify(orderRepository).save(any(Order.class));
             verify(transactionRepository).save(any(Transaction.class));
             verify(userRepository).save(any(User.class));
+            // create() should NOT call external provider - that's done in submitOrderToProvider()
+            verify(externalOrderService, never()).submitOrder(any(Order.class));
         }
 
         @Test
         @DisplayName("Should throw exception when user not found")
         void shouldThrowExceptionWhenUserNotFound() {
-            when(userRepository.findById(999L)).thenReturn(Optional.empty());
+            when(userRepository.findByIdForUpdate(999L)).thenReturn(Optional.empty());
 
             assertThatThrownBy(() -> orderService.create(999L, createRequest))
                     .isInstanceOf(ResourceNotFoundException.class)
@@ -198,7 +205,7 @@ class OrderServiceTest {
         @DisplayName("Should throw exception when user is banned")
         void shouldThrowExceptionWhenUserIsBanned() {
             testUser.setIsBanned(true);
-            when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+            when(userRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(testUser));
 
             assertThatThrownBy(() -> orderService.create(1L, createRequest))
                     .isInstanceOf(BadRequestException.class)
@@ -208,7 +215,7 @@ class OrderServiceTest {
         @Test
         @DisplayName("Should throw exception when service not found")
         void shouldThrowExceptionWhenServiceNotFound() {
-            when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+            when(userRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(testUser));
             when(serviceRepository.findById(999)).thenReturn(Optional.empty());
             createRequest.setServiceId(999);
 
@@ -221,7 +228,7 @@ class OrderServiceTest {
         @DisplayName("Should throw exception when service is not active")
         void shouldThrowExceptionWhenServiceNotActive() {
             testService.setIsActive(false);
-            when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+            when(userRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(testUser));
             when(serviceRepository.findById(1)).thenReturn(Optional.of(testService));
 
             assertThatThrownBy(() -> orderService.create(1L, createRequest))
@@ -233,7 +240,7 @@ class OrderServiceTest {
         @DisplayName("Should throw exception when quantity is invalid")
         void shouldThrowExceptionWhenQuantityInvalid() {
             createRequest.setQuantity(50); // Below min of 100
-            when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+            when(userRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(testUser));
             when(serviceRepository.findById(1)).thenReturn(Optional.of(testService));
 
             assertThatThrownBy(() -> orderService.create(1L, createRequest))
@@ -245,7 +252,7 @@ class OrderServiceTest {
         @DisplayName("Should throw exception when user has insufficient balance")
         void shouldThrowExceptionWhenInsufficientBalance() {
             testUser.setBalance(new BigDecimal("0.01")); // Very low balance
-            when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+            when(userRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(testUser));
             when(serviceRepository.findById(1)).thenReturn(Optional.of(testService));
 
             assertThatThrownBy(() -> orderService.create(1L, createRequest))
@@ -259,7 +266,7 @@ class OrderServiceTest {
             BigDecimal initialBalance = new BigDecimal("100.00");
             testUser.setBalance(initialBalance);
 
-            when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+            when(userRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(testUser));
             when(serviceRepository.findById(1)).thenReturn(Optional.of(testService));
             when(orderRepository.save(any(Order.class))).thenReturn(testOrder);
             when(transactionRepository.save(any(Transaction.class))).thenReturn(Transaction.builder().build());
@@ -275,6 +282,154 @@ class OrderServiceTest {
             assertThat(savedTransaction.getType()).isEqualTo(TransactionType.ORDER);
             assertThat(savedTransaction.getAmount()).isNegative();
             assertThat(savedTransaction.getReferenceType()).isEqualTo("ORDER");
+        }
+
+        @Test
+        @DisplayName("Should return existing order when idempotency key already exists")
+        void shouldReturnExistingOrderWhenIdempotencyKeyExists() {
+            String idempotencyKey = "test-idempotency-key-123";
+            createRequest.setIdempotencyKey(idempotencyKey);
+            testOrder.setIdempotencyKey(idempotencyKey);
+
+            // User lock must be acquired FIRST (fixes race condition)
+            when(userRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(testUser));
+            when(orderRepository.findByIdempotencyKey(idempotencyKey)).thenReturn(Optional.of(testOrder));
+            when(orderMapper.toResponse(testOrder)).thenReturn(testOrderResponse);
+
+            OrderResponse result = orderService.create(1L, createRequest);
+
+            assertThat(result).isNotNull();
+            assertThat(result.getId()).isEqualTo(1L);
+            // Should NOT call save or external service - just return existing order
+            verify(orderRepository, never()).save(any(Order.class));
+            verify(externalOrderService, never()).submitOrder(any(Order.class));
+        }
+
+    }
+
+    @Nested
+    @DisplayName("Submit To Provider Operations")
+    class SubmitToProviderOperations {
+
+        @Test
+        @DisplayName("Should submit order to provider successfully")
+        void shouldSubmitOrderToProviderSuccessfully() {
+            when(orderRepository.findById(1L)).thenReturn(Optional.of(testOrder));
+            when(externalOrderService.submitOrder(testOrder)).thenReturn(testOrderResponse);
+
+            OrderResponse result = orderService.submitOrderToProvider(1L);
+
+            assertThat(result).isNotNull();
+            verify(externalOrderService).submitOrder(testOrder);
+        }
+
+        @Test
+        @DisplayName("Should skip submission if order not in PENDING status")
+        void shouldSkipSubmissionIfNotPending() {
+            testOrder.setStatus(OrderStatus.PROCESSING);
+            when(orderRepository.findById(1L)).thenReturn(Optional.of(testOrder));
+            when(orderMapper.toResponse(testOrder)).thenReturn(testOrderResponse);
+
+            OrderResponse result = orderService.submitOrderToProvider(1L);
+
+            assertThat(result).isNotNull();
+            // Should NOT call external provider
+            verify(externalOrderService, never()).submitOrder(any(Order.class));
+        }
+
+        @Test
+        @DisplayName("Should compensate and throw when provider API fails")
+        void shouldCompensateWhenProviderApiFails() {
+            when(orderRepository.findById(1L)).thenReturn(Optional.of(testOrder));
+            when(externalOrderService.submitOrder(testOrder))
+                    .thenThrow(new ProviderApiException("TestProvider", "order", "API Error"));
+            when(transactionRepository.save(any(Transaction.class))).thenReturn(Transaction.builder().build());
+            when(userRepository.save(any(User.class))).thenReturn(testUser);
+            when(orderRepository.save(any(Order.class))).thenReturn(testOrder);
+
+            assertThatThrownBy(() -> orderService.submitOrderToProvider(1L))
+                    .isInstanceOf(ProviderApiException.class)
+                    .hasMessageContaining("API Error");
+
+            // Verify compensation was triggered
+            verify(orderRepository, times(2)).findById(1L); // Once in submit, once in compensate
+        }
+
+        @Test
+        @DisplayName("Should throw exception when order not found for submission")
+        void shouldThrowExceptionWhenOrderNotFoundForSubmission() {
+            when(orderRepository.findById(999L)).thenReturn(Optional.empty());
+
+            assertThatThrownBy(() -> orderService.submitOrderToProvider(999L))
+                    .isInstanceOf(ResourceNotFoundException.class)
+                    .hasMessageContaining("Order");
+        }
+    }
+
+    @Nested
+    @DisplayName("Compensation Operations")
+    class CompensationOperations {
+
+        @Test
+        @DisplayName("Should compensate failed order by refunding balance")
+        void shouldCompensateFailedOrderByRefundingBalance() {
+            BigDecimal initialBalance = new BigDecimal("99.00"); // After deduction
+            testUser.setBalance(initialBalance);
+
+            when(orderRepository.findById(1L)).thenReturn(Optional.of(testOrder));
+            when(transactionRepository.save(any(Transaction.class))).thenReturn(Transaction.builder().build());
+            when(userRepository.save(any(User.class))).thenReturn(testUser);
+            when(orderRepository.save(any(Order.class))).thenReturn(testOrder);
+
+            orderService.compensateFailedOrder(1L);
+
+            // Verify refund transaction was created
+            ArgumentCaptor<Transaction> transactionCaptor = ArgumentCaptor.forClass(Transaction.class);
+            verify(transactionRepository).save(transactionCaptor.capture());
+            Transaction refundTransaction = transactionCaptor.getValue();
+            assertThat(refundTransaction.getType()).isEqualTo(TransactionType.REFUND);
+            assertThat(refundTransaction.getAmount()).isPositive();
+
+            // Verify order was marked as FAILED
+            ArgumentCaptor<Order> orderCaptor = ArgumentCaptor.forClass(Order.class);
+            verify(orderRepository).save(orderCaptor.capture());
+            assertThat(orderCaptor.getValue().getStatus()).isEqualTo(OrderStatus.FAILED);
+        }
+
+        @Test
+        @DisplayName("Should skip compensation if order already FAILED")
+        void shouldSkipCompensationIfAlreadyFailed() {
+            testOrder.setStatus(OrderStatus.FAILED);
+            when(orderRepository.findById(1L)).thenReturn(Optional.of(testOrder));
+
+            orderService.compensateFailedOrder(1L);
+
+            // Should NOT create refund or save order again
+            verify(transactionRepository, never()).save(any(Transaction.class));
+            verify(orderRepository, never()).save(any(Order.class));
+        }
+
+        @Test
+        @DisplayName("Should skip compensation if order already REFUNDED")
+        void shouldSkipCompensationIfAlreadyRefunded() {
+            testOrder.setStatus(OrderStatus.REFUNDED);
+            when(orderRepository.findById(1L)).thenReturn(Optional.of(testOrder));
+
+            orderService.compensateFailedOrder(1L);
+
+            // Should NOT create refund or save order again
+            verify(transactionRepository, never()).save(any(Transaction.class));
+            verify(orderRepository, never()).save(any(Order.class));
+        }
+
+        @Test
+        @DisplayName("Should throw exception when order not found for compensation")
+        void shouldThrowExceptionWhenOrderNotFoundForCompensation() {
+            when(orderRepository.findById(999L)).thenReturn(Optional.empty());
+
+            assertThatThrownBy(() -> orderService.compensateFailedOrder(999L))
+                    .isInstanceOf(ResourceNotFoundException.class)
+                    .hasMessageContaining("Order");
         }
     }
 

@@ -329,4 +329,157 @@
       </div>
     }
   </section>
+
+  <!-- ========================================================================
+       SECCION 3: VALIDADORES EXTENDIDOS
+       ======================================================================== -->
+  <section class="forms-section__block">
+    <h3 class="forms-section__block-title">Validadores Extendidos</h3>
+    <p class="forms-section__block-description">
+      Validadores adicionales: URL, slug, solo letras, tarjeta de credito y sin espacios
+    </p>
+
+    <form
+      class="forms-section__form"
+      [formGroup]="extendedValidatorsForm"
+      (ngSubmit)="onExtendedSubmit()"
+      novalidate
+    >
+      <div class="forms-section__grid">
+        <!-- URL -->
+        <div class="forms-section__field">
+          <label for="websiteUrl" class="forms-section__label">
+            URL del sitio web
+            <span class="forms-section__required">*</span>
+          </label>
+          <input
+            id="websiteUrl"
+            type="url"
+            class="forms-section__input"
+            [class.forms-section__input--error]="getUrlError()"
+            [class.forms-section__input--success]="extendedValidatorsForm.controls.websiteUrl.touched && !extendedValidatorsForm.controls.websiteUrl.errors"
+            formControlName="websiteUrl"
+            placeholder="https://ejemplo.com"
+          />
+          @if (getUrlError()) {
+            <span class="forms-section__error">{{ getUrlError() }}</span>
+          }
+          <span class="forms-section__hint">Debe comenzar con http:// o https://</span>
+        </div>
+
+        <!-- Slug -->
+        <div class="forms-section__field">
+          <label for="slug" class="forms-section__label">
+            Slug / Identificador
+            <span class="forms-section__required">*</span>
+          </label>
+          <input
+            id="slug"
+            type="text"
+            class="forms-section__input"
+            [class.forms-section__input--error]="getSlugError()"
+            [class.forms-section__input--success]="extendedValidatorsForm.controls.slug.touched && !extendedValidatorsForm.controls.slug.errors"
+            formControlName="slug"
+            placeholder="mi-identificador_123"
+          />
+          @if (getSlugError()) {
+            <span class="forms-section__error">{{ getSlugError() }}</span>
+          }
+          <span class="forms-section__hint">Solo letras, numeros, guiones y guiones bajos</span>
+        </div>
+
+        <!-- Nombre Completo (solo letras) -->
+        <div class="forms-section__field">
+          <label for="fullName" class="forms-section__label">
+            Nombre completo
+            <span class="forms-section__required">*</span>
+          </label>
+          <input
+            id="fullName"
+            type="text"
+            class="forms-section__input"
+            [class.forms-section__input--error]="getFullNameError()"
+            [class.forms-section__input--success]="extendedValidatorsForm.controls.fullName.touched && !extendedValidatorsForm.controls.fullName.errors"
+            formControlName="fullName"
+            placeholder="Juan Garcia Lopez"
+          />
+          @if (getFullNameError()) {
+            <span class="forms-section__error">{{ getFullNameError() }}</span>
+          }
+          <span class="forms-section__hint">Solo letras y espacios permitidos</span>
+        </div>
+
+        <!-- Tarjeta de Credito -->
+        <div class="forms-section__field">
+          <label for="creditCard" class="forms-section__label">
+            Numero de tarjeta
+            <span class="forms-section__required">*</span>
+          </label>
+          <input
+            id="creditCard"
+            type="text"
+            inputmode="numeric"
+            class="forms-section__input"
+            [class.forms-section__input--error]="getCreditCardError()"
+            [class.forms-section__input--success]="extendedValidatorsForm.controls.creditCard.touched && !extendedValidatorsForm.controls.creditCard.errors"
+            formControlName="creditCard"
+            placeholder="4111111111111111"
+            maxlength="19"
+            autocomplete="cc-number"
+          />
+          @if (getCreditCardError()) {
+            <span class="forms-section__error">{{ getCreditCardError() }}</span>
+          }
+          <span class="forms-section__hint">13-19 digitos sin espacios</span>
+        </div>
+
+        <!-- Contrasena (sin espacios) -->
+        <div class="forms-section__field">
+          <label for="extPassword" class="forms-section__label">
+            Contrasena
+            <span class="forms-section__required">*</span>
+          </label>
+          <input
+            id="extPassword"
+            type="password"
+            class="forms-section__input"
+            [class.forms-section__input--error]="getPasswordError()"
+            [class.forms-section__input--success]="extendedValidatorsForm.controls.password.touched && !extendedValidatorsForm.controls.password.errors"
+            formControlName="password"
+            placeholder="MinContraseña123"
+            autocomplete="new-password"
+          />
+          @if (getPasswordError()) {
+            <span class="forms-section__error">{{ getPasswordError() }}</span>
+          }
+          <span class="forms-section__hint">Minimo 8 caracteres, sin espacios</span>
+        </div>
+      </div>
+
+      <!-- Acciones -->
+      <div class="forms-section__actions">
+        <button
+          type="button"
+          class="forms-section__btn forms-section__btn--secondary"
+          (click)="resetExtendedForm()"
+        >
+          Resetear
+        </button>
+        <button
+          type="submit"
+          class="forms-section__btn forms-section__btn--primary"
+          [disabled]="extendedValidatorsForm.invalid"
+        >
+          Validar Formulario
+        </button>
+      </div>
+    </form>
+
+    @if (extendedResult()) {
+      <div class="forms-section__result">
+        <h4 class="forms-section__result-title">Resultado de validacion</h4>
+        <pre class="forms-section__result-code">{{ extendedResult() }}</pre>
+      </div>
+    }
+  </section>
 </div>

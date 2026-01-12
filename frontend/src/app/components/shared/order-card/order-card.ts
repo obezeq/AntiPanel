@@ -98,8 +98,20 @@ export class OrderCard {
 
   /** Formatted price with currency */
   protected readonly formattedPrice = computed(() => {
-    return `$${this.order().price.toFixed(2)}`;
+    return this.formatPrice(this.order().price);
   });
+
+  /**
+   * Format price with appropriate precision
+   * Shows 2 decimals for prices >= $0.01, up to 6 decimals for smaller amounts
+   */
+  private formatPrice(price: number): string {
+    if (price >= 0.01) {
+      return `$${price.toFixed(2)}`;
+    }
+    const formatted = price.toFixed(6).replace(/0+$/, '').replace(/\.$/, '');
+    return `$${formatted}`;
+  }
 
   /** Formatted date string */
   protected readonly formattedDate = computed(() => {

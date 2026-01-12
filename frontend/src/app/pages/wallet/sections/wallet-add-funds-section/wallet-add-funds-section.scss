@@ -1,0 +1,212 @@
+// ==========================================================================
+// WALLET ADD FUNDS SECTION
+// ==========================================================================
+// Form for adding funds via cryptocurrency.
+// Features responsive layout and validation states.
+// Uses shared Button component for submit action.
+// ==========================================================================
+
+@use '../../../../../styles/01-tools/mixins' as *;
+
+.wallet-add-funds {
+  @include flex-column;
+  align-items: center;
+  gap: var(--spacing-12);
+  width: 100%;
+  max-width: 58.5rem; // 936px - normalized to base-8
+
+  @include respond-below('md') {
+    // Fluid width: scales from 280px minimum to 85vw for optimal mobile reading
+    width: clamp(17.5rem, 85vw, 100%);
+    max-width: 100%;
+    gap: var(--spacing-6);
+    padding: 0 var(--spacing-2); // 8px - base-8 spacing
+  }
+}
+
+// ---------------------------------------------------------------------------
+// TITLE
+// ---------------------------------------------------------------------------
+// "ADD FUNDS" - Montserrat Bold
+
+.wallet-add-funds__title {
+  font-family: var(--font-primary);
+  // Fluid typography: scales smoothly from h4 (32px) to h1 (96px) based on viewport
+  font-size: clamp(var(--font-size-h4), 8vw, var(--font-size-h1));
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  line-height: 1.15;
+  text-align: center;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+// ---------------------------------------------------------------------------
+// FORM
+// ---------------------------------------------------------------------------
+
+.wallet-add-funds__form {
+  @include flex-column;
+  align-items: center;
+  gap: var(--spacing-4);
+  width: 100%;
+}
+
+.wallet-add-funds__fieldset {
+  @include flex-center;
+  gap: var(--spacing-4);
+  border: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  max-width: 100%;
+
+  @include respond-below('md') {
+    flex-direction: column;
+    align-items: stretch; // Forces all children to stretch to full width
+    gap: var(--spacing-2); // 8px - tighter gap (base-8)
+    padding: var(--spacing-2); // 8px - minimal padding (base-8)
+    background-color: var(--color-tiny-info);
+    border-radius: var(--radius-lg);
+
+    // Make all direct children full width (works with Angular encapsulation)
+    > * {
+      width: 100%;
+    }
+
+    // Ensure custom elements display as block for proper width behavior
+    > app-button {
+      display: block;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// CRYPTO SELECTION BUTTON
+// ---------------------------------------------------------------------------
+// Placeholder button for crypto dropdown
+
+.wallet-add-funds__crypto-btn {
+  @include flex-center;
+  height: var(--spacing-12);
+  padding: 0 var(--spacing-6);
+  background-color: transparent;
+  border: var(--border-width-medium) solid var(--color-secondary);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-primary);
+  // Fluid typography: scales from body (16px) to h5 (24px)
+  font-size: clamp(var(--font-size-body), 2.5vw, var(--font-size-h5));
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: var(--transition-colors);
+  flex-shrink: 0;
+
+  &:hover {
+    border-color: var(--color-text);
+    background-color: var(--color-tiny-info);
+  }
+
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  @include respond-below('md') {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// AMOUNT INPUT FIELD
+// ---------------------------------------------------------------------------
+
+.wallet-add-funds__amount-input {
+  flex: 1;
+  max-width: 21.25rem; // 340px from Figma
+  height: var(--spacing-12);
+  padding: var(--spacing-2) var(--spacing-6);
+  border: var(--border-width-medium) solid var(--color-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-secondary);
+  // Fluid typography: scales from body (16px) to h5 (24px)
+  font-size: clamp(var(--font-size-body), 2.5vw, var(--font-size-h5));
+  font-weight: var(--font-weight-medium);
+  color: var(--color-foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.075em;
+  transition: var(--transition-colors);
+
+  @include respond-below('md') {
+    max-width: 100%;
+    width: 100%;
+    height: var(--spacing-12);
+  }
+
+  &::placeholder {
+    color: var(--color-text);
+    opacity: 1;
+  }
+
+  &:hover {
+    background-color: var(--color-tiny-info);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-text);
+  }
+
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  // Error state
+  &--error {
+    border-color: var(--color-error);
+
+    &:focus {
+      border-color: var(--color-error);
+    }
+  }
+
+  // Hide number input spinners
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  &[type='number'] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// ERROR MESSAGE
+// ---------------------------------------------------------------------------
+
+.wallet-add-funds__error {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-error);
+  margin: 0;
+  margin-top: var(--spacing-2);
+  text-align: center;
+}
+
+// ---------------------------------------------------------------------------
+// ACCESSIBILITY: REDUCED MOTION
+// ---------------------------------------------------------------------------
+
+@media (prefers-reduced-motion: reduce) {
+  .wallet-add-funds__crypto-btn,
+  .wallet-add-funds__amount-input {
+    transition: none;
+  }
+}

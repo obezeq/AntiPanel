@@ -1,0 +1,56 @@
+<section class="wallet-add-funds" aria-labelledby="add-funds-title">
+  <h2 id="add-funds-title" class="wallet-add-funds__title">ADD FUNDS</h2>
+
+  <form class="wallet-add-funds__form" (submit)="onSubmit($event)">
+    <fieldset class="wallet-add-funds__fieldset">
+      <legend class="sr-only">Add funds form</legend>
+
+      <!-- Crypto Selection Button -->
+      <button
+        type="button"
+        class="wallet-add-funds__crypto-btn"
+        aria-haspopup="listbox"
+        aria-label="Select cryptocurrency"
+        [disabled]="disabled()"
+      >
+        {{ selectedCrypto() | uppercase }}
+      </button>
+
+      <!-- Amount Input -->
+      <input
+        type="number"
+        class="wallet-add-funds__amount-input"
+        [class.wallet-add-funds__amount-input--error]="amountError()"
+        [placeholder]="'MIN $' + minAmount()"
+        [value]="amount()"
+        (input)="onAmountInput($event)"
+        [min]="minAmount()"
+        [max]="maxAmount() ?? undefined"
+        step="0.01"
+        inputmode="decimal"
+        aria-label="Amount in USD"
+        [attr.aria-describedby]="amountError() ? 'amount-error' : null"
+        [attr.aria-invalid]="amountError() ? 'true' : null"
+        [disabled]="disabled()"
+        required
+      />
+
+      <!-- Submit Button - disabled when form is invalid -->
+      <app-button
+        variant="ghost"
+        size="lg"
+        type="submit"
+        [loading]="isLoading()"
+        [disabled]="isLoading() || disabled() || !isFormValid()"
+      >
+        ADD FUNDS
+      </app-button>
+    </fieldset>
+
+    @if (amountError()) {
+      <p id="amount-error" class="wallet-add-funds__error" role="alert">
+        {{ amountError() }}
+      </p>
+    }
+  </form>
+</section>

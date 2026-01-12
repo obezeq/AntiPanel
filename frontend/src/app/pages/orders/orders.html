@@ -1,0 +1,112 @@
+<!-- Header (Dashboard Variant) -->
+<app-header
+  variant="dashboard"
+  [walletBalance]="balance()"
+  (logoutClick)="onLogoutClick()"
+/>
+
+<main class="orders-page">
+  <section class="orders-page__content" aria-labelledby="orders-title">
+
+    <!-- =====================================================================
+         HEADER: Shopping Cart Icon + Title
+         ===================================================================== -->
+    <header class="orders-page__header">
+      <figure class="orders-page__icon" aria-hidden="true">
+        <ng-icon name="matShoppingCart" />
+      </figure>
+      <h1 id="orders-title" class="orders-page__title">ORDERS</h1>
+    </header>
+
+    <!-- =====================================================================
+         FILTER NAVIGATION: Category, Sort, Search
+         ===================================================================== -->
+    <nav class="orders-page__nav" aria-label="Order filters">
+      <app-order-filters
+        [selectedCategory]="selectedCategory()"
+        [sortOrder]="sortOrder()"
+        [searchQuery]="searchQuery()"
+        (categoryChange)="onCategoryChange($event)"
+        (sortChange)="onSortChange($event)"
+        (searchChange)="onSearchChange($event)"
+      />
+    </nav>
+
+    <!-- =====================================================================
+         LOADING STATE
+         ===================================================================== -->
+    @if (isLoading()) {
+      <article class="orders-page__state orders-page__state--loading" role="status" aria-live="polite">
+        <p class="orders-page__state-text">Loading orders...</p>
+      </article>
+    }
+
+    <!-- =====================================================================
+         ERROR STATE
+         ===================================================================== -->
+    @if (error()) {
+      <article class="orders-page__state orders-page__state--error" role="alert">
+        <p class="orders-page__state-text">{{ error() }}</p>
+        <button
+          type="button"
+          class="orders-page__retry-btn"
+          (click)="loadOrders()"
+        >
+          Try Again
+        </button>
+      </article>
+    }
+
+    <!-- =====================================================================
+         ORDERS LIST
+         ===================================================================== -->
+    @if (showOrders()) {
+      <ul #ordersList class="orders-page__list" role="list" aria-label="Orders list">
+        @for (order of filteredOrders(); track order.id) {
+          <li class="orders-page__item">
+            <app-order-card
+              [order]="order"
+              [showActions]="true"
+              (orderAgain)="onOrderAgain($event)"
+              (refill)="onRefill($event)"
+              (cardClick)="onOrderClick($event)"
+            />
+          </li>
+        }
+      </ul>
+
+      <!-- Pagination -->
+      <nav class="orders-page__pagination" aria-label="Orders pagination">
+        <app-order-pagination
+          [currentPage]="currentPage()"
+          [totalPages]="totalPages()"
+          [pageSize]="pageSize()"
+          (pageChange)="onPageChange($event)"
+          (pageSizeChange)="onPageSizeChange($event)"
+        />
+      </nav>
+    }
+
+    <!-- =====================================================================
+         EMPTY STATE
+         ===================================================================== -->
+    @if (isEmpty()) {
+      <article class="orders-page__empty" role="status">
+        <p class="orders-page__empty-title">No orders yet</p>
+        @if (searchQuery() || selectedCategory() !== 'ALL') {
+          <p class="orders-page__empty-hint">Try adjusting your filters</p>
+        } @else {
+          <p class="orders-page__empty-hint">
+            Head to the
+            <a routerLink="/dashboard" class="orders-page__empty-link">dashboard</a>
+            to place your first order
+          </p>
+        }
+      </article>
+    }
+
+  </section>
+</main>
+
+<!-- Footer -->
+<app-footer />

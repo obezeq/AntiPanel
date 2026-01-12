@@ -9,13 +9,15 @@ services:
   # PostgreSQL - Development Configuration
   # ========================================
   postgres:
+    # USE HOST NETWORK - bypasses Docker bridge networking issues
+    network_mode: host
+
+    # Override base config networks (mutually exclusive with network_mode)
+    networks: !reset []
+
     environment:
       # Development: UTF-8 encoding (locale handled by Alpine defaults)
       POSTGRES_INITDB_ARGS: "--encoding=UTF8"
-
-    # Development: Expose ports to host for direct access
-    ports:
-      - "5432:5432"
 
   # ========================================
   # Backend - Development Configuration
@@ -24,12 +26,21 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-      # Development: Disable build cache for fresh builds
-      # cache_from: []
+
+    # USE HOST NETWORK - bypasses Docker bridge networking issues on Linux Mint/Ubuntu
+    network_mode: host
+
+    # Override base config networks (mutually exclusive with network_mode)
+    networks: !reset []
 
     environment:
       # Development Profile
       SPRING_PROFILES_ACTIVE: dev
+
+      # Database: Use localhost since we're on host network (disable SSL for dev)
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/antipanel?sslmode=disable
+      SPRING_DATASOURCE_USERNAME: antipanel_user
+      SPRING_DATASOURCE_PASSWORD: antipanel_password
 
       # Development: Enable debug logging
       LOGGING_LEVEL_ROOT: INFO
@@ -42,13 +53,14 @@ services:
       SPRING_JPA_SHOW_SQL: "true"
       SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: "true"
 
+      # Development: Auto-update schema to match entities (prevents missing column errors)
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+
       # Development: Auto-reload support (requires spring-boot-devtools)
       SPRING_DEVTOOLS_RESTART_ENABLED: "true"
 
       # Development: CORS enabled for Angular frontend
-      # Port 4200 = Angular dev server (ng serve / bun run start)
-      # Port 3000 = Alternative dev server (future)
-      SPRING_WEB_CORS_ALLOWED_ORIGINS: "http://localhost:4200,http://localhost:3000,http://frontend:4200"
+      APP_CORS_ALLOWED_ORIGINS: "http://localhost:4200,http://localhost:3000"
 
       # Development: Actuator endpoints
       MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "*"
@@ -62,26 +74,9 @@ services:
         -XX:+UseG1GC
         -Dspring.profiles.active=dev
 
-    # Development: Mount source code for hot reload (optional)
+    # Development: Mount logs volume
     volumes:
-      # Uncomment if using spring-boot-devtools
-      # - ./backend/src:/app/src:ro
-
-      # Logs volume for easy access
       - ./backend/logs:/app/logs
-
-    # Development: Expose debug port
-    ports:
-      - "8080:8080"  # API Server
-      - "5005:5005"  # Java Debug Port
-
-    # Health check using Spring Boot Actuator
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
 
   # ========================================
   # Angular 21 Frontend - Development (Bun)
@@ -95,17 +90,16 @@ services:
     container_name: antipanel-frontend
     restart: unless-stopped
 
+    # USE HOST NETWORK - bypasses Docker bridge networking issues on Linux Mint/Ubuntu
+    # This allows direct access to localhost:4200 without port forwarding
+    network_mode: host
+
     environment:
       # Development environment
       NODE_ENV: development
-      # API URL for backend communication
-      API_URL: http://backend:8080/api
       # Enable polling for file changes (Docker volume compatibility)
       WATCHPACK_POLLING: "true"
       CHOKIDAR_USEPOLLING: "true"
-
-    ports:
-      - "4200:4200"  # Angular dev server
 
     volumes:
       # Hot reload - mount source code
@@ -114,23 +108,13 @@ services:
       - ./frontend/angular.json:/app/angular.json
       - ./frontend/tsconfig.json:/app/tsconfig.json
       - ./frontend/tsconfig.app.json:/app/tsconfig.app.json
+      - ./frontend/package.json:/app/package.json
       # Prevent node_modules from being overwritten by host mount
       - /app/node_modules
       - /app/.angular
 
     depends_on:
       - backend
-
-    networks:
-      - antipanel-network
-
-    # Health check for frontend (using curl, more reliable than BusyBox wget)
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://127.0.0.1:4200"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
 
   # ========================================
   # pgAdmin - Database Management Tool (Optional)
@@ -140,19 +124,24 @@ services:
     container_name: antipanel-pgadmin
     restart: unless-stopped
 
+    # USE HOST NETWORK to match postgres (which is also on host network)
+    network_mode: host
+
+    # Override base config networks (incompatible with network_mode)
+    networks: !reset []
+
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@antipanel.local
+      # Use .com domain since .local is rejected by newer pgAdmin email validation
+      PGADMIN_DEFAULT_EMAIL: admin@antipanel.dev
       PGADMIN_DEFAULT_PASSWORD: admin
       PGADMIN_CONFIG_SERVER_MODE: "False"
+      # Set listen port since default 80 may conflict
+      PGADMIN_LISTEN_PORT: 5050
 
-    ports:
-      - "5050:80"
+    # ports: not needed with host network - access via localhost:5050
 
     volumes:
       - pgadmin_data:/var/lib/pgadmin
-
-    networks:
-      - antipanel-network
 
     depends_on:
       - postgres

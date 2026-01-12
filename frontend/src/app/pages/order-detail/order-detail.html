@@ -1,0 +1,175 @@
+<!-- Header (Dashboard Variant) -->
+<app-header
+  variant="dashboard"
+  [walletBalance]="balance()"
+  (logoutClick)="onLogoutClick()"
+/>
+
+<main class="order-detail">
+  <!-- Breadcrumb Navigation -->
+  <app-breadcrumb />
+
+  <article class="order-detail__content" aria-labelledby="order-title">
+
+    <!-- =====================================================================
+         LOADING STATE
+         ===================================================================== -->
+    @if (isLoading()) {
+      <section class="order-detail__state order-detail__state--loading" role="status" aria-live="polite">
+        <p class="order-detail__state-text">Loading order details...</p>
+      </section>
+    }
+
+    <!-- =====================================================================
+         ERROR STATE
+         ===================================================================== -->
+    @if (error()) {
+      <section class="order-detail__state order-detail__state--error" role="alert">
+        <p class="order-detail__state-text">{{ error() }}</p>
+        <a routerLink="/orders" class="order-detail__back-link">
+          Back to Orders
+        </a>
+      </section>
+    }
+
+    <!-- =====================================================================
+         ORDER DETAILS
+         ===================================================================== -->
+    @if (order() && !isLoading() && !error()) {
+      <!-- Back Navigation -->
+      <nav class="order-detail__nav" aria-label="Page navigation">
+        <button
+          type="button"
+          class="order-detail__back-btn"
+          (click)="onBack()"
+          aria-label="Go back to orders list"
+        >
+          <ng-icon name="matArrowBack" aria-hidden="true" />
+          <span>Back to Orders</span>
+        </button>
+      </nav>
+
+      <!-- Header: Status + ID + Service -->
+      <header class="order-detail__header">
+        <span class="order-detail__status" [class]="statusClass()">
+          {{ statusLabel() }}
+        </span>
+        <h1 id="order-title" class="order-detail__title">
+          Order #{{ formattedId() }}
+        </h1>
+        <p class="order-detail__service">{{ order()?.serviceName }}</p>
+      </header>
+
+      <!-- Order Information Card -->
+      <section class="order-detail__card" aria-label="Order information">
+        <!-- Target URL -->
+        <dl class="order-detail__info-group">
+          <dt class="order-detail__label">Target</dt>
+          <dd class="order-detail__value order-detail__value--url">
+            {{ order()?.target }}
+          </dd>
+        </dl>
+
+        <!-- Progress Bar -->
+        <figure class="order-detail__progress-container" aria-label="Order progress">
+          <figcaption class="order-detail__progress-label">
+            Progress: {{ progressPercentage() }}%
+          </figcaption>
+          <meter
+            class="order-detail__progress-bar"
+            [value]="progressPercentage()"
+            min="0"
+            max="100"
+            aria-label="Order completion progress"
+          >
+            {{ progressPercentage() }}%
+          </meter>
+        </figure>
+
+        <!-- Stats Grid -->
+        <dl class="order-detail__stats">
+          <div class="order-detail__stat">
+            <dt class="order-detail__stat-label">Quantity</dt>
+            <dd class="order-detail__stat-value">{{ formattedQuantity() }}</dd>
+          </div>
+
+          <div class="order-detail__stat">
+            <dt class="order-detail__stat-label">Remains</dt>
+            <dd class="order-detail__stat-value">{{ formattedRemains() }}</dd>
+          </div>
+
+          <div class="order-detail__stat">
+            <dt class="order-detail__stat-label">Charge</dt>
+            <dd class="order-detail__stat-value order-detail__stat-value--price">
+              {{ formattedCharge() }}
+            </dd>
+          </div>
+
+          @if (order()?.startCount !== null) {
+            <div class="order-detail__stat">
+              <dt class="order-detail__stat-label">Start Count</dt>
+              <dd class="order-detail__stat-value">
+                {{ order()?.startCount?.toLocaleString() }}
+              </dd>
+            </div>
+          }
+        </dl>
+
+        <!-- Dates -->
+        <dl class="order-detail__dates">
+          <div class="order-detail__date-row">
+            <dt class="order-detail__date-label">Created</dt>
+            <dd class="order-detail__date-value">{{ formattedDate() }}</dd>
+          </div>
+
+          @if (formattedCompletedDate()) {
+            <div class="order-detail__date-row">
+              <dt class="order-detail__date-label">Completed</dt>
+              <dd class="order-detail__date-value">{{ formattedCompletedDate() }}</dd>
+            </div>
+          }
+        </dl>
+
+        <!-- Refill Information -->
+        @if (order()?.isRefillable) {
+          <aside class="order-detail__refill" aria-label="Refill information">
+            <p class="order-detail__refill-info">
+              <strong>Refillable:</strong>
+              {{ order()?.refillDays }} days warranty
+              @if (refillDeadline()) {
+                <span class="order-detail__refill-deadline">
+                  (until {{ refillDeadline() }})
+                </span>
+              }
+            </p>
+          </aside>
+        }
+      </section>
+
+      <!-- Actions -->
+      <footer class="order-detail__actions">
+        <button
+          type="button"
+          class="order-detail__action order-detail__action--primary"
+          (click)="onOrderAgain()"
+        >
+          <ng-icon name="matRefresh" aria-hidden="true" />
+          Order Again
+        </button>
+
+        @if (canRefill()) {
+          <button
+            type="button"
+            class="order-detail__action order-detail__action--secondary"
+          >
+            Request Refill
+          </button>
+        }
+      </footer>
+    }
+
+  </article>
+</main>
+
+<!-- Footer -->
+<app-footer />

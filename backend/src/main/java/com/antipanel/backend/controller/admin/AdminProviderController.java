@@ -8,6 +8,7 @@ import com.antipanel.backend.dto.providerservice.ProviderServiceResponse;
 import com.antipanel.backend.dto.providerservice.ProviderServiceUpdateRequest;
 import com.antipanel.backend.service.ProviderService;
 import com.antipanel.backend.service.ProviderCatalogService;
+import com.antipanel.backend.service.ProviderSyncService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -48,6 +49,7 @@ public class AdminProviderController {
 
     private final ProviderService providerService;
     private final ProviderCatalogService providerCatalogService;
+    private final ProviderSyncService providerSyncService;
 
     // === Provider Endpoints ===
 
@@ -169,6 +171,65 @@ public class AdminProviderController {
             @PathVariable Integer id) {
         log.debug("Admin: Toggling active status for provider ID: {}", id);
         ProviderResponse response = providerService.toggleActive(id);
+        return ResponseEntity.ok(response);
+    }
+
+    // === Provider Sync Endpoints ===
+
+    @Operation(summary = "Sync services from provider",
+            description = "Fetches and synchronizes all services from the provider's API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Services synced successfully",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = ProviderServiceResponse.class)))),
+            @ApiResponse(responseCode = "401", description = "Not authenticated"),
+            @ApiResponse(responseCode = "403", description = "Access denied - requires ADMIN role"),
+            @ApiResponse(responseCode = "404", description = "Provider not found"),
+            @ApiResponse(responseCode = "502", description = "Provider API error")
+    })
+    @PostMapping("/{id}/sync-services")
+    public ResponseEntity<List<ProviderServiceResponse>> syncProviderServices(
+            @Parameter(description = "Provider ID", example = "1")
+            @PathVariable Integer id) {
+        log.info("Admin: Syncing services for provider ID: {}", id);
+        List<ProviderServiceResponse> response = providerSyncService.syncServices(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Sync balance from provider",
+            description = "Fetches and updates the provider's account balance")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Balance synced successfully",
+                    content = @Content(schema = @Schema(implementation = ProviderResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Not authenticated"),
+            @ApiResponse(responseCode = "403", description = "Access denied - requires ADMIN role"),
+            @ApiResponse(responseCode = "404", description = "Provider not found"),
+            @ApiResponse(responseCode = "502", description = "Provider API error")
+    })
+    @PostMapping("/{id}/sync-balance")
+    public ResponseEntity<ProviderResponse> syncProviderBalance(
+            @Parameter(description = "Provider ID", example = "1")
+            @PathVariable Integer id) {
+        log.info("Admin: Syncing balance for provider ID: {}", id);
+        ProviderResponse response = providerSyncService.syncBalance(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Full sync from provider",
+            description = "Syncs both services and balance from the provider's API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Full sync completed successfully",
+                    content = @Content(schema = @Schema(implementation = ProviderResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Not authenticated"),
+            @ApiResponse(responseCode = "403", description = "Access denied - requires ADMIN role"),
+            @ApiResponse(responseCode = "404", description = "Provider not found"),
+            @ApiResponse(responseCode = "502", description = "Provider API error")
+    })
+    @PostMapping("/{id}/sync")
+    public ResponseEntity<ProviderResponse> syncProvider(
+            @Parameter(description = "Provider ID", example = "1")
+            @PathVariable Integer id) {
+        log.info("Admin: Full sync for provider ID: {}", id);
+        ProviderResponse response = providerSyncService.syncAll(id);
         return ResponseEntity.ok(response);
     }
 

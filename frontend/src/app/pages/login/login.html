@@ -1,0 +1,30 @@
+<app-header variant="login" />
+
+<main class="login-page" id="main-content">
+  <section class="login-page__content" aria-labelledby="login-title">
+    <h1 id="login-title" class="visually-hidden">Login to AntiPanel</h1>
+
+    <!-- Success message (e.g., after registration) -->
+    @if (successMessage()) {
+      <p class="login-page__message login-page__message--success" role="status">
+        {{ successMessage() }}
+      </p>
+    }
+
+    <!-- Info message (e.g., session expired) -->
+    @if (infoMessage()) {
+      <p class="login-page__message login-page__message--info" role="status">
+        {{ infoMessage() }}
+      </p>
+    }
+
+    <app-auth-form
+      mode="login"
+      [loading]="isLoading()"
+      [serverError]="serverError()"
+      (formSubmit)="onFormSubmit($event)"
+    />
+  </section>
+</main>
+
+<app-footer />

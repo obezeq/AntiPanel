@@ -2,6 +2,12 @@
 
 > SMM Panel con diseno minimalista y UX/UI de alta calidad.
 
+## URL de Produccion
+
+**https://antipanel.tech**
+
+---
+
 ## Documentacion
 
 - **[Documentacion de Diseno](./docs/design/DOCUMENTACION.md)** - Arquitectura CSS, componentes, accesibilidad, temas y responsive design
@@ -15,7 +21,7 @@
 4. Estrategia Responsive
 5. Optimizacion Multimedia
 6. Sistema de Temas
-7. Informe de Accesibilidad
+7. Aplicacion Completa y Despliegue
 
 ---
 

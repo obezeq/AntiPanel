@@ -6,8 +6,28 @@
 // Reusable button with variants, sizes, and states.
 // ==========================================================================
 
+// ---------------------------------------------------------------------------
+// HOST ELEMENT STYLING
+// ---------------------------------------------------------------------------
+// Ensures the custom element behaves correctly in different layouts.
+
+:host {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+:host(.button--full-width-host) {
+  display: block;
+  width: 100%;
+}
+
+// ---------------------------------------------------------------------------
+// BASE BUTTON STYLES
+// ---------------------------------------------------------------------------
+
 .button {
   @include button-base;
+  width: 100%; // Fill the host element
 
   // Default styles (will be overridden by variant modifiers)
   background-color: var(--color-success);
@@ -95,6 +115,21 @@
   padding: var(--spacing-4) var(--spacing-8);
   font-size: var(--font-size-body);
   border-radius: var(--radius-lg);
+}
+
+// ---------------------------------------------------------------------------
+// RESPONSIVE SIZES
+// ---------------------------------------------------------------------------
+// Mobile-specific size adjustments for consistent form layouts.
+// Uses max-width query to override desktop sizes on smaller screens.
+
+@media screen and (max-width: 767px) {
+  // Large button becomes fixed 48px height on mobile to match inputs
+  .button--lg {
+    height: var(--spacing-12); // 48px - matches form inputs
+    padding: 0 var(--spacing-6);
+    font-size: var(--font-size-caption);
+  }
 }
 
 // ---------------------------------------------------------------------------

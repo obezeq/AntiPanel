@@ -10,43 +10,69 @@
 // ---------------------------------------------------------------------------
 // HEADER (fuera del form)
 // ---------------------------------------------------------------------------
+// Responsive typography with mobile-first approach.
+// Progressive enhancement from mobile to desktop.
 
 .auth-form__header {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0;
-  margin-bottom: 2rem;
+  margin-bottom: var(--spacing-6); // 24px on mobile (increased from 16px)
   text-align: center;
 
+  @include respond-to('sm') {
+    margin-bottom: var(--spacing-8); // 32px
+  }
+
   @include respond-to('md') {
-    margin-bottom: 4rem; // 64px gap entre header y form según Figma
+    margin-bottom: var(--spacing-10); // 40px
+  }
+
+  @include respond-to('lg') {
+    margin-bottom: var(--spacing-16); // 64px según Figma
   }
 }
 
 .auth-form__title {
   font-family: var(--font-primary);
-  font-size: var(--font-size-h1); // 96px en móvil
+  font-size: var(--font-size-h4); // 32px on mobile (reduced from 48px)
   font-weight: var(--font-weight-bold);
   color: var(--color-text);
   line-height: 1.15;
   margin: 0;
   letter-spacing: 0;
 
+  @include respond-to('sm') {
+    font-size: var(--font-size-h3); // 48px
+  }
+
   @include respond-to('md') {
-    font-size: var(--font-size-title); // 128px en desktop según Figma
+    font-size: var(--font-size-h2); // 64px
+  }
+
+  @include respond-to('lg') {
+    font-size: var(--font-size-title); // 128px según Figma
   }
 }
 
 .auth-form__subtitle {
   font-family: var(--font-secondary);
-  font-size: var(--font-size-h5); // 24px en móvil
+  font-size: var(--font-size-body); // 16px base (mobile)
   font-weight: var(--font-weight-semibold);
   color: var(--color-foreground);
   line-height: 1.15;
   margin: 0;
 
+  @include respond-to('sm') {
+    font-size: var(--font-size-h6); // 20px
+  }
+
   @include respond-to('md') {
+    font-size: var(--font-size-h5); // 24px
+  }
+
+  @include respond-to('lg') {
     font-size: var(--font-size-h4); // 32px según Figma
   }
 }
@@ -54,30 +80,55 @@
 // ---------------------------------------------------------------------------
 // FORM
 // ---------------------------------------------------------------------------
+// Responsive max-width for optimal readability at each breakpoint.
 
 .auth-form {
   width: 100%;
-  max-width: 43.5625rem; // 697px según Figma
+  max-width: 100%;
   margin-inline: auto;
+
+  @include respond-to('sm') {
+    max-width: 28rem; // 448px
+  }
+
+  @include respond-to('md') {
+    max-width: 36rem; // 576px
+  }
+
+  @include respond-to('lg') {
+    max-width: 43.5rem; // 696px - normalized to base-8
+  }
 }
 
 // ---------------------------------------------------------------------------
 // FIELDSET & LEGEND
 // ---------------------------------------------------------------------------
+// Responsive padding, gap and border-radius using design tokens.
 
 .auth-form__fieldset {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  padding: 2rem;
+  gap: var(--spacing-4);
+  padding: var(--spacing-5); // 20px on mobile (increased from 16px)
   background-color: var(--color-background);
-  border: 0.25rem solid var(--color-secondary); // 4px border
-  border-radius: 1.5rem;
+  border: var(--border-width-thick) solid var(--color-secondary);
+  border-radius: var(--radius-lg);
+
+  @include respond-to('sm') {
+    gap: var(--spacing-5);
+    padding: var(--spacing-6);
+    border-radius: var(--radius-xl);
+  }
 
   @include respond-to('md') {
-    gap: 2rem; // 32px (base-8)
-    padding: 3.5rem 7.5rem; // 56px 120px (base-8)
-    border-radius: 2rem; // 32px border-radius
+    gap: var(--spacing-6);
+    padding: var(--spacing-8) var(--spacing-10);
+    border-radius: var(--radius-2xl);
+  }
+
+  @include respond-to('lg') {
+    gap: var(--spacing-8);
+    padding: var(--spacing-12) var(--spacing-16);
   }
 }
 
@@ -105,40 +156,61 @@
 // ---------------------------------------------------------------------------
 // FIELDS
 // ---------------------------------------------------------------------------
+// Responsive gap and input sizing with design tokens.
 
 .auth-form__fields {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--spacing-3);
+
+  @include respond-to('sm') {
+    gap: var(--spacing-4);
+  }
 
   @include respond-to('md') {
-    gap: 2rem; // 32px (base-8)
+    gap: var(--spacing-6);
+  }
+
+  @include respond-to('lg') {
+    gap: var(--spacing-8);
   }
 
   // Sobrescribir estilos de form-input para coincidir con Figma
   ::ng-deep .form-input__field {
-    background-color: var(--color-information); // #393939
+    background-color: var(--color-tiny-info);
     border: none;
-    border-radius: 0.75rem;
-    padding: 0.75rem 1rem;
+    border-radius: var(--radius-md);
+    padding: var(--spacing-3) var(--spacing-4);
     font-family: var(--font-secondary);
-    font-size: 1rem;
+    font-size: var(--font-size-caption);
     font-weight: var(--font-weight-semibold);
     color: var(--color-text);
     text-transform: uppercase;
-    letter-spacing: 0.125rem; // 2px (base-8)
+    letter-spacing: 0.125rem;
     width: 100%;
 
+    @include respond-to('sm') {
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-3) var(--spacing-5);
+      font-size: var(--font-size-body);
+    }
+
     @include respond-to('md') {
-      border-radius: 1rem; // 16px
-      padding: 1rem 2rem; // 16px 32px
-      font-size: 1.5rem; // 24px
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-4) var(--spacing-6);
+      font-size: var(--font-size-h6);
+    }
+
+    @include respond-to('lg') {
+      border-radius: var(--radius-xl);
+      padding: var(--spacing-4) var(--spacing-8);
+      font-size: var(--font-size-h5);
     }
 
     &::placeholder {
       color: var(--color-text);
       text-transform: uppercase;
-      letter-spacing: 0.125rem; // 2px (base-8)
+      letter-spacing: 0.125rem;
     }
 
     &:focus {
@@ -158,16 +230,25 @@
 // ---------------------------------------------------------------------------
 // ACTIONS
 // ---------------------------------------------------------------------------
+// Responsive gap and button sizing with design tokens.
 
 .auth-form__actions {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: var(--spacing-3);
   margin-top: 0;
 
+  @include respond-to('sm') {
+    gap: var(--spacing-4);
+  }
+
   @include respond-to('md') {
-    gap: 2rem; // 32px (base-8)
+    gap: var(--spacing-6);
+  }
+
+  @include respond-to('lg') {
+    gap: var(--spacing-8);
   }
 }
 
@@ -176,23 +257,37 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  gap: var(--spacing-3);
   width: 100%;
-  padding: 0.75rem 1.5rem;
+  padding: var(--spacing-3) var(--spacing-4);
   background-color: var(--color-information);
-  border-radius: 0.75rem;
+  border-radius: var(--radius-md);
   font-family: var(--font-primary);
-  font-size: 1rem;
+  font-size: var(--font-size-caption);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text);
   line-height: 1.15;
   transition: var(--transition-colors);
 
+  @include respond-to('sm') {
+    gap: var(--spacing-4);
+    padding: var(--spacing-3) var(--spacing-6);
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-body);
+  }
+
   @include respond-to('md') {
-    gap: 2rem; // 32px gap según Figma
-    padding: 1rem 2rem; // 16px 32px
-    border-radius: 1rem; // 16px
-    font-size: 1.5rem; // 24px
+    gap: var(--spacing-6);
+    padding: var(--spacing-4) var(--spacing-8);
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-h6);
+  }
+
+  @include respond-to('lg') {
+    gap: var(--spacing-8);
+    padding: var(--spacing-4) var(--spacing-8);
+    border-radius: var(--radius-xl);
+    font-size: var(--font-size-h5);
   }
 
   &:hover:not(:disabled) {
@@ -213,11 +308,21 @@
 
 .auth-form__submit-icon {
   flex-shrink: 0;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.25rem;
+  height: 1.25rem;
+
+  @include respond-to('sm') {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
 
   @include respond-to('md') {
-    width: 2rem; // 32px
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
+  @include respond-to('lg') {
+    width: 2rem;
     height: 2rem;
   }
 }
@@ -242,21 +347,41 @@
 // ---------------------------------------------------------------------------
 // MODE SWITCH
 // ---------------------------------------------------------------------------
+// Responsive text and layout with flex-wrap for small screens.
 
 .auth-form__switch {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 2rem; // 32px gap según Figma
-  padding: 0.5rem 2rem; // 8px 32px
+  gap: var(--spacing-2) var(--spacing-4);
+  padding: var(--spacing-2);
   font-family: var(--font-primary);
-  font-size: 1.5rem; // 24px según Figma
+  font-size: var(--font-size-caption);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text);
   line-height: 1.15;
   margin: 0;
-  white-space: nowrap; // Mantener en una línea
+
+  @include respond-to('sm') {
+    font-size: var(--font-size-body);
+    gap: var(--spacing-3) var(--spacing-6);
+    padding: var(--spacing-2) var(--spacing-4);
+  }
+
+  @include respond-to('md') {
+    font-size: var(--font-size-h6);
+    flex-wrap: nowrap;
+    gap: var(--spacing-6);
+    padding: var(--spacing-2) var(--spacing-6);
+  }
+
+  @include respond-to('lg') {
+    font-size: var(--font-size-h5);
+    gap: var(--spacing-8);
+    padding: var(--spacing-2) var(--spacing-8);
+  }
 }
 
 .auth-form__switch-text {
@@ -378,4 +503,144 @@
 .auth-form__submit--validating {
   opacity: 0.8;
   cursor: wait;
+}
+
+// ---------------------------------------------------------------------------
+// TERMS ACCEPTANCE CHECKBOX
+// ---------------------------------------------------------------------------
+// Custom checkbox with accessible design.
+// Uses native checkbox with visual overlay for best accessibility.
+
+.auth-form__terms {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-2);
+}
+
+.auth-form__terms-label {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-3);
+  cursor: pointer;
+  position: relative;
+
+  // Focus-within for keyboard navigation
+  &:focus-within {
+    .auth-form__terms-checkmark {
+      outline: var(--focus-ring-width) solid var(--focus-ring-color);
+      outline-offset: var(--focus-ring-offset);
+    }
+  }
+}
+
+.auth-form__terms-checkbox {
+  // Visually hide but keep accessible
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+
+  // Checked state
+  &:checked + .auth-form__terms-checkmark {
+    background-color: var(--color-success);
+    border-color: var(--color-success);
+
+    &::after {
+      opacity: 1;
+      transform: rotate(45deg) scale(1);
+    }
+  }
+
+  // Focus visible (keyboard)
+  &:focus-visible + .auth-form__terms-checkmark {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+}
+
+.auth-form__terms-checkmark {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: var(--border-width-medium) solid var(--color-secondary);
+  border-radius: var(--radius-sm);
+  background-color: transparent;
+  transition: var(--transition-colors);
+  position: relative;
+  margin-top: 0.125rem; // Align with first line of text
+
+  // Checkmark icon
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0.375rem;
+    top: 0.125rem;
+    width: 0.3125rem;
+    height: 0.625rem;
+    border: solid var(--color-background);
+    border-width: 0 2px 2px 0;
+    opacity: 0;
+    transform: rotate(45deg) scale(0);
+    transition: var(--transition-transform), var(--transition-opacity);
+  }
+
+  @include respond-to('md') {
+    width: 1.5rem;
+    height: 1.5rem;
+
+    &::after {
+      left: 0.5rem;
+      top: 0.1875rem;
+      width: 0.375rem;
+      height: 0.75rem;
+    }
+  }
+}
+
+.auth-form__terms-text {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-foreground);
+  line-height: 1.4;
+
+  @include respond-to('md') {
+    font-size: var(--font-size-caption);
+  }
+}
+
+.auth-form__terms-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  color: var(--color-text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: var(--transition-colors);
+
+  &:hover {
+    color: var(--color-success);
+  }
+
+  // New tab icon
+  ng-icon {
+    flex-shrink: 0;
+    text-decoration: none;
+  }
+
+  @include focus-visible;
+}
+
+.auth-form__terms-error {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-error);
+  margin: 0;
+  padding-left: calc(1.25rem + var(--spacing-3)); // Align with text
+
+  @include respond-to('md') {
+    padding-left: calc(1.5rem + var(--spacing-3));
+  }
 }

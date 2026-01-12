@@ -2,6 +2,7 @@ package com.antipanel.backend.mapper;
 
 import com.antipanel.backend.dto.service.ServiceCreateRequest;
 import com.antipanel.backend.dto.service.ServiceDetailResponse;
+import com.antipanel.backend.dto.service.ServicePublicResponse;
 import com.antipanel.backend.dto.service.ServiceResponse;
 import com.antipanel.backend.dto.service.ServiceSummary;
 import com.antipanel.backend.dto.service.ServiceUpdateRequest;
@@ -123,4 +124,20 @@ public interface ServiceMapper extends BaseMapper<Service, ServiceResponse, Serv
         }
         return response;
     }
+
+    // ============ PUBLIC API MAPPINGS ============
+
+    /**
+     * Convert Service entity to ServicePublicResponse DTO.
+     * Excludes sensitive data (cost, profit margin, provider IDs).
+     * Used for public/unauthenticated API endpoints.
+     */
+    @Named("toPublicResponse")
+    ServicePublicResponse toPublicResponse(Service service);
+
+    /**
+     * Convert list of Services to list of ServicePublicResponse DTOs.
+     */
+    @IterableMapping(qualifiedByName = "toPublicResponse")
+    List<ServicePublicResponse> toPublicResponseList(List<Service> services);
 }

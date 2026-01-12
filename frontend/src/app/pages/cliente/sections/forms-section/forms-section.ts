@@ -25,7 +25,12 @@ import {
   usernameFormatValidator,
   getUsernameTakenError,
   phoneValidator,
-  esPostalCodeValidator
+  esPostalCodeValidator,
+  urlValidator,
+  slugValidator,
+  lettersOnlyValidator,
+  creditCardValidator,
+  noWhitespaceValidator
 } from '../../../../core/validators';
 
 /**
@@ -366,5 +371,97 @@ export class FormsSection {
    */
   private capitalize(str: string): string {
     return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  // =========================================================================
+  // FORMULARIO EXTENDIDO CON VALIDADORES ADICIONALES
+  // =========================================================================
+
+  /** Formulario con validadores adicionales no usados en otras partes */
+  protected readonly extendedValidatorsForm = this.fb.group({
+    websiteUrl: ['', [Validators.required, urlValidator()]],
+    slug: ['', [Validators.required, slugValidator()]],
+    fullName: ['', [Validators.required, lettersOnlyValidator()]],
+    creditCard: ['', [Validators.required, creditCardValidator()]],
+    password: ['', [Validators.required, Validators.minLength(8), noWhitespaceValidator()]]
+  });
+
+  /** Resultado del formulario extendido */
+  protected readonly extendedResult = signal<string>('');
+
+  /** Obtener error de URL */
+  protected getUrlError(): string | null {
+    const control = this.extendedValidatorsForm.controls.websiteUrl;
+    if (!control.touched || control.valid) return null;
+
+    if (control.hasError('required')) return 'La URL es obligatoria';
+    if (control.hasError('invalidUrl')) return control.getError('invalidUrl').message;
+    return null;
+  }
+
+  /** Obtener error de slug */
+  protected getSlugError(): string | null {
+    const control = this.extendedValidatorsForm.controls.slug;
+    if (!control.touched || control.valid) return null;
+
+    if (control.hasError('required')) return 'El slug es obligatorio';
+    if (control.hasError('invalidSlug')) return control.getError('invalidSlug').message;
+    return null;
+  }
+
+  /** Obtener error de nombre completo */
+  protected getFullNameError(): string | null {
+    const control = this.extendedValidatorsForm.controls.fullName;
+    if (!control.touched || control.valid) return null;
+
+    if (control.hasError('required')) return 'El nombre es obligatorio';
+    if (control.hasError('lettersOnly')) return control.getError('lettersOnly').message;
+    return null;
+  }
+
+  /** Obtener error de tarjeta de credito */
+  protected getCreditCardError(): string | null {
+    const control = this.extendedValidatorsForm.controls.creditCard;
+    if (!control.touched || control.valid) return null;
+
+    if (control.hasError('required')) return 'La tarjeta es obligatoria';
+    if (control.hasError('invalidCreditCard')) return control.getError('invalidCreditCard').message;
+    return null;
+  }
+
+  /** Obtener error de contrasena */
+  protected getPasswordError(): string | null {
+    const control = this.extendedValidatorsForm.controls.password;
+    if (!control.touched || control.valid) return null;
+
+    if (control.hasError('required')) return 'La contrasena es obligatoria';
+    if (control.hasError('minlength')) return 'Minimo 8 caracteres';
+    if (control.hasError('hasWhitespace')) return control.getError('hasWhitespace').message;
+    return null;
+  }
+
+  /** Enviar formulario extendido */
+  protected onExtendedSubmit(): void {
+    this.extendedValidatorsForm.markAllAsTouched();
+
+    if (this.extendedValidatorsForm.invalid) {
+      this.extendedResult.set('Por favor corrige los errores antes de enviar.');
+      return;
+    }
+
+    const data = this.extendedValidatorsForm.getRawValue();
+    // Ocultar la tarjeta de credito por seguridad
+    const safeData = {
+      ...data,
+      creditCard: data.creditCard.replace(/\d(?=\d{4})/g, '*'),
+      password: '********'
+    };
+    this.extendedResult.set(JSON.stringify(safeData, null, 2));
+  }
+
+  /** Resetear formulario extendido */
+  protected resetExtendedForm(): void {
+    this.extendedValidatorsForm.reset();
+    this.extendedResult.set('');
   }
 }

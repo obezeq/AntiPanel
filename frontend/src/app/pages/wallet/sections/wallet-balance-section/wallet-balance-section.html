@@ -1,0 +1,15 @@
+<section class="wallet-balance" aria-labelledby="balance-title">
+  <button
+    type="button"
+    class="wallet-balance__back-btn"
+    (click)="backClick.emit()"
+    aria-label="Go back to dashboard"
+  >
+    <span class="wallet-balance__back-icon" aria-hidden="true">&lt;</span>
+  </button>
+
+  <figure class="wallet-balance__info">
+    <figcaption id="balance-title" class="wallet-balance__label">BALANCE</figcaption>
+    <data class="wallet-balance__amount" [attr.value]="balance()">{{ balance() }}</data>
+  </figure>
+</section>

@@ -1,0 +1,34 @@
+<!-- Header (Dashboard Variant) -->
+<app-header
+  variant="dashboard"
+  [walletBalance]="balance()"
+  (logoutClick)="onLogoutClick()"
+/>
+
+<!-- Main Content -->
+<main class="wallet" id="main-content">
+  <!-- Balance Section -->
+  <app-wallet-balance-section
+    [balance]="balance()"
+    (backClick)="onBackClick()"
+  />
+
+  <!-- Add Funds Section -->
+  <app-wallet-add-funds-section
+    [isLoading]="isAddingFunds()"
+    [disabled]="!processorsLoaded()"
+    [minAmount]="processorLimits().min"
+    [maxAmount]="processorLimits().max"
+    [initialAmount]="prefillAmount()"
+    (addFunds)="onAddFunds($event)"
+  />
+
+  <!-- Invoices Section -->
+  <app-wallet-invoices-section
+    [invoices]="invoices()"
+    (invoiceClick)="onInvoiceClick($event)"
+  />
+</main>
+
+<!-- Footer -->
+<app-footer />

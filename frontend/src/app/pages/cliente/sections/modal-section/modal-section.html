@@ -1,0 +1,198 @@
+<article class="modal-section">
+  <!-- Tamanos de Modal -->
+  <section class="modal-section__block">
+    <h3 class="modal-section__block-title">Tamanos de Modal</h3>
+    <p class="modal-section__block-description">
+      El componente Modal soporta tres tamanos: pequeno (sm), mediano (md) y grande (lg).
+      Cada tamano se adapta al contenido y al viewport.
+    </p>
+
+    <fieldset class="modal-section__buttons">
+      <legend class="visually-hidden">Abrir modales de diferentes tamanos</legend>
+      <button
+        type="button"
+        class="modal-section__btn modal-section__btn--primary"
+        (click)="openModal('sm')"
+      >
+        Abrir Modal SM
+      </button>
+      <button
+        type="button"
+        class="modal-section__btn modal-section__btn--primary"
+        (click)="openModal('md')"
+      >
+        Abrir Modal MD
+      </button>
+      <button
+        type="button"
+        class="modal-section__btn modal-section__btn--primary"
+        (click)="openModal('lg')"
+      >
+        Abrir Modal LG
+      </button>
+    </fieldset>
+  </section>
+
+  <!-- Modal de Confirmacion -->
+  <section class="modal-section__block">
+    <h3 class="modal-section__block-title">Modal de Confirmacion</h3>
+    <p class="modal-section__block-description">
+      Ejemplo de modal con acciones de confirmacion y cancelacion.
+      Utiliza ng-content para el footer personalizado.
+    </p>
+
+    <fieldset class="modal-section__buttons">
+      <legend class="visually-hidden">Abrir modal de confirmacion</legend>
+      <button
+        type="button"
+        class="modal-section__btn modal-section__btn--warning"
+        (click)="openConfirmModal()"
+      >
+        Abrir Confirmacion
+      </button>
+    </fieldset>
+
+    @if (confirmResult()) {
+      <output class="modal-section__result">
+        <span class="modal-section__result-label">Resultado:</span>
+        <span class="modal-section__result-value">{{ confirmResult() }}</span>
+      </output>
+    }
+  </section>
+
+  <!-- Modal sin Cierre por Overlay -->
+  <section class="modal-section__block">
+    <h3 class="modal-section__block-title">Modal Persistente</h3>
+    <p class="modal-section__block-description">
+      Este modal no se cierra al hacer clic en el overlay.
+      Solo se puede cerrar con el boton de cerrar o la tecla Escape.
+    </p>
+
+    <fieldset class="modal-section__buttons">
+      <legend class="visually-hidden">Abrir modal persistente</legend>
+      <button
+        type="button"
+        class="modal-section__btn modal-section__btn--secondary"
+        (click)="openNoOverlayModal()"
+      >
+        Abrir Modal Persistente
+      </button>
+    </fieldset>
+  </section>
+
+  <!-- Caracteristicas de Accesibilidad -->
+  <section class="modal-section__block">
+    <h3 class="modal-section__block-title">Caracteristicas de Accesibilidad</h3>
+    <p class="modal-section__block-description">
+      El componente Modal implementa las mejores practicas de accesibilidad.
+    </p>
+
+    <ul class="modal-section__features">
+      <li class="modal-section__feature">
+        <strong>Focus Trap:</strong> El foco se mantiene dentro del modal mientras esta abierto
+      </li>
+      <li class="modal-section__feature">
+        <strong>Restauracion de Foco:</strong> Al cerrar, el foco vuelve al elemento que abrio el modal
+      </li>
+      <li class="modal-section__feature">
+        <strong>Tecla Escape:</strong> Cierra el modal presionando Escape
+      </li>
+      <li class="modal-section__feature">
+        <strong>ARIA:</strong> Atributos aria-modal, aria-labelledby correctamente implementados
+      </li>
+      <li class="modal-section__feature">
+        <strong>Scroll Lock:</strong> El scroll del body se bloquea mientras el modal esta abierto
+      </li>
+    </ul>
+  </section>
+</article>
+
+<!-- Modal Principal (tamanos) -->
+<app-modal
+  [isOpen]="isModalOpen()"
+  [title]="modalTitle()"
+  [size]="modalSize()"
+  (closeRequest)="closeModal()"
+>
+  <p>
+    Este es un modal de tamano <strong>{{ modalSize() }}</strong>.
+    Puedes cerrarlo haciendo clic en el overlay, presionando Escape,
+    o usando el boton de cerrar.
+  </p>
+  <p>
+    El contenido del modal se adapta automaticamente al tamano seleccionado
+    y es totalmente accesible mediante teclado.
+  </p>
+
+  <nav modal-footer>
+    <button
+      type="button"
+      class="modal-section__btn modal-section__btn--secondary"
+      (click)="closeModal()"
+    >
+      Cerrar
+    </button>
+  </nav>
+</app-modal>
+
+<!-- Modal de Confirmacion -->
+<app-modal
+  [isOpen]="isConfirmModalOpen()"
+  title="Confirmar Accion"
+  size="sm"
+  (closeRequest)="closeConfirmModal()"
+>
+  <p>
+    Esta es una pregunta de confirmacion.
+    Por favor, seleccione una opcion para continuar.
+  </p>
+
+  <nav modal-footer>
+    <button
+      type="button"
+      class="modal-section__btn modal-section__btn--secondary"
+      (click)="onCancel()"
+    >
+      Cancelar
+    </button>
+    <button
+      type="button"
+      class="modal-section__btn modal-section__btn--success"
+      (click)="onConfirm()"
+    >
+      Confirmar
+    </button>
+  </nav>
+</app-modal>
+
+<!-- Modal sin Cierre por Overlay -->
+<app-modal
+  [isOpen]="isNoOverlayModalOpen()"
+  title="Modal Persistente"
+  size="md"
+  [closeOnOverlay]="false"
+  (closeRequest)="closeNoOverlayModal()"
+>
+  <p>
+    Este modal tiene <code>closeOnOverlay</code> deshabilitado.
+    Hacer clic fuera del modal no lo cerrara.
+  </p>
+  <p>
+    Puedes cerrarlo usando:
+  </p>
+  <ul>
+    <li>El boton X en la esquina superior derecha</li>
+    <li>La tecla Escape</li>
+    <li>El boton "Entendido" de abajo</li>
+  </ul>
+
+  <nav modal-footer>
+    <button
+      type="button"
+      class="modal-section__btn modal-section__btn--primary"
+      (click)="closeNoOverlayModal()"
+    >
+      Entendido
+    </button>
+  </nav>
+</app-modal>

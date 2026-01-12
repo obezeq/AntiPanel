@@ -1,0 +1,16 @@
+<app-header variant="register" />
+
+<main class="register-page" id="main-content">
+  <section class="register-page__content" aria-labelledby="register-title">
+    <h1 id="register-title" class="visually-hidden">Create your AntiPanel account</h1>
+
+    <app-auth-form
+      mode="register"
+      [loading]="isLoading()"
+      [serverError]="serverError()"
+      (formSubmit)="onFormSubmit($event)"
+    />
+  </section>
+</main>
+
+<app-footer />

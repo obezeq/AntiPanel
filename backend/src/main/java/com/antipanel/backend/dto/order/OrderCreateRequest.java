@@ -38,4 +38,12 @@ public class OrderCreateRequest {
     @NotNull(message = "Quantity is required")
     @Min(value = 1, message = "Quantity must be at least 1")
     private Integer quantity;
+
+    /**
+     * Idempotency key for duplicate prevention.
+     * Client-generated UUID to prevent double submissions.
+     * If provided, duplicate requests will return the existing order.
+     */
+    @Size(max = 64, message = "Idempotency key must not exceed 64 characters")
+    private String idempotencyKey;
 }

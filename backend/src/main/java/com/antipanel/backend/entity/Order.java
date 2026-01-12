@@ -25,7 +25,8 @@ import java.time.LocalDateTime;
     @Index(name = "idx_orders_status", columnList = "status"),
     @Index(name = "idx_orders_created", columnList = "created_at"),
     @Index(name = "idx_orders_user_status", columnList = "user_id, status"),
-    @Index(name = "idx_orders_user_created", columnList = "user_id, created_at")
+    @Index(name = "idx_orders_user_created", columnList = "user_id, created_at"),
+    @Index(name = "idx_orders_idempotency_key", columnList = "idempotency_key")
 })
 @Data
 @Builder
@@ -37,6 +38,14 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
+    /**
+     * Version field for optimistic locking.
+     * Prevents concurrent modification issues (lost updates).
+     */
+    @Version
+    @Column(name = "version")
+    private Long version;
 
     @NotNull(message = "El usuario no puede ser nulo")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -65,6 +74,21 @@ public class Order {
     @Column(name = "provider_order_id", length = 100)
     private String providerOrderId;
 
+    /**
+     * Idempotency key for duplicate prevention.
+     * Client-generated UUID to ensure idempotent order creation.
+     */
+    @Size(max = 64, message = "El idempotency key no puede exceder 64 caracteres")
+    @Column(name = "idempotency_key", length = 64, unique = true)
+    private String idempotencyKey;
+
+    /**
+     * Reference to the balance hold used for this order.
+     * Null for legacy orders created before balance hold system.
+     */
+    @Column(name = "balance_hold_id")
+    private Long balanceHoldId;
+
     @NotBlank(message = "El target no puede estar vacío")
     @Size(max = 500, message = "El target no puede exceder 500 caracteres")
     @Column(name = "target", length = 500, nullable = false)
@@ -86,7 +110,7 @@ public class Order {
 
     @NotNull(message = "El estado no puede ser nulo")
     @Enumerated(EnumType.STRING)
-    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "status", nullable = false)
     private OrderStatus status = OrderStatus.PENDING;
 

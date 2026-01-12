@@ -167,6 +167,15 @@ public interface InvoiceService {
     InvoiceResponse completePayment(Long id);
 
     /**
+     * Check and update payment status by verifying with payment processor.
+     * Used for polling-based payment confirmation (no webhooks required).
+     *
+     * @param invoiceId Invoice ID to check
+     * @return Updated invoice response
+     */
+    InvoiceResponse checkPaymentStatus(Long invoiceId);
+
+    /**
      * Cancel invoice.
      *
      * @param id Invoice ID

@@ -1,0 +1,154 @@
+// ==========================================================================
+// DASHBOARD RECENT ORDERS SECTION
+// ==========================================================================
+// Displays user's most recent orders with "Order Again" functionality.
+// ==========================================================================
+
+@use '../../../../../styles/01-tools/mixins' as *;
+
+.recent-orders-section {
+  @include flex-column;
+  gap: var(--spacing-16);
+
+  // ---------------------------------------------------------------------------
+  // ORDERS LIST
+  // ---------------------------------------------------------------------------
+
+  &__list {
+    @include reset-list;
+    @include flex-column;
+    gap: var(--spacing-10);
+  }
+
+  // ---------------------------------------------------------------------------
+  // VIEW ALL ORDERS BUTTON
+  // ---------------------------------------------------------------------------
+
+  &__view-all {
+    @include typography('h4', 'semibold', 'mono');
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 4.5rem; // 72px
+    padding: var(--spacing-3) var(--spacing-8);
+    border: var(--border-width-thick) solid var(--color-information);
+    border-radius: var(--radius-lg);
+    background-color: transparent;
+    color: var(--color-text);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    transition: var(--transition-colors);
+
+    &:hover {
+      background-color: var(--color-information);
+      border-color: var(--color-text);
+    }
+
+    @include focus-visible;
+  }
+
+  // ---------------------------------------------------------------------------
+  // EMPTY STATE
+  // ---------------------------------------------------------------------------
+
+  &__empty {
+    @include flex-center;
+    padding: var(--spacing-8);
+    border: var(--border-width-thick) dashed var(--color-information);
+    border-radius: var(--radius-2xl);
+  }
+
+  &__empty-text {
+    @include typography('h5', 'medium', 'mono');
+    color: var(--color-foreground);
+    margin: 0;
+    text-align: center;
+  }
+
+  // ---------------------------------------------------------------------------
+  // LOADING SKELETON
+  // ---------------------------------------------------------------------------
+
+  &__skeleton {
+    @include flex-column;
+    justify-content: center;
+    gap: var(--spacing-2);
+    min-height: var(--spacing-32); // 128px - matches card height
+    padding: var(--spacing-4) var(--spacing-8);
+    border: var(--border-width-thick) solid var(--color-information);
+    border-radius: var(--radius-2xl);
+    background-color: var(--color-background);
+  }
+
+  &__skeleton-line {
+    display: block;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(
+      90deg,
+      var(--color-information) 25%,
+      var(--color-secondary) 50%,
+      var(--color-information) 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite ease-in-out;
+
+    &--title {
+      width: 40%;
+      height: var(--spacing-8);
+    }
+
+    &--subtitle {
+      width: 25%;
+      height: var(--spacing-6);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // RESPONSIVE
+  // ---------------------------------------------------------------------------
+
+  @include respond-below('md') {
+    gap: var(--spacing-12);
+
+    &__list {
+      gap: var(--spacing-6);
+    }
+
+    &__view-all {
+      height: 3.5rem;
+      font-size: var(--font-size-h5);
+    }
+  }
+
+  @include respond-below('sm') {
+    gap: var(--spacing-8);
+
+    &__view-all {
+      height: 3rem;
+      font-size: var(--font-size-h6);
+      letter-spacing: 0.8px;
+    }
+
+    &__empty {
+      padding: var(--spacing-6);
+    }
+
+    &__empty-text {
+      font-size: var(--font-size-h6);
+    }
+  }
+}
+
+// ==========================================================================
+// ANIMATIONS
+// ==========================================================================
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

@@ -121,7 +121,7 @@ class OrderControllerTest {
     class CreateOrder {
 
         @Test
-        @DisplayName("Should create order successfully")
+        @DisplayName("Should create order successfully and submit to provider")
         void shouldCreateOrderSuccessfully() throws Exception {
             OrderCreateRequest request = OrderCreateRequest.builder()
                     .serviceId(1)
@@ -129,7 +129,9 @@ class OrderControllerTest {
                     .quantity(1000)
                     .build();
 
+            // Mock the two-step order creation process
             when(orderService.create(eq(1L), any(OrderCreateRequest.class))).thenReturn(orderResponse);
+            when(orderService.submitOrderToProvider(1L)).thenReturn(orderResponse);
 
             mockMvc.perform(post("/api/v1/orders")
                             .contentType(MediaType.APPLICATION_JSON)

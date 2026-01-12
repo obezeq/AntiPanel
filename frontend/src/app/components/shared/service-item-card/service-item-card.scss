@@ -11,17 +11,27 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 1rem;
+  gap: var(--spacing-3); // Tighter gap on mobile
   width: 100%;
-  padding: 1.5rem 2rem;
+  padding: var(--spacing-3) var(--spacing-4); // Tighter padding on mobile
   background-color: var(--color-background);
-  border: 2px solid var(--color-secondary);
-  border-radius: 1rem;
+  border: var(--border-width-medium) solid var(--color-secondary);
+  border-radius: var(--radius-md);
   cursor: pointer;
   transition: var(--transition-colors);
 
+  @include respond-to('sm') {
+    gap: var(--spacing-4);
+    padding: var(--spacing-4) var(--spacing-5);
+    border-radius: var(--radius-lg);
+  }
+
   @include respond-to('md') {
-    padding: 2rem 2.5rem;
+    padding: var(--spacing-5) var(--spacing-6);
+  }
+
+  @include respond-to('lg') {
+    padding: var(--spacing-6) var(--spacing-8);
   }
 
   &:hover {
@@ -45,19 +55,23 @@
   flex-wrap: wrap;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 1rem;
+  gap: var(--spacing-4);
 }
 
 .service-item-card__name {
   font-family: var(--font-primary);
-  font-size: var(--font-size-h4); // 32px mobile
+  font-size: var(--font-size-h5);
   font-weight: var(--font-weight-bold);
   color: var(--color-text);
-  line-height: 1.15;
+  line-height: var(--line-height-tight);
   margin: 0;
 
-  @include respond-to('md') {
-    font-size: var(--font-size-h3); // 48px desktop
+  @include respond-to('sm') {
+    font-size: var(--font-size-h4);
+  }
+
+  @include respond-to('lg') {
+    font-size: var(--font-size-h3);
   }
 }
 
@@ -70,29 +84,33 @@
 
 .service-item-card__price {
   font-family: var(--font-secondary);
-  font-size: 1.5rem; // 24px mobile (base-8)
+  font-size: var(--font-size-h6);
   font-weight: var(--font-weight-bold);
   color: var(--color-text);
   text-transform: uppercase;
-  letter-spacing: 0.075rem;
+  letter-spacing: 0.05em;
   line-height: 1;
   margin: 0;
 
-  @include respond-to('md') {
-    font-size: 2rem; // 32px desktop (base-8)
+  @include respond-to('sm') {
+    font-size: var(--font-size-h5);
+  }
+
+  @include respond-to('lg') {
+    font-size: var(--font-size-h4);
   }
 }
 
 .service-item-card__unit {
   font-family: var(--font-primary);
-  font-size: var(--font-size-body); // 16px mobile
+  font-size: var(--font-size-body); // 16px mobile (improved from caption)
   font-weight: var(--font-weight-medium);
   color: var(--color-text);
-  line-height: 1.15;
+  line-height: var(--line-height-tight);
   margin: 0;
 
-  @include respond-to('md') {
-    font-size: var(--font-size-h6); // 20px desktop
+  @include respond-to('lg') {
+    font-size: var(--font-size-h6); // 20px
   }
 }
 
@@ -105,45 +123,65 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  min-height: 3.5rem; // Reserve space for button
+  gap: var(--spacing-4);
+  min-height: var(--spacing-10);
+
+  @include respond-to('sm') {
+    min-height: var(--spacing-12);
+  }
 
   @include respond-to('md') {
-    min-height: 5rem; // 80px
+    min-height: var(--spacing-16);
+  }
+
+  @include respond-to('lg') {
+    min-height: var(--spacing-20);
   }
 }
 
 .service-item-card__attributes {
   display: flex;
   align-items: center;
-  gap: 1.5rem; // 24px mobile
+  gap: var(--spacing-4);
 
-  @include respond-to('md') {
-    gap: 2rem; // 32px desktop
+  @include respond-to('sm') {
+    gap: var(--spacing-6);
+  }
+
+  @include respond-to('lg') {
+    gap: var(--spacing-8);
   }
 }
 
 .service-item-card__quality {
   font-family: var(--font-primary);
-  font-size: var(--font-size-body); // 16px mobile
+  font-size: var(--font-size-body); // 16px mobile (improved from caption)
   font-weight: var(--font-weight-medium);
   color: var(--color-success);
-  line-height: 1.15;
+  line-height: var(--line-height-tight);
 
   @include respond-to('md') {
-    font-size: var(--font-size-h5); // 24px desktop
+    font-size: var(--font-size-h6); // 20px
+  }
+
+  @include respond-to('lg') {
+    font-size: var(--font-size-h5); // 24px
   }
 }
 
 .service-item-card__speed {
   font-family: var(--font-primary);
-  font-size: var(--font-size-body); // 16px mobile
+  font-size: var(--font-size-body); // 16px mobile (improved from caption)
   font-weight: var(--font-weight-medium);
   color: var(--color-text);
-  line-height: 1.15;
+  line-height: var(--line-height-tight);
 
   @include respond-to('md') {
-    font-size: var(--font-size-h5); // 24px desktop
+    font-size: var(--font-size-h6); // 20px
+  }
+
+  @include respond-to('lg') {
+    font-size: var(--font-size-h5); // 24px
   }
 }
 
@@ -156,21 +194,43 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.75rem 1rem;
+  padding: var(--spacing-2) var(--spacing-3);
   background-color: var(--color-success);
-  border-radius: 0.5rem;
+  border-radius: var(--radius-md);
   font-family: var(--font-primary);
-  font-size: var(--font-size-h5); // 24px mobile
+  font-size: var(--font-size-body);
   font-weight: var(--font-weight-bold);
   color: var(--color-background);
-  line-height: 1.15;
+  line-height: var(--line-height-tight);
   opacity: 0;
   visibility: hidden;
   transition: var(--transition-colors), opacity var(--transition-fast), visibility var(--transition-fast);
 
+  // Always visible on touch devices (no hover capability)
+  @media (hover: none) {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  // Also visible when card has focus (keyboard navigation)
+  .service-item-card:focus-within & {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  @include respond-to('sm') {
+    padding: var(--spacing-3) var(--spacing-4);
+    font-size: var(--font-size-h6);
+  }
+
   @include respond-to('md') {
-    padding: 1rem;
-    font-size: var(--font-size-h4); // 32px desktop
+    padding: var(--spacing-3) var(--spacing-4);
+    font-size: var(--font-size-h5);
+  }
+
+  @include respond-to('lg') {
+    padding: var(--spacing-4);
+    font-size: var(--font-size-h4);
   }
 
   &:hover {

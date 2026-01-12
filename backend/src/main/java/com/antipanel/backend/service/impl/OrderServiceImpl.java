@@ -15,17 +15,21 @@ import com.antipanel.backend.entity.enums.TransactionType;
 import com.antipanel.backend.exception.BadRequestException;
 import com.antipanel.backend.exception.InsufficientBalanceException;
 import com.antipanel.backend.exception.ResourceNotFoundException;
+import com.antipanel.backend.exception.ProviderApiException;
 import com.antipanel.backend.mapper.OrderMapper;
 import com.antipanel.backend.mapper.PageMapper;
 import com.antipanel.backend.repository.OrderRepository;
 import com.antipanel.backend.repository.ServiceRepository;
 import com.antipanel.backend.repository.TransactionRepository;
 import com.antipanel.backend.repository.UserRepository;
+import com.antipanel.backend.service.ExternalOrderService;
+import com.antipanel.backend.service.OrderCompensationService;
 import com.antipanel.backend.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -49,17 +53,39 @@ public class OrderServiceImpl implements OrderService {
     private final TransactionRepository transactionRepository;
     private final OrderMapper orderMapper;
     private final PageMapper pageMapper;
+    private final ExternalOrderService externalOrderService;
+    private final OrderCompensationService compensationService;
 
     // ============ CREATE OPERATIONS ============
 
+    /**
+     * Creates a new order for a user.
+     * This method ONLY creates the order and deducts balance - it does NOT submit to provider.
+     * The transaction commits here, releasing the user lock.
+     * Call {@link #submitOrderToProvider(Long)} after this method returns to submit to external provider.
+     *
+     * IMPORTANT: Idempotency check is AFTER user lock to prevent race conditions.
+     */
     @Override
     @Transactional
     public OrderResponse create(Long userId, OrderCreateRequest request) {
         log.debug("Creating order for user ID: {} with service ID: {}", userId, request.getServiceId());
 
-        // Validate user
-        User user = userRepository.findById(userId)
+        // 1. FIRST: Lock user with pessimistic lock for atomic balance operations
+        // Uses SELECT ... FOR UPDATE to prevent race conditions in concurrent order creation
+        // This MUST come before idempotency check to serialize concurrent requests
+        User user = userRepository.findByIdForUpdate(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+
+        // 2. THEN: Idempotency check (now serialized by user lock - no race condition)
+        if (request.getIdempotencyKey() != null && !request.getIdempotencyKey().isBlank()) {
+            var existingOrder = orderRepository.findByIdempotencyKey(request.getIdempotencyKey());
+            if (existingOrder.isPresent()) {
+                log.info("Returning existing order ID: {} for idempotency key: {}",
+                        existingOrder.get().getId(), request.getIdempotencyKey());
+                return orderMapper.toResponse(existingOrder.get());
+            }
+        }
 
         if (user.getIsBanned()) {
             throw new BadRequestException("User is banned and cannot place orders");
@@ -100,6 +126,7 @@ public class OrderServiceImpl implements OrderService {
                 .service(service)
                 .serviceName(service.getName())
                 .providerService(providerService)
+                .idempotencyKey(request.getIdempotencyKey())
                 .target(request.getTarget())
                 .quantity(request.getQuantity())
                 .remains(request.getQuantity())
@@ -133,8 +160,55 @@ public class OrderServiceImpl implements OrderService {
                 .build();
         transactionRepository.save(transaction);
 
-        log.info("Created order ID: {} for user ID: {}", saved.getId(), userId);
+        log.info("Created order ID: {} for user ID: {} (PENDING - not yet submitted to provider)",
+                saved.getId(), userId);
+
+        // DO NOT call external API here - return the order first
+        // The transaction commits after this return, releasing the user lock
+        // Call submitOrderToProvider() separately to submit to external provider
         return orderMapper.toResponse(saved);
+    }
+
+    /**
+     * Submit an order to the external provider.
+     * Uses REQUIRES_NEW propagation to ensure this runs in a separate transaction.
+     * This allows the main create() transaction to commit first, releasing locks.
+     */
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public OrderResponse submitOrderToProvider(Long orderId) {
+        log.debug("Submitting order ID: {} to external provider", orderId);
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order", "id", orderId));
+
+        if (order.getStatus() != OrderStatus.PENDING) {
+            log.warn("Order ID: {} is not in PENDING status (current: {}), skipping provider submission",
+                    orderId, order.getStatus());
+            return orderMapper.toResponse(order);
+        }
+
+        try {
+            OrderResponse response = externalOrderService.submitOrder(order);
+            log.info("Successfully submitted order ID: {} to provider", orderId);
+            return response;
+        } catch (ProviderApiException e) {
+            log.error("Provider API failed for order ID: {}. Initiating compensation.", orderId, e);
+            // Compensation runs in its own REQUIRES_NEW transaction via separate service
+            compensationService.compensateFailedOrder(orderId);
+            throw e;
+        }
+    }
+
+    /**
+     * Compensate a failed order by refunding the user.
+     * Delegates to OrderCompensationService which uses REQUIRES_NEW propagation.
+     *
+     * @param orderId Order ID to compensate
+     */
+    @Override
+    public void compensateFailedOrder(Long orderId) {
+        compensationService.compensateFailedOrder(orderId);
     }
 
     // ============ READ OPERATIONS ============
