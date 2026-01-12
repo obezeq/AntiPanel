@@ -117,6 +117,14 @@ services:
       # JWT Secret
       JWT_SECRET: ${JWT_SECRET}
 
+      # Paymento Payment Gateway
+      PAYMENTO_API_KEY: ${PAYMENTO_API_KEY}
+      PAYMENTO_API_SECRET: ${PAYMENTO_API_SECRET}
+      PAYMENTO_RETURN_URL: ${PAYMENTO_RETURN_URL}
+
+      # DripfeedPanel Provider
+      DRIPFEED_PANEL_API_KEY: ${DRIPFEED_PANEL_API_KEY}
+
       # JVM Production Optimizations
       JAVA_OPTS: >-
         -XX:+UseContainerSupport
