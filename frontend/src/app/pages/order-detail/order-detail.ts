@@ -67,6 +67,34 @@ export class OrderDetail implements OnInit {
   protected readonly balance = signal('$0.00');
 
   // ---------------------------------------------------------------------------
+  // Status Mapping
+  // ---------------------------------------------------------------------------
+
+  /** Human-readable status labels */
+  private readonly statusLabels: Record<string, string> = {
+    'PENDING': 'PENDING',
+    'PROCESSING': 'PROCESSING',
+    'IN_PROGRESS': 'PROCESSING',
+    'COMPLETED': 'COMPLETED',
+    'CANCELLED': 'CANCELLED',
+    'PARTIAL': 'PARTIAL',
+    'REFUNDED': 'REFUNDED',
+    'FAILED': 'FAILED'
+  };
+
+  /** Map API status to CSS class suffix */
+  private readonly statusClassMap: Record<string, string> = {
+    'PENDING': 'pending',
+    'PROCESSING': 'processing',
+    'IN_PROGRESS': 'processing',
+    'COMPLETED': 'completed',
+    'CANCELLED': 'cancelled',
+    'PARTIAL': 'partial',
+    'REFUNDED': 'refunded',
+    'FAILED': 'failed'
+  };
+
+  // ---------------------------------------------------------------------------
   // Computed Properties
   // ---------------------------------------------------------------------------
 
@@ -79,13 +107,15 @@ export class OrderDetail implements OnInit {
 
   /** Status label for display */
   protected readonly statusLabel = computed(() => {
-    return this.order()?.status ?? 'UNKNOWN';
+    const status = this.order()?.status ?? 'UNKNOWN';
+    return this.statusLabels[status] ?? status;
   });
 
   /** CSS class for status styling */
   protected readonly statusClass = computed(() => {
-    const status = this.order()?.status?.toLowerCase() ?? 'unknown';
-    return `order-detail__status--${status}`;
+    const status = this.order()?.status ?? 'unknown';
+    const mapped = this.statusClassMap[status] ?? status.toLowerCase();
+    return `order-detail__status--${mapped}`;
   });
 
   /** Formatted quantity with thousands separator */

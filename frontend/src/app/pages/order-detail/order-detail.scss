@@ -172,7 +172,8 @@
     color: var(--color-background);
   }
 
-  &--processing {
+  &--processing,
+  &--in_progress {
     background-color: var(--color-stats-blue);
     color: var(--color-background);
   }

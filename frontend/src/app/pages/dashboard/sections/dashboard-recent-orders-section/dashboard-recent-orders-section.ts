@@ -134,6 +134,7 @@ export class DashboardRecentOrdersSection {
     const statusMap: Record<ApiOrderStatus, RecentOrderStatus> = {
       PENDING: 'pending',
       PROCESSING: 'processing',
+      IN_PROGRESS: 'processing',
       PARTIAL: 'partial',
       COMPLETED: 'completed',
       CANCELLED: 'cancelled',

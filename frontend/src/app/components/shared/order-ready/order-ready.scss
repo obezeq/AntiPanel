@@ -31,6 +31,11 @@
     gap: 0;
     padding: var(--spacing-8) var(--spacing-10);
   }
+
+  &::selection {
+    background-color: var(--color-success);
+    color: var(--color-background);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -228,7 +233,6 @@
   font-size: var(--font-size-h6);
   font-weight: var(--font-weight-semibold);
   color: var(--color-high-contrast);
-  line-height: var(--line-height-tight);
   text-align: right;
   margin: 0;
 
@@ -238,6 +242,11 @@
 
   @include respond-to('md') {
     font-size: var(--font-size-h4);
+  }
+
+  &::selection {
+    background-color: var(--color-success);
+    color: var(--color-background);
   }
 }
 
@@ -352,7 +361,6 @@
   font-size: var(--font-size-caption);
   font-weight: var(--font-weight-medium);
   color: var(--color-high-contrast);
-  line-height: var(--line-height-tight);
   text-align: left;
   width: 100%;
   word-break: break-all;
@@ -363,6 +371,11 @@
 
   @include respond-to('md') {
     font-size: var(--font-size-h5);
+  }
+
+  &::selection {
+    background-color: var(--color-success);
+    color: var(--color-background);
   }
 }
 
