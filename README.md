@@ -38,8 +38,8 @@ AntiPanel/
 │   ├── src/                   # Código fuente Angular
 │   ├── public/                # Assets estáticos (favicon)
 │   └── docs/                  # Documentación frontend
-│       ├── design/            # Fases 1-3 Diseño
-│       └── client/            # Fases 1-3 Cliente
+│       ├── design/            # Fases 1-3 Diseño (CSS, Componentes)
+│       └── client/            # Fases 1-7 Cliente (DOM, HTTP, Estado, Tests)
 ├── docs/                      # Documentación general
 ├── nginx/                     # Configuración Nginx
 ├── caddy/                     # Configuración Caddy (reverse proxy + SSL)
@@ -154,7 +154,7 @@ docker compose -f docker-compose.yml -f docker-compose.test.yml up --build --abo
 
 ## 📚 Documentación
 
-### Frontend - Diseño (Fases 1-3)
+### Frontend - Diseño (Fases 1-7)
 - [📖 Documentación de Diseño](frontend/docs/design/DOCUMENTACION.md) - **Arquitectura CSS, Componentes, Accesibilidad**
   - Sección 1: Arquitectura CSS (ITCSS + BEM + Design Tokens)
   - Sección 2: HTML Semántico y Estructura
@@ -165,11 +165,15 @@ docker compose -f docker-compose.yml -f docker-compose.test.yml up --build --abo
   - Sección 7: Informe de Accesibilidad (WCAG AA)
 - [🎨 Justificación de Decisiones de Diseño](frontend/docs/design/justificacion_decisiones_de_diseno.md)
 
-### Frontend - Cliente (Fases 1-3)
-- [📖 Documentación de Cliente](frontend/docs/client/DOCUMENTACION.md) - **DOM, Eventos, Servicios, Formularios**
+### Frontend - Cliente (Fases 1-7)
+- [📖 Documentación de Cliente](frontend/docs/client/DOCUMENTACION.md) - **DOM, Eventos, Servicios, HTTP, Estado, Testing**
   - Fase 1: DOM y Eventos (Signals, Control Flow, Event Binding)
   - Fase 2: Servicios e Inyección de Dependencias (HttpClient, Interceptors)
   - Fase 3: Formularios Reactivos (FormGroup, FormArray, Validators)
+  - Fase 4: Sistema de Rutas y Navegación (Guards, Resolvers, Lazy Loading)
+  - Fase 5: Comunicación HTTP (Interceptores, CRUD, Retry Logic, Error Handling)
+  - Fase 6: Gestión de Estado (Signals, computed, effect, Paginación, Debounce)
+  - Fase 7: Testing y Calidad (Vitest, 79 tests, Docker, Build Producción)
 
 ### Backend (Spring Boot 4)
 - [📖 Backend Documentation](backend/docs/README.md) - **Entry Point**

@@ -15,13 +15,23 @@ spring:
     driver-class-name: org.postgresql.Driver
 
   # ========================================
+  # Flyway Database Migrations
+  # ========================================
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 1
+    locations: classpath:db/migration
+    validate-on-migrate: true
+
+  # ========================================
   # JPA / Hibernate Configuration
   # ========================================
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      # Use 'update' for dev to auto-create missing columns from entity changes
-      ddl-auto: update
+      # Use 'validate' - Flyway handles migrations
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
