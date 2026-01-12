@@ -1,0 +1,53 @@
+<section
+  class="order-section"
+  aria-labelledby="order-title"
+>
+  <!-- Section Header -->
+  <app-dashboard-section-header
+    title="ORDER"
+    subtitle="Tell us what you want in plain language. No forms, no complexity."
+  />
+
+  <!-- Order Input -->
+  <fieldset
+    class="order-section__input-wrapper"
+    [class.order-section__input-wrapper--focused]="isInputFocused()"
+  >
+    <span class="order-section__input-icon" aria-hidden="true">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/>
+        <circle cx="12" cy="12" r="3"/>
+        <line x1="12" y1="2" x2="12" y2="5"/>
+        <line x1="12" y1="19" x2="12" y2="22"/>
+        <line x1="2" y1="12" x2="5" y2="12"/>
+        <line x1="19" y1="12" x2="22" y2="12"/>
+      </svg>
+    </span>
+
+    <input
+      type="text"
+      class="order-section__input-field"
+      placeholder="I want 3k example followers for @myaccount ..."
+      [value]="inputText()"
+      aria-label="Enter your order using natural language"
+      (input)="onInputChange($event)"
+      (focus)="onInputFocus()"
+      (blur)="onInputBlur()"
+      (keydown.enter)="onInputSubmit()"
+    />
+  </fieldset>
+
+  <!-- Order Preview (shown when we have enough data) -->
+  @if (showOrderReady() && orderReadyData()) {
+    <app-order-ready
+      class="order-section__preview"
+      [data]="orderReadyData()!"
+      [disabled]="isOrderDisabled()"
+      (exploreMore)="onExploreMore()"
+      (morePlatform)="onMorePlatform($event)"
+      (placeOrder)="onPlaceOrder($event)"
+      (targetChange)="onTargetChange($event)"
+      (quantityChange)="onQuantityChange($event)"
+    />
+  }
+</section>

@@ -1,0 +1,253 @@
+// ==========================================================================
+// WALLET INVOICES SECTION
+// ==========================================================================
+// Displays list of payment invoices with status badges.
+// Features semantic HTML and accessible status indicators.
+// ==========================================================================
+
+@use '../../../../../styles/01-tools/mixins' as *;
+
+.wallet-invoices {
+  @include flex-column;
+  align-items: center;
+  gap: var(--spacing-12);
+  width: 100%;
+  max-width: 58.5rem; // 936px - normalized to base-8
+
+  @include respond-below('md') {
+    // Fluid width: scales from 280px minimum to 85vw for optimal mobile reading
+    width: clamp(17.5rem, 85vw, 100%);
+    max-width: 100%;
+    gap: var(--spacing-6);
+    padding: 0 var(--spacing-2); // 8px - base-8 spacing
+  }
+}
+
+// ---------------------------------------------------------------------------
+// TITLE
+// ---------------------------------------------------------------------------
+// "INVOICES" - Montserrat Bold
+
+.wallet-invoices__title {
+  font-family: var(--font-primary);
+  // Fluid typography: scales smoothly from h4 (32px) to h1 (96px) based on viewport
+  font-size: clamp(var(--font-size-h4), 8vw, var(--font-size-h1));
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  line-height: 1.15;
+  text-align: center;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+// ---------------------------------------------------------------------------
+// INVOICE LIST
+// ---------------------------------------------------------------------------
+
+.wallet-invoices__list {
+  @include reset-list;
+  @include flex-column;
+  gap: var(--spacing-8);
+  width: 100%;
+
+  @include respond-below('md') {
+    gap: var(--spacing-3);
+  }
+}
+
+.wallet-invoices__item {
+  width: 100%;
+}
+
+// ---------------------------------------------------------------------------
+// INVOICE ARTICLE
+// ---------------------------------------------------------------------------
+// Clickable invoice row
+
+.wallet-invoices__invoice {
+  display: grid;
+  grid-template-columns: 9rem minmax(5rem, auto) minmax(9rem, auto) auto;
+  align-items: center;
+  gap: var(--spacing-4);
+  width: 100%;
+  padding: var(--spacing-2) 0;
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: var(--transition-colors);
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+  }
+
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  @include respond-below('lg') {
+    grid-template-columns: 8rem minmax(4.5rem, auto) minmax(8rem, auto) auto;
+  }
+
+  @include respond-below('md') {
+    grid-template-columns: 5.5rem 1fr;
+    grid-template-rows: auto auto auto;
+    gap: var(--spacing-1) var(--spacing-3);
+    padding: var(--spacing-3);
+    background-color: var(--color-tiny-info);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// STATUS BADGE
+// ---------------------------------------------------------------------------
+// Colored badge indicating invoice status
+
+.wallet-invoices__status {
+  @include flex-center;
+  width: 100%; // Fill grid cell - grid controls width
+  // Fluid height: scales from 2rem to 2.5rem
+  height: clamp(2rem, 5vw, 2.5rem);
+  padding: var(--spacing-1) var(--spacing-3);
+  border-radius: var(--radius-md);
+  border: var(--border-width-medium) solid;
+  font-family: var(--font-secondary);
+  // Fluid typography: scales from caption (14px) to h5 (24px)
+  font-size: clamp(var(--font-size-caption), 2.5vw, var(--font-size-h5));
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.15;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @include respond-below('md') {
+    padding: var(--spacing-2);
+    height: auto;
+    min-height: 2rem;
+  }
+
+  // PENDING - Yellow
+  &--pending {
+    background-color: rgba(var(--color-status-yellow-rgb), 0.11);
+    border-color: rgba(var(--color-status-yellow-rgb), 0.66);
+    color: var(--color-status-yellow);
+  }
+
+  // PROCESSING - Blue (uses stats-blue)
+  &--processing {
+    background-color: rgba(var(--color-stats-blue-rgb), 0.11);
+    border-color: rgba(var(--color-stats-blue-rgb), 0.66);
+    color: var(--color-stats-blue);
+  }
+
+  // PAID - Green
+  &--paid {
+    background-color: rgba(var(--color-success-rgb), 0.11);
+    border-color: rgba(var(--color-success-rgb), 0.66);
+    color: var(--color-success);
+  }
+
+  // FAILED - Red
+  &--failed {
+    background-color: rgba(var(--color-error-rgb), 0.11);
+    border-color: rgba(var(--color-error-rgb), 0.66);
+    color: var(--color-error);
+  }
+
+  // EXPIRED - Red/Orange
+  &--expired {
+    background-color: rgba(var(--color-error-rgb), 0.11);
+    border-color: rgba(var(--color-error-rgb), 0.66);
+    color: var(--color-error);
+  }
+
+  // CANCELLED - Gray (using secondary #666666)
+  &--cancelled {
+    background-color: rgba(102, 102, 102, 0.11);
+    border-color: rgba(102, 102, 102, 0.66);
+    color: var(--color-foreground);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// INVOICE DATA FIELDS
+// ---------------------------------------------------------------------------
+// Direct grid children for perfect column alignment
+
+.wallet-invoices__number,
+.wallet-invoices__amount,
+.wallet-invoices__date {
+  font-family: var(--font-secondary);
+  // Fluid typography: scales from small (12px) to h5 (24px)
+  font-size: clamp(var(--font-size-small), 2vw, var(--font-size-h5));
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.075em;
+  white-space: nowrap;
+}
+
+// Mobile: Position data fields in 3-row stacked layout
+@include respond-below('md') {
+  .wallet-invoices__status {
+    grid-column: 1;
+    grid-row: 1 / 4; // Span all 3 rows
+    align-self: center;
+  }
+
+  .wallet-invoices__number {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .wallet-invoices__amount {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .wallet-invoices__date {
+    grid-column: 2;
+    grid-row: 3;
+    color: var(--color-foreground); // Dimmer for visual hierarchy
+  }
+}
+
+
+// ---------------------------------------------------------------------------
+// EMPTY STATE
+// ---------------------------------------------------------------------------
+
+.wallet-invoices__empty {
+  @include flex-center;
+  width: 100%;
+  padding: var(--spacing-8);
+
+  @include respond-below('md') {
+    padding: var(--spacing-6) var(--spacing-4);
+    background-color: var(--color-tiny-info);
+    border-radius: var(--radius-lg);
+  }
+}
+
+.wallet-invoices__empty-text {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-foreground);
+  text-align: center;
+  margin: 0;
+  // Fluid typography for empty state
+  font-size: clamp(var(--font-size-small), 3.5vw, var(--font-size-body));
+}
+
+// ---------------------------------------------------------------------------
+// ACCESSIBILITY: REDUCED MOTION
+// ---------------------------------------------------------------------------
+
+@media (prefers-reduced-motion: reduce) {
+  .wallet-invoices__invoice {
+    transition: none;
+  }
+}

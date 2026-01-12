@@ -1,0 +1,252 @@
+@use '../../../../../styles/01-tools/mixins' as *;
+
+// ==========================================================================
+// DASHBOARD OVERVIEW SECTION
+// ==========================================================================
+// Dashboard overview with branded header, balance display, and stats cards.
+// Follows Figma design: node 1022:2226
+// ==========================================================================
+
+.dashboard-overview {
+  @include flex-column;
+  gap: var(--spacing-24); // 96px as per Figma
+  width: 100%;
+  max-width: var(--container-max-width, 73.125rem);
+  margin: 0 auto;
+  padding: 0 var(--spacing-4);
+
+  @include respond-to('md') {
+    padding: 0;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// HEADER
+// ---------------------------------------------------------------------------
+// Contains branding (title + tagline) and funds section (balance + button)
+
+.dashboard-overview__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-6);
+  width: 100%;
+
+  @include respond-to('lg') {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-16);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// BRANDING
+// ---------------------------------------------------------------------------
+
+.dashboard-overview__branding {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2); // 8px
+  text-align: center;
+
+  @include respond-to('lg') {
+    text-align: left;
+    flex: 1;
+  }
+}
+
+.dashboard-overview__title {
+  font-family: var(--font-primary);
+  font-size: clamp(2.5rem, 5vw, 4rem); // 40px - 64px
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  line-height: 1.15;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.dashboard-overview__tagline {
+  font-family: var(--font-secondary);
+  font-size: clamp(1rem, 2vw, 1.5rem); // 16px - 24px
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  line-height: 1.15;
+  margin: 0;
+}
+
+// ---------------------------------------------------------------------------
+// FUNDS SECTION
+// ---------------------------------------------------------------------------
+
+.dashboard-overview__funds {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-4);
+
+  @include respond-to('sm') {
+    flex-direction: row;
+    gap: var(--spacing-6);
+  }
+
+  @include respond-to('lg') {
+    flex: 1;
+    justify-content: flex-end;
+    gap: var(--spacing-24); // 96px as per Figma
+  }
+}
+
+// ---------------------------------------------------------------------------
+// BALANCE DISPLAY
+// ---------------------------------------------------------------------------
+
+.dashboard-overview__balance {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  margin: 0;
+
+  @include respond-to('sm') {
+    align-items: flex-end;
+  }
+}
+
+.dashboard-overview__balance-label {
+  font-family: var(--font-primary);
+  font-size: clamp(1.25rem, 2vw, 2rem); // 20px - 32px
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.dashboard-overview__balance-value {
+  font-family: var(--font-secondary);
+  font-size: clamp(1.25rem, 2vw, 2rem); // 20px - 32px
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  line-height: normal;
+  letter-spacing: 0.075rem; // 1.2px
+  text-transform: uppercase;
+}
+
+// ---------------------------------------------------------------------------
+// ADD FUNDS BUTTON
+// ---------------------------------------------------------------------------
+
+.dashboard-overview__add-funds-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 14rem; // 224px - normalized to base-8
+  height: 4.25rem; // 68px - normalized to base-8
+  padding: var(--spacing-3);
+  background-color: var(--color-text);
+  color: var(--color-background);
+  border: none;
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-button-glow);
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-button-glow-hover);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-text);
+    outline-offset: 4px;
+  }
+}
+
+.dashboard-overview__add-funds-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem; // 8px - normalized to base-8
+  font-family: var(--font-secondary);
+  font-size: clamp(1rem, 1.5vw, 1.5rem); // 16px - 24px
+  font-weight: var(--font-weight-semibold);
+  line-height: normal;
+  letter-spacing: 0.075rem; // 1.2px
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+// ---------------------------------------------------------------------------
+// STATS CARDS GRID
+// ---------------------------------------------------------------------------
+
+.dashboard-overview__stats {
+  display: flex;
+  flex-direction: column; // Single column on smallest screens (< 640px)
+  gap: var(--spacing-4);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @include respond-to('sm') {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); // 2 columns at 640px+
+  }
+
+  @include respond-to('md') {
+    grid-template-columns: repeat(4, 1fr); // 4 columns at 768px+
+    gap: var(--spacing-6);
+  }
+
+  @include respond-to('lg') {
+    display: flex;
+    flex-direction: row; // Horizontal flex at 1024px+
+    justify-content: space-between;
+  }
+}
+
+.dashboard-overview__stats-item {
+  display: flex;
+
+  @include respond-to('lg') {
+    flex: 0 0 auto;
+  }
+
+  // Make stats cards fill the grid cell on smaller screens
+  app-stats-card {
+    width: 100%;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// RESPONSIVE ADJUSTMENTS
+// ---------------------------------------------------------------------------
+
+@include respond-below('sm') {
+  .dashboard-overview {
+    gap: var(--spacing-8);
+  }
+
+  .dashboard-overview__header {
+    gap: var(--spacing-6);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// ACCESSIBILITY: REDUCED MOTION
+// ---------------------------------------------------------------------------
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-overview__add-funds-btn {
+    transition: none;
+
+    &:hover {
+      transform: none;
+    }
+  }
+}

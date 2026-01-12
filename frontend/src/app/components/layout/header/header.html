@@ -64,12 +64,13 @@
       </button>
 
       <ul class="header__nav-list" role="list">
-        @for (item of navItems(); track item.path) {
+        @for (item of navItems(); track item.label) {
           <li class="header__nav-item">
             <a
               [routerLink]="item.path"
+              [fragment]="item.fragment"
               routerLinkActive="header__nav-link--active"
-              [routerLinkActiveOptions]="{ exact: item.path === '/dashboard' }"
+              [routerLinkActiveOptions]="{ exact: item.path === '/dashboard' && !item.fragment }"
               class="header__nav-link"
               (click)="closeMobileMenu()"
             >
@@ -82,14 +83,14 @@
       <!-- Mobile-only: Wallet and Profile options (visible on md breakpoint) -->
       @if (isAuthenticated() && variant() !== 'admin') {
         <div class="header__mobile-actions">
-          <button
-            type="button"
+          <a
+            routerLink="/wallet"
             class="header__mobile-wallet"
-            (click)="onWalletClick(); closeMobileMenu()"
-            [attr.aria-label]="'Wallet: ' + walletBalance()"
+            (click)="closeMobileMenu()"
+            aria-label="Go to wallet"
           >
             WALLET: {{ walletBalance() }}
-          </button>
+          </a>
           <a
             routerLink="/orders"
             class="header__mobile-link"
@@ -163,22 +164,21 @@
   <section class="header__actions">
     <!-- Authenticated: Wallet + Profile (dashboard/loggedIn) -->
     @if (isAuthenticated() && variant() !== 'admin') {
-      <button
-        type="button"
+      <a
+        routerLink="/wallet"
         class="header__wallet"
-        (click)="onWalletClick()"
-        aria-label="Wallet balance: {{ walletBalance() }}"
+        aria-label="Go to wallet"
       >
         <span class="header__wallet-text">WALLET</span>
-      </button>
+      </a>
 
-      <div class="header__profile-container">
+      <div #profileContainer class="header__profile-container">
         <button
           type="button"
           class="header__profile"
           (click)="onProfileClick()"
           [attr.aria-expanded]="isProfileDropdownOpen()"
-          aria-haspopup="menu"
+          aria-haspopup="true"
           aria-label="User profile menu"
         >
           <!-- Profile Circle Icon -->
@@ -202,26 +202,34 @@
           </svg>
         </button>
 
-        <!-- Profile Dropdown Menu -->
+        <!-- Profile Dropdown Menu (Disclosure Pattern) -->
         @if (isProfileDropdownOpen()) {
-          <nav class="header__dropdown" role="menu" aria-label="Profile menu">
-            <a
-              routerLink="/orders"
-              class="header__dropdown-item"
-              role="menuitem"
-              (click)="onOrdersClick()"
-            >
-              ORDERS
-            </a>
-            <button
-              type="button"
-              class="header__dropdown-item"
-              role="menuitem"
-              (click)="onLogoutClick()"
-            >
-              LOG OUT
-            </button>
-          </nav>
+          <ul
+            class="header__profile-menu"
+            role="list"
+            (keydown)="onDropdownKeydown($event)"
+          >
+            <li class="header__profile-menu-item">
+              <a
+                #dropdownItem
+                routerLink="/orders"
+                class="header__profile-menu-link"
+                (click)="onOrdersClick()"
+              >
+                ORDERS
+              </a>
+            </li>
+            <li class="header__profile-menu-item">
+              <button
+                #dropdownItem
+                type="button"
+                class="header__profile-menu-button"
+                (click)="onLogoutClick()"
+              >
+                LOG OUT
+              </button>
+            </li>
+          </ul>
         }
       </div>
     }
@@ -309,15 +317,6 @@
     <div
       class="header__overlay hide-desktop-lg"
       (click)="closeMobileMenu()"
-      aria-hidden="true"
-    ></div>
-  }
-
-  <!-- Profile Dropdown Overlay (click outside to close) -->
-  @if (isProfileDropdownOpen()) {
-    <div
-      class="header__dropdown-overlay"
-      (click)="closeProfileDropdown()"
       aria-hidden="true"
     ></div>
   }

@@ -48,7 +48,7 @@ public class User {
 
     @NotNull(message = "El rol no puede ser nulo")
     @Enumerated(EnumType.STRING)
-    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "role", nullable = false)
     private UserRole role = UserRole.USER;
 
@@ -83,6 +83,14 @@ public class User {
     @Column(name = "updated_at", nullable = false)
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    /**
+     * Version field for optimistic locking.
+     * Prevents race conditions in concurrent balance updates.
+     */
+    @Version
+    @Column(name = "version")
+    private Long version;
 
     // Métodos de utilidad
 

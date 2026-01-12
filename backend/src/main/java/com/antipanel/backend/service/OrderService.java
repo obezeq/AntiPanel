@@ -23,12 +23,32 @@ public interface OrderService {
     /**
      * Create a new order for a user.
      * Validates service availability, quantity limits, and user balance.
+     * This method only creates the order and deducts balance - it does NOT submit to provider.
+     * Call {@link #submitOrderToProvider(Long)} after this method to submit to external provider.
      *
      * @param userId  User ID
      * @param request Order creation data
      * @return Created order response
      */
     OrderResponse create(Long userId, OrderCreateRequest request);
+
+    /**
+     * Submit an order to the external provider.
+     * This should be called AFTER create() returns, outside the main transaction.
+     * Uses REQUIRES_NEW propagation to ensure proper transaction boundaries.
+     *
+     * @param orderId Order ID to submit
+     * @return Updated order response from provider
+     */
+    OrderResponse submitOrderToProvider(Long orderId);
+
+    /**
+     * Compensate a failed order by refunding the user.
+     * Uses REQUIRES_NEW propagation to ensure the refund is not rolled back.
+     *
+     * @param orderId Order ID to compensate
+     */
+    void compensateFailedOrder(Long orderId);
 
     // ============ READ OPERATIONS ============
 

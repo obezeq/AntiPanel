@@ -1,0 +1,73 @@
+// ==========================================================================
+// BREADCRUMB COMPONENT
+// ==========================================================================
+// Hierarchical navigation trail with semantic markup.
+// Uses nav > ol > li structure for accessibility.
+
+.breadcrumb {
+  padding-block: var(--spacing-4);
+
+  // -------------------------------------------------------------------------
+  // LIST
+  // -------------------------------------------------------------------------
+
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  // -------------------------------------------------------------------------
+  // ITEM
+  // -------------------------------------------------------------------------
+
+  &__item {
+    display: flex;
+    align-items: center;
+    font-family: var(--font-primary);
+    font-size: var(--font-size-caption);
+    line-height: var(--line-height-normal);
+
+    // Separator after each item except the last
+    &:not(:last-child)::after {
+      content: '/';
+      margin-inline-start: var(--spacing-2);
+      color: var(--color-secondary);
+      font-weight: var(--font-weight-light);
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // LINK (navigable items)
+  // -------------------------------------------------------------------------
+
+  &__link {
+    color: var(--color-foreground);
+    text-decoration: none;
+    transition: var(--transition-colors);
+
+    &:hover,
+    &:focus-visible {
+      color: var(--color-text);
+    }
+
+    &:focus-visible {
+      outline: var(--focus-ring-width) solid var(--focus-ring-color);
+      outline-offset: var(--focus-ring-offset);
+      border-radius: var(--radius-sm);
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // CURRENT (non-navigable, current page)
+  // -------------------------------------------------------------------------
+
+  &__current {
+    color: var(--color-text);
+    font-weight: var(--font-weight-medium);
+  }
+}

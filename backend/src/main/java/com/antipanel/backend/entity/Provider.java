@@ -41,9 +41,10 @@ public class Provider {
     @Column(name = "api_url", length = 255, nullable = false)
     private String apiUrl;
 
-    @NotBlank(message = "La API Key no puede estar vacía")
+    // SECURITY: API key should be set via environment variable (DRIPFEED_PANEL_API_KEY)
+    // Database value is optional fallback for admin-configured keys
     @Size(max = 255, message = "La API Key no puede exceder 255 caracteres")
-    @Column(name = "api_key", length = 255, nullable = false)
+    @Column(name = "api_key", length = 255)
     private String apiKey;
 
     @NotNull(message = "El campo is_active no puede ser nulo")

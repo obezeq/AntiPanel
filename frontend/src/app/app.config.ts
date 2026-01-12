@@ -1,7 +1,7 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideRouter, withInMemoryScrolling } from '@angular/router';
+import { ApplicationConfig, APP_INITIALIZER, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { PreloadAllModules, provideRouter, withInMemoryScrolling, withPreloading } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { loadingInterceptor } from './core/interceptors/loading.interceptor';
+import { authInterceptor, loadingInterceptor } from './core/interceptors';
 import { provideIcons } from '@ng-icons/core';
 import {
   matHome,
@@ -36,7 +36,9 @@ import {
   matQueryStats,
   // Theme toggle icons
   matLightMode,
-  matDarkMode
+  matDarkMode,
+  // Support page icons
+  matEmail
 } from '@ng-icons/material-icons/baseline';
 import {
   iconoirInstagram,
@@ -53,12 +55,32 @@ import {
 import { simpleSnapchat } from '@ng-icons/simple-icons';
 
 import { routes } from './app.routes';
+import { TokenRefreshService } from './core/services/token-refresh.service';
+
+/**
+ * Factory function to initialize TokenRefreshService.
+ * The service uses effect() internally to auto-schedule token refresh.
+ */
+function initTokenRefresh(service: TokenRefreshService) {
+  return () => service;
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes, withInMemoryScrolling({ anchorScrolling: 'enabled' })),
-    provideHttpClient(withInterceptors([loadingInterceptor])),
+    provideRouter(
+      routes,
+      withInMemoryScrolling({ anchorScrolling: 'enabled' }),
+      withPreloading(PreloadAllModules)
+    ),
+    provideHttpClient(withInterceptors([authInterceptor, loadingInterceptor])),
+    // Initialize token refresh service on app startup
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initTokenRefresh,
+      deps: [TokenRefreshService],
+      multi: true
+    },
     provideIcons({
       // Material Icons - Navigation & UI
       matHome,
@@ -94,6 +116,8 @@ export const appConfig: ApplicationConfig = {
       // Material Icons - Theme Toggle
       matLightMode,
       matDarkMode,
+      // Material Icons - Support Page
+      matEmail,
       // Iconoir - Social Media
       iconoirInstagram,
       iconoirTiktok,

@@ -1,0 +1,287 @@
+// ==========================================================================
+// SERVICES SECTION
+// ==========================================================================
+// Services section with platform grid and expanded services view.
+// Based on Figma design: "Explore Services"
+// ==========================================================================
+
+@use '../../../../../styles/01-tools/mixins' as *;
+
+// ---------------------------------------------------------------------------
+// HOST ELEMENT STYLES
+// ---------------------------------------------------------------------------
+// scroll-margin-top ensures proper scroll position when using scrollIntoView()
+// Uses responsive --header-height CSS variable (defined in _variables.scss)
+
+:host {
+  display: block;
+  scroll-margin-top: calc(var(--header-height) + var(--spacing-4));
+}
+
+.services-section {
+  @include flex-column;
+  gap: var(--spacing-8); // Reduced gap on mobile
+  padding: var(--spacing-6) var(--spacing-3); // Tighter padding on mobile
+  width: 100%;
+  max-width: 58.5rem; // 936px from Figma
+  margin: 0 auto;
+
+  @include respond-to('sm') {
+    gap: var(--spacing-10);
+    padding: var(--spacing-8) var(--spacing-4);
+  }
+
+  @include respond-to('md') {
+    gap: var(--spacing-12);
+    padding: var(--spacing-10) var(--spacing-5);
+  }
+
+  @include respond-to('lg') {
+    gap: var(--spacing-16);
+    padding: var(--spacing-12) var(--spacing-6);
+  }
+
+  // ---------------------------------------------------------------------------
+  // PLATFORM GRID
+  // ---------------------------------------------------------------------------
+  // 4 columns on desktop, responsive on smaller screens
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); // 2 columns base (fits 320px)
+    gap: var(--spacing-3); // Tighter gap on mobile
+    width: 100%;
+
+    @include respond-to('sm') {
+      gap: var(--spacing-4);
+    }
+
+    @include respond-to('md') {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @include respond-to('lg') {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // EXPANDED VIEW
+  // ---------------------------------------------------------------------------
+
+  &--expanded {
+    gap: var(--spacing-8);
+  }
+
+  // ---------------------------------------------------------------------------
+  // EXPANDED HEADER
+  // ---------------------------------------------------------------------------
+  // Back button + Platform name + Service count
+
+  &__expanded-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-3);
+    width: 100%;
+
+    @include respond-to('sm') {
+      flex-direction: row;
+      align-items: center;
+      gap: var(--spacing-4);
+    }
+
+    @include respond-to('md') {
+      gap: var(--spacing-6);
+    }
+  }
+
+  &__back-btn {
+    @include reset-button;
+    @include flex-center;
+    width: var(--spacing-10); // 40px base - smaller on mobile
+    height: var(--spacing-10);
+    border: var(--border-width-thick) solid var(--color-information); // 4px on mobile
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+    font-size: var(--spacing-5); // 20px icon size
+    transition: var(--transition-colors), var(--transition-transform);
+
+    @include respond-to('sm') {
+      width: var(--spacing-12); // 48px
+      height: var(--spacing-12);
+      border-width: var(--border-width-heavy); // 6px
+      border-radius: var(--radius-lg);
+      font-size: var(--spacing-6); // 24px
+    }
+
+    @include respond-to('md') {
+      width: 3.5rem; // 56px
+      height: 3.5rem;
+      font-size: var(--spacing-8); // 32px
+    }
+
+    &:hover {
+      border-color: var(--color-text);
+      background-color: var(--color-tiny-info);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    @include focus-visible;
+  }
+
+  &__expanded-title {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-h6); // 20px base - much smaller on mobile
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    margin: 0;
+    flex: 1;
+
+    @include respond-to('sm') {
+      font-size: var(--font-size-h5); // 24px
+    }
+
+    @include respond-to('md') {
+      font-size: var(--font-size-h4); // 32px
+    }
+
+    @include respond-to('lg') {
+      font-size: var(--font-size-h3); // 40px
+    }
+
+    @include respond-to('xl') {
+      font-size: var(--font-size-h2); // 48px
+    }
+  }
+
+  &__service-count {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-caption); // 14px base
+    font-weight: var(--font-weight-regular);
+    color: var(--color-foreground);
+    white-space: nowrap;
+
+    @include respond-to('sm') {
+      font-size: var(--font-size-body); // 16px
+    }
+
+    @include respond-to('md') {
+      font-size: var(--font-size-h6); // 20px
+    }
+
+    @include respond-to('lg') {
+      font-size: var(--font-size-h5); // 24px
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // SERVICES LIST
+  // ---------------------------------------------------------------------------
+  // Vertical list of service cards
+
+  &__services-list {
+    @include flex-column;
+    gap: var(--spacing-3); // Tighter gap on mobile
+    width: 100%;
+    animation: fadeIn 0.3s ease-out;
+
+    @include respond-to('sm') {
+      gap: var(--spacing-4);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // LOADING STATE
+  // ---------------------------------------------------------------------------
+
+  &__loading {
+    @include flex-center;
+    flex-direction: column;
+    gap: var(--spacing-4);
+    padding: var(--spacing-12) var(--spacing-4);
+    width: 100%;
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  &__spinner {
+    width: var(--spacing-10);
+    height: var(--spacing-10);
+    color: var(--color-information);
+    animation: spin 1s linear infinite;
+
+    @include respond-to('sm') {
+      width: var(--spacing-12);
+      height: var(--spacing-12);
+    }
+  }
+
+  &__loading-text {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-body);
+    color: var(--color-foreground);
+  }
+
+  // ---------------------------------------------------------------------------
+  // ERROR STATE
+  // ---------------------------------------------------------------------------
+
+  &__error {
+    padding: var(--spacing-4);
+    background-color: var(--color-tiny-error);
+    border: var(--border-width-thin) solid var(--color-error);
+    border-radius: var(--radius-md);
+    width: 100%;
+
+    p {
+      margin: 0;
+      font-family: var(--font-secondary);
+      font-size: var(--font-size-body);
+      color: var(--color-error);
+      text-align: center;
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // EMPTY STATE
+  // ---------------------------------------------------------------------------
+
+  &__empty {
+    @include flex-center;
+    padding: var(--spacing-12) var(--spacing-4);
+    width: 100%;
+
+    p {
+      margin: 0;
+      font-family: var(--font-secondary);
+      font-size: var(--font-size-body);
+      color: var(--color-foreground);
+      text-align: center;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// ANIMATIONS
+// ---------------------------------------------------------------------------
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

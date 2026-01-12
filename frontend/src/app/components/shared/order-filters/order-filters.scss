@@ -156,7 +156,7 @@
   font-size: var(--font-size-h5);
   font-weight: var(--font-weight-bold);
   color: var(--color-text);
-  line-height: 2.625rem;
+  line-height: 2.5rem; // 40px - normalized to base-8
   text-transform: uppercase;
   transition: var(--transition-colors);
 

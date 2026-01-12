@@ -69,8 +69,15 @@ export class AdminOrderTable {
     this.orderClick.emit(order);
   }
 
-  /** Format currency for display */
+  /**
+   * Format currency with appropriate precision
+   * Shows 2 decimals for prices >= $0.01, up to 6 decimals for smaller amounts
+   */
   protected formatCurrency(value: number): string {
-    return `$${value.toFixed(2)}`;
+    if (value >= 0.01) {
+      return `$${value.toFixed(2)}`;
+    }
+    const formatted = value.toFixed(6).replace(/0+$/, '').replace(/\.$/, '');
+    return `$${formatted}`;
   }
 }

@@ -1,0 +1,61 @@
+<!-- Header (Dashboard Variant) -->
+<app-header
+  variant="dashboard"
+  [walletBalance]="balance()"
+  (logoutClick)="onLogoutClick()"
+/>
+
+<!-- Main Content -->
+<main class="dashboard">
+  <div class="dashboard__content">
+    @if (isLoading()) {
+      <section class="dashboard__loading" aria-label="Loading dashboard">
+        <p class="dashboard__loading-text">Loading dashboard...</p>
+      </section>
+    } @else if (error()) {
+      <section class="dashboard__error" role="alert">
+        <p class="dashboard__error-text">{{ error() }}</p>
+        <button
+          type="button"
+          class="dashboard__retry-btn"
+          (click)="loadUserStatistics()"
+        >
+          Try Again
+        </button>
+      </section>
+    } @else {
+      <!-- Dashboard Overview Section -->
+      <app-dashboard-overview
+        [stats]="userStats()!"
+        [balance]="balance()"
+        (addFunds)="onAddFunds()"
+      />
+
+      <!-- Order Section -->
+      <app-dashboard-order-section
+        [userBalance]="userBalance()"
+        [quickOrderService]="quickOrderService()"
+        [initialInputText]="pendingOrderText()"
+        (orderCreated)="onOrderCreated($event)"
+        (navigateToWallet)="onNavigateToWallet($event)"
+        (selectPlatform)="onSelectPlatform($event)"
+        (resetPlatform)="onResetPlatform()"
+      />
+
+      <!-- Services Section (Reused from Home) -->
+      <app-services-section
+        [platformToSelect]="platformToSelect()"
+        [shouldReset]="shouldResetPlatform()"
+        (quickOrder)="onQuickOrder($event)"
+      />
+
+      <!-- Recent Orders Section -->
+      <app-dashboard-recent-orders-section
+        (orderAgain)="onOrderAgain($event)"
+      />
+    }
+  </div>
+</main>
+
+<!-- Footer -->
+<app-footer />

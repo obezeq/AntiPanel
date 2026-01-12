@@ -75,7 +75,7 @@
 
       <!-- Password Strength Hints (always visible in register mode for better UX) -->
       @if (isRegisterMode()) {
-        <ul class="auth-form__password-hints" aria-label="Password requirements">
+        <ul class="auth-form__password-hints" aria-label="Password requirements" aria-live="polite">
           @for (hint of passwordStrengthHints(); track hint.label) {
             <li
               class="auth-form__hint"
@@ -120,6 +120,39 @@
               </span>
             }
           </div>
+        </div>
+
+        <!-- Terms Acceptance Checkbox -->
+        <div class="auth-form__terms">
+          <label class="auth-form__terms-label">
+            <input
+              type="checkbox"
+              class="auth-form__terms-checkbox"
+              formControlName="termsAccepted"
+              (blur)="onTermsBlur()"
+              [attr.aria-invalid]="termsAcceptedError() ? 'true' : null"
+              [attr.aria-describedby]="termsAcceptedError() ? 'terms-error' : null"
+            />
+            <span class="auth-form__terms-checkmark" aria-hidden="true"></span>
+            <span class="auth-form__terms-text">
+              I agree to the
+              <a
+                href="/terms"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="auth-form__terms-link"
+              >
+                Terms of Service & Privacy Policy
+                <span class="sr-only">(opens in new tab)</span>
+                <ng-icon name="matOpenInNew" size="14" aria-hidden="true" />
+              </a>
+            </span>
+          </label>
+          @if (termsAcceptedError()) {
+            <p id="terms-error" class="auth-form__terms-error" role="alert">
+              {{ termsAcceptedError() }}
+            </p>
+          }
         </div>
       }
     </section>

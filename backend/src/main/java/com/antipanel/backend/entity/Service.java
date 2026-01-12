@@ -64,13 +64,13 @@ public class Service {
 
     @NotNull(message = "La calidad no puede ser nula")
     @Enumerated(EnumType.STRING)
-    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "quality", nullable = false)
     private ServiceQuality quality;
 
     @NotNull(message = "La velocidad no puede ser nula")
     @Enumerated(EnumType.STRING)
-    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "speed", nullable = false)
     private ServiceSpeed speed;
 

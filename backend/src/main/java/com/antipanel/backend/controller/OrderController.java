@@ -6,6 +6,7 @@ import com.antipanel.backend.dto.order.OrderDetailResponse;
 import com.antipanel.backend.dto.order.OrderResponse;
 import com.antipanel.backend.security.CurrentUser;
 import com.antipanel.backend.security.CustomUserDetails;
+import com.antipanel.backend.service.OrderCreationFacade;
 import com.antipanel.backend.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -44,22 +45,30 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
+    private final OrderCreationFacade orderCreationFacade;
 
     @Operation(summary = "Create a new order",
-            description = "Creates a new order for a service. Validates quantity limits and user balance.")
+            description = "Creates a new order for a service. Validates quantity limits and user balance. " +
+                    "Submits the order to the external provider after creation.")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Order created successfully",
                     content = @Content(schema = @Schema(implementation = OrderResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request or insufficient balance"),
             @ApiResponse(responseCode = "401", description = "Not authenticated"),
-            @ApiResponse(responseCode = "404", description = "Service not found")
+            @ApiResponse(responseCode = "404", description = "Service not found"),
+            @ApiResponse(responseCode = "502", description = "Provider API error (order refunded)")
     })
     @PostMapping
     public ResponseEntity<OrderResponse> createOrder(
             @CurrentUser CustomUserDetails currentUser,
             @Valid @RequestBody OrderCreateRequest request) {
         log.debug("Creating order for user ID: {} - service: {}", currentUser.getUserId(), request.getServiceId());
-        OrderResponse response = orderService.create(currentUser.getUserId(), request);
+
+        // Uses balance reservation pattern:
+        // 1. Reserve balance (hold) → 2. Create order → 3. Submit to provider → 4. Capture/Release hold
+        // If submission fails, balance is automatically refunded
+        OrderResponse response = orderCreationFacade.createOrder(currentUser.getUserId(), request);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

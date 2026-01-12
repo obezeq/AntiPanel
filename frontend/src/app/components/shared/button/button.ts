@@ -8,7 +8,10 @@ export type ButtonType = 'button' | 'submit' | 'reset';
   selector: 'app-button',
   templateUrl: './button.html',
   styleUrl: './button.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '[class.button--full-width-host]': 'fullWidth()'
+  }
 })
 export class Button {
   /** Button visual variant */

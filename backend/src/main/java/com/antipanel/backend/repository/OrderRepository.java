@@ -131,6 +131,24 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Optional<Order> findByProviderOrderId(String providerOrderId);
 
     /**
+     * Find order by idempotency key.
+     * Used to prevent duplicate order submissions.
+     *
+     * @param idempotencyKey Client-provided idempotency key
+     * @return Optional order if exists with this key
+     */
+    Optional<Order> findByIdempotencyKey(String idempotencyKey);
+
+    /**
+     * Find order by balance hold ID.
+     * Used for idempotent order creation with balance reservation pattern.
+     *
+     * @param balanceHoldId Balance hold ID
+     * @return Optional order if exists with this hold ID
+     */
+    Optional<Order> findByBalanceHoldId(Long balanceHoldId);
+
+    /**
      * Find orders needing provider update (stale orders in progress)
      *
      * @param threshold Timestamp threshold for last update
@@ -223,6 +241,17 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
      * @return Number of orders
      */
     long countByUserIdAndStatus(Long userId, OrderStatus status);
+
+    /**
+     * Count orders by user created after a specific date.
+     * Used for "orders this month" statistics.
+     *
+     * @param userId    User ID
+     * @param startDate Start date (inclusive)
+     * @return Number of orders
+     */
+    @Query("SELECT COUNT(o) FROM Order o WHERE o.user.id = :userId AND o.createdAt >= :startDate")
+    long countByUserIdAndCreatedAtAfter(@Param("userId") Long userId, @Param("startDate") LocalDateTime startDate);
 
     /**
      * Calculate total revenue (sum of all charges on completed orders)

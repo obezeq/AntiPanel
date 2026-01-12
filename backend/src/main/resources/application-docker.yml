@@ -28,7 +28,9 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:validate}
+      # Use 'update' for Docker to auto-create missing columns from entity changes
+      # Production should use 'validate' for strict schema verification
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
     show-sql: ${SPRING_JPA_SHOW_SQL:false}
     properties:
       hibernate:
@@ -76,3 +78,27 @@ management:
   endpoint:
     health:
       show-details: ${MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS:when-authorized}
+
+# ========================================
+# CORS Configuration (Docker environment)
+# ========================================
+app:
+  cors:
+    allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:4200,http://localhost:3000,http://frontend:4200}
+
+# ========================================
+# Paymento Payment Gateway Configuration
+# ========================================
+paymento:
+  api-key: ${PAYMENTO_API_KEY:}
+  api-secret: ${PAYMENTO_API_SECRET:}
+  base-url: ${PAYMENTO_BASE_URL:https://api.paymento.io/v1}
+  return-url: ${PAYMENTO_RETURN_URL:http://localhost:4200/wallet}
+  default-speed: ${PAYMENTO_DEFAULT_SPEED:0}
+
+# ========================================
+# DripfeedPanel Provider Configuration
+# ========================================
+dripfeed-panel:
+  api-key: ${DRIPFEED_PANEL_API_KEY:}
+  base-url: ${DRIPFEED_PANEL_BASE_URL:https://dripfeedpanel.com/api/v2}

@@ -1,0 +1,36 @@
+<section class="support-contact" aria-labelledby="contact-heading">
+  <h2 id="contact-heading" class="support-contact__heading">Contact Options</h2>
+
+  <ul class="support-contact__list" role="list">
+    @for (option of contactOptions; track option.id) {
+      <li class="support-contact__item">
+        <a
+          [href]="option.href"
+          class="support-contact__card"
+          [class.support-contact__card--telegram]="option.id === 'telegram'"
+          [class.support-contact__card--email]="option.id === 'email'"
+          target="_blank"
+          rel="noopener noreferrer"
+          [attr.aria-label]="option.ariaLabel"
+        >
+          <figure class="support-contact__icon" aria-hidden="true">
+            <ng-icon [name]="option.icon" />
+          </figure>
+
+          <header class="support-contact__card-header">
+            <h3 class="support-contact__title">{{ option.title }}</h3>
+          </header>
+
+          <p class="support-contact__description">
+            {{ option.description }}
+          </p>
+
+          <span class="support-contact__action">
+            {{ option.action }}
+            <ng-icon name="matArrowForward" aria-hidden="true" />
+          </span>
+        </a>
+      </li>
+    }
+  </ul>
+</section>

@@ -3,6 +3,7 @@ package com.antipanel.backend.service;
 import com.antipanel.backend.dto.common.PageResponse;
 import com.antipanel.backend.dto.service.ServiceCreateRequest;
 import com.antipanel.backend.dto.service.ServiceDetailResponse;
+import com.antipanel.backend.dto.service.ServicePublicResponse;
 import com.antipanel.backend.dto.service.ServiceResponse;
 import com.antipanel.backend.dto.service.ServiceSummary;
 import com.antipanel.backend.dto.service.ServiceUpdateRequest;
@@ -112,6 +113,35 @@ public interface CatalogService {
      * @return Page of matching services
      */
     PageResponse<ServiceResponse> searchCatalogServices(String search, Pageable pageable);
+
+    // ============ PUBLIC API (SAFE RESPONSES) ============
+
+    /**
+     * Get public services by category.
+     * Returns ServicePublicResponse excluding sensitive data.
+     *
+     * @param categoryId Category ID
+     * @return List of public service responses
+     */
+    List<ServicePublicResponse> getPublicServicesByCategory(Integer categoryId);
+
+    /**
+     * Get public services by category and service type.
+     * Returns ServicePublicResponse excluding sensitive data.
+     *
+     * @param categoryId    Category ID
+     * @param serviceTypeId Service type ID
+     * @return List of public service responses
+     */
+    List<ServicePublicResponse> getPublicServicesByCategoryAndType(Integer categoryId, Integer serviceTypeId);
+
+    /**
+     * Get all public active services.
+     * Returns ServicePublicResponse excluding sensitive data.
+     *
+     * @return List of public service responses
+     */
+    List<ServicePublicResponse> getPublicActiveServices();
 
     // ============ ADMIN LISTING ============
 

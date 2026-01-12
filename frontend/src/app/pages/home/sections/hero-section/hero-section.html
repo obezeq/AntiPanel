@@ -1,0 +1,35 @@
+<section
+  class="hero-section"
+  aria-labelledby="hero-title"
+>
+  <!-- Main Title -->
+  <h1 id="hero-title" class="hero-section__title">
+    ANTIPANEL
+  </h1>
+
+  <!-- Tagline -->
+  <p class="hero-section__tagline">
+    TRY BEFORE YOU BUY
+  </p>
+
+  <!-- Description -->
+  <p class="hero-section__description">
+    Explore services freely. Register only when
+    <br aria-hidden="true" />
+    you're ready to order.
+  </p>
+
+  <!-- Statistics -->
+  <dl class="hero-section__stats" aria-label="Key statistics">
+    @for (stat of stats; track stat.label) {
+      <div
+        class="hero-section__stat"
+        [class.hero-section__stat--success]="stat.color === 'success'"
+        [class.hero-section__stat--blue]="stat.color === 'blue'"
+      >
+        <dt class="hero-section__stat-value">{{ stat.value }}</dt>
+        <dd class="hero-section__stat-label">{{ stat.label }}</dd>
+      </div>
+    }
+  </dl>
+</section>

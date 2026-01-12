@@ -18,7 +18,12 @@
   padding-inline: var(--spacing-2);
   background-color: var(--color-background);
   border-block-end: var(--border-width-thin) solid var(--color-information);
-  position: relative;
+
+  // Fixed positioning - header stays at viewport top when scrolling
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  z-index: var(--z-fixed);
 
   // Extra small screens (400px+)
   @media screen and (min-width: 400px) {
@@ -122,7 +127,7 @@
   }
 
   @include respond-to('xl') {
-    inline-size: 4.4375rem; // 71px original
+    inline-size: 4.5rem; // 72px - normalized to base-8
   }
 }
 
@@ -395,7 +400,7 @@
   }
 
   @include respond-to('xl') {
-    min-inline-size: 9.375rem;
+    min-inline-size: 9.5rem; // 152px - normalized to base-8
     padding: var(--spacing-3) var(--spacing-6);
     font-size: var(--font-size-h5);
   }
@@ -519,31 +524,87 @@
   transition: var(--transition-colors);
 }
 
-// Profile Dropdown Menu
-.header__dropdown {
+// ==========================================================================
+// PROFILE DROPDOWN MENU (Disclosure Pattern)
+// ==========================================================================
+// Follows WAI-ARIA Disclosure Pattern for accessible navigation dropdowns.
+// Uses display: flex for reliable full-width clickable areas.
+// See: https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/
+// ==========================================================================
+
+.header__profile-menu {
+  // Reset list styles
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  // Positioning
   position: absolute;
   top: 100%;
   right: 0;
   margin-top: var(--spacing-2);
+
+  // CRITICAL FIX: Use flexbox for reliable child sizing
+  // Flex items stretch by default, making hover work on full width
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-6);
-  inline-size: 15rem; // 240px (base-8)
-  padding: var(--spacing-8) var(--spacing-12);
+
+  // Width: size to content but minimum 12rem
+  width: max-content;
+  min-width: 12rem;
+
+  // Visual styling
   background-color: var(--color-background);
   border: var(--border-width-thin) solid var(--color-information);
   border-radius: var(--radius-md);
-  z-index: calc(var(--z-dropdown) + 10);
-  animation: slideDown var(--transition-fast) ease-out;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+
+  // Stacking context
+  z-index: calc(var(--z-dropdown) + 10);
+
+  // Animation
+  animation: profileMenuSlideDown var(--transition-fast) ease-out;
+
+  // Prevent border-radius overflow
+  overflow: hidden;
 }
 
-.header__dropdown-item {
-  @include reset-button;
+.header__profile-menu-item {
+  // Reset list-item behavior
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  // Make li a flex container so button stretches
+  // Default align-items: stretch forces children to full width
+  // This overrides button's intrinsic sizing (unlike width: 100% which fails)
+  display: flex;
+  flex-direction: column;
+
+  // Separator between items
+  & + & {
+    border-top: var(--border-width-thin) solid var(--color-information);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// MENU LINK (for navigation like ORDERS)
+// ---------------------------------------------------------------------------
+// Using display: flex for reliable full-width hover areas
+
+.header__profile-menu-link {
+  // CRITICAL: display: flex makes this a block-level flex container
+  // Block-level elements naturally expand to fill parent width
+  // NO width: 100% needed - that breaks the natural expansion!
   display: flex;
   align-items: center;
   justify-content: center;
+
+  // WCAG 2.2 AAA: 44px minimum touch target
+  min-height: 2.75rem;
+  padding: var(--spacing-3) var(--spacing-4);
+
+  // Typography
   font-family: var(--font-primary);
   font-size: var(--font-size-h5);
   font-weight: var(--font-weight-semibold);
@@ -551,22 +612,92 @@
   text-decoration: none;
   text-transform: uppercase;
   white-space: nowrap;
-  transition: var(--transition-colors);
 
+  // Transitions
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
+
+  // Hover: Visual background feedback showing full clickable area
   &:hover {
     color: var(--color-foreground);
+    background-color: var(--color-tiny-info);
   }
 
-  @include focus-visible;
+  // Focus: Match hover for consistency
+  &:focus {
+    color: var(--color-foreground);
+    background-color: var(--color-tiny-info);
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: calc(var(--focus-ring-offset) * -1);
+  }
 }
 
-.header__dropdown-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: calc(var(--z-dropdown) - 1);
+// ---------------------------------------------------------------------------
+// MENU BUTTON (for actions like LOG OUT)
+// ---------------------------------------------------------------------------
+// Separate styling for button vs link for consistent cross-browser behavior
+
+.header__profile-menu-button {
+  // Reset button styles
+  appearance: none;
+  background: none;
+  border: none;
+  margin: 0;
+  cursor: pointer;
+
+  // CRITICAL: display: flex makes this a block-level flex container
+  // Block-level elements naturally expand to fill parent width
+  // NO width: 100% needed - that breaks the natural expansion!
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  // WCAG 2.2 AAA: 44px minimum touch target
+  min-height: 2.75rem;
+  padding: var(--spacing-3) var(--spacing-4);
+
+  // Typography
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h5);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  // Transitions
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
+
+  // Hover: Visual background feedback showing full clickable area
+  &:hover {
+    color: var(--color-foreground);
+    background-color: var(--color-tiny-info);
+  }
+
+  // Focus: Match hover for consistency
+  &:focus {
+    color: var(--color-foreground);
+    background-color: var(--color-tiny-info);
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: calc(var(--focus-ring-offset) * -1);
+  }
 }
 
-@keyframes slideDown {
+// ---------------------------------------------------------------------------
+// ANIMATION
+// ---------------------------------------------------------------------------
+
+@keyframes profileMenuSlideDown {
   from {
     opacity: 0;
     transform: translateY(-0.5rem);
@@ -635,6 +766,15 @@
   @include respond-to('md') {
     inline-size: 2.5rem;
     block-size: 2.5rem;
+  }
+
+  // Hide when menu is open - close button inside sidebar is sufficient
+  // Using visibility preserves layout space and prevents shift
+  &.header__menu-toggle--open {
+    @include respond-below('lg') {
+      visibility: hidden;
+      pointer-events: none;
+    }
   }
 
   @include focus-visible;

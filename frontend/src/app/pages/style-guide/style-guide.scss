@@ -569,7 +569,7 @@
 
 .style-guide__cards--grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(13.875rem, 1fr)); // 222px service card width
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr)); // 224px - normalized to base-8
   gap: var(--spacing-4);
 }
 

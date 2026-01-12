@@ -1,0 +1,109 @@
+// ==========================================================================
+// TERMS HEADER SECTION
+// ==========================================================================
+// Header section for the terms page with title and description.
+// Features a subtle white glow effect behind the title.
+// ==========================================================================
+
+@use '../../../../../styles/01-tools/mixins' as *;
+
+.terms-header {
+  @include flex-column-center;
+  position: relative;
+  gap: var(--spacing-6);
+  text-align: center;
+  width: 100%;
+  max-width: 73.5rem; // 1176px - normalized to base-8
+  padding: var(--spacing-8) var(--spacing-4);
+
+  // ---------------------------------------------------------------------------
+  // AMBIENT WHITE GLOW
+  // ---------------------------------------------------------------------------
+  // Subtle white radial gradient glow behind the title.
+  // Similar to home page glow but centered on the title.
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    max-width: 56rem; // 896px from Figma
+    height: clamp(200px, 50vh, 500px);
+    background: radial-gradient(
+      ellipse 80% 70% at 50% 50%,
+      rgba(255, 255, 255, 0.08) 0%,
+      rgba(255, 255, 255, 0.04) 35%,
+      rgba(255, 255, 255, 0.01) 55%,
+      transparent 75%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  // ---------------------------------------------------------------------------
+  // TITLE
+  // ---------------------------------------------------------------------------
+  // "TERMS" - 128px Bold Montserrat
+
+  &__title {
+    @include typography('title', 'bold', 'primary');
+    position: relative;
+    z-index: 1;
+    color: var(--color-text);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+
+    @include respond-below('xl') {
+      font-size: var(--font-size-h1);
+    }
+
+    @include respond-below('lg') {
+      font-size: var(--font-size-h2);
+    }
+
+    @include respond-below('md') {
+      font-size: var(--font-size-h3);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // DESCRIPTION
+  // ---------------------------------------------------------------------------
+  // 20px SemiBold IBM Plex Mono (secondary font)
+
+  &__description {
+    @include typography('h6', 'semibold', 'secondary');
+    position: relative;
+    z-index: 1;
+    color: var(--color-foreground);
+    margin: 0;
+    max-width: 43.5rem; // 696px - normalized to base-8
+    line-height: var(--line-height-tight);
+
+    @include respond-below('lg') {
+      font-size: var(--font-size-body);
+    }
+
+    @include respond-below('md') {
+      font-size: var(--font-size-caption);
+
+      // Remove line break on mobile
+      br {
+        display: none;
+      }
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // ACCESSIBILITY: REDUCED MOTION
+  // ---------------------------------------------------------------------------
+
+  @media (prefers-reduced-motion: reduce) {
+    &::before {
+      opacity: 0.5;
+    }
+  }
+}

@@ -1,0 +1,47 @@
+<section class="recent-orders-section" aria-labelledby="recent-orders-title">
+  <!-- Section Header -->
+  <app-dashboard-section-header
+    title="RECENT"
+    subtitle="Your latest orders and their status"
+  />
+
+  @if (isLoading()) {
+    <!-- Loading State -->
+    <ul class="recent-orders-section__list recent-orders-section__list--loading" role="list" aria-label="Loading recent orders">
+      @for (i of [1, 2, 3]; track i) {
+        <li class="recent-orders-section__skeleton" aria-hidden="true">
+          <span class="recent-orders-section__skeleton-line recent-orders-section__skeleton-line--title"></span>
+          <span class="recent-orders-section__skeleton-line recent-orders-section__skeleton-line--subtitle"></span>
+        </li>
+      }
+    </ul>
+  } @else if (hasOrders()) {
+    <!-- Orders List -->
+    <ul class="recent-orders-section__list" role="list" aria-label="Recent orders">
+      @for (order of orders(); track order.id) {
+        <li>
+          <app-recent-order-card
+            [order]="order"
+            (orderAgain)="onOrderAgain($event)"
+          />
+        </li>
+      }
+    </ul>
+
+    <!-- View All Orders Button -->
+    <a
+      routerLink="/orders"
+      class="recent-orders-section__view-all"
+      aria-label="View all orders"
+    >
+      VIEW ALL ORDERS
+    </a>
+  } @else {
+    <!-- Empty State -->
+    <aside class="recent-orders-section__empty" role="status">
+      <p class="recent-orders-section__empty-text">
+        No orders yet. Place your first order above!
+      </p>
+    </aside>
+  }
+</section>

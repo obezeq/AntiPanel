@@ -61,3 +61,40 @@ logging:
     com.antipanel.backend: DEBUG
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+# ========================================
+# CORS Configuration
+# ========================================
+# Profile-specific overrides in application-{profile}.yml
+app:
+  cors:
+    allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:4200}
+    allowed-methods: GET,POST,PUT,DELETE,PATCH,OPTIONS
+    allowed-headers: Authorization,Content-Type,Accept,Origin,X-Requested-With
+    exposed-headers: Authorization
+    allow-credentials: true
+    max-age: 3600
+
+  # ========================================
+  # Scheduler Configuration
+  # ========================================
+  scheduler:
+    order-status:
+      delay: ${APP_SCHEDULER_ORDER_STATUS_DELAY:120000}  # 2 minutes in milliseconds
+
+# ========================================
+# Paymento Payment Gateway Configuration
+# ========================================
+paymento:
+  api-key: ${PAYMENTO_API_KEY:}
+  api-secret: ${PAYMENTO_API_SECRET:}
+  base-url: ${PAYMENTO_BASE_URL:https://api.paymento.io/v1}
+  return-url: ${PAYMENTO_RETURN_URL:http://localhost:4200/wallet}
+  default-speed: ${PAYMENTO_DEFAULT_SPEED:0}
+
+# ========================================
+# DripfeedPanel Provider Configuration
+# ========================================
+dripfeed-panel:
+  api-key: ${DRIPFEED_PANEL_API_KEY:}
+  base-url: ${DRIPFEED_PANEL_BASE_URL:https://dripfeedpanel.com/api/v2}

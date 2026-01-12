@@ -4,7 +4,10 @@ import com.antipanel.backend.exception.dto.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -287,15 +290,77 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
+    // ==================== External Provider Exceptions ====================
+
+    @ExceptionHandler(ProviderApiException.class)
+    public ResponseEntity<ErrorResponse> handleProviderApi(ProviderApiException ex, HttpServletRequest request) {
+        // Detailed logging for debugging (provider info stays in logs only)
+        log.error("Provider API error [provider={}, action={}]: {}",
+                ex.getProviderName(),
+                ex.getAction(),
+                ex.getMessage());
+
+        // Generic user-friendly message (no provider details exposed)
+        ErrorResponse error = ErrorResponse.of(
+                HttpStatus.SERVICE_UNAVAILABLE.value(),
+                "Service Unavailable",
+                "Service is temporarily unavailable. Please try again later or contact support.",
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(error);
+    }
+
+    @ExceptionHandler(PaymentoApiException.class)
+    public ResponseEntity<ErrorResponse> handlePaymentoApi(PaymentoApiException ex, HttpServletRequest request) {
+        log.error("Paymento API error: {}", ex.getMessage());
+
+        ErrorResponse.ErrorResponseBuilder builder = ErrorResponse.builder()
+                .timestamp(java.time.LocalDateTime.now())
+                .status(HttpStatus.BAD_GATEWAY.value())
+                .error("Payment Gateway Error")
+                .message("Payment processing failed. Please try again later.")
+                .path(request.getRequestURI());
+
+        builder.details(Map.of(
+                "provider", "Paymento",
+                "operation", ex.getOperation() != null ? ex.getOperation() : "unknown"
+        ));
+
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(builder.build());
+    }
+
     // ==================== Database Exceptions ====================
+
+    /**
+     * Handle balance hold already released/captured exception.
+     * Critical error - indicates order needs manual review.
+     */
+    @ExceptionHandler(HoldAlreadyReleasedException.class)
+    public ResponseEntity<ErrorResponse> handleHoldAlreadyReleased(HoldAlreadyReleasedException ex, HttpServletRequest request) {
+        log.error("Hold already released: {}", ex.getMessage());
+
+        ErrorResponse error = ErrorResponse.of(
+                HttpStatus.CONFLICT.value(),
+                "Conflict",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex, HttpServletRequest request) {
         log.error("Data integrity violation: {}", ex.getMessage());
 
         String message = "Database constraint violation";
-        if (ex.getMessage() != null && ex.getMessage().contains("duplicate key")) {
-            message = "A resource with this value already exists";
+        if (ex.getMessage() != null) {
+            if (ex.getMessage().contains("idempotency_key")) {
+                message = "Request is being processed. Please wait and retry.";
+            } else if (ex.getMessage().contains("duplicate key")) {
+                message = "A resource with this value already exists";
+            }
         }
 
         ErrorResponse error = ErrorResponse.of(
@@ -306,6 +371,44 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    // ==================== Locking Exceptions ====================
+
+    /**
+     * Handle optimistic locking conflicts.
+     * Occurs when two concurrent requests try to update the same entity version.
+     */
+    @ExceptionHandler(OptimisticLockingFailureException.class)
+    public ResponseEntity<ErrorResponse> handleOptimisticLocking(OptimisticLockingFailureException ex, HttpServletRequest request) {
+        log.warn("Optimistic locking conflict: {}", ex.getMessage());
+
+        ErrorResponse error = ErrorResponse.of(
+                HttpStatus.CONFLICT.value(),
+                "Conflict",
+                "Resource was modified by another request. Please retry.",
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    /**
+     * Handle pessimistic locking failures.
+     * Occurs when a lock cannot be acquired (timeout or deadlock).
+     */
+    @ExceptionHandler({PessimisticLockingFailureException.class, CannotAcquireLockException.class})
+    public ResponseEntity<ErrorResponse> handlePessimisticLocking(Exception ex, HttpServletRequest request) {
+        log.error("Pessimistic locking failure: {}", ex.getMessage());
+
+        ErrorResponse error = ErrorResponse.of(
+                HttpStatus.SERVICE_UNAVAILABLE.value(),
+                "Service Unavailable",
+                "Server is busy processing other requests. Please retry.",
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(error);
     }
 
     // ==================== Catch-All Exception ====================

@@ -1,0 +1,178 @@
+// ==========================================================================
+// HERO SECTION
+// ==========================================================================
+// Main hero section for the home page with title, tagline, and stats.
+// Based on Figma design: "Main Presentation"
+// ==========================================================================
+
+@use '../../../../../styles/01-tools/mixins' as *;
+
+.hero-section {
+  @include flex-column-center;
+  gap: var(--spacing-8);
+  padding: var(--spacing-16) var(--spacing-6);
+  text-align: center;
+  width: 100%;
+  max-width: 73.5rem; // 1176px - normalized to base-8 grid
+  margin: 0 auto;
+
+  // ---------------------------------------------------------------------------
+  // TITLE
+  // ---------------------------------------------------------------------------
+  // "ANTIPANEL" - 128px ExtraBold
+
+  &__title {
+    @include typography('title', 'extrabold', 'primary');
+    color: var(--color-text);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    // No text-shadow - illuminated by ambient top glow instead
+
+    @include respond-below('xl') {
+      font-size: var(--font-size-h1);
+    }
+
+    @include respond-below('lg') {
+      font-size: var(--font-size-h2);
+    }
+
+    @include respond-below('md') {
+      font-size: var(--font-size-h3);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // TAGLINE
+  // ---------------------------------------------------------------------------
+  // "TRY BEFORE YOU BUY" - 64px Bold, green
+
+  &__tagline {
+    @include typography('h2', 'bold', 'primary');
+    color: var(--color-success);
+    margin: 0;
+    text-transform: uppercase;
+    // No text-shadow - solid green color only
+
+    @include respond-below('lg') {
+      font-size: var(--font-size-h3);
+    }
+
+    @include respond-below('md') {
+      font-size: var(--font-size-h4);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // DESCRIPTION
+  // ---------------------------------------------------------------------------
+  // Monospace description text - 32px Light
+
+  &__description {
+    @include typography('h4', 'light', 'secondary');
+    color: var(--color-foreground);
+    margin: 0;
+    max-width: 58.5rem; // 936px - normalized to base-8 grid
+    line-height: var(--line-height-tight);
+
+    @include respond-below('lg') {
+      font-size: var(--font-size-h5);
+    }
+
+    @include respond-below('md') {
+      font-size: var(--font-size-h6);
+
+      // Remove line break on mobile
+      br {
+        display: none;
+      }
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // STATISTICS
+  // ---------------------------------------------------------------------------
+  // Row of key statistics - mobile-first responsive
+
+  &__stats {
+    @include flex-column;
+    gap: var(--spacing-4); // 16px mobile base
+    margin: var(--spacing-8) 0 0;
+    padding: 0;
+    width: 100%;
+    max-width: 58.5rem; // 936px - normalized to base-8 grid
+
+    @include respond-to('sm') {
+      @include flex-between;
+      flex-direction: row; // Explicitly set row (flex-between doesn't do this!)
+      gap: var(--spacing-8); // 32px
+    }
+
+    @include respond-to('lg') {
+      gap: var(--spacing-12); // 48px desktop
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // SINGLE STAT
+  // ---------------------------------------------------------------------------
+
+  &__stat {
+    @include flex-column;
+    align-items: center;
+    gap: 0;
+    text-align: center;
+
+    &--success {
+      .hero-section__stat-value,
+      .hero-section__stat-label {
+        color: var(--color-success);
+      }
+
+      .hero-section__stat-value {
+        text-shadow: var(--glow-success-soft);
+      }
+    }
+
+    &--blue {
+      .hero-section__stat-value,
+      .hero-section__stat-label {
+        color: var(--color-stats-blue);
+      }
+
+      .hero-section__stat-value {
+        text-shadow: var(--glow-blue-soft);
+      }
+    }
+  }
+
+  &__stat-value {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-h4); // 32px mobile base (increased from h5)
+    font-weight: var(--font-weight-extrabold);
+    margin: 0;
+
+    @include respond-to('md') {
+      font-size: var(--font-size-h3); // 40px
+    }
+
+    @include respond-to('lg') {
+      font-size: var(--font-size-h2); // 48px desktop
+    }
+  }
+
+  &__stat-label {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-body); // 16px mobile base (increased from caption)
+    font-weight: var(--font-weight-medium);
+    margin: 0;
+
+    @include respond-to('md') {
+      font-size: var(--font-size-h6); // 20px
+    }
+
+    @include respond-to('lg') {
+      font-size: var(--font-size-h5); // 24px desktop
+    }
+  }
+}

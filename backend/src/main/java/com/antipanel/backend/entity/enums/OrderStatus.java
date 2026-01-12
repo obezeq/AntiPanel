@@ -39,7 +39,12 @@ public enum OrderStatus {
     /**
      * Orden reembolsada al usuario
      */
-    REFUNDED("refunded");
+    REFUNDED("refunded"),
+
+    /**
+     * Orden falló durante el envío al proveedor
+     */
+    FAILED("failed");
 
     private final String value;
 
@@ -64,7 +69,7 @@ public enum OrderStatus {
      * Verifica si la orden está en un estado final
      */
     public boolean isFinal() {
-        return this == COMPLETED || this == CANCELLED || this == REFUNDED;
+        return this == COMPLETED || this == CANCELLED || this == REFUNDED || this == FAILED;
     }
 
     /**

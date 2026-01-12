@@ -50,8 +50,8 @@ export class Spinner {
   /** Mostrar con overlay fullscreen */
   readonly overlay = input<boolean>(false);
 
-  /** Texto accesible para lectores de pantalla */
-  readonly label = input<string>('Cargando...');
+  /** Accessible text for screen readers */
+  readonly label = input<string>('Loading...');
 
   /** Mostrar texto de carga visible */
   readonly showLabel = input<boolean>(false);
