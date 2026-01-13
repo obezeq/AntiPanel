@@ -24,23 +24,48 @@ export const routes: Routes = [
   {
     path: 'orders',
     loadComponent: () =>
-      import('./pages/orders/orders').then(m => m.Orders),
+      import('./pages/orders/orders-layout').then(m => m.OrdersLayout),
     canActivate: [authGuard],
-    data: { breadcrumb: 'Orders' }
-  },
-  {
-    path: 'orders/:id',
-    loadComponent: () =>
-      import('./pages/order-detail/order-detail').then(m => m.OrderDetail),
-    canActivate: [authGuard],
-    resolve: { order: orderResolver },
-    data: { breadcrumb: 'Order Details' }
+    data: { breadcrumb: 'Orders' },
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./pages/orders/orders').then(m => m.Orders)
+      },
+      {
+        path: ':id',
+        loadComponent: () =>
+          import('./pages/order-detail/order-detail').then(m => m.OrderDetail),
+        resolve: { order: orderResolver },
+        data: { breadcrumb: 'Order Details' }
+      }
+    ]
   },
   {
     path: 'cliente',
     loadComponent: () =>
-      import('./pages/cliente/cliente').then(m => m.Cliente),
-    data: { breadcrumb: 'Cliente Demo' }
+      import('./pages/cliente/cliente-layout').then(m => m.ClienteLayout),
+    data: { breadcrumb: 'Cliente Demo' },
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./pages/cliente/cliente').then(m => m.Cliente)
+      },
+      {
+        path: 'http',
+        loadComponent: () =>
+          import('./pages/cliente/sections/http-section/http-demos').then(m => m.HttpDemos),
+        data: { breadcrumb: 'HTTP Demos' }
+      },
+      {
+        path: 'state',
+        loadComponent: () =>
+          import('./pages/cliente/sections/state-section/state-demos').then(m => m.StateDemos),
+        data: { breadcrumb: 'State Demos' }
+      }
+    ]
   },
   {
     path: 'style-guide',

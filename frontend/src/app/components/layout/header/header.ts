@@ -60,6 +60,18 @@ export class Header implements AfterViewInit {
   /** Theme service for dark/light mode toggle */
   protected readonly themeService = inject(ThemeService);
 
+  /**
+   * AfterViewInit lifecycle hook.
+   *
+   * Called after Angular has fully initialized the component's view.
+   * With signal-based queries (viewChild/viewChildren), this is where
+   * the signals are guaranteed to have their initial values.
+   */
+  ngAfterViewInit(): void {
+    // viewChild/viewChildren signals are now populated
+    // No additional initialization needed - signals handle reactivity
+  }
+
   /** Renderer2 para manipulacion segura del DOM */
   private readonly renderer = inject(Renderer2);
 
