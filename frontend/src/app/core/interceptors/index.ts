@@ -19,3 +19,4 @@
 
 export { authInterceptor } from './auth.interceptor';
 export { loadingInterceptor, createLoadingInterceptor } from './loading.interceptor';
+export { loggingInterceptor } from './logging.interceptor';

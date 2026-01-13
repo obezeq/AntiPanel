@@ -1,7 +1,6 @@
 import {
   Directive,
   ElementRef,
-  HostListener,
   inject,
   input,
   OnDestroy,
@@ -15,19 +14,36 @@ export type TooltipPosition = 'top' | 'bottom' | 'left' | 'right';
 const TOOLTIP_OFFSET = 8;
 
 /**
- * Directiva Tooltip - Fase 1
+ * Directiva Tooltip - Angular 21
  *
  * Muestra un tooltip accesible al hacer hover o focus sobre un elemento.
+ * Implementa las mejores practicas de Angular 21 usando `host` property.
  *
- * Uso:
+ * @example
  * ```html
  * <button appTooltip="Texto del tooltip">Hover me</button>
  * <button appTooltip="Tooltip abajo" tooltipPosition="bottom">Abajo</button>
  * ```
+ *
+ * @remarks
+ * - Usa `host` property para eventos (Angular 21 best practice)
+ * - Usa Renderer2 para createElement, appendChild, removeChild
+ * - Implementa ngOnDestroy para limpieza de elementos DOM
+ * - Posicionamiento inteligente que evita salirse del viewport
+ *
+ * @see https://angular.dev/guide/components/host-elements
  */
 @Directive({
   selector: '[appTooltip]',
-  standalone: true
+  standalone: true,
+  host: {
+    // Angular 21: host property para eventos (reemplaza @HostListener)
+    '(mouseenter)': 'onShowTooltip()',
+    '(focus)': 'onShowTooltip()',
+    '(mouseleave)': 'onHideTooltip()',
+    '(blur)': 'onHideTooltip()',
+    '(keydown.escape)': 'onEscape()'
+  }
 })
 export class TooltipDirective implements OnDestroy {
   private readonly el = inject(ElementRef);
@@ -48,17 +64,21 @@ export class TooltipDirective implements OnDestroy {
   private showTimeout: ReturnType<typeof setTimeout> | null = null;
   private readonly tooltipId = `tooltip-${Math.random().toString(36).slice(2, 9)}`;
 
-  @HostListener('mouseenter')
-  @HostListener('focus')
-  onShowTooltip(): void {
+  /**
+   * Muestra el tooltip con delay.
+   * Llamado via host property: '(mouseenter)' y '(focus)'
+   */
+  protected onShowTooltip(): void {
     this.showTimeout = setTimeout(() => {
       this.show();
     }, this.tooltipDelay());
   }
 
-  @HostListener('mouseleave')
-  @HostListener('blur')
-  onHideTooltip(): void {
+  /**
+   * Oculta el tooltip.
+   * Llamado via host property: '(mouseleave)' y '(blur)'
+   */
+  protected onHideTooltip(): void {
     if (this.showTimeout) {
       clearTimeout(this.showTimeout);
       this.showTimeout = null;
@@ -66,8 +86,11 @@ export class TooltipDirective implements OnDestroy {
     this.hide();
   }
 
-  @HostListener('keydown.escape')
-  onEscape(): void {
+  /**
+   * Oculta el tooltip con tecla Escape.
+   * Llamado via host property: '(keydown.escape)'
+   */
+  protected onEscape(): void {
     this.hide();
   }
 

@@ -71,11 +71,13 @@
 |---------|-------------|
 | Guards funcionales | 4 guards (authGuard, guestGuard, rootGuard, pendingChangesGuard) |
 | Resolver funcional | orderResolver con ResolveFn |
-| Lazy loading | 100% de rutas (13/13) |
-| Interceptores | authInterceptor + loadingInterceptor (HttpInterceptorFn) |
+| Lazy loading | 100% de rutas con child routes anidadas |
+| Interceptores | 3 interceptores (auth, loading, logging) HttpInterceptorFn |
 | Retry logic | Exponential backoff en servicios HTTP |
 | Signals | 15+ archivos con signal(), computed(), effect() |
-| Testing | 79 tests (4 componentes + 3 servicios) |
+| Testing | 110+ tests (4 componentes + 1 pipe + 3 servicios) |
+| Demos | HTTP (FormData, HttpParams) + State (Polling, Signals) |
+| Documentacion | 4 archivos MD con diagramas y evidencias |
 
 ---
 
@@ -136,6 +138,55 @@ export const authGuard: CanActivateFn = (route, state) => {
 | `guestGuard` | guest.guard.ts | CanActivateFn | Protege /login y /register |
 | `rootGuard` | root.guard.ts | CanActivateFn | Smart redirect en `/` |
 | `pendingChangesGuard` | pending-changes.guard.ts | CanDeactivateFn | Protege formularios |
+
+#### Evidencia: Rutas Hijas Anidadas (Child Routes)
+
+**Archivo:** [`src/app/app.routes.ts`](../../src/app/app.routes.ts) (lineas 24-68)
+
+```typescript
+// Nested routes for Orders section
+{
+  path: 'orders',
+  loadComponent: () =>
+    import('./pages/orders/orders-layout').then(m => m.OrdersLayout),
+  canActivate: [authGuard],
+  data: { breadcrumb: 'Orders' },
+  children: [
+    {
+      path: '',
+      loadComponent: () =>
+        import('./pages/orders/orders').then(m => m.Orders)
+    },
+    {
+      path: ':id',
+      loadComponent: () =>
+        import('./pages/order-detail/order-detail').then(m => m.OrderDetail),
+      resolve: { order: orderResolver },
+      data: { breadcrumb: 'Order Details' }
+    }
+  ]
+},
+
+// Nested routes for Cliente Demo section
+{
+  path: 'cliente',
+  loadComponent: () =>
+    import('./pages/cliente/cliente-layout').then(m => m.ClienteLayout),
+  data: { breadcrumb: 'Cliente Demo' },
+  children: [
+    { path: '', loadComponent: () => import('./pages/cliente/cliente').then(m => m.Cliente) },
+    { path: 'http', loadComponent: () => import('./pages/cliente/sections/http-section/http-demos').then(m => m.HttpDemos) },
+    { path: 'state', loadComponent: () => import('./pages/cliente/sections/state-section/state-demos').then(m => m.StateDemos) }
+  ]
+}
+```
+
+**Layout Components:**
+
+| Layout | Archivo | Proposito |
+|--------|---------|-----------|
+| `OrdersLayout` | orders-layout.ts | Shell para /orders y /orders/:id |
+| `ClienteLayout` | cliente-layout.ts | Shell para demos /cliente/* |
 
 #### Evidencia: Resolver Funcional (ResolveFn)
 
@@ -360,13 +411,19 @@ this.router.navigateByUrl(this.returnUrl);
 | 0.5 | HttpClient + interceptores basicos | - |
 | **0.75** | **HttpClient + interceptores funcionales + retry logic** | ✅ |
 
-#### Evidencia: provideHttpClient con Interceptores
+#### Evidencia: provideHttpClient con 3 Interceptores
 
 **Archivo:** [`src/app/app.config.ts`](../../src/app/app.config.ts) (linea 76)
 
 ```typescript
-provideHttpClient(withInterceptors([authInterceptor, loadingInterceptor])),
+provideHttpClient(withInterceptors([authInterceptor, loadingInterceptor, loggingInterceptor])),
 ```
+
+| Interceptor | Archivo | Proposito |
+|-------------|---------|-----------|
+| `authInterceptor` | auth.interceptor.ts | Bearer token + refresh automatico |
+| `loadingInterceptor` | loading.interceptor.ts | Gestion de loading states |
+| `loggingInterceptor` | logging.interceptor.ts | Logging de requests (dev only) |
 
 #### Evidencia: authInterceptor (HttpInterceptorFn)
 
@@ -426,13 +483,53 @@ getOrders(page = 0, size = 20): Observable<PageResponse<OrderResponse>> {
 }
 ```
 
+#### Evidencia: loggingInterceptor (HttpInterceptorFn)
+
+**Archivo:** [`src/app/core/interceptors/logging.interceptor.ts`](../../src/app/core/interceptors/logging.interceptor.ts)
+
+```typescript
+export const loggingInterceptor: HttpInterceptorFn = (req, next) => {
+  // Skip logging in production
+  if (environment.production) {
+    return next(req);
+  }
+
+  const started = Date.now();
+  const requestId = Math.random().toString(36).substring(7);
+
+  console.log(`%c[HTTP] ${req.method} ${req.url}`, 'color: #2196F3; font-weight: bold;', {
+    requestId,
+    body: req.body,
+    headers: req.headers.keys()
+  });
+
+  return next(req).pipe(
+    tap({
+      next: (event) => {
+        if (event instanceof HttpResponse) {
+          const elapsed = Date.now() - started;
+          console.log(`%c[HTTP] ${req.url} completed in ${elapsed}ms`,
+            'color: #4CAF50;', { requestId, status: event.status });
+        }
+      },
+      error: (error) => {
+        const elapsed = Date.now() - started;
+        console.error(`%c[HTTP] ${req.url} failed after ${elapsed}ms`,
+          'color: #F44336;', { requestId, error: error.message });
+      }
+    })
+  );
+};
+```
+
 #### Justificacion de la Puntuacion
 
 **0.75/0.75** porque:
 - ✅ `provideHttpClient()` configurado (no HttpClientModule deprecated)
-- ✅ `withInterceptors()` con interceptores funcionales
+- ✅ `withInterceptors()` con 3 interceptores funcionales
 - ✅ `authInterceptor` con Bearer token y refresh automatico
 - ✅ `loadingInterceptor` con gestion de loading states
+- ✅ `loggingInterceptor` para debugging en desarrollo
 - ✅ Retry logic con exponential backoff en OrderService y UserService
 - ✅ `catchError` y `throwError` en todos los servicios
 
@@ -516,6 +613,61 @@ export interface PageResponse<T> {
 | UserService | UserStatisticsResponse | user.service.ts |
 | TokenService | UserSummary | token.service.ts |
 
+#### Evidencia: FormData para File Uploads (Demo)
+
+**Archivo:** [`src/app/pages/cliente/sections/http-section/http-demos.ts`](../../src/app/pages/cliente/sections/http-section/http-demos.ts)
+
+```typescript
+// Demo de FormData para subida de archivos
+protected onFileSelected(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+
+  if (file) {
+    // Build FormData structure
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+    formData.append('description', 'Demo upload');
+    formData.append('timestamp', new Date().toISOString());
+
+    // Simulated HTTP request with progress tracking
+    this.http.post('/api/upload', formData, {
+      reportProgress: true,
+      observe: 'events'
+    }).subscribe(event => {
+      if (event.type === HttpEventType.UploadProgress) {
+        const progress = Math.round(100 * event.loaded / event.total);
+      }
+    });
+  }
+}
+```
+
+#### Evidencia: HttpParams para Query Parameters (Demo)
+
+```typescript
+// Demo de HttpParams
+const params = new HttpParams()
+  .set('page', '1')
+  .set('limit', '20')
+  .set('sortBy', 'createdAt')
+  .set('search', 'test');
+
+this.http.get('/api/items', { params }).subscribe();
+```
+
+#### Evidencia: HttpHeaders para Custom Headers (Demo)
+
+```typescript
+// Demo de HttpHeaders
+const headers = new HttpHeaders()
+  .set('Authorization', 'Bearer <token>')
+  .set('X-API-Version', '2.0')
+  .set('Accept-Language', 'es-ES');
+
+this.http.get('/api/data', { headers }).subscribe();
+```
+
 #### Justificacion de la Puntuacion
 
 **0.75/0.75** porque:
@@ -525,6 +677,9 @@ export interface PageResponse<T> {
 - ✅ Discriminated unions: `OrderStatus`, `InvoiceStatus`
 - ✅ Optional fields correctamente tipados (`idempotencyKey?`)
 - ✅ Nullable types (`startCount: number | null`)
+- ✅ FormData demo para multipart/form-data
+- ✅ HttpParams demo para query parameters
+- ✅ HttpHeaders demo para custom headers
 
 ---
 
@@ -943,6 +1098,45 @@ protected loadOrders(): void {
 }
 ```
 
+#### Evidencia: Polling para Real-time Updates (Demo)
+
+**Archivo:** [`src/app/pages/cliente/sections/state-section/state-demos.ts`](../../src/app/pages/cliente/sections/state-section/state-demos.ts)
+
+```typescript
+// Polling state signals
+protected readonly isPolling = signal(false);
+protected readonly pollingInterval = signal(2000);
+protected readonly dataItems = signal<DataItem[]>([]);
+protected readonly lastUpdated = signal<Date | null>(null);
+
+startPolling(): void {
+  this.isPolling.set(true);
+
+  interval(this.pollingInterval())
+    .pipe(
+      takeUntil(this.stopPolling$),
+      takeUntilDestroyed(this.destroyRef),
+      switchMap(() => this.fetchData())
+    )
+    .subscribe(data => {
+      this.dataItems.set(data);
+      this.lastUpdated.set(new Date());
+    });
+}
+
+stopPolling(): void {
+  this.stopPolling$.next();
+  this.isPolling.set(false);
+}
+```
+
+**Caracteristicas del Demo:**
+- Start/Stop controls para polling
+- Intervalo configurable (1s, 2s, 5s, 10s)
+- Contador de fetches
+- Visualizacion de datos en tiempo real
+- Highlight de items actualizados
+
 #### Justificacion de la Puntuacion
 
 **0.5/0.5** porque:
@@ -951,6 +1145,8 @@ protected loadOrders(): void {
 - ✅ `effect()` para persistencia y DOM (ThemeService)
 - ✅ Paginacion completa con PageResponse
 - ✅ Filtros dinamicos (categoria, busqueda, ordenamiento)
+- ✅ Polling demo con interval() + switchMap()
+- ✅ Start/Stop controls para actualizaciones en tiempo real
 
 ---
 
@@ -1076,6 +1272,68 @@ protected onKeydown(event: KeyboardEvent): void {
 | [`login.spec.ts`](../../src/app/pages/login/login.spec.ts) | 8 | ActivatedRoute mock, query params |
 | [`orders.spec.ts`](../../src/app/pages/orders/orders.spec.ts) | 9 | OrderService mock, filtrado |
 
+#### Tests de Pipes (1 archivo, 30+ tests)
+
+| Archivo | Tests | Patrones |
+|---------|:-----:|----------|
+| [`relative-time.pipe.spec.ts`](../../src/app/pipes/relative-time.pipe.spec.ts) | 30+ | vi.useFakeTimers, vi.setSystemTime |
+
+#### Evidencia: RelativeTimePipe Test
+
+**Archivo:** [`src/app/pipes/relative-time.pipe.spec.ts`](../../src/app/pipes/relative-time.pipe.spec.ts)
+
+```typescript
+describe('RelativeTimePipe', () => {
+  let pipe: RelativeTimePipe;
+  const NOW = new Date('2024-03-15T12:00:00Z');
+
+  beforeEach(() => {
+    pipe = new RelativeTimePipe();
+    vi.useFakeTimers();
+    vi.setSystemTime(NOW);
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  describe('minutes ago', () => {
+    it('should return "5 minutes ago"', () => {
+      const date = new Date(NOW.getTime() - 5 * 60 * 1000);
+      expect(pipe.transform(date)).toBe('5 minutes ago');
+    });
+  });
+
+  describe('future dates', () => {
+    it('should return "in 5 minutes" for future time', () => {
+      const date = new Date(NOW.getTime() + 5 * 60 * 1000);
+      expect(pipe.transform(date)).toBe('in 5 minutes');
+    });
+  });
+
+  describe('different input types', () => {
+    it('should handle Date object', () => { ... });
+    it('should handle ISO string', () => { ... });
+    it('should handle timestamp in milliseconds', () => { ... });
+    it('should handle timestamp in seconds', () => { ... });
+  });
+});
+```
+
+**Categorias de tests:**
+- null/undefined handling
+- Invalid date handling
+- Just now (within 10 seconds)
+- Seconds ago
+- Minutes ago
+- Hours ago
+- Days ago
+- Weeks ago
+- Months ago
+- Years ago
+- Future dates
+- Different input types (Date, string, timestamp)
+
 #### Tests de Servicios (3 archivos, 54 tests)
 
 | Archivo | Tests | Patrones |
@@ -1186,7 +1444,10 @@ describe('Dashboard', () => {
 
 | Archivo | Lineas | Contenido |
 |---------|:------:|-----------|
-| [`ROUTES.md`](./ROUTES.md) | 121 | Mapa completo de rutas, guards, resolvers |
+| [`ROUTES.md`](./ROUTES.md) | 280+ | Mapa completo de rutas, guards, resolvers, child routes |
+| [`API_ENDPOINTS.md`](./API_ENDPOINTS.md) | 350+ | Catalogo de endpoints HTTP, interfaces TypeScript |
+| [`STATE_MANAGEMENT.md`](./STATE_MANAGEMENT.md) | 300+ | Patron Signals, comparativa, optimizaciones |
+| [`CROSS_BROWSER.md`](./CROSS_BROWSER.md) | 250+ | Compatibilidad navegadores, polyfills, testing |
 | [`DOCUMENTACION.md`](./DOCUMENTACION.md) | 1246+ | Fases 1-3 detalladas |
 | [`justificacion_ra_fase1_2_y_3.md`](./justificacion_ra_fase1_2_y_3.md) | 1520+ | Evidencia por criterio |
 
@@ -1194,13 +1455,18 @@ describe('Dashboard', () => {
 
 **1.0/1.0** porque:
 - ✅ Tests de componentes: 4 archivos con 25 tests
+- ✅ Tests de pipes: 1 archivo con 30+ tests (RelativeTimePipe)
 - ✅ Tests de servicios: 3 archivos con 54 tests
 - ✅ HttpTestingController en OrderService y AuthService
 - ✅ Mocks correctos: vi.fn(), useValue, localStorage
+- ✅ vi.useFakeTimers() y vi.setSystemTime() en pipe tests
 - ✅ window.matchMedia mock en 4 archivos
 - ✅ Script test:coverage en package.json
 - ✅ Coverage thresholds 50% en angular.json
 - ✅ ROUTES.md con documentacion completa
+- ✅ API_ENDPOINTS.md con catalogo de endpoints
+- ✅ STATE_MANAGEMENT.md con patron y comparativa
+- ✅ CROSS_BROWSER.md con compatibilidad navegadores
 
 ---
 

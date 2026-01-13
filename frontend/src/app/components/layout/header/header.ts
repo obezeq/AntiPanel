@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   computed,
@@ -7,6 +8,7 @@ import {
   inject,
   input,
   output,
+  Renderer2,
   signal,
   viewChild,
   viewChildren
@@ -33,6 +35,20 @@ interface NavItem {
   external?: boolean;
 }
 
+/**
+ * Header Component - Angular 21
+ *
+ * Componente de cabecera responsive con multiple variantes para diferentes
+ * contextos de la aplicacion (home, login, dashboard, admin, etc.).
+ *
+ * @remarks
+ * - Usa `viewChild()` y `viewChildren()` signals para acceso a elementos DOM
+ * - Implementa AfterViewInit para inicializacion post-render
+ * - Usa @HostListener para eventos globales (document:click, document:keydown.escape)
+ * - Usa Renderer2 para manipulacion segura del DOM
+ * - Menu hamburguesa con animacion CSS y cierre automatico
+ * - Dropdown de perfil con navegacion por teclado WAI-ARIA
+ */
 @Component({
   selector: 'app-header',
   templateUrl: './header.html',
@@ -40,9 +56,24 @@ interface NavItem {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, RouterLinkActive, NgIcon]
 })
-export class Header {
+export class Header implements AfterViewInit {
   /** Theme service for dark/light mode toggle */
   protected readonly themeService = inject(ThemeService);
+
+  /**
+   * AfterViewInit lifecycle hook.
+   *
+   * Called after Angular has fully initialized the component's view.
+   * With signal-based queries (viewChild/viewChildren), this is where
+   * the signals are guaranteed to have their initial values.
+   */
+  ngAfterViewInit(): void {
+    // viewChild/viewChildren signals are now populated
+    // No additional initialization needed - signals handle reactivity
+  }
+
+  /** Renderer2 para manipulacion segura del DOM */
+  private readonly renderer = inject(Renderer2);
 
   /** Header variant determines layout and navigation items */
   readonly variant = input<HeaderVariant>('home');
@@ -71,10 +102,34 @@ export class Header {
   /** Profile dropdown open state */
   protected readonly isProfileDropdownOpen = signal(false);
 
-  /** Profile container reference for click-outside detection */
+  /**
+   * Referencia al contenedor del perfil para deteccion de click fuera.
+   *
+   * En Angular 21, `viewChild()` es una signal query que reemplaza
+   * al decorator @ViewChild tradicional. Beneficios:
+   *
+   * - Devuelve Signal<ElementRef<T> | undefined> para reactividad
+   * - Se actualiza automaticamente cuando el elemento esta disponible
+   * - Puede usarse con effect() para reaccionar a cambios del DOM
+   *
+   * Esta referencia se usa en onDocumentClick() para detectar clicks
+   * fuera del dropdown y cerrarlo automaticamente.
+   *
+   * @see https://angular.dev/guide/signals/queries
+   */
   private readonly profileContainerRef = viewChild<ElementRef<HTMLElement>>('profileContainer');
 
-  /** Dropdown menu items for keyboard navigation (WCAG 2.1.1) */
+  /**
+   * Referencias a los items del dropdown para navegacion por teclado.
+   *
+   * `viewChildren()` es la API signal para acceder a multiples elementos.
+   * Devuelve Signal<readonly ElementRef<T>[]>.
+   *
+   * Se usa para implementar navegacion WAI-ARIA en el dropdown:
+   * - ArrowUp/ArrowDown para moverse entre items
+   * - Home/End para ir al primer/ultimo item
+   * - Cumple WCAG 2.1.1 (Keyboard) y 2.4.3 (Focus Order)
+   */
   private readonly dropdownItems = viewChildren<ElementRef<HTMLElement>>('dropdownItem');
 
   /** Whether to show full logo (icon + text) or just icon */

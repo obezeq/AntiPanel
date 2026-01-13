@@ -1,0 +1,19 @@
+<button
+  #tabButton
+  type="button"
+  class="tab__button"
+  role="tab"
+  [attr.aria-selected]="isActive()"
+  [tabindex]="isActive() ? 0 : -1"
+  (click)="onClick()"
+>
+  @if (icon()) {
+    <ng-icon
+      class="tab__icon"
+      [name]="icon()"
+      size="18"
+      aria-hidden="true"
+    />
+  }
+  <span class="tab__label">{{ label() }}</span>
+</button>

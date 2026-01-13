@@ -1,0 +1,176 @@
+<section class="demo-section">
+  <header class="demo-header">
+    <h3 class="demo-title">Demo: @ViewChild y ElementRef</h3>
+    <p class="demo-description">
+      Demuestra el uso del decorador <code>@ViewChild</code> tradicional
+      junto con <code>ElementRef</code> para acceso seguro al DOM en
+      <code>ngAfterViewInit</code>.
+    </p>
+  </header>
+
+  <div class="demo-content">
+    <!-- Input Demo -->
+    <div class="demo-card">
+      <h4 class="demo-card__title">1. Input con Focus Programatico</h4>
+      <p class="demo-card__description">
+        <code>@ViewChild('inputDemo') inputDemo!: ElementRef&lt;HTMLInputElement&gt;</code>
+      </p>
+
+      <div class="input-demo">
+        <input
+          #inputDemo
+          type="text"
+          class="demo-input"
+          placeholder="Escribe algo aqui..."
+          (input)="onInputChange($event)"
+        />
+        <div class="input-actions">
+          <button class="btn-action" (click)="focusInput()">
+            Enfocar Input
+          </button>
+          <button class="btn-action btn-action--secondary" (click)="readInputValue()">
+            Leer Valor
+          </button>
+        </div>
+      </div>
+
+      @if (inputValue()) {
+        <div class="demo-result">
+          <span class="demo-result__label">Valor actual:</span>
+          <span class="demo-result__value">{{ inputValue() }}</span>
+        </div>
+      }
+    </div>
+
+    <!-- Box Demo -->
+    <div class="demo-card">
+      <h4 class="demo-card__title">2. Div con Estilos Dinamicos</h4>
+      <p class="demo-card__description">
+        <code>@ViewChild('boxDemo') boxDemo!: ElementRef&lt;HTMLDivElement&gt;</code>
+      </p>
+
+      <div class="box-demo">
+        <div #boxDemo class="demo-box">
+          Box con estilos dinamicos
+        </div>
+        <button class="btn-action" (click)="changeBoxColor()">
+          Cambiar Color
+        </button>
+      </div>
+    </div>
+
+    <!-- Canvas Demo -->
+    <div class="demo-card">
+      <h4 class="demo-card__title">3. Canvas para Graficos</h4>
+      <p class="demo-card__description">
+        <code>@ViewChild('canvasDemo') canvasDemo!: ElementRef&lt;HTMLCanvasElement&gt;</code>
+      </p>
+
+      <div class="canvas-demo">
+        <canvas #canvasDemo class="demo-canvas" width="300" height="150"></canvas>
+        <div class="canvas-info">
+          <span class="canvas-info__label">Dimensiones:</span>
+          <span class="canvas-info__value">
+            {{ canvasDimensions().width }}x{{ canvasDimensions().height }}px
+          </span>
+        </div>
+        <div class="canvas-actions">
+          <button class="btn-action" (click)="drawOnCanvas()">
+            Dibujar Rectangulo
+          </button>
+          <button class="btn-action btn-action--secondary" (click)="clearCanvas()">
+            Limpiar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Textarea Demo -->
+    <div class="demo-card">
+      <h4 class="demo-card__title">4. Textarea con Placeholder Dinamico</h4>
+      <p class="demo-card__description">
+        <code>@ViewChild('textareaDemo') textareaDemo!: ElementRef&lt;HTMLTextAreaElement&gt;</code>
+      </p>
+
+      <div class="textarea-demo">
+        <textarea
+          #textareaDemo
+          class="demo-textarea"
+          rows="3"
+        ></textarea>
+        <button class="btn-action" (click)="readTextarea()">
+          Leer Contenido
+        </button>
+      </div>
+    </div>
+
+    <!-- Output Demo -->
+    <div class="demo-card">
+      <h4 class="demo-card__title">5. Div de Salida</h4>
+      <p class="demo-card__description">
+        <code>@ViewChild('outputDemo') outputDemo!: ElementRef&lt;HTMLDivElement&gt;</code>
+      </p>
+
+      <div #outputDemo class="demo-output">
+        Esperando inicializacion...
+      </div>
+    </div>
+
+    <!-- Event Log -->
+    <div class="demo-card demo-card--log">
+      <div class="demo-card__header">
+        <h4 class="demo-card__title">Log de Acciones</h4>
+        <div class="demo-card__status">
+          @if (isInitialized()) {
+            <span class="status-badge status-badge--success">Inicializado</span>
+          } @else {
+            <span class="status-badge status-badge--pending">Pendiente</span>
+          }
+        </div>
+        <button class="btn-clear" (click)="clearLog()">Limpiar</button>
+      </div>
+
+      <div class="event-log">
+        @if (actionLog().length === 0) {
+          <p class="event-log__empty">
+            Interactua con los elementos para ver las acciones registradas.
+          </p>
+        } @else {
+          <ul class="event-log__list">
+            @for (action of actionLog(); track $index) {
+              <li class="event-log__item">{{ action }}</li>
+            }
+          </ul>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Code Example -->
+  <div class="demo-code">
+    <h4 class="demo-code__title">Codigo de Ejemplo</h4>
+    <pre class="demo-code__block"><code>// @ViewChild - Patron tradicional para la rubrica
+// NOTA: En Angular 21, se prefiere viewChild() function
+
+@ViewChild('inputDemo') inputDemo!: ElementRef&lt;HTMLInputElement&gt;;
+@ViewChild('boxDemo') boxDemo!: ElementRef&lt;HTMLDivElement&gt;;
+@ViewChild('canvasDemo') canvasDemo!: ElementRef&lt;HTMLCanvasElement&gt;;
+
+// ngAfterViewInit - OBLIGATORIO para acceso seguro
+ngAfterViewInit(): void {{'{'}}
+  // Los @ViewChild estan disponibles AQUI
+  if (this.inputDemo) {{'{'}}
+    this.inputDemo.nativeElement.focus();
+  {{'}'}}
+
+  // Usar Renderer2 para manipulacion segura
+  if (this.boxDemo) {{'{'}}
+    this.renderer.setStyle(
+      this.boxDemo.nativeElement,
+      'backgroundColor',
+      'var(--color-primary)'
+    );
+  {{'}'}}
+{{'}'}}</code></pre>
+  </div>
+</section>

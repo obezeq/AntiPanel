@@ -1,0 +1,44 @@
+// ==========================================================================
+// TABS COMPONENT STYLES
+// ==========================================================================
+// Estilos para el componente Tabs siguiendo el design system.
+// ==========================================================================
+
+.tabs {
+  display: block;
+  width: 100%;
+}
+
+.tabs__container {
+  display: flex;
+  flex-direction: column;
+}
+
+// ---------------------------------------------------------------------------
+// TAB LIST
+// ---------------------------------------------------------------------------
+
+.tabs__list {
+  display: flex;
+  gap: var(--spacing-1);
+  border-bottom: var(--border-width-thin) solid var(--color-information);
+  padding-bottom: var(--spacing-1);
+  overflow-x: auto;
+
+  // Hide scrollbar but allow scrolling
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// TAB PANELS CONTAINER
+// ---------------------------------------------------------------------------
+
+.tabs__panels {
+  position: relative;
+  padding-top: var(--spacing-4);
+}

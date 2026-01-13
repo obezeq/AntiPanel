@@ -1,0 +1,21 @@
+// ==========================================================================
+// ACCORDION COMPONENT STYLES
+// ==========================================================================
+// Estilos para el componente Accordion siguiendo el design system.
+// Incluye animaciones, transiciones y estados para accesibilidad.
+// ==========================================================================
+
+.accordion {
+  display: block;
+  width: 100%;
+}
+
+.accordion__container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+
+  &.accordion--initialized {
+    // Estilos aplicados despues de la inicializacion
+  }
+}
