@@ -64,6 +64,51 @@
           <span>Propagacion</span>
         </button>
       </li>
+      <li role="presentation">
+        <button
+          type="button"
+          role="tab"
+          id="tab-hostlistener"
+          class="dom-events-section__tab"
+          [class.dom-events-section__tab--active]="selectedTab() === 'hostlistener'"
+          [attr.aria-selected]="selectedTab() === 'hostlistener'"
+          aria-controls="panel-hostlistener"
+          (click)="selectedTab.set('hostlistener')"
+        >
+          <ng-icon name="matHearing" size="18" aria-hidden="true" />
+          <span>@HostListener</span>
+        </button>
+      </li>
+      <li role="presentation">
+        <button
+          type="button"
+          role="tab"
+          id="tab-viewchild-demo"
+          class="dom-events-section__tab"
+          [class.dom-events-section__tab--active]="selectedTab() === 'viewchild-demo'"
+          [attr.aria-selected]="selectedTab() === 'viewchild-demo'"
+          aria-controls="panel-viewchild-demo"
+          (click)="selectedTab.set('viewchild-demo')"
+        >
+          <ng-icon name="matVisibility" size="18" aria-hidden="true" />
+          <span>@ViewChild</span>
+        </button>
+      </li>
+      <li role="presentation">
+        <button
+          type="button"
+          role="tab"
+          id="tab-renderer2"
+          class="dom-events-section__tab"
+          [class.dom-events-section__tab--active]="selectedTab() === 'renderer2'"
+          [attr.aria-selected]="selectedTab() === 'renderer2'"
+          aria-controls="panel-renderer2"
+          (click)="selectedTab.set('renderer2')"
+        >
+          <ng-icon name="matBrush" size="18" aria-hidden="true" />
+          <span>Renderer2</span>
+        </button>
+      </li>
     </menu>
 
     <!-- =====================================================================
@@ -403,6 +448,48 @@
             </div>
           </div>
         </div>
+    </section>
+    }
+
+    <!-- =====================================================================
+         TAB 5: @HostListener DEMO
+         ===================================================================== -->
+    @if (selectedTab() === 'hostlistener') {
+    <section
+      role="tabpanel"
+      id="panel-hostlistener"
+      aria-labelledby="tab-hostlistener"
+      class="dom-events-section__panel"
+    >
+      <app-host-listener-demo />
+    </section>
+    }
+
+    <!-- =====================================================================
+         TAB 6: @ViewChild DEMO
+         ===================================================================== -->
+    @if (selectedTab() === 'viewchild-demo') {
+    <section
+      role="tabpanel"
+      id="panel-viewchild-demo"
+      aria-labelledby="tab-viewchild-demo"
+      class="dom-events-section__panel"
+    >
+      <app-viewchild-demo />
+    </section>
+    }
+
+    <!-- =====================================================================
+         TAB 7: Renderer2 DEMO
+         ===================================================================== -->
+    @if (selectedTab() === 'renderer2') {
+    <section
+      role="tabpanel"
+      id="panel-renderer2"
+      aria-labelledby="tab-renderer2"
+      class="dom-events-section__panel"
+    >
+      <app-renderer2-demo />
     </section>
     }
   </section>

@@ -1,0 +1,117 @@
+// ==========================================================================
+// ACCORDION ITEM COMPONENT STYLES
+// ==========================================================================
+// Estilos para cada item del accordion con animaciones CSS.
+// ==========================================================================
+
+.accordion-item {
+  display: block;
+  border: var(--border-width-medium) solid var(--color-information);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background-color: var(--color-background);
+  transition: border-color var(--transition-fast);
+
+  &:hover {
+    border-color: var(--color-secondary);
+  }
+
+  &--expanded {
+    border-color: var(--color-success);
+
+    .accordion-item__chevron {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.accordion-item__wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+// ---------------------------------------------------------------------------
+// HEADER BUTTON
+// ---------------------------------------------------------------------------
+
+.accordion-item__header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  width: 100%;
+  padding: var(--spacing-4);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color var(--transition-fast);
+
+  &:hover {
+    background-color: var(--color-tiny-info);
+  }
+
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: calc(-1 * var(--focus-ring-width));
+  }
+}
+
+.accordion-item__icon {
+  flex-shrink: 0;
+  color: var(--color-success);
+}
+
+.accordion-item__title {
+  flex: 1;
+}
+
+.accordion-item__chevron {
+  flex-shrink: 0;
+  color: var(--color-foreground);
+  transition: transform var(--transition-fast);
+}
+
+// ---------------------------------------------------------------------------
+// CONTENT PANEL
+// ---------------------------------------------------------------------------
+
+.accordion-item__content {
+  overflow: hidden;
+  transition:
+    max-height 0.3s ease-out,
+    opacity 0.3s ease-out;
+}
+
+.accordion-item__content-inner {
+  padding: 0 var(--spacing-4) var(--spacing-4);
+  color: var(--color-foreground);
+
+  // Espaciado para elementos hijos
+  > * + * {
+    margin-top: var(--spacing-3);
+  }
+
+  // Estilos para codigo dentro del contenido
+  pre {
+    margin-top: var(--spacing-3);
+    padding: var(--spacing-3);
+    background-color: var(--color-tiny-info);
+    border-radius: var(--radius-sm);
+    overflow-x: auto;
+
+    code {
+      padding: 0;
+      background: none;
+      font-size: var(--font-size-small);
+    }
+  }
+
+  // Parrafos
+  p {
+    line-height: var(--line-height-relaxed);
+  }
+}

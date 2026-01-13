@@ -1,0 +1,141 @@
+<section class="demo-section" #demoContainer>
+  <header class="demo-header">
+    <h3 class="demo-title">Demo: @HostListener</h3>
+    <p class="demo-description">
+      Demuestra el uso del decorador <code>@HostListener</code> para capturar
+      eventos globales del documento y ventana.
+    </p>
+  </header>
+
+  <div class="demo-content">
+    <!-- Dropdown Demo -->
+    <div class="demo-card">
+      <h4 class="demo-card__title">Dropdown con Click Fuera y ESC</h4>
+      <p class="demo-card__description">
+        <code>@HostListener('document:click')</code> y
+        <code>@HostListener('document:keydown.escape')</code>
+      </p>
+
+      <div class="dropdown-container" #dropdownContainer>
+        <button
+          class="dropdown-trigger"
+          (click)="toggleDropdown()"
+          [attr.aria-expanded]="isDropdownOpen()"
+          aria-haspopup="listbox"
+        >
+          Abrir Dropdown
+          <span class="dropdown-arrow" [class.dropdown-arrow--open]="isDropdownOpen()">
+            ▼
+          </span>
+        </button>
+
+        @if (isDropdownOpen()) {
+          <ul class="dropdown-menu" role="listbox">
+            <li
+              class="dropdown-item"
+              role="option"
+              (click)="selectOption('Opcion 1')"
+            >
+              Opcion 1
+            </li>
+            <li
+              class="dropdown-item"
+              role="option"
+              (click)="selectOption('Opcion 2')"
+            >
+              Opcion 2
+            </li>
+            <li
+              class="dropdown-item"
+              role="option"
+              (click)="selectOption('Opcion 3')"
+            >
+              Opcion 3
+            </li>
+          </ul>
+        }
+      </div>
+
+      <div class="demo-stats">
+        <div class="stat-item">
+          <span class="stat-label">Clicks fuera:</span>
+          <span class="stat-value">{{ clickOutsideCount() }}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Ultimo ESC:</span>
+          <span class="stat-value">{{ lastEscapeTime() || 'N/A' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Window Resize Demo -->
+    <div class="demo-card">
+      <h4 class="demo-card__title">Detectar Resize de Ventana</h4>
+      <p class="demo-card__description">
+        <code>@HostListener('window:resize')</code>
+      </p>
+
+      <div class="window-stats">
+        <div class="window-stat">
+          <span class="window-stat__label">Ancho:</span>
+          <span class="window-stat__value">{{ windowWidth() }}px</span>
+        </div>
+        <div class="window-stat">
+          <span class="window-stat__label">Alto:</span>
+          <span class="window-stat__value">{{ windowHeight() }}px</span>
+        </div>
+      </div>
+
+      <p class="demo-hint">
+        Redimensiona la ventana del navegador para ver los valores actualizarse.
+      </p>
+    </div>
+
+    <!-- Event Log -->
+    <div class="demo-card demo-card--log">
+      <div class="demo-card__header">
+        <h4 class="demo-card__title">Log de Eventos</h4>
+        <button class="btn-clear" (click)="clearLog()">Limpiar</button>
+      </div>
+
+      <div class="event-log">
+        @if (eventLog().length === 0) {
+          <p class="event-log__empty">
+            Interactua con los elementos para ver los eventos capturados.
+          </p>
+        } @else {
+          <ul class="event-log__list">
+            @for (event of eventLog(); track $index) {
+              <li class="event-log__item">{{ event }}</li>
+            }
+          </ul>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Code Example -->
+  <div class="demo-code">
+    <h4 class="demo-code__title">Codigo de Ejemplo</h4>
+    <pre class="demo-code__block"><code>// @HostListener para eventos de documento
+@HostListener('document:click', ['$event'])
+onDocumentClick(event: MouseEvent): void {{'{'}}
+  // Detectar click fuera del elemento
+  if (!this.container.contains(event.target)) {{'{'}}
+    this.closeDropdown();
+  {{'}'}}
+{{'}'}}
+
+// @HostListener para tecla ESC
+@HostListener('document:keydown.escape')
+onEscapeKey(): void {{'{'}}
+  this.closeDropdown();
+{{'}'}}
+
+// @HostListener para resize de ventana
+@HostListener('window:resize')
+onWindowResize(): void {{'{'}}
+  this.updateDimensions();
+{{'}'}}</code></pre>
+  </div>
+</section>

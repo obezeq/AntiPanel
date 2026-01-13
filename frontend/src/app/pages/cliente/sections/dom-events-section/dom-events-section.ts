@@ -9,6 +9,9 @@ import {
 import { NgIcon } from '@ng-icons/core';
 import { TooltipDirective } from '../../../../directives/tooltip.directive';
 import { NotificationService } from '../../../../services/notification.service';
+import { HostListenerDemoComponent } from './demos/host-listener-demo';
+import { ViewChildDemoComponent } from './demos/viewchild-demo';
+import { Renderer2DemoComponent } from './demos/renderer2-demo';
 
 /**
  * DOM Events Section - Fase 1
@@ -28,7 +31,10 @@ import { NotificationService } from '../../../../services/notification.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NgIcon,
-    TooltipDirective
+    TooltipDirective,
+    HostListenerDemoComponent,
+    ViewChildDemoComponent,
+    Renderer2DemoComponent
   ]
 })
 export class DomEventsSection {

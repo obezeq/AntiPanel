@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   ElementRef,
@@ -6,6 +7,8 @@ import {
   input,
   output,
   effect,
+  Renderer2,
+  signal,
   viewChild
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
@@ -20,14 +23,42 @@ const FOCUSABLE_SELECTOR = [
   '[tabindex]:not([tabindex="-1"])'
 ].join(', ');
 
+/**
+ * Modal Component - Angular 21
+ *
+ * Componente de dialogo modal accesible con focus trap y gestion de teclado.
+ *
+ * @example
+ * ```html
+ * <app-modal [isOpen]="showModal()" (closeRequest)="showModal.set(false)">
+ *   <p>Modal content here</p>
+ * </app-modal>
+ * ```
+ *
+ * @remarks
+ * - Usa `viewChild()` signal (Angular 21) para acceso al elemento dialog
+ * - Implementa AfterViewInit para inicializacion post-render
+ * - Usa `host` property para eventos globales (Angular 21 best practice)
+ * - Usa Renderer2 para manipulacion segura del DOM
+ * - Focus trap completo con Tab/Shift+Tab
+ * - Cierre con ESC y click en overlay configurable
+ *
+ * @see https://angular.dev/guide/components/host-elements
+ */
 @Component({
   selector: 'app-modal',
   templateUrl: './modal.html',
   styleUrl: './modal.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    'class': 'modal-host',
+    // Angular 21: host property para eventos globales (reemplaza @HostListener)
+    '(window:resize)': 'onWindowResize()'
+  }
 })
-export class Modal {
+export class Modal implements AfterViewInit {
   private readonly document = inject(DOCUMENT);
+  private readonly renderer = inject(Renderer2);
 
   /** Element that had focus before modal opened */
   private previouslyFocusedElement: HTMLElement | null = null;
@@ -53,6 +84,31 @@ export class Modal {
   /** Emits when modal close is requested */
   readonly closeRequest = output<void>();
 
+  /** Dimensiones de la ventana para posicionamiento responsive */
+  private readonly windowDimensions = signal({ width: 0, height: 0 });
+
+  /**
+   * Referencia al elemento dialog nativo.
+   *
+   * En Angular 21, `viewChild()` es una signal query que devuelve
+   * un Signal<ElementRef<T> | undefined>. A diferencia del decorator
+   * @ViewChild tradicional:
+   *
+   * - Se actualiza automaticamente cuando el elemento esta disponible
+   * - Se integra con el sistema de signals para reactividad
+   * - Puede usarse con effect() para reaccionar a cambios
+   *
+   * @example
+   * ```typescript
+   * // Acceso al elemento nativo
+   * const dialog = this.dialogRef()?.nativeElement;
+   * if (dialog) {
+   *   dialog.showModal();
+   * }
+   * ```
+   *
+   * @see https://angular.dev/guide/signals/queries
+   */
   private readonly dialogRef = viewChild<ElementRef<HTMLDialogElement>>('dialogRef');
 
   constructor() {
@@ -85,6 +141,66 @@ export class Modal {
         }
       }
     });
+
+    // Inicializar dimensiones de ventana
+    this.windowDimensions.set({
+      width: window.innerWidth,
+      height: window.innerHeight
+    });
+  }
+
+  /**
+   * Lifecycle hook ejecutado despues de inicializar las vistas.
+   *
+   * En Angular 21, aunque effect() y afterNextRender() son las APIs
+   * modernas para reaccionar a cambios, ngAfterViewInit sigue siendo
+   * valido para inicializacion post-render.
+   *
+   * Aqui verificamos que el dialogRef esta disponible y aplicamos
+   * cualquier configuracion inicial necesaria usando Renderer2.
+   */
+  ngAfterViewInit(): void {
+    const dialog = this.dialogRef();
+    if (dialog) {
+      // Renderer2: setAttribute para marcar el dialogo como inicializado
+      this.renderer.setAttribute(dialog.nativeElement, 'data-modal-initialized', 'true');
+      this.renderer.addClass(dialog.nativeElement, 'modal--initialized');
+    }
+  }
+
+  /**
+   * Listener global para eventos de redimension de ventana.
+   *
+   * Este metodo es llamado via la propiedad `host` del componente:
+   * `'(window:resize)': 'onWindowResize()'`
+   *
+   * En Angular 21, se prefiere usar `host` property sobre @HostListener.
+   * Esto es util para:
+   * - Ajustar el posicionamiento del modal en pantallas pequeñas
+   * - Recalcular dimensiones para animaciones
+   * - Detectar cambios de orientacion en moviles
+   *
+   * @see https://angular.dev/guide/components/host-elements
+   */
+  protected onWindowResize(): void {
+    this.windowDimensions.set({
+      width: window.innerWidth,
+      height: window.innerHeight
+    });
+
+    // Si el modal esta abierto, ajustar posicionamiento si es necesario
+    if (this.isOpen()) {
+      const dialog = this.dialogRef();
+      if (dialog) {
+        // Aplicar ajustes responsive usando Renderer2
+        const isMobile = window.innerWidth < 768;
+        if (isMobile) {
+          this.renderer.addClass(dialog.nativeElement, 'modal--mobile');
+        } else {
+          this.renderer.removeClass(dialog.nativeElement, 'modal--mobile');
+        }
+      }
+    }
   }
 
   protected onOverlayClick(event: MouseEvent): void {

@@ -1,0 +1,16 @@
+<div class="tabs__container">
+  <!-- Tab List -->
+  <div
+    #tablistContainer
+    class="tabs__list"
+    role="tablist"
+    aria-label="Tabs"
+  >
+    <ng-content select="app-tab"></ng-content>
+  </div>
+
+  <!-- Tab Panels -->
+  <div class="tabs__panels">
+    <ng-content select="app-tab-panel"></ng-content>
+  </div>
+</div>

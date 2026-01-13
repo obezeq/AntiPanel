@@ -73,6 +73,373 @@ La aplicacion implementa un sistema de navegacion SPA completo con lazy loading,
 
 ---
 
+## Nota Tecnica: Angular 21 y Mejores Practicas Modernas
+
+Este proyecto utiliza **Angular 21** (lanzado en Noviembre 2025), la version mas reciente del framework. A continuacion se documentan las decisiones tecnicas y patrones modernos utilizados.
+
+### Referencias Oficiales Angular 21
+
+- [Announcing Angular v21](https://blog.angular.dev/announcing-angular-v21-57946c34f14b) - Blog oficial de lanzamiento
+- [Host Elements Guide](https://angular.dev/guide/components/host-elements) - Documentacion oficial sobre `host` property
+- [Signal Queries](https://angular.dev/guide/signals/queries) - Documentacion de viewChild/viewChildren
+- [Signal Components](https://blog.angular-university.io/angular-signal-components/) - Guia completa de input/output
+
+### APIs Signal-Based (Modernas)
+
+Angular 21 introduce APIs basadas en signals que reemplazan los decoradores tradicionales:
+
+| API Tradicional (Deprecated) | API Moderna Angular 21 | Archivos de Referencia |
+|------------------------------|------------------------|------------------------|
+| `@ViewChild` decorator | `viewChild()` function | [header.ts](../../src/app/components/layout/header/header.ts#L108), [modal.ts](../../src/app/components/shared/modal/modal.ts#L106) |
+| `@ViewChildren` decorator | `viewChildren()` function | [header.ts](../../src/app/components/layout/header/header.ts#L121) |
+| `@ContentChildren` decorator | `contentChildren()` function | [accordion.ts](../../src/app/components/shared/accordion/accordion.ts#L56) |
+| `@Input()` decorator | `input()` function | Todos los componentes |
+| `@Output()` + EventEmitter | `output()` function | Todos los componentes |
+| `@HostListener` decorator | `host` property | Ver seccion siguiente |
+| `@HostBinding` decorator | `host` property | [button.ts](../../src/app/components/shared/button/button.ts#L12) |
+
+### Propiedad `host` vs `@HostListener` (Deprecated)
+
+**Angular 21 ha deprecado `@HostListener`** en favor de la propiedad `host` en el decorator del componente. Este proyecto sigue esta mejor practica en TODOS los componentes:
+
+**Componentes con `host` property (Angular 21 moderno):**
+
+| Componente | Archivo | Eventos en `host` |
+|------------|---------|-------------------|
+| Header | [header.ts:59-64](../../src/app/components/layout/header/header.ts#L59) | `document:click`, `document:keydown.escape` |
+| Modal | [modal.ts:53-57](../../src/app/components/shared/modal/modal.ts#L53) | `window:resize` |
+| TooltipDirective | [tooltip.directive.ts:39-46](../../src/app/directives/tooltip.directive.ts#L39) | `mouseenter`, `focus`, `mouseleave`, `blur`, `keydown.escape` |
+| Accordion | [accordion.ts:45-49](../../src/app/components/shared/accordion/accordion.ts#L45) | `keydown` |
+| Tabs | [tabs.ts:47-50](../../src/app/components/shared/tabs/tabs.ts#L47) | `keydown` |
+| HighlightDirective | [highlight.directive.ts:32-38](../../src/app/directives/highlight.directive.ts#L32) | `mouseenter`, `mouseleave`, `focus`, `blur` |
+| RippleDirective | [ripple.directive.ts:32-36](../../src/app/directives/ripple.directive.ts#L32) | `click` |
+| Button | [button.ts:12-14](../../src/app/components/shared/button/button.ts#L12) | class bindings |
+| Spinner | [spinner.ts:36-38](../../src/app/components/shared/spinner/spinner.ts#L36) | class bindings |
+
+### Ejemplo de patron moderno vs deprecated
+
+```typescript
+// ❌ Patron ANTIGUO (deprecated en Angular 21)
+@Component({ ... })
+export class MiComponente {
+  @HostListener('document:click', ['$event'])
+  onClick(event: MouseEvent): void {
+    // ...
+  }
+}
+
+// ✅ Patron MODERNO Angular 21 (usado en este proyecto)
+@Component({
+  // ...
+  host: {
+    '(document:click)': 'onClick($event)',
+    '(document:keydown.escape)': 'onEscape()'
+  }
+})
+export class MiComponente {
+  protected onClick(event: MouseEvent): void {
+    // ...
+  }
+  protected onEscape(): void {
+    // ...
+  }
+}
+```
+
+### Renderer2 para Manipulacion del DOM
+
+Todos los componentes que manipulan el DOM usan `Renderer2` en lugar de acceso directo:
+
+| Archivo | Metodos Renderer2 Usados |
+|---------|--------------------------|
+| [tooltip.directive.ts](../../src/app/directives/tooltip.directive.ts) | `createElement`, `appendChild`, `removeChild`, `setAttribute`, `addClass`, `setStyle` |
+| [highlight.directive.ts](../../src/app/directives/highlight.directive.ts) | `setStyle`, `removeStyle`, `addClass`, `removeClass` |
+| [ripple.directive.ts](../../src/app/directives/ripple.directive.ts) | `createElement`, `appendChild`, `removeChild`, `setStyle`, `addClass` |
+| [accordion.ts](../../src/app/components/shared/accordion/accordion.ts) | `setAttribute`, `addClass` |
+| [accordion-item.ts](../../src/app/components/shared/accordion/accordion-item.ts) | `setStyle` |
+| [tabs.ts](../../src/app/components/shared/tabs/tabs.ts) | `setAttribute` |
+| [tab.ts](../../src/app/components/shared/tabs/tab.ts) | `setAttribute` |
+| [header.ts](../../src/app/components/layout/header/header.ts) | `setAttribute` |
+| [modal.ts](../../src/app/components/shared/modal/modal.ts) | `setAttribute`, `addClass`, `removeClass` |
+
+### Ciclo de Vida: AfterViewInit
+
+Los componentes implementan `AfterViewInit` con el metodo `ngAfterViewInit()`:
+
+| Componente | Archivo | Linea |
+|------------|---------|-------|
+| Accordion | [accordion.ts](../../src/app/components/shared/accordion/accordion.ts#L91) | 91 |
+| AccordionItem | [accordion-item.ts](../../src/app/components/shared/accordion/accordion-item.ts#L86) | 86 |
+| Tabs | [tabs.ts](../../src/app/components/shared/tabs/tabs.ts#L99) | 99 |
+| Modal | [modal.ts](../../src/app/components/shared/modal/modal.ts#L156) | 156 |
+| Header | [header.ts](../../src/app/components/layout/header/header.ts#L247) | 247 |
+
+### Eliminacion de Elementos del DOM (ngOnDestroy)
+
+Los componentes/directivas que crean elementos dinamicamente implementan limpieza en `ngOnDestroy`:
+
+| Componente | Archivo | Descripcion |
+|------------|---------|-------------|
+| TooltipDirective | [tooltip.directive.ts:97](../../src/app/directives/tooltip.directive.ts#L97) | Elimina tooltip y limpia timeout |
+| RippleDirective | [ripple.directive.ts](../../src/app/directives/ripple.directive.ts) | Elimina todos los ripples pendientes |
+| HighlightDirective | [highlight.directive.ts](../../src/app/directives/highlight.directive.ts) | Limpia estilos aplicados |
+| AccordionItem | [accordion-item.ts](../../src/app/components/shared/accordion/accordion-item.ts) | Limpia elementos de medida |
+| Renderer2DemoComponent | [renderer2-demo.ts](../../src/app/pages/cliente/sections/dom-events-section/demos/renderer2-demo.ts) | Elimina elementos dinamicos y listeners |
+
+### Componentes Demo para Practicas (Patrones Tradicionales)
+
+Para demostrar conocimiento de los patrones tradicionales de Angular (requeridos por la rubrica academica), se han creado componentes demo especificos en la seccion `/cliente` que utilizan los decoradores clasicos en lugar de las APIs modernas.
+
+**Estrategia Hibrida:**
+
+| Ubicacion | Enfoque | Patrones Utilizados |
+|-----------|---------|---------------------|
+| **Componentes principales** | Angular 21 Best Practices | `viewChild()`, `host` property, `signal()` |
+| **Componentes DEMO** (`/cliente`) | Patrones tradicionales | `@ViewChild`, `@HostListener`, `Renderer2` |
+
+#### HostListenerDemoComponent
+
+**Archivo:** [host-listener-demo.ts](../../src/app/pages/cliente/sections/dom-events-section/demos/host-listener-demo.ts)
+
+Demuestra el uso del decorador `@HostListener` para capturar eventos globales:
+
+```typescript
+/**
+ * COMPONENTE DEMO: @HostListener
+ *
+ * Demuestra el decorador @HostListener para eventos globales.
+ * NOTA: En Angular 21, @HostListener esta deprecated en favor
+ * de la propiedad `host`, pero este componente existe para
+ * demostrar conocimiento del patron tradicional.
+ */
+@Component({ ... })
+export class HostListenerDemoComponent implements AfterViewInit, OnDestroy {
+  @ViewChild('demoContainer') demoContainer!: ElementRef<HTMLDivElement>;
+  @ViewChild('dropdownContainer') dropdownContainer!: ElementRef<HTMLDivElement>;
+
+  /**
+   * @HostListener para capturar clicks en el documento.
+   * Usado para cerrar dropdown al hacer click fuera.
+   */
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (this.isDropdownOpen()) {
+      const target = event.target as HTMLElement;
+      if (!this.dropdownContainer?.nativeElement.contains(target)) {
+        this.isDropdownOpen.set(false);
+        this.clickOutsideCount.update(c => c + 1);
+      }
+    }
+  }
+
+  /**
+   * @HostListener para capturar tecla ESC en el documento.
+   */
+  @HostListener('document:keydown.escape')
+  onEscapeKey(): void {
+    if (this.isDropdownOpen()) {
+      this.isDropdownOpen.set(false);
+      this.lastEscapeTime.set(new Date().toLocaleTimeString());
+    }
+  }
+
+  /**
+   * @HostListener para capturar resize de ventana.
+   */
+  @HostListener('window:resize')
+  onWindowResize(): void {
+    this.windowWidth.set(window.innerWidth);
+    this.windowHeight.set(window.innerHeight);
+  }
+}
+```
+
+**Eventos demostrados:**
+- `document:click` - Click fuera para cerrar dropdown
+- `document:keydown.escape` - Tecla ESC para cerrar
+- `window:resize` - Deteccion de cambio de tamaño de ventana
+
+#### ViewChildDemoComponent
+
+**Archivo:** [viewchild-demo.ts](../../src/app/pages/cliente/sections/dom-events-section/demos/viewchild-demo.ts)
+
+Demuestra el uso del decorador `@ViewChild` con `ngAfterViewInit`:
+
+```typescript
+/**
+ * COMPONENTE DEMO: @ViewChild y ElementRef
+ *
+ * Demuestra el patron tradicional de @ViewChild decorator
+ * con ngAfterViewInit para acceso seguro al DOM.
+ */
+@Component({ ... })
+export class ViewChildDemoComponent implements AfterViewInit, OnDestroy {
+  /**
+   * Referencias usando @ViewChild decorator (patron tradicional).
+   * En Angular 21, se prefiere viewChild() function.
+   */
+  @ViewChild('inputDemo') inputDemo!: ElementRef<HTMLInputElement>;
+  @ViewChild('boxDemo') boxDemo!: ElementRef<HTMLDivElement>;
+  @ViewChild('canvasDemo') canvasDemo!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('textareaDemo') textareaDemo!: ElementRef<HTMLTextAreaElement>;
+  @ViewChild('outputDemo') outputDemo!: ElementRef<HTMLDivElement>;
+
+  private readonly renderer = inject(Renderer2);
+
+  /**
+   * ngAfterViewInit - Hook CRITICO para acceso seguro al DOM.
+   *
+   * Los @ViewChild NO estan disponibles hasta despues de que
+   * Angular renderice la vista. Intentar acceder antes causa error.
+   */
+  ngAfterViewInit(): void {
+    // El elemento esta garantizado disponible aqui
+    if (this.inputDemo) {
+      this.renderer.setAttribute(
+        this.inputDemo.nativeElement,
+        'data-demo',
+        'viewchild'
+      );
+    }
+
+    // Leer dimensiones del canvas
+    if (this.canvasDemo) {
+      const rect = this.canvasDemo.nativeElement.getBoundingClientRect();
+      this.canvasDimensions.set({ width: rect.width, height: rect.height });
+    }
+
+    this.isInitialized.set(true);
+  }
+}
+```
+
+**Elementos referenciados:**
+- `inputDemo` - Input para focus programatico
+- `boxDemo` - Div para manipulacion de estilos
+- `canvasDemo` - Canvas para dibujo
+- `textareaDemo` - Textarea para lectura de contenido
+- `outputDemo` - Div para mostrar resultados
+
+#### Renderer2DemoComponent
+
+**Archivo:** [renderer2-demo.ts](../../src/app/pages/cliente/sections/dom-events-section/demos/renderer2-demo.ts)
+
+Demuestra TODOS los metodos principales de Renderer2:
+
+```typescript
+/**
+ * COMPONENTE DEMO: Renderer2 para manipulacion del DOM
+ *
+ * Metodos demostrados:
+ * - createElement: Crear elementos del DOM
+ * - createText: Crear nodos de texto
+ * - appendChild: Agregar hijos a un elemento
+ * - removeChild: Eliminar hijos de un elemento
+ * - setStyle: Aplicar estilos CSS
+ * - removeStyle: Eliminar estilos CSS
+ * - addClass: Agregar clases CSS
+ * - removeClass: Eliminar clases CSS
+ * - setAttribute: Establecer atributos
+ * - removeAttribute: Eliminar atributos
+ * - listen: Agregar event listeners
+ */
+@Component({ ... })
+export class Renderer2DemoComponent implements AfterViewInit, OnDestroy {
+  private readonly renderer = inject(Renderer2);
+  private readonly unlistenFunctions: (() => void)[] = [];
+  private readonly elementsToClean: HTMLElement[] = [];
+
+  /**
+   * Crea un elemento dinamico usando Renderer2.
+   */
+  protected createDynamicElement(): void {
+    const container = this.dynamicContainer.nativeElement;
+
+    // 1. createElement
+    const element = this.renderer.createElement('div');
+
+    // 2. setAttribute
+    this.renderer.setAttribute(element, 'id', `dynamic-${Date.now()}`);
+    this.renderer.setAttribute(element, 'data-created', new Date().toISOString());
+
+    // 3. addClass
+    this.renderer.addClass(element, 'dynamic-element');
+
+    // 4. setStyle
+    this.renderer.setStyle(element, 'backgroundColor', 'hsl(200, 70%, 95%)');
+    this.renderer.setStyle(element, 'padding', '0.75rem');
+
+    // 5. createText + appendChild
+    const text = this.renderer.createText('Elemento dinamico');
+    this.renderer.appendChild(element, text);
+
+    // 6. listen - Event listener
+    const unlisten = this.renderer.listen(element, 'click', () => {
+      this.removeElement(element, unlisten);
+    });
+    this.unlistenFunctions.push(unlisten);
+
+    // 7. appendChild al contenedor
+    this.renderer.appendChild(container, element);
+    this.elementsToClean.push(element);
+  }
+
+  /**
+   * ngOnDestroy - Limpieza OBLIGATORIA para prevenir memory leaks.
+   */
+  ngOnDestroy(): void {
+    // 1. Eliminar todos los elementos creados
+    this.elementsToClean.forEach(element => {
+      if (element.parentNode) {
+        this.renderer.removeChild(element.parentNode, element);
+      }
+    });
+
+    // 2. Cancelar todos los listeners
+    this.unlistenFunctions.forEach(unlisten => unlisten());
+  }
+}
+```
+
+**Metodos Renderer2 demostrados:**
+
+| Metodo | Descripcion | Linea |
+|--------|-------------|-------|
+| `createElement` | Crea un nuevo elemento DOM | 199 |
+| `createText` | Crea un nodo de texto | 227 |
+| `appendChild` | Agrega un hijo a un elemento | 228, 239 |
+| `removeChild` | Elimina un hijo de un elemento | 165, 271, 306, 328 |
+| `setStyle` | Aplica un estilo CSS | 142, 216-222, 347 |
+| `removeStyle` | Elimina un estilo CSS | 358, 386 |
+| `addClass` | Agrega una clase CSS | 135, 210-211, 403 |
+| `removeClass` | Elimina una clase CSS | 414 |
+| `setAttribute` | Establece un atributo | 130, 204-206, 453 |
+| `removeAttribute` | Elimina un atributo | 464 |
+| `listen` | Agrega un event listener | 232 |
+
+**Ubicacion de los demos en la aplicacion:**
+
+Los componentes demo estan integrados en la seccion DOM Events de la pagina `/cliente`:
+
+```
+src/app/pages/cliente/sections/dom-events-section/
+├── dom-events-section.ts      # Componente principal con tabs
+├── dom-events-section.html    # Template con los 3 demos
+├── dom-events-section.scss    # Estilos
+└── demos/
+    ├── host-listener-demo.ts  # Demo @HostListener
+    ├── host-listener-demo.html
+    ├── host-listener-demo.scss
+    ├── viewchild-demo.ts      # Demo @ViewChild
+    ├── viewchild-demo.html
+    ├── viewchild-demo.scss
+    ├── renderer2-demo.ts      # Demo Renderer2
+    ├── renderer2-demo.html
+    └── renderer2-demo.scss
+```
+
+---
+
 ## FASE 1: Manipulacion del DOM y Eventos
 
 ### 1.1 ViewChild y ElementRef
@@ -361,6 +728,186 @@ Para el accordion he optado por usar los elementos HTML5 nativos `<details>` y `
 - Funciona sin JavaScript
 - Soporte nativo de teclado (Enter/Space para toggle)
 - Estado abierto/cerrado via atributo `[open]`
+
+#### 1.4.4 Menu Hamburguesa Responsive
+
+He implementado un menu hamburguesa completamente funcional y accesible en el componente Header.
+
+**Ubicacion:** `components/layout/header/header.ts` y `header.scss`
+
+**Funcionalidades implementadas:**
+
+1. **Toggle abrir/cerrar:** Boton hamburguesa que abre/cierra el sidebar de navegacion
+2. **Animacion CSS suave:** Transformacion del icono hamburguesa a X con transiciones
+3. **Cierre con click fuera:** Usando `@HostListener('document:click')`
+4. **Cierre con tecla Escape:** Usando `@HostListener('document:keydown.escape')`
+5. **Overlay de fondo:** Para indicar que hay un menu abierto
+6. **Accesibilidad completa:** aria-expanded, aria-controls, aria-label
+
+**Implementacion del cierre con click fuera (header.ts:194):**
+
+```typescript
+/**
+ * Cierra el menu cuando se hace click fuera del contenedor.
+ * @HostListener detecta clicks a nivel de documento.
+ */
+@HostListener('document:click', ['$event'])
+onDocumentClick(event: MouseEvent): void {
+  // Solo procesar si el dropdown esta abierto
+  if (!this.isProfileDropdownOpen()) return;
+
+  const target = event.target as HTMLElement;
+  const container = this.profileContainerRef()?.nativeElement;
+
+  // Cerrar si el click es fuera del contenedor
+  if (container && !container.contains(target)) {
+    this.closeProfileDropdown();
+  }
+}
+```
+
+**Implementacion del cierre con ESC (header.ts:213):**
+
+```typescript
+/**
+ * Cierra menu movil y dropdown con tecla Escape.
+ * Cumple WCAG 2.1.1 (Keyboard) y 2.1.2 (No Keyboard Trap).
+ */
+@HostListener('document:keydown.escape')
+onGlobalEscape(): void {
+  if (this.isMobileMenuOpen()) {
+    this.closeMobileMenu();
+  }
+  if (this.isProfileDropdownOpen()) {
+    this.closeProfileDropdown();
+  }
+}
+```
+
+**Animacion del icono hamburguesa ↔ X (header.scss:800-830):**
+
+```scss
+.header__menu-toggle {
+  // Boton hamburguesa
+  &--open {
+    .header__menu-bar {
+      // Primera barra: rota 45deg hacia abajo
+      &:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+      }
+      // Segunda barra: desaparece
+      &:nth-child(2) {
+        opacity: 0;
+        transform: scaleX(0);
+      }
+      // Tercera barra: rota -45deg hacia arriba
+      &:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+      }
+    }
+  }
+}
+
+.header__menu-bar {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background-color: currentColor;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+
+  & + & {
+    margin-top: 5px;
+  }
+}
+```
+
+**Template HTML (header.html:296-312):**
+
+```html
+<!-- Mobile Menu Toggle -->
+@if (showMobileMenu()) {
+  <button
+    type="button"
+    class="header__menu-toggle hide-desktop-lg"
+    [class.header__menu-toggle--open]="isMobileMenuOpen()"
+    (click)="toggleMobileMenu()"
+    [attr.aria-expanded]="isMobileMenuOpen()"
+    aria-controls="mobile-menu"
+    aria-label="Toggle navigation menu"
+  >
+    <span class="header__menu-icon" aria-hidden="true">
+      <span class="header__menu-bar"></span>
+      <span class="header__menu-bar"></span>
+      <span class="header__menu-bar"></span>
+    </span>
+  </button>
+}
+```
+
+**Caracteristicas de accesibilidad:**
+- `aria-expanded`: Indica estado actual (true/false) a lectores de pantalla
+- `aria-controls`: Asocia el boton con el panel que controla
+- `aria-label`: Proporciona nombre accesible al boton
+- `aria-hidden="true"` en las barras SVG para ignorarlas en AT
+- Navegacion por teclado completa (Tab, Enter, Escape)
+
+**Eventos globales utilizados:**
+- `document:click` - Detecta clicks en cualquier parte del documento
+- `document:keydown.escape` - Detecta la tecla Escape globalmente
+
+Estos eventos se implementan con `@HostListener` de Angular, que es la forma recomendada de escuchar eventos a nivel de documento mientras se mantiene el encapsulamiento del componente.
+
+### 1.5 Tabla de Compatibilidad de Navegadores
+
+La siguiente tabla documenta la compatibilidad de los eventos DOM implementados en este proyecto con los principales navegadores:
+
+| Evento | Chrome | Firefox | Safari | Edge | Notas |
+|--------|:------:|:-------:|:------:|:----:|-------|
+| `click` | ✓ 1+ | ✓ 1+ | ✓ 1+ | ✓ 12+ | Universal, soportado desde las primeras versiones |
+| `keydown` | ✓ 1+ | ✓ 1+ | ✓ 1+ | ✓ 12+ | Universal para deteccion de teclas |
+| `keydown.enter` | ✓ 1+ | ✓ 1+ | ✓ 1+ | ✓ 12+ | Evento sintetico de Angular (filtra keydown) |
+| `keydown.escape` | ✓ 1+ | ✓ 1+ | ✓ 1+ | ✓ 12+ | Evento sintetico de Angular (filtra keydown) |
+| `keydown.space` | ✓ 1+ | ✓ 1+ | ✓ 1+ | ✓ 12+ | Evento sintetico de Angular (filtra keydown) |
+| `keydown.arrowup` | ✓ 1+ | ✓ 1+ | ✓ 1+ | ✓ 12+ | Navegacion por teclado en menus |
+| `keydown.arrowdown` | ✓ 1+ | ✓ 1+ | ✓ 1+ | ✓ 12+ | Navegacion por teclado en menus |
+| `mouseenter` | ✓ 30+ | ✓ 10+ | ✓ 6.1+ | ✓ 12+ | No hace bubbling, usado en Tooltip |
+| `mouseleave` | ✓ 30+ | ✓ 10+ | ✓ 6.1+ | ✓ 12+ | No hace bubbling, usado en Tooltip |
+| `mousemove` | ✓ 1+ | ✓ 1+ | ✓ 1+ | ✓ 12+ | Tracking de posicion del cursor |
+| `focus` | ✓ 1+ | ✓ 1+ | ✓ 1+ | ✓ 12+ | Universal para elementos focusables |
+| `blur` | ✓ 1+ | ✓ 1+ | ✓ 1+ | ✓ 12+ | Universal, complemento de focus |
+| `focusin` | ✓ 26+ | ✓ 52+ | ✓ 5+ | ✓ 12+ | Como focus pero con bubbling |
+| `focusout` | ✓ 26+ | ✓ 52+ | ✓ 5+ | ✓ 12+ | Como blur pero con bubbling |
+| `submit` | ✓ 1+ | ✓ 1+ | ✓ 1+ | ✓ 12+ | Envio de formularios |
+| `input` | ✓ 1+ | ✓ 1+ | ✓ 1+ | ✓ 12+ | Cambios en tiempo real en inputs |
+| `change` | ✓ 1+ | ✓ 1+ | ✓ 1+ | ✓ 12+ | Cambios confirmados en inputs |
+| `resize` (window) | ✓ 1+ | ✓ 1+ | ✓ 1+ | ✓ 12+ | Cambio de tamaño de ventana |
+| `prefers-color-scheme` | ✓ 76+ | ✓ 67+ | ✓ 12.1+ | ✓ 79+ | Media query para tema oscuro/claro |
+| `matchMedia.change` | ✓ 14+ | ✓ 55+ | ✓ 14+ | ✓ 79+ | Listener para cambios en media queries |
+
+#### Leyenda
+- ✓ = Soportado desde la version indicada
+- Versiones basadas en datos de [caniuse.com](https://caniuse.com) (Enero 2026)
+
+#### Notas sobre Compatibilidad
+
+**Eventos sinteticos de Angular:**
+Los eventos como `keydown.enter`, `keydown.escape`, etc. son filtros proporcionados por Angular que internamente escuchan el evento `keydown` nativo y filtran por la tecla especifica. Por tanto, su compatibilidad es la misma que `keydown`.
+
+**focusin/focusout vs focus/blur:**
+- `focus`/`blur`: No hacen bubbling, solo se disparan en el elemento objetivo
+- `focusin`/`focusout`: Hacen bubbling, utiles para delegacion de eventos en contenedores
+
+**prefers-color-scheme:**
+Usado en el `ThemeService` para detectar preferencia del sistema:
+```typescript
+// theme.service.ts
+const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+mediaQuery.addEventListener('change', (e) => this.setTheme(e.matches ? 'dark' : 'light'));
+```
+En navegadores sin soporte, el sistema usa el tema claro por defecto.
+
+**Eventos de teclado para accesibilidad:**
+Los eventos `keydown.arrowup`, `keydown.arrowdown`, `keydown.home`, `keydown.end` son fundamentales para la navegacion WAI-ARIA en componentes como el dropdown del Header y el futuro Accordion/Tabs.
 
 ---
 

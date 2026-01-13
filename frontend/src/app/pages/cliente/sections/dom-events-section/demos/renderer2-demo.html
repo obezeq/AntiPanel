@@ -1,0 +1,252 @@
+<section class="demo-section">
+  <header class="demo-header">
+    <h3 class="demo-title">Demo: Renderer2 para Manipulacion del DOM</h3>
+    <p class="demo-description">
+      Demuestra todos los metodos principales de <code>Renderer2</code>:
+      <code>createElement</code>, <code>appendChild</code>, <code>removeChild</code>,
+      <code>setStyle</code>, <code>addClass</code>, <code>setAttribute</code>,
+      <code>listen</code>, y mas.
+    </p>
+  </header>
+
+  <div class="demo-content">
+    <!-- Crear/Eliminar Elementos -->
+    <div class="demo-card">
+      <h4 class="demo-card__title">1. Crear y Eliminar Elementos</h4>
+      <p class="demo-card__description">
+        <code>createElement</code>, <code>createText</code>, <code>appendChild</code>,
+        <code>removeChild</code>, <code>listen</code>
+      </p>
+
+      <div class="element-actions">
+        <button class="btn-action btn-action--success" (click)="createDynamicElement()">
+          + Crear Elemento
+        </button>
+        <button
+          class="btn-action btn-action--warning"
+          (click)="removeLastElement()"
+          [disabled]="createdElements().length === 0"
+        >
+          - Eliminar Ultimo
+        </button>
+        <button
+          class="btn-action btn-action--danger"
+          (click)="clearAllElements()"
+          [disabled]="createdElements().length === 0"
+        >
+          Eliminar Todos
+        </button>
+      </div>
+
+      <div class="element-stats">
+        <span class="stat-label">Elementos creados:</span>
+        <span class="stat-value">{{ createdElements().length }}</span>
+      </div>
+
+      <div #dynamicContainer class="dynamic-container" role="list">
+        @if (createdElements().length === 0) {
+          <p class="container-empty">
+            Click "Crear Elemento" para agregar elementos dinamicos.
+          </p>
+        }
+      </div>
+    </div>
+
+    <!-- Estilos -->
+    <div class="demo-card">
+      <h4 class="demo-card__title">2. Manipular Estilos</h4>
+      <p class="demo-card__description">
+        <code>setStyle</code>, <code>removeStyle</code>
+      </p>
+
+      <div #styleContainer class="style-container">
+        Contenedor de estilos
+      </div>
+
+      <div class="style-actions">
+        <button class="btn-action" (click)="applyPredefinedStyles()">
+          Aplicar Estilos
+        </button>
+        <button class="btn-action btn-action--secondary" (click)="resetStyles()">
+          Resetear
+        </button>
+      </div>
+
+      <div class="style-buttons">
+        <button class="btn-mini" (click)="applyStyle('backgroundColor', '#fee2e2')">
+          Fondo Rojo
+        </button>
+        <button class="btn-mini" (click)="applyStyle('backgroundColor', '#dcfce7')">
+          Fondo Verde
+        </button>
+        <button class="btn-mini" (click)="applyStyle('backgroundColor', '#dbeafe')">
+          Fondo Azul
+        </button>
+        <button class="btn-mini" (click)="applyStyle('transform', 'scale(1.05)')">
+          Escalar
+        </button>
+        <button class="btn-mini" (click)="applyStyle('boxShadow', '0 4px 12px rgba(0,0,0,0.15)')">
+          Sombra
+        </button>
+      </div>
+
+      @if (Object.keys(currentStyles()).length > 0) {
+        <div class="applied-info">
+          <span class="applied-label">Estilos aplicados:</span>
+          <ul class="applied-list">
+            @for (style of Object.entries(currentStyles()); track style[0]) {
+              <li class="applied-item">
+                <span class="applied-item__key">{{ style[0] }}:</span>
+                <span class="applied-item__value">{{ style[1] }}</span>
+                <button class="btn-remove" (click)="removeStyle(style[0])">×</button>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+    </div>
+
+    <!-- Clases -->
+    <div class="demo-card">
+      <h4 class="demo-card__title">3. Manipular Clases CSS</h4>
+      <p class="demo-card__description">
+        <code>addClass</code>, <code>removeClass</code>
+      </p>
+
+      <div #classContainer class="class-container">
+        Contenedor de clases
+      </div>
+
+      <div class="class-actions">
+        <button class="btn-action" (click)="toggleHighlight()">
+          Toggle Highlighted
+        </button>
+        <button class="btn-action btn-action--secondary" (click)="toggleScale()">
+          Toggle Scaled
+        </button>
+      </div>
+
+      @if (currentClasses().length > 0) {
+        <div class="applied-info">
+          <span class="applied-label">Clases aplicadas:</span>
+          <div class="class-badges">
+            @for (className of currentClasses(); track className) {
+              <span class="class-badge">
+                {{ className }}
+                <button class="btn-remove-small" (click)="removeClassFromElement(className)">×</button>
+              </span>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Atributos -->
+    <div class="demo-card">
+      <h4 class="demo-card__title">4. Manipular Atributos</h4>
+      <p class="demo-card__description">
+        <code>setAttribute</code>, <code>removeAttribute</code>
+      </p>
+
+      <div #attributeContainer class="attribute-container">
+        Contenedor de atributos
+      </div>
+
+      <div class="attribute-actions">
+        <button class="btn-action" (click)="applyAccessibilityAttributes()">
+          Atributos Accesibilidad
+        </button>
+        <button class="btn-action btn-action--secondary" (click)="applyDataAttributes()">
+          Atributos Data
+        </button>
+      </div>
+
+      @if (Object.keys(currentAttributes()).length > 0) {
+        <div class="applied-info">
+          <span class="applied-label">Atributos aplicados:</span>
+          <ul class="applied-list">
+            @for (attr of Object.entries(currentAttributes()); track attr[0]) {
+              <li class="applied-item">
+                <span class="applied-item__key">{{ attr[0] }}=</span>
+                <span class="applied-item__value">"{{ attr[1] }}"</span>
+                <button class="btn-remove" (click)="removeAttributeFromElement(attr[0])">×</button>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+    </div>
+
+    <!-- Log de Operaciones -->
+    <div class="demo-card demo-card--log">
+      <div class="demo-card__header">
+        <h4 class="demo-card__title">Log de Operaciones Renderer2</h4>
+        <div class="demo-card__status">
+          @if (isInitialized()) {
+            <span class="status-badge status-badge--success">Activo</span>
+          }
+        </div>
+        <button class="btn-clear" (click)="clearLog()">Limpiar</button>
+      </div>
+
+      <div class="operation-log">
+        @if (operationLog().length === 0) {
+          <p class="operation-log__empty">
+            Interactua con los demos para ver las operaciones de Renderer2.
+          </p>
+        } @else {
+          <ul class="operation-log__list">
+            @for (op of operationLog(); track $index) {
+              <li class="operation-log__item">{{ op }}</li>
+            }
+          </ul>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Code Example -->
+  <div class="demo-code">
+    <h4 class="demo-code__title">Codigo de Ejemplo - Renderer2</h4>
+    <pre class="demo-code__block"><code>// Inyectar Renderer2
+private readonly renderer = inject(Renderer2);
+
+// createElement + appendChild
+createDynamicElement(): void {{'{'}}
+  const element = this.renderer.createElement('div');
+  const text = this.renderer.createText('Contenido');
+  this.renderer.appendChild(element, text);
+  this.renderer.appendChild(this.container.nativeElement, element);
+{{'}'}}
+
+// removeChild
+removeElement(element: HTMLElement): void {{'{'}}
+  this.renderer.removeChild(this.container.nativeElement, element);
+{{'}'}}
+
+// setStyle / removeStyle
+this.renderer.setStyle(element, 'backgroundColor', 'blue');
+this.renderer.removeStyle(element, 'backgroundColor');
+
+// addClass / removeClass
+this.renderer.addClass(element, 'active');
+this.renderer.removeClass(element, 'active');
+
+// setAttribute / removeAttribute
+this.renderer.setAttribute(element, 'data-id', '123');
+this.renderer.removeAttribute(element, 'data-id');
+
+// listen - Event listener
+const unlisten = this.renderer.listen(element, 'click', (event) => {{'{'}}
+  console.log('Clicked!', event);
+{{'}'}});
+
+// ngOnDestroy - OBLIGATORIO para limpieza
+ngOnDestroy(): void {{'{'}}
+  this.elementsToClean.forEach(el => {{'{'}}
+    this.renderer.removeChild(this.container.nativeElement, el);
+  {{'}'}});
+  this.unlistenFunctions.forEach(fn => fn());
+{{'}'}}</code></pre>
+  </div>
+</section>

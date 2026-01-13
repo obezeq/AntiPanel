@@ -1,0 +1,59 @@
+// ==========================================================================
+// TAB PANEL STYLES
+// ==========================================================================
+
+.tab-panel {
+  display: none;
+
+  &--visible {
+    display: block;
+    animation: fadeIn 0.2s ease-out;
+  }
+}
+
+.tab-panel__content {
+  color: var(--color-foreground);
+
+  // Espaciado para elementos hijos
+  > * + * {
+    margin-top: var(--spacing-3);
+  }
+
+  // Focus outline for keyboard navigation
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  // Estilos para codigo dentro del contenido
+  pre {
+    margin-top: var(--spacing-3);
+    padding: var(--spacing-3);
+    background-color: var(--color-tiny-info);
+    border-radius: var(--radius-sm);
+    overflow-x: auto;
+
+    code {
+      padding: 0;
+      background: none;
+      font-size: var(--font-size-small);
+    }
+  }
+
+  // Parrafos
+  p {
+    line-height: var(--line-height-relaxed);
+  }
+}
+
+// Animation
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
