@@ -14,6 +14,7 @@ import { environment } from '../../../environments/environment';
 export type OrderStatus =
   | 'PENDING'
   | 'PROCESSING'
+  | 'IN_PROGRESS'
   | 'PARTIAL'
   | 'COMPLETED'
   | 'CANCELLED'
