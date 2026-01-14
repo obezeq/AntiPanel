@@ -19,11 +19,13 @@
   background-color: var(--color-background);
   border-block-end: var(--border-width-thin) solid var(--color-information);
 
-  // Fixed positioning - header stays at viewport top when scrolling
-  position: fixed;
-  inset-block-start: 0;
-  inset-inline: 0;
-  z-index: var(--z-fixed);
+  // Positioning - uses CSS custom properties for flexibility
+  // Default: fixed positioning (header stays at viewport top when scrolling)
+  // Can be overridden by parent containers for preview/documentation contexts
+  position: var(--header-position, fixed);
+  inset-block-start: var(--header-inset-block-start, 0);
+  inset-inline: var(--header-inset-inline, 0);
+  z-index: var(--header-z-index, var(--z-fixed));
 
   // Extra small screens (400px+)
   @media screen and (min-width: 400px) {
@@ -197,9 +199,10 @@
   justify-content: center;
 
   @include respond-below('lg') {
-    position: fixed;
-    inset-block-start: 0;
-    inset-inline-end: 0;
+    // Positioning - uses CSS custom properties for flexibility in preview contexts
+    position: var(--header-nav-position, fixed);
+    inset-block-start: var(--header-nav-inset-block-start, 0);
+    inset-inline-end: var(--header-nav-inset-inline-end, 0);
     inline-size: 17.5rem;
     block-size: 100vh;
     block-size: 100dvh;
@@ -864,8 +867,9 @@
 // ---------------------------------------------------------------------------
 
 .header__overlay {
-  position: fixed;
-  inset: 0;
+  // Positioning - uses CSS custom properties for flexibility in preview contexts
+  position: var(--header-overlay-position, fixed);
+  inset: var(--header-overlay-inset, 0);
   background-color: var(--overlay-dark);
   z-index: calc(var(--z-fixed) - 1);
   animation: fadeIn var(--transition-fast) ease-out;
@@ -971,9 +975,10 @@
   // Mobile: Fixed sidebar
   @include respond-below('lg') {
     display: flex;
-    position: fixed;
-    inset-block-start: 0;
-    inset-inline-end: 0;
+    // Positioning - uses CSS custom properties for flexibility in preview contexts
+    position: var(--header-nav-position, fixed);
+    inset-block-start: var(--header-nav-inset-block-start, 0);
+    inset-inline-end: var(--header-nav-inset-inline-end, 0);
     inline-size: 17.5rem;
     block-size: 100vh;
     block-size: 100dvh;

@@ -2,79 +2,111 @@
 // HOME PAGE
 // ==========================================================================
 // Landing page for unauthenticated users.
+// Uses CSS Grid stacking for layering - all children in same grid-area.
+// z-index works in Grid layout without position: relative!
+// Grid keeps ORIGINAL perspective() function for 3D visual effect.
 // ==========================================================================
 
 @use '../../../styles/01-tools/mixins' as *;
 
+// =============================================================================
+// MAIN CONTENT CONTAINER - CSS GRID STACKING
+// =============================================================================
+// All children occupy the same grid cell (grid-area: 1/1).
+// z-index controls stacking order - works in Grid without position: relative!
+// NO perspective property (creates stacking context children can't escape).
+
 .home {
-  @include flex-column;
-  position: relative;
-  overflow: hidden; // Clips grid to container bounds (CSS best practice)
-  gap: var(--spacing-24);
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  // NO perspective property! NO transform-style! Just simple grid stacking.
   min-height: 100vh;
-  padding-top: var(--header-height); // Space for fixed header
+  padding-top: var(--header-height);
   padding-bottom: var(--spacing-16);
-  background-color: var(--color-background);
 
-  // ---------------------------------------------------------------------------
-  // 3D PERSPECTIVE GRID BACKGROUND
-  // ---------------------------------------------------------------------------
-  // Grid visible at top, fading toward bottom. Clipped by overflow: hidden.
-  // Subtle 3D perspective with lines converging toward horizon.
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0; // Responsive - fills container, clipped by overflow: hidden
-    z-index: 0;
-    background-image:
-      linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
-      linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
-    background-size: var(--grid-size) var(--grid-size);
-
-    // Gentler 3D perspective (45deg instead of 60deg)
-    transform-origin: 50% 0%;
-    transform: perspective(1000px) rotateX(45deg);
-
-    // Fade OUT toward bottom - ends before footer (40% solid, fades by 70%)
-    mask-image: linear-gradient(to bottom, black 0%, black 40%, transparent 70%);
-    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 40%, transparent 70%);
-    pointer-events: none;
-  }
-
-  // ---------------------------------------------------------------------------
-  // AMBIENT WHITE GLOW FROM TOP
-  // ---------------------------------------------------------------------------
-  // White radial gradient light emanating from top of page.
-  // Illuminates ANTIPANEL text area. Responsive dimensions.
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    max-width: min(2000px, 95vw); // Never exceed viewport
-    height: clamp(400px, 60vh, 1000px); // Responsive height
-    background: radial-gradient(
-      ellipse 80% 50% at 50% 0%,
-      rgba(255, 255, 255, 0.12) 0%,
-      rgba(255, 255, 255, 0.04) 33%,
-      transparent 70%
-    );
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  // Ensure all content stays above the grid and glow
+  // All direct children stack in the same grid cell
   > * {
-    position: relative;
-    z-index: 1;
+    grid-area: 1 / 1;
   }
+
+  @include respond-below('md') {
+    padding-bottom: var(--spacing-8);
+  }
+}
+
+// =============================================================================
+// 3D PERSPECTIVE GRID BACKGROUND
+// =============================================================================
+// ORIGINAL transform with perspective() function - preserves 3D visual effect!
+// z-index: 0 places it behind content (which has z-index: 1).
+// mask-image works fine - not using preserve-3d!
+
+.home__grid-bg {
+  z-index: 0; // Grid stacking - behind content
+  align-self: stretch; // Fill the grid cell
+  background-image:
+    linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+  background-size: var(--grid-size) var(--grid-size);
+
+  // ORIGINAL 3D perspective effect - restored!
+  transform-origin: 50% 0%;
+  transform: perspective(1000px) rotateX(45deg);
+
+  // Fade effect - can use mask-image now (not using preserve-3d)
+  mask-image: linear-gradient(to bottom, black 0%, black 40%, transparent 70%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 40%, transparent 70%);
+  pointer-events: none;
+
+  @include respond-below('md') {
+    background-size: 40px 40px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transform: none;
+  }
+}
+
+// =============================================================================
+// AMBIENT WHITE GLOW FROM TOP
+// =============================================================================
+
+.home__glow {
+  z-index: 0; // Same layer as grid, both behind content
+  place-self: start center; // Position at top center of grid cell
+  width: 100%;
+  max-width: min(2000px, 95vw);
+  height: clamp(400px, 60vh, 1000px);
+  background: radial-gradient(
+    ellipse 80% 50% at 50% 0%,
+    rgba(255, 255, 255, 0.12) 0%,
+    rgba(255, 255, 255, 0.04) 33%,
+    transparent 70%
+  );
+  pointer-events: none;
+
+  @include respond-below('md') {
+    height: clamp(250px, 40vh, 400px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    opacity: 0.6;
+  }
+}
+
+// =============================================================================
+// CONTENT WRAPPER - Stacks above background layers
+// =============================================================================
+
+.home__content {
+  z-index: 1; // ABOVE grid and glow (which have z-index: 0)
+  // CRITICAL: Force compositor layer so Chrome respects z-index
+  // Without this, Chrome renders transformed elements (grid) above non-transformed (content)
+  transform: translate3d(0, 0, 0);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24);
 
   @include respond-below('lg') {
     gap: var(--spacing-16);
@@ -82,31 +114,5 @@
 
   @include respond-below('md') {
     gap: var(--spacing-12);
-    padding-bottom: var(--spacing-8);
-
-    // Smaller grid cells on mobile for better visual density
-    &::before {
-      background-size: 40px 40px;
-    }
-
-    // Smaller glow area on mobile
-    &::after {
-      height: clamp(250px, 40vh, 400px);
-    }
-  }
-
-  // ---------------------------------------------------------------------------
-  // ACCESSIBILITY: REDUCED MOTION
-  // ---------------------------------------------------------------------------
-  // Respects user preference for reduced motion (vestibular disorders).
-
-  @media (prefers-reduced-motion: reduce) {
-    &::before {
-      transform: none; // Remove 3D perspective transform
-    }
-
-    &::after {
-      opacity: 0.6; // Subtler glow effect
-    }
   }
 }
