@@ -1,32 +1,25 @@
 <app-header variant="home" />
 
 <main class="home" id="main-content">
-  <!-- Background layers (z-index: 0) - stacked via CSS Grid -->
-  <div class="home__grid-bg" aria-hidden="true"></div>
-  <div class="home__glow" aria-hidden="true"></div>
+  <!-- Hero Section: Title, Tagline, Stats -->
+  <app-hero-section />
 
-  <!-- Content layer (z-index: 1) - stacks above background -->
-  <div class="home__content">
-    <!-- Hero Section: Title, Tagline, Stats -->
-    <app-hero-section />
+  <!-- Order Section: Natural Language Input + Preview -->
+  <app-order-section
+    #orderSection
+    [quickOrderService]="quickOrderData()"
+    (placeOrder)="onPlaceOrder($event)"
+    (selectPlatform)="onSelectPlatform($event)"
+    (resetPlatform)="onResetPlatform()"
+  />
 
-    <!-- Order Section: Natural Language Input + Preview -->
-    <app-order-section
-      #orderSection
-      [quickOrderService]="quickOrderData()"
-      (placeOrder)="onPlaceOrder($event)"
-      (selectPlatform)="onSelectPlatform($event)"
-      (resetPlatform)="onResetPlatform()"
-    />
-
-    <!-- Services Section: Platform Cards + Expanded Services -->
-    <app-services-section
-      #servicesSection
-      [platformToSelect]="selectedPlatformSlug()"
-      [shouldReset]="shouldResetPlatform()"
-      (quickOrder)="onQuickOrder($event)"
-    />
-  </div>
+  <!-- Services Section: Platform Cards + Expanded Services -->
+  <app-services-section
+    #servicesSection
+    [platformToSelect]="selectedPlatformSlug()"
+    [shouldReset]="shouldResetPlatform()"
+    (quickOrder)="onQuickOrder($event)"
+  />
 </main>
 
 <app-footer />
