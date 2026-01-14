@@ -1323,6 +1323,46 @@ A continuación se muestran capturas de pantalla de la página Style Guide mostr
 ![Layout Component Showing Remaining Headers & Admin Sidebar](screenshots/style-guide/website-style-guide-layout-components-2.png)
 ![Layout Components Showing Footer & MainContent Variants](screenshots/style-guide/website-style-guide-layout-components-3.png)
 
+#### Justificacion Tecnica: CSS Custom Properties para Layout Components
+
+Durante el desarrollo de la seccion de Layout Components del Style Guide, me encontre con un problema interesante que me llevo a investigar las mejores practicas de CSS moderno (2025-2026).
+
+**El problema:** Al renderizar las 6 variantes del componente Header dentro de los contenedores de preview del Style Guide, todos los headers aparecian posicionados en la parte superior del viewport en lugar de dentro de sus contenedores. Esto ocurria porque el componente Header utiliza `position: fixed` para mantenerse fijo durante el scroll en las paginas reales de la aplicacion.
+
+**Mi primera consideracion:** Inicialmente pense en utilizar `!important` para sobrescribir los estilos del Header desde el Style Guide, similar a otros enfoques que habia visto. Sin embargo, al investigar las buenas practicas de CSS, descubri que `!important` se considera un anti-patron porque:
+- Rompe el flujo natural de la cascada CSS
+- Dificulta el mantenimiento del codigo a largo plazo
+- Crea "guerras de especificidad" que pueden volverse inmanejables
+
+**La solucion que implemente:** Decidi utilizar **CSS Custom Properties con valores fallback**, que es la practica recomendada segun la documentacion de Angular y recursos como Frontend Masters y LenguajeCSS.com. La implementacion consiste en:
+
+1. **Modificar el componente Header** para usar variables CSS con valores por defecto:
+```scss
+position: var(--header-position, fixed);
+inset-block-start: var(--header-inset-block-start, 0);
+z-index: var(--header-z-index, var(--z-fixed));
+```
+
+2. **Crear un modificador BEM** en el Style Guide que define estas variables:
+```scss
+.style-guide__layout-preview--header {
+  --header-position: relative;
+  --header-inset-block-start: unset;
+  --header-z-index: auto;
+}
+```
+
+**Por que funciona sin afectar otras paginas:** Las variables CSS solo estan definidas dentro del contenedor `.style-guide__layout-preview--header`. En las paginas reales (home, dashboard, etc.), estas variables no existen, por lo que el navegador utiliza los valores fallback (`fixed`, `0`, `var(--z-fixed)`). Es un sistema completamente retrocompatible.
+
+**Ventajas de este enfoque:**
+- No requiere `!important` - la cascada CSS fluye naturalmente
+- El componente expone "hooks de estilado" que permiten personalizacion
+- Cumple con la arquitectura ITCSS del proyecto
+- Utiliza propiedades logicas CSS (`inset-block-start`, `inset-inline`) para internacionalizacion
+- Es la practica recomendada en CSS moderno (2025-2026)
+
+Este problema me enseno la importancia de investigar las mejores practicas antes de implementar soluciones rapidas, y como las CSS Custom Properties pueden resolver elegantemente problemas de encapsulacion de estilos en Angular.
+
 
 ### 3.6 Animaciones CSS (@keyframes)
 
@@ -2779,5 +2819,112 @@ He ejecutado Lighthouse en la URL de produccion (https://antipanel.tech):
 4. **Micro-interacciones adicionales:** Expandir las animaciones CSS con mas feedback visual en interacciones.
 
 5. **Dark/Light mode automatico:** Respetar `prefers-color-scheme` del sistema por defecto, con opcion de override manual.
+
+---
+
+### 7.16 Caso de Estudio: Grid 3D con Perspectiva y Compatibilidad Chrome/Firefox
+
+Me encontré con un bug bastante frustrante durante el desarrollo y quiero dejarlo documentado porque tardé un buen rato en entender qué pasaba.
+
+#### El Problema
+
+En la Home quería un grid de fondo con efecto 3D usando `transform: perspective(1000px) rotateX(45deg)`. Lo implementé con un `::before` en el contenedor principal, le puse `z-index: -1` para que quedara detrás del contenido y listo. En Firefox iba perfecto. Pero cuando lo probé en Chrome el grid aparecía POR ENCIMA de todo, tapando los textos y botones. Un desastre.
+
+```scss
+// Así lo tenía al principio
+.home::before {
+  z-index: -1; // Debería estar detrás, ¿no?
+  transform: perspective(1000px) rotateX(45deg);
+}
+```
+
+#### Lo que probé y no funcionó
+
+Estuve un rato dando palos de ciego:
+
+- Cambiar el `z-index` a valores más negativos (-10, -999...) - nada
+- Usar `transform-style: preserve-3d` - rompía el `mask-image` del fade
+- Poner la perspectiva en el padre en vez de en el transform - cambiaba completamente el efecto visual
+
+#### Lo que descubrí
+
+Después de buscar bastante, encontré el problema: las **Compositor Layers** de Chrome. Resulta que cuando un elemento tiene `transform`, Chrome lo manda a la GPU en su propia capa. Y aquí viene lo importante: Chrome renderiza estas capas GPU por encima de los elementos normales, da igual el z-index que tengas.
+
+O sea que mi `::before` con su transform 3D estaba en una capa GPU, pero el contenido (los componentes de Angular) estaban en capas normales. Chrome pintaba primero las capas normales y luego las GPU encima. Por eso el grid tapaba todo.
+
+#### La solución
+
+La clave fue meter también el contenido en capas GPU. Si todo está en compositor layers, Chrome sí que respeta el z-index entre ellas. Añadí esto:
+
+```scss
+.home {
+  // Crea stacking context + compositor layer
+  transform: translate3d(0, 0, 0);
+
+  // TODOS los hijos directos a compositor layers
+  > * {
+    position: relative;
+    z-index: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  &::before {
+    z-index: -1; // Ahora sí funciona
+    transform: perspective(1000px) rotateX(45deg);
+  }
+}
+```
+
+El truco del `translate3d(0, 0, 0)` es que no mueve nada visualmente (es un transform "vacío"), pero fuerza al elemento a su propia capa GPU.
+
+#### Cómo quedó el código
+
+El HTML se mantiene limpio, sin divs extra para los fondos:
+
+```html
+<main class="home">
+  <app-hero-section />
+  <app-order-section />
+  <app-services-section />
+</main>
+```
+
+Y el SCSS maneja todo con pseudo-elementos:
+
+```scss
+.home {
+  transform: translate3d(0, 0, 0); // Stacking context
+
+  > * {
+    z-index: 1;
+    transform: translate3d(0, 0, 0); // Cada hijo en su compositor layer
+  }
+
+  &::before {
+    z-index: -1;
+    transform: perspective(1000px) rotateX(45deg); // Grid 3D
+  }
+
+  &::after {
+    z-index: -1;
+    // Glow blanco desde arriba
+  }
+}
+```
+
+#### Lo que aprendí
+
+1. **Los transforms crean stacking contexts** - esto afecta cómo funcionan los z-index de todo lo que hay dentro.
+
+2. **Chrome y Firefox renderizan diferente** - un diseño puede ir perfecto en uno y romperse en el otro. Hay que probar en ambos siempre.
+
+3. **El hack de translate3d(0,0,0)** - útil para forzar compositor layers cuando necesitas controlar el orden de apilamiento.
+
+4. **Los DevTools de Chrome ayudan** - en la pestaña Layers se puede ver qué elementos están en qué capas GPU.
+
+#### Referencias
+
+- [surma.dev - Layers and how to force them](https://surma.dev/things/forcing-layers/)
+- [Aerotwist - On translate3d and layer creation hacks](https://aerotwist.com/blog/on-translate3d-and-layer-creation-hacks/)
 
 ---
