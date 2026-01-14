@@ -1,80 +1,34 @@
 // ==========================================================================
-// HOME PAGE
+// HOME PAGE - NUKE v8: ALL ELEMENTS IN COMPOSITOR LAYERS
 // ==========================================================================
 // Landing page for unauthenticated users.
+// Uses ::before for 3D grid, ::after for glow.
+// CRITICAL: All direct children get transform to force compositor layers.
+// This guarantees z-index works in Chrome! No extra divs needed.
 // ==========================================================================
 
 @use '../../../styles/01-tools/mixins' as *;
 
+// =============================================================================
+// MAIN CONTENT CONTAINER
+// =============================================================================
+// Flexbox for vertical content layout with gaps.
+// transform creates stacking context + compositor layer.
+// This makes z-index: -1 work for ::before/::after in Chrome!
+
 .home {
-  @include flex-column;
-  position: relative;
-  overflow: hidden; // Clips grid to container bounds (CSS best practice)
+  display: flex;
+  flex-direction: column;
   gap: var(--spacing-24);
+  position: relative;
   min-height: 100vh;
-  padding-top: var(--header-height); // Space for fixed header
+  padding-top: var(--header-height);
   padding-bottom: var(--spacing-16);
-  background-color: var(--color-background);
 
-  // ---------------------------------------------------------------------------
-  // 3D PERSPECTIVE GRID BACKGROUND
-  // ---------------------------------------------------------------------------
-  // Grid visible at top, fading toward bottom. Clipped by overflow: hidden.
-  // Subtle 3D perspective with lines converging toward horizon.
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0; // Responsive - fills container, clipped by overflow: hidden
-    z-index: 0;
-    background-image:
-      linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
-      linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
-    background-size: var(--grid-size) var(--grid-size);
-
-    // Gentler 3D perspective (45deg instead of 60deg)
-    transform-origin: 50% 0%;
-    transform: perspective(1000px) rotateX(45deg);
-
-    // Fade OUT toward bottom - ends before footer (40% solid, fades by 70%)
-    mask-image: linear-gradient(to bottom, black 0%, black 40%, transparent 70%);
-    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 40%, transparent 70%);
-    pointer-events: none;
-  }
-
-  // ---------------------------------------------------------------------------
-  // AMBIENT WHITE GLOW FROM TOP
-  // ---------------------------------------------------------------------------
-  // White radial gradient light emanating from top of page.
-  // Illuminates ANTIPANEL text area. Responsive dimensions.
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    max-width: min(2000px, 95vw); // Never exceed viewport
-    height: clamp(400px, 60vh, 1000px); // Responsive height
-    background: radial-gradient(
-      ellipse 80% 50% at 50% 0%,
-      rgba(255, 255, 255, 0.12) 0%,
-      rgba(255, 255, 255, 0.04) 33%,
-      transparent 70%
-    );
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  // Ensure all content stays above the grid and glow
-  > * {
-    position: relative;
-    z-index: 1;
-  }
+  // CRITICAL: Force into compositor layer + create stacking context
+  // This makes z-index: -1 work for ::before/::after in Chrome!
+  // Without this, Chrome renders transformed pseudo-elements above content.
+  transform: translate3d(0, 0, 0);
 
   @include respond-below('lg') {
     gap: var(--spacing-16);
@@ -83,30 +37,86 @@
   @include respond-below('md') {
     gap: var(--spacing-12);
     padding-bottom: var(--spacing-8);
+  }
 
-    // Smaller grid cells on mobile for better visual density
-    &::before {
+  // ---------------------------------------------------------------------------
+  // NUKE: Force ALL content into compositor layers
+  // ---------------------------------------------------------------------------
+  // Without this, Chrome renders transformed ::before above non-compositor content.
+  // With this, ALL elements are compositor layers, z-index works properly.
+  // -1 (pseudo-elements) < 1 (content) = pseudo-elements behind content. GUARANTEED.
+
+  > * {
+    position: relative;
+    z-index: 1;
+    transform: translate3d(0, 0, 0); // FORCE into compositor layer
+  }
+
+  // ---------------------------------------------------------------------------
+  // 3D PERSPECTIVE GRID BACKGROUND (::before)
+  // ---------------------------------------------------------------------------
+  // ORIGINAL transform with perspective() function - preserves 3D visual effect!
+  // z-index: -1 places it behind content (within stacking context).
+  // mask-image for fade effect at bottom.
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1; // BEHIND all content (within stacking context)
+    background-image:
+      linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+    background-size: var(--grid-size) var(--grid-size);
+
+    // ORIGINAL 3D perspective effect
+    transform-origin: 50% 0%;
+    transform: perspective(1000px) rotateX(45deg);
+
+    // Fade effect
+    mask-image: linear-gradient(to bottom, black 0%, black 40%, transparent 70%);
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 40%, transparent 70%);
+    pointer-events: none;
+
+    @include respond-below('md') {
       background-size: 40px 40px;
     }
 
-    // Smaller glow area on mobile
-    &::after {
-      height: clamp(250px, 40vh, 400px);
+    @media (prefers-reduced-motion: reduce) {
+      transform: none;
     }
   }
 
   // ---------------------------------------------------------------------------
-  // ACCESSIBILITY: REDUCED MOTION
+  // AMBIENT WHITE GLOW FROM TOP (::after)
   // ---------------------------------------------------------------------------
-  // Respects user preference for reduced motion (vestibular disorders).
+  // Radial gradient light emanating from top center.
+  // z-index: -1 places it behind content (within stacking context).
 
-  @media (prefers-reduced-motion: reduce) {
-    &::before {
-      transform: none; // Remove 3D perspective transform
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: -1; // BEHIND all content (within stacking context)
+    width: 100%;
+    max-width: min(2000px, 95vw);
+    height: clamp(400px, 60vh, 1000px);
+    background: radial-gradient(
+      ellipse 80% 50% at 50% 0%,
+      rgba(255, 255, 255, 0.12) 0%,
+      rgba(255, 255, 255, 0.04) 33%,
+      transparent 70%
+    );
+    pointer-events: none;
+
+    @include respond-below('md') {
+      height: clamp(250px, 40vh, 400px);
     }
 
-    &::after {
-      opacity: 0.6; // Subtler glow effect
+    @media (prefers-reduced-motion: reduce) {
+      opacity: 0.6;
     }
   }
 }

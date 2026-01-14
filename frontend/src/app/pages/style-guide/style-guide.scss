@@ -644,6 +644,44 @@
   }
 }
 
+// ---------------------------------------------------------------------------
+// HEADER PREVIEW (Override positioning via CSS custom properties)
+// ---------------------------------------------------------------------------
+// Uses CSS custom properties to override the Header component's fixed
+// positioning. This is the recommended approach - no !important needed.
+// The Header component exposes these "styling hooks" as CSS variables.
+
+.style-guide__layout-preview--header {
+  // Container setup
+  min-height: 5rem;
+  position: relative;
+  isolation: isolate;
+
+  // Override Header's fixed positioning to relative
+  --header-position: relative;
+  --header-inset-block-start: unset;
+  --header-inset-inline: unset;
+  --header-z-index: auto;
+
+  // Override mobile nav positioning (contained within preview)
+  --header-nav-position: absolute;
+  --header-nav-inset-block-start: 0;
+  --header-nav-inset-inline-end: 0;
+
+  // Override overlay positioning
+  --header-overlay-position: absolute;
+  --header-overlay-inset: 0;
+}
+
+// ---------------------------------------------------------------------------
+// FOOTER PREVIEW (Remove container border to avoid double-border effect)
+// ---------------------------------------------------------------------------
+
+.style-guide__layout-preview--footer {
+  border: none;
+  background-color: transparent;
+}
+
 .style-guide__main-variants {
   display: grid;
   gap: var(--spacing-6);
