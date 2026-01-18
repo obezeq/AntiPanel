@@ -86,8 +86,8 @@
    - 5.2 Accesibilidad de SVGs e Iconos
    - 5.3 Beneficios de SVG sobre Imagenes Raster
    - 5.4 Formatos de Imagen para Uso Futuro (RA3.b)
-   - 5.5 Elemento Picture con Srcset (RA3.f, RA4.a)
-   - 5.6 Lazy Loading Nativo (RA3.f)
+   - 5.5 Elemento Picture con Srcset - Implementado (RA3.f, RA4.a)
+   - 5.6 Lazy Loading Nativo - Implementado (RA3.f)
    - 5.7 NgOptimizedImage de Angular
    - 5.8 Herramientas de Optimizacion (RA3.c)
    - 5.9 Resultados de Optimizacion (RA3.d)
@@ -1966,9 +1966,11 @@ Cuando necesite anadir imagenes raster (fotografias, screenshots, etc.), planeo 
 
 Planeo usar AVIF como formato principal, WebP como fallback, y JPG/PNG para navegadores legacy.
 
-### 5.5 Elemento Picture con Srcset (Futuro)
+### 5.5 Elemento Picture con Srcset (Implementado)
 
-Cuando implemente imagenes, usare el elemento `<picture>` para servir diferentes formatos:
+He implementado el elemento `<picture>` con srcset en la seccion **"Responsive Images"** del Style Guide (`/style-guide#responsive-images`) para demostrar las mejores practicas de imagenes responsive.
+
+**Implementacion real en el proyecto:**
 
 ```html
 <picture>
@@ -2012,9 +2014,9 @@ Cuando implemente imagenes, usare el elemento `<picture>` para servir diferentes
 </picture>
 ```
 
-### 5.6 Lazy Loading Nativo (Futuro)
+### 5.6 Lazy Loading Nativo (Implementado)
 
-Aprovechare el lazy loading nativo de HTML5:
+He implementado lazy loading nativo de HTML5 en la seccion "Responsive Images" del Style Guide. Las imagenes se cargan solo cuando estan cerca del viewport:
 
 ```html
 <img
