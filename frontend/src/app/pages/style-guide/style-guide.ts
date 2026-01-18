@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  OnInit,
   PLATFORM_ID,
   inject,
   signal
@@ -73,7 +74,7 @@ import { OrderFilters, FilterCategory, SortOrder } from '../../components/shared
     OrderFilters
   ]
 })
-export class StyleGuide {
+export class StyleGuide implements OnInit {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly isBrowser = isPlatformBrowser(this.platformId);
 
@@ -679,5 +680,47 @@ export class StyleGuide {
 
   protected onFilterSearchChange(query: string): void {
     this.demoFilterSearch.set(query);
+  }
+
+  // =========================================================================
+  // RESPONSIVE IMAGES DEBUG
+  // =========================================================================
+
+  /** Tracks loaded image sources for debugging */
+  protected readonly loadedImageSrc = signal<Record<string, string>>({});
+
+  /** Called when an image loads - extracts the actual loaded source */
+  protected onImageLoad(event: Event, imageId: string): void {
+    if (!this.isBrowser) return;
+    const img = event.target as HTMLImageElement;
+    const currentSrc = img.currentSrc || img.src;
+    // Extract just the filename from the full URL
+    const filename = currentSrc.split('/').pop() || currentSrc;
+    this.loadedImageSrc.update(prev => ({ ...prev, [imageId]: filename }));
+  }
+
+  /** Gets the loaded source for an image */
+  protected getLoadedSrc(imageId: string): string {
+    return this.loadedImageSrc()[imageId] || 'Loading...';
+  }
+
+  /** Current viewport info for debugging */
+  protected readonly viewportInfo = signal({ width: 0, dpr: 1 });
+
+  /** Update viewport info on resize */
+  protected updateViewportInfo(): void {
+    if (!this.isBrowser) return;
+    this.viewportInfo.set({
+      width: window.innerWidth,
+      dpr: window.devicePixelRatio
+    });
+  }
+
+  /** Initialize viewport tracking */
+  ngOnInit(): void {
+    if (this.isBrowser) {
+      this.updateViewportInfo();
+      window.addEventListener('resize', () => this.updateViewportInfo());
+    }
   }
 }

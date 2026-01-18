@@ -871,34 +871,41 @@
       sizes attribute for responsive sizing, and native lazy loading.
     </p>
 
+    <!-- Debug Info Box -->
+    <article class="style-guide__row">
+      <aside class="style-guide__debug-box" (click)="updateViewportInfo()">
+        <strong>Debug Info</strong> (click to refresh) |
+        Viewport: <code>{{ viewportInfo().width }}px</code> |
+        DPR: <code>{{ viewportInfo().dpr }}x</code> |
+        Effective pixels: <code>{{ viewportInfo().width * viewportInfo().dpr }}px</code>
+      </aside>
+    </article>
+
     <!-- Picture Element with Multiple Formats -->
     <article class="style-guide__row">
       <h3 class="style-guide__subtitle">Picture Element - Format Fallbacks</h3>
       <p class="style-guide__desc">
         The browser selects the best supported format: AVIF (most efficient),
-        WebP (widely supported), or JPG (universal fallback).
+        WebP (widely supported), or JPG (universal fallback). This demonstrates
+        format switching only - the browser picks the format, not the resolution.
       </p>
-      <figure class="style-guide__image-demo">
+      <figure class="style-guide__image-demo style-guide__image-demo--constrained">
         <picture>
-          <source
-            type="image/avif"
-            srcset="assets/images/showcase/style-guide-colors-800w.avif"
-          />
-          <source
-            type="image/webp"
-            srcset="assets/images/showcase/style-guide-colors-800w.webp"
-          />
+          <source type="image/avif" srcset="assets/images/showcase/style-guide-colors-1920w.avif" />
+          <source type="image/webp" srcset="assets/images/showcase/style-guide-colors-1920w.webp" />
           <img
-            src="assets/images/showcase/style-guide-colors-800w.jpg"
+            src="assets/images/showcase/style-guide-colors-1920w.jpg"
             alt="AntiPanel color palette showing dark mode colors including background, text, and semantic colors"
-            width="800"
-            height="450"
+            width="1920"
+            height="1080"
             loading="lazy"
             decoding="async"
+            (load)="onImageLoad($event, 'picture-format')"
           />
         </picture>
         <figcaption>
-          Format fallback chain: AVIF (~25KB) | WebP (~20KB) | JPG (~41KB)
+          Format fallback: AVIF → WebP → JPG |
+          <strong>Loaded: {{ getLoadedSrc('picture-format') }}</strong>
         </figcaption>
       </figure>
     </article>
@@ -910,43 +917,38 @@
         The browser selects the optimal image size based on viewport width and
         device pixel density. Resize the window to see different sizes load.
       </p>
-      <figure class="style-guide__image-demo">
+      <figure class="style-guide__image-demo style-guide__image-demo--constrained">
         <picture>
-          <source
-            type="image/avif"
-            srcset="
-              assets/images/showcase/style-guide-buttons-and-alerts-400w.avif 400w,
-              assets/images/showcase/style-guide-buttons-and-alerts-800w.avif 800w,
-              assets/images/showcase/style-guide-buttons-and-alerts-1200w.avif 1200w
-            "
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px"
-          />
-          <source
-            type="image/webp"
-            srcset="
-              assets/images/showcase/style-guide-buttons-and-alerts-400w.webp 400w,
-              assets/images/showcase/style-guide-buttons-and-alerts-800w.webp 800w,
-              assets/images/showcase/style-guide-buttons-and-alerts-1200w.webp 1200w
-            "
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px"
-          />
+          <!-- Mobile (≤480px): 400w -->
+          <source media="(max-width: 480px)" type="image/avif" srcset="assets/images/showcase/style-guide-buttons-and-alerts-400w.avif" />
+          <source media="(max-width: 480px)" type="image/webp" srcset="assets/images/showcase/style-guide-buttons-and-alerts-400w.webp" />
+
+          <!-- Tablet (≤768px): 800w -->
+          <source media="(max-width: 768px)" type="image/avif" srcset="assets/images/showcase/style-guide-buttons-and-alerts-800w.avif" />
+          <source media="(max-width: 768px)" type="image/webp" srcset="assets/images/showcase/style-guide-buttons-and-alerts-800w.webp" />
+
+          <!-- Laptop (≤1200px): 1200w -->
+          <source media="(max-width: 1200px)" type="image/avif" srcset="assets/images/showcase/style-guide-buttons-and-alerts-1200w.avif" />
+          <source media="(max-width: 1200px)" type="image/webp" srcset="assets/images/showcase/style-guide-buttons-and-alerts-1200w.webp" />
+
+          <!-- Desktop (>1200px): 1920w -->
+          <source type="image/avif" srcset="assets/images/showcase/style-guide-buttons-and-alerts-1920w.avif" />
+          <source type="image/webp" srcset="assets/images/showcase/style-guide-buttons-and-alerts-1920w.webp" />
+
+          <!-- Fallback JPG -->
           <img
             src="assets/images/showcase/style-guide-buttons-and-alerts-800w.jpg"
-            srcset="
-              assets/images/showcase/style-guide-buttons-and-alerts-400w.jpg 400w,
-              assets/images/showcase/style-guide-buttons-and-alerts-800w.jpg 800w,
-              assets/images/showcase/style-guide-buttons-and-alerts-1200w.jpg 1200w
-            "
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px"
             alt="AntiPanel button variants and alert components including primary, secondary, ghost, and danger styles"
             width="800"
             height="450"
             loading="lazy"
             decoding="async"
+            (load)="onImageLoad($event, 'srcset-demo')"
           />
         </picture>
         <figcaption>
-          Responsive sizes: 400w (mobile) | 800w (tablet) | 1200w (desktop)
+          Media queries: 400w (≤480px) | 800w (≤768px) | 1200w (≤1200px) | 1920w (>1200px) |
+          <strong>Loaded: {{ getLoadedSrc('srcset-demo') }}</strong>
         </figcaption>
       </figure>
     </article>
@@ -961,26 +963,66 @@
       </p>
       <section class="style-guide__image-grid">
         <figure class="style-guide__image-demo">
-          <img
-            src="assets/images/showcase/style-guide-colors-400w.jpg"
-            alt="Color palette preview - lazy loaded"
-            width="400"
-            height="225"
-            loading="lazy"
-            decoding="async"
-          />
-          <figcaption>Lazy loaded image 1</figcaption>
+          <picture>
+            <!-- Mobile (≤480px): 400w -->
+            <source media="(max-width: 480px)" type="image/avif" srcset="assets/images/showcase/style-guide-colors-400w.avif" />
+            <source media="(max-width: 480px)" type="image/webp" srcset="assets/images/showcase/style-guide-colors-400w.webp" />
+
+            <!-- Tablet (≤768px): 800w -->
+            <source media="(max-width: 768px)" type="image/avif" srcset="assets/images/showcase/style-guide-colors-800w.avif" />
+            <source media="(max-width: 768px)" type="image/webp" srcset="assets/images/showcase/style-guide-colors-800w.webp" />
+
+            <!-- Laptop (≤1200px): 1200w -->
+            <source media="(max-width: 1200px)" type="image/avif" srcset="assets/images/showcase/style-guide-colors-1200w.avif" />
+            <source media="(max-width: 1200px)" type="image/webp" srcset="assets/images/showcase/style-guide-colors-1200w.webp" />
+
+            <!-- Desktop (>1200px): 1920w -->
+            <source type="image/avif" srcset="assets/images/showcase/style-guide-colors-1920w.avif" />
+            <source type="image/webp" srcset="assets/images/showcase/style-guide-colors-1920w.webp" />
+
+            <!-- Fallback JPG -->
+            <img
+              src="assets/images/showcase/style-guide-colors-400w.jpg"
+              alt="Color palette preview - lazy loaded"
+              width="400"
+              height="225"
+              loading="lazy"
+              decoding="async"
+              (load)="onImageLoad($event, 'lazy-1')"
+            />
+          </picture>
+          <figcaption>Lazy 1 | <strong>{{ getLoadedSrc('lazy-1') }}</strong></figcaption>
         </figure>
         <figure class="style-guide__image-demo">
-          <img
-            src="assets/images/showcase/style-guide-buttons-and-alerts-400w.jpg"
-            alt="Buttons and alerts preview - lazy loaded"
-            width="400"
-            height="225"
-            loading="lazy"
-            decoding="async"
-          />
-          <figcaption>Lazy loaded image 2</figcaption>
+          <picture>
+            <!-- Mobile (≤480px): 400w -->
+            <source media="(max-width: 480px)" type="image/avif" srcset="assets/images/showcase/style-guide-buttons-and-alerts-400w.avif" />
+            <source media="(max-width: 480px)" type="image/webp" srcset="assets/images/showcase/style-guide-buttons-and-alerts-400w.webp" />
+
+            <!-- Tablet (≤768px): 800w -->
+            <source media="(max-width: 768px)" type="image/avif" srcset="assets/images/showcase/style-guide-buttons-and-alerts-800w.avif" />
+            <source media="(max-width: 768px)" type="image/webp" srcset="assets/images/showcase/style-guide-buttons-and-alerts-800w.webp" />
+
+            <!-- Laptop (≤1200px): 1200w -->
+            <source media="(max-width: 1200px)" type="image/avif" srcset="assets/images/showcase/style-guide-buttons-and-alerts-1200w.avif" />
+            <source media="(max-width: 1200px)" type="image/webp" srcset="assets/images/showcase/style-guide-buttons-and-alerts-1200w.webp" />
+
+            <!-- Desktop (>1200px): 1920w -->
+            <source type="image/avif" srcset="assets/images/showcase/style-guide-buttons-and-alerts-1920w.avif" />
+            <source type="image/webp" srcset="assets/images/showcase/style-guide-buttons-and-alerts-1920w.webp" />
+
+            <!-- Fallback JPG -->
+            <img
+              src="assets/images/showcase/style-guide-buttons-and-alerts-400w.jpg"
+              alt="Buttons and alerts preview - lazy loaded"
+              width="400"
+              height="225"
+              loading="lazy"
+              decoding="async"
+              (load)="onImageLoad($event, 'lazy-2')"
+            />
+          </picture>
+          <figcaption>Lazy 2 | <strong>{{ getLoadedSrc('lazy-2') }}</strong></figcaption>
         </figure>
       </section>
     </article>
@@ -993,7 +1035,7 @@
           <dt>Formats Used</dt>
           <dd>AVIF (best compression), WebP (wide support), JPG (fallback)</dd>
           <dt>Sizes Generated</dt>
-          <dd>400w (mobile), 800w (tablet), 1200w (desktop)</dd>
+          <dd>400w (mobile), 800w (tablet), 1200w (desktop), 1920w (retina)</dd>
           <dt>Optimization Tool</dt>
           <dd>Sharp (Node.js) with quality: AVIF 75%, WebP 80%, JPG 85%</dd>
           <dt>Loading Strategy</dt>

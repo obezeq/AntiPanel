@@ -15,7 +15,7 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const SIZES = [400, 800, 1200];
+const SIZES = [400, 800, 1200, 1920];
 const INPUT_DIR = join(__dirname, '../docs/design/screenshots/style-guide');
 const OUTPUT_DIR = join(__dirname, '../src/assets/images/showcase');
 

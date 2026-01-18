@@ -1015,6 +1015,11 @@
   }
 }
 
+.style-guide__image-demo--constrained {
+  max-width: 60rem; // 960px - matches our max image size (1920w) for 2x retina
+  margin-inline: auto;
+}
+
 .style-guide__image-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -1022,7 +1027,7 @@
 }
 
 .style-guide__code-summary {
-  background-color: var(--color-secondary);
+  background-color: var(--color-tiny-info);
   border-radius: var(--radius-md);
   padding: var(--spacing-6);
   border: var(--border-width-thin) solid var(--color-border);
@@ -1051,5 +1056,28 @@
       font-family: var(--font-secondary);
       font-size: var(--font-size-tiny);
     }
+  }
+}
+
+.style-guide__debug-box {
+  display: inline-block;
+  padding: var(--spacing-3) var(--spacing-4);
+  background-color: var(--color-stats-blue);
+  color: var(--color-background);
+  border-radius: var(--radius-md);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-small);
+  cursor: pointer;
+  transition: var(--transition-colors);
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  code {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: var(--spacing-1) var(--spacing-2);
+    border-radius: var(--radius-sm);
+    font-weight: var(--font-weight-semibold);
   }
 }
