@@ -38,6 +38,7 @@
       <li><a routerLink="." fragment="order-cards" class="style-guide__toc-link">Order Cards</a></li>
       <li><a routerLink="." fragment="order-filters" class="style-guide__toc-link">Order Filters</a></li>
       <li><a routerLink="." fragment="order-pagination" class="style-guide__toc-link">Order Pagination</a></li>
+      <li><a routerLink="." fragment="responsive-images" class="style-guide__toc-link">Responsive Images</a></li>
     </ul>
   </nav>
 
@@ -857,6 +858,149 @@
           (pageChange)="onPaginationPageChange($event)"
           (pageSizeChange)="onPaginationSizeChange($event)"
         />
+      </section>
+    </article>
+  </section>
+
+  <!-- Responsive Images Section -->
+  <section id="responsive-images" class="style-guide__section">
+    <h2 class="style-guide__section-title">Responsive Images</h2>
+    <p class="style-guide__section-desc">
+      Demonstration of modern responsive image techniques: picture element with
+      format fallbacks (AVIF, WebP, JPG), srcset with multiple resolutions,
+      sizes attribute for responsive sizing, and native lazy loading.
+    </p>
+
+    <!-- Picture Element with Multiple Formats -->
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Picture Element - Format Fallbacks</h3>
+      <p class="style-guide__desc">
+        The browser selects the best supported format: AVIF (most efficient),
+        WebP (widely supported), or JPG (universal fallback).
+      </p>
+      <figure class="style-guide__image-demo">
+        <picture>
+          <source
+            type="image/avif"
+            srcset="assets/images/showcase/style-guide-colors-800w.avif"
+          />
+          <source
+            type="image/webp"
+            srcset="assets/images/showcase/style-guide-colors-800w.webp"
+          />
+          <img
+            src="assets/images/showcase/style-guide-colors-800w.jpg"
+            alt="AntiPanel color palette showing dark mode colors including background, text, and semantic colors"
+            width="800"
+            height="450"
+            loading="lazy"
+            decoding="async"
+          />
+        </picture>
+        <figcaption>
+          Format fallback chain: AVIF (~25KB) | WebP (~20KB) | JPG (~41KB)
+        </figcaption>
+      </figure>
+    </article>
+
+    <!-- Srcset with Multiple Sizes -->
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Srcset - Multiple Resolutions</h3>
+      <p class="style-guide__desc">
+        The browser selects the optimal image size based on viewport width and
+        device pixel density. Resize the window to see different sizes load.
+      </p>
+      <figure class="style-guide__image-demo">
+        <picture>
+          <source
+            type="image/avif"
+            srcset="
+              assets/images/showcase/style-guide-buttons-and-alerts-400w.avif 400w,
+              assets/images/showcase/style-guide-buttons-and-alerts-800w.avif 800w,
+              assets/images/showcase/style-guide-buttons-and-alerts-1200w.avif 1200w
+            "
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px"
+          />
+          <source
+            type="image/webp"
+            srcset="
+              assets/images/showcase/style-guide-buttons-and-alerts-400w.webp 400w,
+              assets/images/showcase/style-guide-buttons-and-alerts-800w.webp 800w,
+              assets/images/showcase/style-guide-buttons-and-alerts-1200w.webp 1200w
+            "
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px"
+          />
+          <img
+            src="assets/images/showcase/style-guide-buttons-and-alerts-800w.jpg"
+            srcset="
+              assets/images/showcase/style-guide-buttons-and-alerts-400w.jpg 400w,
+              assets/images/showcase/style-guide-buttons-and-alerts-800w.jpg 800w,
+              assets/images/showcase/style-guide-buttons-and-alerts-1200w.jpg 1200w
+            "
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px"
+            alt="AntiPanel button variants and alert components including primary, secondary, ghost, and danger styles"
+            width="800"
+            height="450"
+            loading="lazy"
+            decoding="async"
+          />
+        </picture>
+        <figcaption>
+          Responsive sizes: 400w (mobile) | 800w (tablet) | 1200w (desktop)
+        </figcaption>
+      </figure>
+    </article>
+
+    <!-- Lazy Loading Demo -->
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Lazy Loading Native</h3>
+      <p class="style-guide__desc">
+        Images below use <code>loading="lazy"</code> - they only load when
+        scrolled into view. Open DevTools Network tab and scroll to verify
+        deferred loading behavior.
+      </p>
+      <section class="style-guide__image-grid">
+        <figure class="style-guide__image-demo">
+          <img
+            src="assets/images/showcase/style-guide-colors-400w.jpg"
+            alt="Color palette preview - lazy loaded"
+            width="400"
+            height="225"
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>Lazy loaded image 1</figcaption>
+        </figure>
+        <figure class="style-guide__image-demo">
+          <img
+            src="assets/images/showcase/style-guide-buttons-and-alerts-400w.jpg"
+            alt="Buttons and alerts preview - lazy loaded"
+            width="400"
+            height="225"
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>Lazy loaded image 2</figcaption>
+        </figure>
+      </section>
+    </article>
+
+    <!-- Technical Summary -->
+    <article class="style-guide__row">
+      <h3 class="style-guide__subtitle">Implementation Summary</h3>
+      <section class="style-guide__code-summary">
+        <dl class="style-guide__tech-list">
+          <dt>Formats Used</dt>
+          <dd>AVIF (best compression), WebP (wide support), JPG (fallback)</dd>
+          <dt>Sizes Generated</dt>
+          <dd>400w (mobile), 800w (tablet), 1200w (desktop)</dd>
+          <dt>Optimization Tool</dt>
+          <dd>Sharp (Node.js) with quality: AVIF 75%, WebP 80%, JPG 85%</dd>
+          <dt>Loading Strategy</dt>
+          <dd><code>loading="lazy"</code> + <code>decoding="async"</code></dd>
+          <dt>Layout Stability</dt>
+          <dd>Explicit <code>width</code> and <code>height</code> attributes</dd>
+        </dl>
       </section>
     </article>
   </section>
