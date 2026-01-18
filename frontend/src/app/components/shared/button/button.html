@@ -18,7 +18,7 @@
   @if (loading()) {
     <span class="button__spinner" aria-hidden="true"></span>
   }
-  <span class="button__content" [class.button__content--hidden]="loading()">
+  <span class="button__content" [class.button__content--hidden]="loading()" [attr.aria-hidden]="loading() || null">
     <ng-content />
   </span>
 </button>
