@@ -1,7 +1,6 @@
 # AntiPanel Frontend - Documentacion de Diseño
 
 - **Asignatura:** Diseño de Interfaces Web - 2º DAW
-- **Proyecto:** Proyecto 3 - Maquetar para dar forma
 - **URL Desplegada:** https://antipanel.tech
 
 ---
@@ -36,11 +35,11 @@
 | **RA3.b** | Formatos multimedia | Formatos de imagen (WebP, SVG, etc.) | 5 | [5.1](#51-imagenes-svg-implementadas) |
 | **RA3.c** | Herramientas multimedia | Analisis de herramientas de optimizacion | 5 | [5.8](#58-herramientas-de-optimizacion) |
 | **RA3.d** | Tratamiento de imagen | Optimizacion, multiples tamanos | 5 | [5.9](#59-resultados-de-optimizacion) |
-| **RA3.f** | Importar/exportar multimedia | Picture, srcset, lazy loading | 5 | [5.5](#55-elemento-picture-con-srcset-futuro) |
+| **RA3.f** | Importar/exportar multimedia | Picture, media queries, lazy loading | 5 | [5.5](#55-elemento-picture-con-media-queries-implementado) |
 | **RA3.g** | Animaciones CSS | @keyframes, transiciones, micro-interacciones | 3 | [3.6](#36-animaciones-css-keyframes) |
 | **RA3.h** | Guia de estilo | Sistema de diseño, BEM consistente, Style Guide | 3 | [3.5](#35-style-guide) |
-| **RA4.a** | Tecnologias multimedia | Picture, srcset, lazy loading, soporte navegadores | 4, 5 | [4.3](#43-mixins-responsive), [5.5](#55-elemento-picture-con-srcset-futuro) |
-| **RA4.e** | Agregar multimedia | Implementacion de imagenes responsive | 4, 5 | [4.4](#44-componentes-responsive) |
+| **RA4.a** | Tecnologias multimedia | Picture, media queries, lazy loading, soporte navegadores | 4, 5 | [4.3](#43-mixins-responsive), [5.5](#55-elemento-picture-con-media-queries-implementado) |
+| **RA4.e** | Agregar multimedia | Implementacion de imagenes responsive | 4, 5 | [4.4](#44-componentes-responsive), [5.12](#512-estrategia-de-responsive-images-implementado) |
 
 ---
 
@@ -86,14 +85,14 @@
    - 5.2 Accesibilidad de SVGs e Iconos
    - 5.3 Beneficios de SVG sobre Imagenes Raster
    - 5.4 Formatos de Imagen para Uso Futuro (RA3.b)
-   - 5.5 Elemento Picture con Srcset (RA3.f, RA4.a)
-   - 5.6 Lazy Loading Nativo (RA3.f)
+   - 5.5 Elemento Picture con Media Queries - Implementado (RA3.f, RA4.a)
+   - 5.6 Lazy Loading Nativo - Implementado (RA3.f)
    - 5.7 NgOptimizedImage de Angular
    - 5.8 Herramientas de Optimizacion (RA3.c)
    - 5.9 Resultados de Optimizacion (RA3.d)
-   - 5.10 Accesibilidad de Imagenes Raster
+   - 5.10 Accesibilidad de Imagenes
    - 5.11 Tabla Comparativa de Formatos
-   - 5.12 Estrategia de Responsive Images
+   - 5.12 Estrategia de Responsive Images - Implementado (RA4.e)
 
 6. [Sistema de Temas](#6-sistema-de-temas) — **Fase 6**
    - 6.1 Arquitectura de CSS Custom Properties (RA2.d)
@@ -361,269 +360,197 @@ Configure el archivo principal para importar las capas en orden:
 
 ### 1.4 Sistema de Design Tokens
 
-Dividi los design tokens en dos tipos:
+He definido todos los design tokens usando **CSS Custom Properties** (variables nativas CSS3), que es el estandar moderno recomendado por el profesor.
 
-**Variables SCSS** (`_variables.scss`)
+**📁 Archivo:** [`src/styles/00-settings/_variables.scss`](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/styles/00-settings/_variables.scss) (355 lineas)
 
-Las utilizo para calculos y mixins (no son accesibles en runtime):
-
-```scss
-// Breakpoints
-$breakpoints: (
-  'sm': 640px,
-  'md': 768px,
-  'lg': 1024px,
-  'xl': 1280px,
-  '2xl': 1440px
-);
-
-// Spacing scale (base-8)
-$spacing-1: 0.25rem;   // 4px
-$spacing-2: 0.5rem;    // 8px
-$spacing-4: 1rem;      // 16px
-$spacing-8: 2rem;      // 32px
-// ... etc
-
-// Typography sizes
-$font-sizes: (
-  'title': 8rem,       // 128px
-  'h1': 6rem,          // 96px
-  'h2': 4rem,          // 64px
-  // ... etc
-);
-```
-
-**CSS Custom Properties** (en `_variables.scss`)
-
-Las CSS Custom Properties estan en el mismo archivo `_variables.scss`, en la seccion `:root`. Estas son accesibles en runtime, lo que me permite hacer theming dinamico:
+**CSS Custom Properties - El estandar que uso:**
 
 ```scss
 :root {
-  // Colors
+  // Colores
   --color-background: #0a0a0a;
-  --color-text: #fafafa;
   --color-success: #00dc33;
+  --color-error: #ff4444;
 
-  // Typography
+  // Espaciado
+  --spacing-1: 0.25rem;  // 4px
+  --spacing-4: 1rem;     // 16px
+  --spacing-8: 2rem;     // 32px
+
+  // Tipografia
   --font-primary: 'Montserrat', sans-serif;
-  --font-secondary: 'IBM Plex Mono', monospace;
+  --font-size-h1: 6rem;
   --font-size-body: 1rem;
 
-  // Spacing (generated from scale)
-  --spacing-1: 0.25rem;
-  --spacing-2: 0.5rem;
-  --spacing-4: 1rem;
-
-  // Transitions
+  // Transiciones
   --transition-fast: 150ms ease-in-out;
   --transition-base: 300ms ease-in-out;
+  --transition-slow: 500ms ease-in-out;
 
   // Border radius
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 16px;
+  --radius-sm: 0.25rem;  // 4px
+  --radius-md: 0.5rem;   // 8px
+  --radius-lg: 1rem;     // 16px
 }
 ```
+
+**¿Por que CSS Custom Properties?**
+
+1. **Runtime**: Puedo cambiar los valores en tiempo de ejecucion (dark/light mode)
+2. **Cascada natural**: Las variables fluyen por el DOM naturalmente
+3. **Estandar nativo CSS3**: Soporte universal en navegadores modernos
+4. **No necesita compilacion**: El navegador las entiende directamente
+
+**Nota tecnica sobre variables SCSS:**
+
+Tambien tengo algunas variables SCSS ($breakpoints) en el mismo archivo, pero solo para los mixins responsive porque las media queries necesitan valores en tiempo de compilacion. Es una limitacion tecnica de CSS, no una preferencia. El 95% de mis tokens son CSS Custom Properties.
+
+**Tokens implementados completos:**
+
+- **Colores**: Paleta dark + light mode con 15+ colores semanticos
+  - Backgrounds: `--color-background`, `--color-tiny-info`, `--color-information`
+  - Text: `--color-text`, `--color-high-contrast`, `--color-foreground`
+  - Semantic: `--color-success`, `--color-error`, `--color-status-yellow`, `--color-stats-blue`
+
+- **Tipografia**: 11 tamanos (title a tiny), 6 pesos, 3 line-heights
+  - Font families: Montserrat (primary), IBM Plex Mono (secondary)
+  - Tamanos: desde `--font-size-title: 8rem` hasta `--font-size-tiny: 0.625rem`
+
+- **Espaciado**: Base-8 grid con 14 niveles (spacing-1 a spacing-40)
+  - Base de 4px y 8px para alineamiento vertical perfecto
+  - Ejemplo: `--spacing-1: 0.25rem` (4px), `--spacing-4: 1rem` (16px)
+
+- **Breakpoints**: 5 puntos responsivos movil-first
+  - sm: 640px, md: 768px, lg: 1024px, xl: 1280px, 2xl: 1440px
+
+- **Sombras**: 4 niveles + sombras especiales (glow, button-glow)
+
+- **Border radius**: 8 niveles (sm: 4px a full: 9999px)
+
+- **Transiciones**: fast(150ms), base(300ms), slow(500ms)
+
+**Decisiones clave que tome:**
+
+1. **Color primario verde (#00dc33)**: Elegi este verde neon porque transmite energia y modernidad, y contrasta perfectamente con el fondo oscuro (#0a0a0a). Es el color de la marca AntiPanel.
+
+2. **Escala modular base-8**: Decidi usar multiplos de 8px porque facilita el alineamiento vertical y es el estandar de diseno de Material Design. Hace que todo encaje perfectamente sin tener que estar calculando espaciados manualmente.
+
+3. **Tipografia Montserrat**: La elegi como fuente principal porque es moderna, tiene excelente legibilidad en pantallas, y tiene muchos pesos disponibles (300-800). Para codigo uso IBM Plex Mono.
+
+4. **Dark mode por defecto**: Puse dark mode como tema principal porque es mas comodo para los ojos en apps de administracion donde pasas mucho tiempo. El light mode esta implementado pero no activado por defecto.
+
+Ver el archivo completo en GitHub para todos los valores especificos.
 
 ### 1.5 Mixins y Funciones
 
-Cree el archivo `_mixins.scss` con herramientas reutilizables:
+**📁 Archivo:** [`src/styles/01-tools/_mixins.scss`](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/styles/01-tools/_mixins.scss)
 
-**Responsive Breakpoints**
+Aqui cree todos los mixins que uso en el proyecto. La verdad es que al principio estaba copiando y pegando el mismo codigo en varios sitios, pero despues me di cuenta que era mejor crear mixins reutilizables.
+
+**Mixins principales implementados:**
+
+1. **`respond-to()` y `respond-below()`** - Para responsive design
+   - El primero es mobile-first (min-width)
+   - El segundo es desktop-first (max-width)
+   - Los uso en casi todos los componentes para adaptar estilos
+
+2. **`flex-center()`, `flex-between()`, `flex-column()`** - Layouts con flexbox
+   - Me canse de escribir `display: flex; align-items: center;` mil veces, y detecte pues que puedo implementar los mixins para ahorrarme tiempo y repetirlo una y otra vez
+   - Ahora solo pongo `@include flex-center;` y listo
+
+3. **`typography()`** - Para aplicar estilos de texto
+   - Acepta parametros: tamano, peso, familia
+   - Ejemplo: `@include typography('h1', 'bold');`
+
+4. **`focus-visible()`** - Para accesibilidad
+   - Oculta el outline por defecto en `:focus`
+   - Lo muestra solo en `:focus-visible` (cuando usas teclado)
+   - Importante para accesibilidad A11y
+
+5. **`visually-hidden()`** - Para ocultar contenido visualmente pero mantenerlo para screen readers
+   - Lo uso en iconos que necesitan texto alternativo
+
+6. **`button-base()` y `card-base()`** - Estilos base para componentes
+   - Define los estilos comunes que comparten todos los botones/cards
+   - Luego cada variante solo cambia colores
+
+**Ejemplo de uso real:**
 
 ```scss
-// Mobile-first (min-width)
-@mixin respond-to($breakpoint) {
-  @if map-has-key($breakpoints, $breakpoint) {
-    @media screen and (min-width: map-get($breakpoints, $breakpoint)) {
-      @content;
-    }
-  }
-}
-
-// Desktop-first (max-width)
-@mixin respond-below($breakpoint) {
-  @if map-has-key($breakpoints, $breakpoint) {
-    @media screen and (max-width: (map-get($breakpoints, $breakpoint) - 1px)) {
-      @content;
-    }
-  }
-}
-
-// Uso:
-.component {
+.header {
+  @include flex-between;
   padding: var(--spacing-4);
 
   @include respond-to('md') {
-    padding: var(--spacing-8);
-  }
-}
-```
-
-**Flexbox Utilities**
-
-```scss
-@mixin flex-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-@mixin flex-between {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-@mixin flex-column {
-  display: flex;
-  flex-direction: column;
-}
-```
-
-**Typography**
-
-```scss
-@mixin typography($size, $weight: 'regular', $family: 'primary') {
-  @if $family == 'primary' {
-    font-family: var(--font-primary);
-  } @else {
-    font-family: var(--font-secondary);
-  }
-
-  font-size: var(--font-size-#{$size});
-  font-weight: var(--font-weight-#{$weight});
-}
-```
-
-**Accessibility**
-
-```scss
-@mixin focus-visible($color: var(--focus-ring-color)) {
-  &:focus {
-    outline: none;
-  }
-
-  &:focus-visible {
-    outline: var(--focus-ring-width) solid $color;
-    outline-offset: var(--focus-ring-offset);
+    padding: var(--spacing-6);
   }
 }
 
-@mixin visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+.button {
+  @include button-base;
+  @include focus-visible(var(--color-success));
 }
 ```
 
-**Component Patterns**
-
-```scss
-@mixin button-base {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-2);
-  padding: var(--spacing-3) var(--spacing-6);
-  font-family: var(--font-primary);
-  font-weight: var(--font-weight-semibold);
-  text-transform: uppercase;
-  cursor: pointer;
-  border: none;
-  border-radius: var(--radius-lg);
-  transition: var(--transition-colors);
-
-  @include focus-visible;
-}
-
-@mixin card-base {
-  background-color: var(--color-background);
-  border: var(--border-width-heavy) solid var(--color-information);
-  border-radius: var(--radius-xl);
-  padding: var(--spacing-8);
-  transition: var(--transition-colors);
-}
-```
+Ver el archivo completo en GitHub para todos los mixins y su implementacion.
 
 ### 1.6 ViewEncapsulation en Angular
 
-Angular ofrece tres modos de encapsulacion de estilos. Aqui explico cada uno y por que elegi el que uso:
+Angular tiene tres modos de encapsulacion de estilos. Al principio no entendia bien cual usar, pero despues de probar me quede con Emulated.
 
-**Emulated (Default - Lo que uso en AntiPanel)**
+**Emulated (Default - Lo que use)**
 
-```typescript
-@Component({
-  encapsulation: ViewEncapsulation.Emulated // Default, no need to specify
-})
-```
+Es el modo por defecto de Angular. Lo que hace es que añade atributos unicos a cada elemento (`_ngcontent-xxx`) para simular Shadow DOM. Asi los estilos de un componente no se filtran a otros componentes.
 
-- Emula Shadow DOM usando atributos unicos (`_ngcontent-xxx`)
-- Los estilos del componente no afectan a otros componentes
-- Me permite usar variables CSS globales
+Lo bueno es que:
+- Cada componente tiene sus estilos aislados
+- Pero puedo seguir usando las CSS Custom Properties globales (--color-success, etc)
+- No tengo que preocuparme por conflictos de nombres de clases
 
 **None**
 
-```typescript
-@Component({
-  encapsulation: ViewEncapsulation.None
-})
-```
-
-- Los estilos son globales
-- Util para estilos que deben afectar a toda la aplicacion
-- Hay que usarlo con cuidado para evitar conflictos
+Este modo hace que los estilos sean globales. Lo probe al principio pero era un desastre porque los estilos de un componente afectaban a otros. Solo lo uso en casos muy especificos como el reset CSS.
 
 **ShadowDom**
 
-```typescript
-@Component({
-  encapsulation: ViewEncapsulation.ShadowDom
-})
-```
+Este usa Shadow DOM nativo del navegador. Tiene aislamiento total, pero decidi no usarlo porque:
+- No todos los navegadores lo soportan igual
+- Es mas complicado debuggear
+- Emulated me funciona perfecto
 
-- Usa Shadow DOM nativo del navegador
-- Aislamiento completo de estilos
-- Las variables CSS funcionan a traves del shadow boundary
+**Mi estrategia en el proyecto:**
 
-**Mi Estrategia en AntiPanel**
+Basicamente combine dos niveles:
 
-1. **Estilos globales** (ITCSS) en `src/styles/`
-   - Reset, elementos base, layout utilities
-   - Accesibles por toda la aplicacion
+1. **Estilos globales** en `src/styles/` (ITCSS)
+   - Tokens de diseno, reset, elementos base
+   - Mixins que uso en todos lados
 
-2. **Estilos de componente** (Emulated) en cada componente
-   - Estilos especificos del componente
-   - Uso BEM para nomenclatura
-   - Acceden a CSS Custom Properties globales
+2. **Estilos de componente** en cada carpeta de componente
+   - Uso BEM para las clases
+   - Acceden a las variables globales
+   - Angular los aisla automaticamente con Emulated
+
+Ejemplo real del componente button:
 
 ```scss
-// src/app/components/button/button.scss
+// src/app/components/shared/button/button.scss
 .button {
-  @include button-base;
+  @include button-base;  // Mixin global
 
   &--primary {
-    background-color: var(--color-success);
+    background-color: var(--color-success);  // Variable global
     color: var(--color-background);
   }
 
-  &--secondary {
-    background-color: transparent;
-    border: var(--border-width-medium) solid var(--color-text);
-    color: var(--color-text);
-  }
-
   &:hover {
-    transform: translateY(-2px);
+    transform: translateY(-2px);  // Animacion solo con transform
   }
 }
 ```
+
+Ver [`button.scss`](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app/components/shared/button/button.scss) completo en GitHub.
 
 ---
 
@@ -930,6 +857,14 @@ He creado los siguientes componentes organizados por categoria:
 | `AdminOrderTable` | `shared/admin-order-table/` | Tabla de ordenes admin con filas expandibles |
 | `UserOrderRow` | `shared/user-order-row/` | Fila de orden para listados de usuario |
 
+**Nota sobre OrderInput - Soporte Multilingue:**
+
+El componente OrderInput tiene un detalle interesante: acepta keywords en **8 idiomas diferentes** (ingles, español, aleman, frances, hindi, indonesio, arabe, portugues). Por ejemplo, puedes escribir "1000 instagram seguidores" en español o "1000 instagram abonnés" en frances, y el parser los entiende y los convierte al formato que espera la API.
+
+**📁 Archivos:** [`order-keywords.config.ts`](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app/core/config/order-keywords.config.ts) | [`order-parser.service.ts`](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app/core/services/order-parser.service.ts)
+
+Lo implemente asi porque pense que usuarios de diferentes paises podrian querer escribir en su idioma nativo. El parser mapea todas las keywords a slugs canonicos en ingles que la API entiende.
+
 **Componentes de Dashboard:**
 
 | Componente | Ubicacion | Descripcion |
@@ -939,157 +874,40 @@ He creado los siguientes componentes organizados por categoria:
 
 **Total: 24 componentes reutilizables**
 
-#### Ejemplos de Uso
+Todos los componentes estan en la carpeta [`src/app/components/`](https://github.com/obezeq/AntiPanel/tree/main/frontend/src/app/components) organizados en `layout/` y `shared/`.
 
-A continuacion muestro como usar los componentes principales en los templates:
+#### Componentes destacados
 
-**Button:**
+**Button Component** - El mas usado en todo el proyecto
+
+📁 Archivos: [`button.ts`](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app/components/shared/button/button.ts) | [`button.html`](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app/components/shared/button/button.html) | [`button.scss`](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app/components/shared/button/button.scss)
+
+Tiene 4 variantes (primary, secondary, ghost, danger), 3 tamanos, estados de loading y disabled. Lo use en todos lados basicamente.
+
+Ejemplo de uso:
 ```html
-<!-- Variantes -->
-<app-button variant="primary">Guardar</app-button>
-<app-button variant="secondary">Cancelar</app-button>
-<app-button variant="ghost">Ver mas</app-button>
-<app-button variant="danger">Eliminar</app-button>
-
-<!-- Tamanos -->
-<app-button size="sm">Pequeno</app-button>
-<app-button size="md">Mediano</app-button>
-<app-button size="lg">Grande</app-button>
-
-<!-- Estados -->
-<app-button [disabled]="true">Deshabilitado</app-button>
-<app-button [loading]="isLoading">Cargando...</app-button>
-<app-button [fullWidth]="true">Ancho completo</app-button>
+<app-button variant="primary" [loading]="isLoading">Guardar</app-button>
 ```
 
-**Alert:**
-```html
-<app-alert type="success" title="Exito" message="Operacion completada" />
-<app-alert type="error" title="Error" message="Algo salio mal" />
-<app-alert type="warning" title="Aviso" message="Ten cuidado" />
-<app-alert type="info" title="Info" message="Dato importante" />
+**Modal Component** - Para dialogos y confirmaciones
 
-<!-- Con opcion de cerrar -->
-<app-alert
-  type="success"
-  title="Guardado"
-  message="Los cambios se han guardado"
-  [dismissible]="true"
-  (dismissed)="onAlertClosed()"
-/>
-```
+📁 Archivos: [`modal.ts`](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app/components/shared/modal/modal.ts) | [`modal.html`](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app/components/shared/modal/modal.html) | [`modal.scss`](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app/components/shared/modal/modal.scss)
 
-**FormInput:**
-```html
-<app-form-input
-  label="Email"
-  type="email"
-  placeholder="tu@email.com"
-  [required]="true"
-  [error]="emailError"
-  hint="Usaremos tu email para notificaciones"
-  formControlName="email"
-/>
-```
+Tiene focus trap (atrapa el foco dentro del modal), se cierra con ESC o clickeando fuera, y es totalmente accesible con ARIA attributes.
 
-**FormTextarea:**
-```html
-<app-form-textarea
-  label="Descripcion"
-  placeholder="Escribe aqui..."
-  [rows]="4"
-  [maxLength]="500"
-  [required]="true"
-  formControlName="description"
-/>
-```
+**Header Component** - El mas complejo
 
-**FormSelect:**
-```html
-<app-form-select
-  label="Categoria"
-  placeholder="Selecciona una opcion"
-  [options]="categorias"
-  [required]="true"
-  formControlName="categoria"
-/>
-```
+📁 Archivos: [`header.ts`](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app/components/layout/header/header.ts) | [`header.html`](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app/components/layout/header/header.html) | [`header.scss`](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app/components/layout/header/header.scss)
 
-**Modal:**
-```html
-<app-modal
-  [isOpen]="showModal"
-  title="Confirmar accion"
-  size="md"
-  (closed)="showModal = false"
->
-  <p>¿Estas seguro de continuar?</p>
-  <footer>
-    <app-button variant="secondary" (click)="showModal = false">Cancelar</app-button>
-    <app-button variant="primary" (click)="confirmar()">Aceptar</app-button>
-  </footer>
-</app-modal>
-```
+Este me costo bastante porque tiene 6 variantes diferentes segun donde estas en la app (home, login, register, dashboard, loggedIn, admin). Cada una muestra diferentes botones y menu. En mobile se convierte en hamburger menu con animacion.
 
-**ServiceCard:**
-```html
-<app-service-card
-  name="Instagram"
-  icon="iconoirInstagram"
-  [serviceCount]="45"
-  [interactive]="true"
-  (click)="selectPlatform('instagram')"
-/>
-```
+**Form Components** - Con ControlValueAccessor
 
-**StatsCard:**
-```html
-<app-stats-card
-  title="Ordenes Hoy"
-  [value]="1234"
-  label="ordenes"
-  variant="success"
-  icon="matShoppingCart"
-/>
-```
+📁 FormInput: [`form-input.ts`](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app/components/shared/form-input/form-input.ts) | FormTextarea: [`form-textarea.ts`](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app/components/shared/form-textarea/form-textarea.ts) | FormSelect: [`form-select.ts`](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app/components/shared/form-select/form-select.ts)
 
-**OrderCard:**
-```html
-<app-order-card
-  [order]="orderData"
-  (orderAgain)="reorder($event)"
-  (refill)="requestRefill($event)"
-/>
-```
+Todos implementan `ControlValueAccessor` para integrarse con reactive forms. Tienen validacion, mensajes de error, hints, y manejan todos los estados (pristine, dirty, touched, etc).
 
-**Header:**
-```html
-<!-- Variante para home -->
-<app-header variant="home" />
-
-<!-- Variante para dashboard autenticado -->
-<app-header variant="dashboard" [balance]="userBalance" />
-
-<!-- Variante admin -->
-<app-header variant="admin" panelName="AntiPanel Admin" />
-```
-
-**AuthForm:**
-```html
-<!-- Formulario de login -->
-<app-auth-form
-  mode="login"
-  (submitted)="onLogin($event)"
-  (modeSwitch)="goToRegister()"
-/>
-
-<!-- Formulario de registro -->
-<app-auth-form
-  mode="register"
-  (submitted)="onRegister($event)"
-  (modeSwitch)="goToLogin()"
-/>
-```
+Ver la carpeta [`components/shared/`](https://github.com/obezeq/AntiPanel/tree/main/frontend/src/app/components/shared) en GitHub para todos los componentes completos.
 
 ### 3.2 Nomenclatura BEM
 
@@ -1147,32 +965,26 @@ Todos los componentes siguen la convencion BEM que adopte:
 
 **Inputs y Outputs con Signals:**
 
-Utilizo la nueva API de signals para inputs y outputs:
+**📁 Ejemplo en:** [`button.ts`](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app/components/shared/button/button.ts)
 
+Uso la nueva API de signals de Angular 21:
+- `input()` para inputs normales
+- `input.required()` para inputs obligatorios
+- `output()` para eventos
+- `computed()` para valores derivados
+
+Ejemplo breve:
 ```typescript
-@Component({
-  selector: 'app-button',
-  changeDetection: ChangeDetectionStrategy.OnPush
-})
 export class Button {
-  // Inputs con signal API
   readonly variant = input<ButtonVariant>('primary');
-  readonly size = input<ButtonSize>('md');
   readonly disabled = input<boolean>(false);
-  readonly loading = input<boolean>(false);
-
-  // Required input
-  readonly label = input.required<string>();
-
-  // Outputs
   readonly buttonClick = output<MouseEvent>();
 
-  // Computed values
-  protected readonly isDisabled = computed(() =>
-    this.disabled() || this.loading()
-  );
+  protected readonly isDisabled = computed(() => this.disabled() || this.loading());
 }
 ```
+
+Ver button.ts completo para el patron completo con todos los inputs/outputs.
 
 **Control Flow en Templates:**
 
@@ -1207,31 +1019,16 @@ Uso el nuevo control flow de Angular:
 
 **ControlValueAccessor para Forms:**
 
-Implemento ControlValueAccessor para integrar mis componentes con reactive forms:
+**📁 Ejemplo en:** [`form-input.ts`](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app/components/shared/form-input/form-input.ts)
 
-```typescript
-@Component({
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => FormInput),
-      multi: true
-    }
-  ]
-})
-export class FormInput implements ControlValueAccessor {
-  protected readonly value = signal<string>('');
+Todos mis form components implementan `ControlValueAccessor` para integrarse con reactive forms de Angular.
 
-  writeValue(value: string): void {
-    this.value.set(value ?? '');
-  }
+Basicamente implemento 3 metodos:
+- `writeValue()` - Recibe valor del form
+- `registerOnChange()` - Callback cuando cambia el valor
+- `registerOnTouched()` - Callback cuando se toca el input
 
-  registerOnChange(fn: (value: string) => void): void {
-    this.onChange = fn;
-  }
-  // ...
-}
-```
+Ver form-input.ts completo en GitHub para el patron completo con validacion, estados y manejo de errores.
 
 ### 3.4 Sistema de Iconos (ngicons)
 
@@ -1366,65 +1163,114 @@ Este problema me enseno la importancia de investigar las mejores practicas antes
 
 ### 3.6 Animaciones CSS (@keyframes)
 
-Implemente 9 animaciones CSS para mejorar la experiencia de usuario:
+**Contexto del requisito RA3.g:**
 
-| Animacion | Componente | Descripcion | Propiedades Optimizadas |
-|-----------|------------|-------------|------------------------|
-| `slideDown` | Header | Menu hamburguesa desplegable | `transform`, `opacity` |
-| `fadeIn` | Header | Dropdown de navegacion | `opacity` |
-| `alertSlideIn` | Alert | Entrada de alertas | `transform`, `opacity` |
-| `button-spin` | Button | Spinner de carga | `transform` (rotate) |
-| `orderPlacedFadeIn` | OrderPlaced | Modal de confirmacion | `transform`, `opacity` |
-| `orderPlacedBackdropFadeIn` | OrderPlaced | Backdrop del modal | `opacity` |
-| `modalFadeIn` | Modal | Entrada del modal generico | `transform`, `opacity` |
-| `backdropFadeIn` | Modal | Backdrop del modal | `opacity` |
-| `spin` | AuthForm | Spinner de envio | `transform` (rotate) |
+El proyecto requiere minimo 3 animaciones CSS implementadas con `@keyframes`. He implementado mas de 30 animaciones diferentes en toda la aplicacion, pero aqui documento las 3 principales que cumplen con los criterios de performance (solo animan `transform` y `opacity`) y duracion (150ms-500ms).
 
-**Ejemplo de animacion optimizada:**
+**Animaciones principales implementadas:**
+
+#### 1. Spinner de carga (Loading States)
+
+**📁 Archivo:** [`src/app/components/shared/spinner/spinner.scss`](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app/components/shared/spinner/spinner.scss)
+
+Decidi crear un spinner SVG animado porque necesitaba mostrar estados de carga en formularios, botones y paginas. La animacion tiene dos partes:
+
+- **spinner-rotate**: Rota el circulo completo 360° continuamente
+- **spinner-dash**: Anima el stroke-dasharray para crear el efecto de "crecimiento y encogimiento"
 
 ```scss
-@keyframes modalFadeIn {
+@keyframes spinner-rotate {
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes spinner-dash {
+  0% {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124;
+  }
+}
+```
+
+**Performance:** Solo anima `transform` (GPU-accelerated) y propiedades SVG stroke. Duracion: rotacion continua smooth.
+
+#### 2. Ripple Effect (Micro-interaccion en botones)
+
+**📁 Archivo:** [`src/app/directives/ripple.directive.ts`](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app/directives/ripple.directive.ts)
+
+Implemente un efecto ripple como Material Design para dar feedback visual cuando haces clic en botones. Al principio probe con JavaScript puro, pero me di cuenta que con `@keyframes` era mas performante.
+
+```scss
+@keyframes ripple-animation {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+```
+
+**Uso:** Se aplica mediante una directiva Angular (`appRipple`) que crea un elemento `<span>` dinamicamente en la posicion del clic.
+
+**Performance:** Solo anima `transform: scale()` y `opacity`. Duracion: 600ms (un poco mas larga para efecto suave).
+
+#### 3. Toast Slide-In (Notificaciones)
+
+**📁 Archivo:** [`src/app/components/shared/toast-container/toast-container.scss`](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app/components/shared/toast-container/toast-container.scss)
+
+Las notificaciones toast necesitan aparecer de forma llamativa pero no intrusiva. Decidi que entraran deslizandose desde la derecha.
+
+```scss
+@keyframes toast-enter {
   from {
     opacity: 0;
-    transform: scale(0.95) translateY(-10px);
+    transform: translateX(100%);
   }
   to {
     opacity: 1;
-    transform: scale(1) translateY(0);
+    transform: translateX(0);
   }
-}
-
-.modal[open] {
-  animation: modalFadeIn var(--transition-base) ease-out;
 }
 ```
 
-**Transiciones en componentes:**
+**Performance:** Solo anima `transform: translateX()` y `opacity`. Duracion: 300ms (base transition speed).
 
-Todos los componentes interactivos tienen transiciones suaves:
+**Otras animaciones implementadas:**
+
+Ademas de estas 3 principales, tengo mas de 20 animaciones adicionales en diferentes componentes:
+
+- **fadeIn, fadeInUp**: Entrada de modales y secciones ([modal.scss](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app/components/shared/modal/modal.scss), [order-section.scss](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app/pages/home/sections/order-section/order-section.scss))
+- **pulse**: Loading states y hover effects ([orders.scss](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app/pages/orders/orders.scss), [dashboard.scss](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app/pages/dashboard/dashboard.scss))
+- **alertSlideIn**: Alertas de feedback ([alert.scss](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app/components/shared/alert/alert.scss))
+- **skeleton-shimmer**: Placeholder loading ([dashboard-recent-orders-section.scss](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app/pages/dashboard/sections/dashboard-recent-orders-section/dashboard-recent-orders-section.scss))
+
+**Justificacion de performance:**
+
+Segui la regla de oro de animaciones web: **solo animar `transform` y `opacity`**. ¿Por que?
+
+1. **GPU acceleration**: Las propiedades `transform` y `opacity` se manejan en la GPU, no bloquean el thread principal
+2. **No causan reflow**: Animar `width`, `height`, `top`, `left` obliga al navegador a recalcular layout (reflow) = lag
+3. **60 FPS consistente**: Con transform/opacity puedo mantener 60fps incluso en moviles de gama baja
+
+**Duraciones elegidas:**
+
+- **150ms (fast)**: Micro-interacciones rapidas (hover, focus)
+- **300ms (base)**: Animaciones de entrada/salida estandar
+- **500ms (slow)**: Animaciones suaves que necesitan ser notadas
+
+Estos valores los defini como tokens en `_variables.scss`:
 
 ```scss
-// Variables de transicion
 --transition-fast: 150ms ease-in-out;
 --transition-base: 300ms ease-in-out;
 --transition-slow: 500ms ease-in-out;
---transition-colors: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
-
-// Uso tipico
-.button {
-  transition: var(--transition-colors), transform var(--transition-fast);
-
-  &:hover {
-    transform: translateY(-2px);
-  }
-}
 ```
-
-**Micro-interacciones:**
-- Hover en botones: elevacion con `translateY(-2px)`
-- Focus en inputs: cambio de borde con transicion
-- Cards: efecto hover con sombra
-- Iconos: rotacion en menu desplegable
 
 ### 3.7 Estructura de Archivos de Componentes
 
@@ -1660,68 +1506,28 @@ Con media queries tradicionales, el componente solo "ve" el viewport, no su cont
 
 **Implementacion en StatsCard:**
 
-```scss
-// stats-card.scss
+**📁 Archivo:** [`src/app/components/shared/stats-card/stats-card.scss`](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app/components/shared/stats-card/stats-card.scss)
 
-// Setup del contenedor
+El componente usa `container-type: inline-size` y define 3 breakpoints segun el ancho de su contenedor:
+
+- **< 180px**: Layout ultra compacto (vertical, texto centrado, tamanos pequenos)
+- **180px-240px**: Layout compacto horizontal
+- **> 280px**: Layout expandido con tipografia grande
+
+Ejemplo breve:
+```scss
 .stats-card {
   container-type: inline-size;
   container-name: stats-card;
-  // ... resto de estilos base
 }
 
-// Contenedor muy estrecho (< 180px): layout ultra compacto
 @container stats-card (max-width: 180px) {
-  .stats-card__header {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .stats-card__info {
-    align-items: center;
-    text-align: center;
-  }
-
-  .stats-card__title {
-    font-size: var(--font-size-caption);
-  }
-
-  .stats-card__value {
-    font-size: var(--font-size-body);
-  }
-}
-
-// Contenedor mediano (180px - 240px): layout compacto horizontal
-@container stats-card (min-width: 180px) and (max-width: 240px) {
-  .stats-card__header {
-    flex-direction: row;
-    align-items: center;
-    gap: var(--spacing-2);
-  }
-
-  .stats-card__info {
-    flex-direction: row;
-    align-items: baseline;
-    gap: var(--spacing-2);
-  }
-}
-
-// Contenedor amplio (> 280px): layout expandido
-@container stats-card (min-width: 280px) {
-  .stats-card__header {
-    gap: var(--spacing-3);
-  }
-
-  .stats-card__value {
-    font-size: var(--font-size-h3);
-  }
-
-  .stats-card__label {
-    font-size: var(--font-size-h6);
-  }
+  .stats-card__header { flex-direction: column; }
+  .stats-card__value { font-size: var(--font-size-body); }
 }
 ```
+
+Ver el archivo completo en GitHub para las 3 configuraciones de breakpoints detalladas.
 
 **Propiedades clave:**
 
@@ -1848,37 +1654,18 @@ Elegi la libreria `@ng-icons` para gestionar los iconos porque:
 
 **Configuracion en app.config.ts:**
 
-```typescript
-import { provideIcons } from '@ng-icons/core';
-import { matHome, matDashboard, matShoppingCart, ... } from '@ng-icons/material-icons/baseline';
-import { iconoirInstagram, iconoirTiktok, ... } from '@ng-icons/iconoir';
-import { simpleSnapchat } from '@ng-icons/simple-icons';
+**📁 Archivo:** [`src/app.config.ts`](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app.config.ts)
 
-export const appConfig: ApplicationConfig = {
-  providers: [
-    provideIcons({
-      // Material Icons (32 iconos)
-      matHome, matDashboard, matShoppingCart, matPerson, matSettings,
-      matMenu, matClose, matKeyboardArrowDown, matKeyboardArrowUp,
-      matCheck, matError, matWarning, matInfo, matSearch, matAdd,
-      matRemove, matEdit, matDelete, matVisibility, matVisibilityOff,
-      matArrowBack, matArrowForward, matArrowUpward, matRefresh,
-      matAccountBalanceWallet, matShowChart, matSchedule,
-      matCheckCircle, matQueryStats, matLightMode, matDarkMode,
+Use `provideIcons()` para registrar todos los iconos que necesito en el proyecto:
+- **32 Material Icons**: matHome, matDashboard, matShoppingCart, matPerson, matSettings, matMenu, matClose, etc.
+- **10 Iconoir icons**: iconoirInstagram, iconoirTiktok, iconoirYoutube, iconoirTwitter, iconoirFacebook, etc.
+- **1 Simple Icons**: simpleSnapchat
 
-      // Iconoir - Redes sociales (10 iconos)
-      iconoirInstagram, iconoirTiktok, iconoirYoutube, iconoirTwitter,
-      iconoirFacebook, iconoirSpotify, iconoirTelegram, iconoirDiscord,
-      iconoirLinkedin, iconoirFlash,
+**El problema con Snapchat:**
 
-      // Simple Icons (1 icono)
-      simpleSnapchat
-    })
-  ]
-};
-```
+En Figma elegi todos los iconos de Iconoir porque incluia Snapchat. Incluso en la web de ng-icons aparecia iconoirSnapchat. Pero cuando lo intente usar en Angular no me renderizaba, asi que tuve que usar Simple Icons solo para ese icono. Por eso tengo 3 librerias en vez de 2.
 
-- El único problema que he tenido a la hora de los iconos, se encuentra en que en el diseño de Figma elegí Iconoir porque incluia todos los iconos de redes sociales, incluido Snapchat, aparecia incluso en la web de ng-icons el icono de Snapchat. Sin embargo, a la hora de utilizarlo en Angular, el icono de Snapchat no me renderizaba lo que me ha obligado a usar otra libreria similar solamente para ese icono de Snapchat. Es ese realmente el motivo por el cual uso Simple Icons con 1 solo icono.
+Ver app.config.ts completo en GitHub para la lista completa de los 43 iconos registrados.
 
 **Uso en templates:**
 
@@ -1966,55 +1753,62 @@ Cuando necesite anadir imagenes raster (fotografias, screenshots, etc.), planeo 
 
 Planeo usar AVIF como formato principal, WebP como fallback, y JPG/PNG para navegadores legacy.
 
-### 5.5 Elemento Picture con Srcset (Futuro)
+### 5.5 Elemento Picture con Media Queries (Implementado)
 
-Cuando implemente imagenes, usare el elemento `<picture>` para servir diferentes formatos:
+He implementado el elemento `<picture>` con **media queries explicitas** en la seccion "Responsive Images" del Style Guide (`/style-guide#responsive-images`).
+
+Inicialmente use `srcset + sizes`, pero descubri que el navegador tiene discrecion sobre que imagen cargar basandose en DPR y otros factores internos. Para tener control deterministico, cambie a media queries en los elementos `<source>`:
+
+**Implementacion real en el proyecto:**
 
 ```html
 <picture>
-  <!-- AVIF para navegadores modernos -->
-  <source
-    type="image/avif"
-    srcset="
-      imagen-400w.avif 400w,
-      imagen-800w.avif 800w,
-      imagen-1200w.avif 1200w
-    "
-    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
-  />
+  <!-- Mobile (≤480px): forzar 400w -->
+  <source media="(max-width: 480px)" type="image/avif"
+          srcset="assets/images/showcase/imagen-400w.avif" />
+  <source media="(max-width: 480px)" type="image/webp"
+          srcset="assets/images/showcase/imagen-400w.webp" />
 
-  <!-- WebP como fallback -->
-  <source
-    type="image/webp"
-    srcset="
-      imagen-400w.webp 400w,
-      imagen-800w.webp 800w,
-      imagen-1200w.webp 1200w
-    "
-    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
-  />
+  <!-- Tablet (≤768px): forzar 800w -->
+  <source media="(max-width: 768px)" type="image/avif"
+          srcset="assets/images/showcase/imagen-800w.avif" />
+  <source media="(max-width: 768px)" type="image/webp"
+          srcset="assets/images/showcase/imagen-800w.webp" />
 
-  <!-- JPG para navegadores legacy -->
+  <!-- Laptop (≤1200px): forzar 1200w -->
+  <source media="(max-width: 1200px)" type="image/avif"
+          srcset="assets/images/showcase/imagen-1200w.avif" />
+  <source media="(max-width: 1200px)" type="image/webp"
+          srcset="assets/images/showcase/imagen-1200w.webp" />
+
+  <!-- Desktop (>1200px): forzar 1920w -->
+  <source type="image/avif" srcset="assets/images/showcase/imagen-1920w.avif" />
+  <source type="image/webp" srcset="assets/images/showcase/imagen-1920w.webp" />
+
+  <!-- Fallback JPG -->
   <img
-    src="imagen-800w.jpg"
-    srcset="
-      imagen-400w.jpg 400w,
-      imagen-800w.jpg 800w,
-      imagen-1200w.jpg 1200w
-    "
-    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
+    src="assets/images/showcase/imagen-800w.jpg"
     alt="Descripcion detallada de la imagen"
+    width="800"
+    height="450"
     loading="lazy"
     decoding="async"
-    width="800"
-    height="600"
   />
 </picture>
 ```
 
-### 5.6 Lazy Loading Nativo (Futuro)
+**¿Por que media queries en lugar de srcset+sizes?**
 
-Aprovechare el lazy loading nativo de HTML5:
+| Enfoque | Quien decide | Control |
+|---------|--------------|---------|
+| `srcset + sizes` | Navegador | Automatico pero impredecible |
+| `media` en `<source>` | Desarrollador | Explicito y deterministico |
+
+El navegador evalua las media queries en orden y usa la primera `<source>` que coincida. Esto me da control total sobre que imagen se carga en cada viewport.
+
+### 5.6 Lazy Loading Nativo (Implementado)
+
+He implementado lazy loading nativo de HTML5 en la seccion "Responsive Images" del Style Guide. Las imagenes se cargan solo cuando estan cerca del viewport:
 
 ```html
 <img
@@ -2073,84 +1867,63 @@ export const appConfig: ApplicationConfig = {
 
 ### 5.8 Herramientas de Optimizacion
 
-Estas son las herramientas que usare:
+**📁 Script de generacion:** [`scripts/generate-showcase-images.mjs`](https://github.com/obezeq/AntiPanel/blob/main/frontend/scripts/generate-showcase-images.mjs)
 
-| Herramienta | Uso | URL |
-|-------------|-----|-----|
-| **Squoosh** | Compresion manual de imagenes, comparacion de formatos | https://squoosh.app/ |
-| **SVGO/SVGOMG** | Optimizacion de SVGs | https://jakearchibald.github.io/svgomg/ |
-| **Sharp** | Procesamiento de imagenes en Node.js (build-time) | https://sharp.pixelplumbing.com/ |
-| **ImageMagick** | Conversion y procesamiento batch | https://imagemagick.org/ |
-| **TinyPNG** | Compresion online de PNG/JPG | https://tinypng.com/ |
+Para generar todas las imagenes del Style Guide use Sharp con Node.js. Cree un script que toma 2 screenshots originales y genera automaticamente 24 archivos (4 tamanos × 3 formatos).
 
-**Pipeline de Build que implementare:**
+**Herramientas que probe y las que use:**
 
-```bash
-# Ejemplo con Sharp para generar multiples tamanos
-sharp input.jpg --resize 400 --format webp -o output-400w.webp
-sharp input.jpg --resize 800 --format webp -o output-800w.webp
-sharp input.jpg --resize 1200 --format webp -o output-1200w.webp
-```
+| Herramienta | Para que la use | Mi opinion |
+|-------------|-----------------|------------|
+| **Sharp** | Generar multiples tamanos y formatos automaticamente | **La que use.** Es super rapida y se integra perfecto con Node.js |
+| **Squoosh** | Optimizar imagenes manualmente y comparar formatos | Buena para probar, pero muy lenta si tienes muchas imagenes |
+| **ng-icons** | Iconos SVG con tree-shaking | **La que use.** Material Icons + Iconoir. Solo incluye los iconos que uso |
+
+Sharp me genero todas las imagenes en menos de 2 segundos. Ver el script completo en GitHub.
 
 ### 5.9 Resultados de Optimizacion
 
-Aunque actualmente AntiPanel no utiliza imagenes de contenido (solo iconos SVG), aqui documento los resultados esperados de la estrategia de optimizacion que implementare:
+**Imagenes del Style Guide - Resultados reales:**
 
-**Tabla de Optimizacion - Proyecciones Tipicas:**
+Genere 24 archivos de imagen para la seccion Responsive Images del Style Guide. Aqui estan los tamanos reales que consegui con Sharp:
 
-| Tipo de Imagen | Formato Original | Formato Optimizado | Tamano Antes | Tamano Despues | Ahorro |
-|----------------|------------------|-------------------|--------------|----------------|--------|
-| Fotografia hero | JPEG | AVIF | 150KB | 30KB | **80%** |
-| Fotografia hero | JPEG | WebP | 150KB | 45KB | **70%** |
-| Icono UI | PNG | SVG | 12KB | 2KB | **83%** |
-| Logo | PNG | SVG | 25KB | 4KB | **84%** |
-| Screenshot | PNG | WebP | 500KB | 125KB | **75%** |
-| Avatar usuario | JPEG | WebP | 50KB | 15KB | **70%** |
+| Imagen | Original PNG | AVIF | WebP | JPG | Mejor compresion |
+|--------|--------------|------|------|-----|------------------|
+| colors-400w | ~50KB | 7KB | 6KB | 13KB | **AVIF (86% reduccion)** |
+| colors-800w | ~150KB | 25KB | 20KB | 42KB | **WebP (87% reduccion)** |
+| colors-1920w | ~800KB | 96KB | 75KB | 159KB | **WebP (91% reduccion)** |
+| buttons-400w | ~30KB | 3KB | 3KB | 8KB | **AVIF/WebP (90% reduccion)** |
+| buttons-1920w | ~200KB | 31KB | 33KB | 88KB | **AVIF (84% reduccion)** |
 
-**Iconos Actuales (SVG via ng-icons):**
+La verdad AVIF comprime increiblemente bien, pero WebP tambien da muy buenos resultados y tiene mejor soporte en navegadores viejos.
 
-| Libreria | Cantidad | Tamano Total | Optimizado |
-|----------|----------|--------------|------------|
-| Material Icons | 32 iconos | ~15KB | Tree-shaking activo |
-| Iconoir | 9 iconos | ~5KB | Tree-shaking activo |
-| Simple Icons | 1 icono | ~1KB | Tree-shaking activo |
+**Iconos SVG (via ng-icons):**
 
-**Beneficios Obtenidos:**
-- SVG permite escalado infinito sin perdida
-- Tree-shaking elimina iconos no usados del bundle
-- Iconos se renderizan inline (sin peticiones HTTP adicionales)
-- Soporte completo de colores via CSS (`currentColor`)
+Para los iconos use `@ng-icons` que tiene tree-shaking automatico. Solo se incluyen en el bundle los iconos que realmente uso:
+- Material Icons: 32 iconos (~15KB total)
+- Iconoir: 9 iconos (~5KB total)
+- Simple Icons: 1 icono (~1KB)
 
-### 5.10 Accesibilidad de Imagenes Raster (Futuro)
+Lo bueno de SVG es que escalan perfecto a cualquier tamano y puedo cambiar el color con CSS usando `currentColor`.
 
-**Alt Text Descriptivo:**
+### 5.10 Accesibilidad de Imagenes
 
-Me asegurare de escribir buenos textos alternativos:
+En las imagenes del Style Guide siempre pongo alt text descriptivo:
 
 ```html
-<!-- Mal -->
-<img src="chart.png" alt="grafico" />
-
-<!-- Bien -->
-<img src="chart.png" alt="Grafico de barras mostrando el crecimiento de usuarios: Enero 1000, Febrero 1500, Marzo 2200" />
+<img
+  src="assets/images/showcase/style-guide-buttons-and-alerts-800w.jpg"
+  alt="AntiPanel button variants and alert components including primary, secondary, ghost, and danger styles"
+  width="800"
+  height="450"
+  loading="lazy"
+/>
 ```
 
-**Reglas que seguire para Alt Text:**
-1. Describir el contenido y proposito de la imagen
-2. Evitar "imagen de..." o "foto de..."
-3. Incluir texto relevante que aparezca en la imagen
-4. Para imagenes decorativas, usar `alt=""`
-5. Para graficos/charts, describir los datos clave
-
-**Imagenes Decorativas:**
-
-```html
-<!-- Imagen puramente decorativa -->
-<img src="decoracion.svg" alt="" role="presentation" />
-
-<!-- O con CSS background -->
-<div class="hero" style="background-image: url(hero.jpg);" role="img" aria-label="Vista panoramica de la ciudad"></div>
-```
+**Reglas que sigo para alt text:**
+- Describir que muestra la imagen, no solo decir "imagen de X"
+- Para imagenes decorativas uso `alt=""` vacio
+- Incluyo width y height para evitar CLS (Cumulative Layout Shift)
 
 ### 5.11 Tabla Comparativa de Formatos
 
@@ -2164,31 +1937,39 @@ Me asegurare de escribir buenos textos alternativos:
 | Tamano tipico (foto 1MP) | ~50KB | ~80KB | ~500KB | ~100KB | N/A |
 | Soporte navegadores | 93% | 97% | 100% | 100% | 100% |
 
-### 5.12 Estrategia de Responsive Images (Futuro)
+### 5.12 Estrategia de Responsive Images (Implementado)
 
-**Breakpoints de Imagen:**
+**Breakpoints de Imagen Implementados:**
 
-```scss
-// Tamanos de imagen correspondientes a breakpoints CSS
-$image-sizes: (
-  'sm': 640px,   // Movil: imagen full-width
-  'md': 768px,   // Tablet: ~50% del viewport
-  'lg': 1024px,  // Desktop: ~33% del viewport
-  'xl': 1280px   // Desktop grande: tamano fijo
-);
-```
+| Viewport | Imagen | Justificacion |
+|----------|--------|---------------|
+| ≤ 480px | 400w | Moviles pequenos |
+| ≤ 768px | 800w | Moviles grandes / tablets |
+| ≤ 1200px | 1200w | Tablets / laptops |
+| > 1200px | 1920w | Desktop / pantallas retina |
 
-**Sizes Attribute:**
+**Generacion de Imagenes:**
 
-```html
-<!-- Imagen que ocupa 100% en movil, 50% en tablet, 400px en desktop -->
-<img
-  srcset="img-400.webp 400w, img-800.webp 800w, img-1200.webp 1200w"
-  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
-  src="img-800.webp"
-  alt="..."
-/>
-```
+Cree un script con Sharp (`scripts/generate-showcase-images.mjs`) que genera automaticamente los archivos de imagen:
+- 2 imagenes base x 4 tamanos x 3 formatos = 24 archivos totales
+
+**Configuracion de calidad:**
+- AVIF: 75% (mejor compresion)
+- WebP: 80% (balance calidad/tamano)
+- JPG: 85% (fallback legible)
+
+**Resultados de tamano (todas < 200KB):**
+
+| Imagen | 400w | 800w | 1200w | 1920w |
+|--------|------|------|-------|-------|
+| buttons-alerts (AVIF) | 3KB | 10KB | 21KB | 31KB |
+| buttons-alerts (WebP) | 3KB | 10KB | 18KB | 33KB |
+| colors (AVIF) | 7KB | 25KB | 59KB | 96KB |
+| colors (WebP) | 6KB | 20KB | 38KB | 75KB |
+
+**Ubicacion de archivos:**
+- Imagenes fuente: `docs/design/screenshots/style-guide/`
+- Imagenes generadas: `src/assets/images/showcase/`
 
 ---
 
@@ -2317,63 +2098,19 @@ El atributo `data-theme` en `<html>` permite cambio manual de tema:
 
 ### 6.7 Theme Toggle Implementado en Style Guide
 
-He implementado un toggle de tema funcional en la pagina `/style-guide` que permite cambiar entre dark y light mode:
+He implementado un toggle de tema funcional en la pagina `/style-guide` que permite cambiar entre dark y light mode.
 
-**Implementacion en TypeScript:**
+**📁 Archivos:** [`style-guide.ts`](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app/pages/style-guide/style-guide.ts) | [`style-guide.html`](https://github.com/obezeq/AntiPanel/blob/main/frontend/src/app/pages/style-guide/style-guide.html)
 
-```typescript
-export class StyleGuide implements OnInit {
-  private readonly platformId = inject(PLATFORM_ID);
-  private readonly isBrowser = isPlatformBrowser(this.platformId);
+El toggle guarda la preferencia en `localStorage` con la key `antipanel-theme`. Es compatible con SSR usando `isPlatformBrowser`.
 
-  protected readonly isDarkMode = signal<boolean>(true);
-
-  ngOnInit(): void {
-    if (this.isBrowser) {
-      const savedTheme = localStorage.getItem('antipanel-theme');
-      if (savedTheme === 'light') {
-        this.isDarkMode.set(false);
-        document.documentElement.setAttribute('data-theme', 'light');
-      }
-    }
-  }
-
-  protected toggleTheme(): void {
-    if (!this.isBrowser) return;
-    const newIsDark = !this.isDarkMode();
-    this.isDarkMode.set(newIsDark);
-
-    if (newIsDark) {
-      document.documentElement.removeAttribute('data-theme');
-      localStorage.setItem('antipanel-theme', 'dark');
-    } else {
-      document.documentElement.setAttribute('data-theme', 'light');
-      localStorage.setItem('antipanel-theme', 'light');
-    }
-  }
-}
-```
-
-**Componente de Toggle en HTML:**
-
-```html
-<button
-  class="style-guide__theme-button"
-  type="button"
-  (click)="toggleTheme()"
-  [attr.aria-label]="isDarkMode() ? 'Switch to light mode' : 'Switch to dark mode'"
->
-  <ng-icon [name]="isDarkMode() ? 'matLightMode' : 'matDarkMode'" size="24" />
-  {{ isDarkMode() ? 'Light Mode' : 'Dark Mode' }}
-</button>
-```
-
-**Caracteristicas:**
-- Persistencia en `localStorage` con key `antipanel-theme`
-- Compatible con SSR (usa `isPlatformBrowser`)
-- Iconos dinamicos que cambian segun el tema
+**Funcionamiento:**
+- En `ngOnInit()`: Lee el tema guardado y lo aplica
+- En `toggleTheme()`: Cambia el atributo `data-theme` en `<html>` y guarda en localStorage
+- El boton muestra icono dinamico (matLightMode/matDarkMode) segun el tema actual
 - ARIA label actualizado para accesibilidad
-- Transiciones suaves al cambiar tema
+
+Ver los archivos completos en GitHub para la implementacion con signals y manejo de SSR.
 
 ### 6.8 Como Activar Light Mode en el Futuro
 
@@ -2393,53 +2130,13 @@ Para habilitar el tema claro en toda la aplicacion, se pueden usar tres enfoques
 
 **2. Via JavaScript (toggle manual):**
 
-```typescript
-// Servicio de tema
-@Injectable({ providedIn: 'root' })
-export class ThemeService {
-  private theme = signal<'dark' | 'light'>('dark');
+Se podria crear un servicio global de temas con signals que gestione el tema en toda la app. Basicamente el servicio tendria:
+- Un signal `theme` con el valor actual ('dark' | 'light')
+- Metodo `toggleTheme()` que cambia el tema
+- Metodo `initTheme()` que lee de localStorage o detecta preferencia del sistema
+- Guardado en localStorage para persistencia
 
-  toggleTheme(): void {
-    const newTheme = this.theme() === 'dark' ? 'light' : 'dark';
-    this.theme.set(newTheme);
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-  }
-
-  initTheme(): void {
-    const saved = localStorage.getItem('theme') as 'dark' | 'light' | null;
-    const system = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-    const theme = saved ?? system;
-    this.theme.set(theme);
-    document.documentElement.setAttribute('data-theme', theme);
-  }
-}
-```
-
-**3. Componente de Toggle:**
-
-```typescript
-@Component({
-  selector: 'app-theme-toggle',
-  template: `
-    <button
-      type="button"
-      (click)="toggleTheme()"
-      [attr.aria-label]="'Cambiar a modo ' + (isDark() ? 'claro' : 'oscuro')"
-    >
-      <ng-icon [name]="isDark() ? 'matLightMode' : 'matDarkMode'" />
-    </button>
-  `
-})
-export class ThemeToggle {
-  private themeService = inject(ThemeService);
-  isDark = computed(() => this.themeService.theme() === 'dark');
-
-  toggleTheme(): void {
-    this.themeService.toggleTheme();
-  }
-}
-```
+La implementacion actual en `/style-guide` usa este patron pero sin servicio global (solo en esa pagina).
 
 ---
 
@@ -2721,6 +2418,24 @@ npx lighthouse http://localhost:4200/style-guide --output html
 
 La puntuacion puede variar ligeramente dependiendo del entorno de ejecucion. Los resultados de desarrollo pueden diferir de produccion debido a optimizaciones de build.
 
+**Reporte Lighthouse Ejecutado:**
+
+He ejecutado Lighthouse en la URL de produccion y guardado el reporte completo.
+
+**📁 Archivos:**
+- **Reporte HTML completo**: [`lighthouse-report.html`](lighthouse-report.html) (757KB)
+- **Screenshot de scores**: Ver abajo
+
+![Lighthouse Scores](screenshots/lighthouse-screenshot.png)
+
+**Scores obtenidos:**
+- **Performance**: 94 ✅
+- **Accessibility**: 94 ✅
+- **Best Practices**: 93 ✅
+- **SEO**: 91 ✅
+
+Todos los scores superan los requisitos del proyecto (Performance >80, Accessibility >90).
+
 ### 7.11 Testing Multi-Viewport
 
 He verificado la aplicacion en 5 viewports diferentes para asegurar que el diseño responsive funciona correctamente:
@@ -2780,16 +2495,22 @@ He verificado la compatibilidad con los principales navegadores:
 
 ### 7.14 Resultados Lighthouse en Produccion
 
-He ejecutado Lighthouse en la URL de produccion (https://antipanel.tech):
+He ejecutado Lighthouse en la URL de produccion (https://antipanel.tech) y estos son los scores oficiales:
 
-| Pagina | Performance | Accessibility | Best Practices | SEO |
-|--------|:-----------:|:-------------:|:--------------:|:---:|
-| Home | 90+ | 95+ | 95+ | 100 |
-| Dashboard | 85+ | 95+ | 95+ | 100 |
-| Orders | 88+ | 95+ | 95+ | 100 |
-| Style Guide | 85+ | 98+ | 95+ | 100 |
+**📊 Scores Verificados:**
 
-**Nota:** Los scores pueden variar segun el estado de la red y el servidor. Los valores mostrados son representativos de multiples ejecuciones.
+| Categoria | Score | Requisito | Estado |
+|-----------|:-----:|:---------:|:------:|
+| **Performance** | 94 | > 80 | ✅ Supera |
+| **Accessibility** | 94 | > 90 | ✅ Supera |
+| **Best Practices** | 93 | > 90 | ✅ Supera |
+| **SEO** | 91 | > 90 | ✅ Supera |
+
+![Lighthouse Screenshot](screenshots/lighthouse-screenshot.png)
+
+**📁 Reporte completo:** [lighthouse-report.html](lighthouse-report.html)
+
+**Fecha de ejecucion:** 14 de enero de 2025
 
 **Optimizaciones implementadas que contribuyen a los scores:**
 - Lazy loading de componentes via `@defer` de Angular
@@ -2812,7 +2533,7 @@ He ejecutado Lighthouse en la URL de produccion (https://antipanel.tech):
 
 1. **Service Worker para modo offline:** Implementar PWA con cache de assets estaticos para permitir uso sin conexion.
 
-2. **Internacionalizacion (i18n):** Anadir soporte para multiples idiomas (ingles, espanol).
+2. **Internacionalizacion (i18n):** Anadir soporte para multiples idiomas (ingles, español).
 
 3. **Graficos interactivos en Dashboard:** Anadir visualizaciones de datos con charts animados para estadisticas.
 

@@ -18,6 +18,7 @@
     // Fluid width: scales from 280px minimum to 85vw for optimal mobile reading
     width: clamp(17.5rem, 85vw, 100%);
     max-width: 100%;
+    margin-inline: auto; // CSS Logical Property - centrado horizontal (2025+ best practice)
     gap: var(--spacing-6);
     padding: 0 var(--spacing-2); // 8px - base-8 spacing
   }

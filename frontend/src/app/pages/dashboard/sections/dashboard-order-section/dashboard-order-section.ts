@@ -10,7 +10,7 @@ import {
   signal
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { debounceTime, distinctUntilChanged, filter, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { DashboardSectionHeader } from '../../../../components/shared/dashboard-section-header/dashboard-section-header';
 import {
@@ -21,103 +21,15 @@ import {
 import { OrderPlaced } from '../../../../components/shared/order-placed/order-placed';
 import { CatalogService } from '../../../../services/catalog.service';
 import { OrderService, type OrderCreateRequest, type OrderResponse } from '../../../../core/services/order.service';
+import { OrderParserService } from '../../../../core/services/order-parser.service';
+import type { ParsedOrder } from '../../../../core/models/order-parser.models';
 import type { Service } from '../../../../models';
 import type { ServiceItemData } from '../../../../components/shared/service-item-card/service-item-card';
-
-/**
- * Parsed order data from user input
- */
-interface ParsedOrder {
-  quantity: number | null;
-  platform: string | null;
-  serviceType: string | null;
-  target: string | null;
-  matchPercentage: number;
-}
 
 /**
  * Order creation state
  */
 type OrderState = 'idle' | 'loading' | 'success' | 'error';
-
-/**
- * Platform keyword mappings for parsing
- * Includes common abbreviations and variations
- */
-const PLATFORM_KEYWORDS: Record<string, string> = {
-  // Instagram
-  instagram: 'instagram',
-  insta: 'instagram',
-  ig: 'instagram',
-
-  // TikTok - expanded for better matching
-  tiktok: 'tiktok',
-  'tik-tok': 'tiktok',
-  tik: 'tiktok',
-  tok: 'tiktok',
-  tt: 'tiktok',
-
-  // Twitter/X
-  twitter: 'twitter',
-  x: 'twitter',
-  tweet: 'twitter',
-
-  // YouTube
-  youtube: 'youtube',
-  yt: 'youtube',
-
-  // Snapchat
-  snapchat: 'snapchat',
-  snap: 'snapchat',
-
-  // Facebook
-  facebook: 'facebook',
-  fb: 'facebook',
-
-  // Discord
-  discord: 'discord',
-
-  // LinkedIn
-  linkedin: 'linkedin',
-  li: 'linkedin'
-};
-
-/**
- * Service type keyword mappings for parsing
- */
-const SERVICE_TYPE_KEYWORDS: Record<string, string> = {
-  // Followers
-  followers: 'followers',
-  follower: 'followers',
-  follow: 'followers',
-  // Likes
-  likes: 'likes',
-  like: 'likes',
-  // Comments
-  comments: 'comments',
-  comment: 'comments',
-  // Views
-  views: 'views',
-  view: 'views',
-  // Subscribers
-  subscribers: 'subscribers',
-  subscriber: 'subscribers',
-  subs: 'subscribers',
-  sub: 'subscribers',
-  // Shares
-  shares: 'shares',
-  share: 'shares',
-  // Retweets (Twitter/X)
-  retweets: 'retweets',
-  retweet: 'retweets',
-  // Connections (LinkedIn)
-  connections: 'connections',
-  connection: 'connections',
-  connect: 'connections',
-  // Reposts (LinkedIn)
-  reposts: 'reposts',
-  repost: 'reposts'
-};
 
 /**
  * Dashboard order section component.
@@ -141,6 +53,7 @@ const SERVICE_TYPE_KEYWORDS: Record<string, string> = {
 export class DashboardOrderSection {
   private readonly catalogService = inject(CatalogService);
   private readonly orderService = inject(OrderService);
+  private readonly orderParser = inject(OrderParserService);
   private readonly destroyRef = inject(DestroyRef);
 
   /** Track last processed quick order to avoid re-processing */
@@ -206,7 +119,7 @@ export class DashboardOrderSection {
 
   /** Parsed order from input text */
   protected readonly parsedOrder = computed<ParsedOrder>(() => {
-    return this.parseInput(this.inputText());
+    return this.orderParser.parse(this.inputText());
   });
 
   /** Whether we have enough data to show the order preview */
@@ -247,8 +160,8 @@ export class DashboardOrderSection {
       matchPercentage: parsed.matchPercentage,
       service: {
         icon: this.catalogService.getPlatformIcon(parsed.platform ?? ''),
-        platform: this.getPlatformDisplayName(parsed.platform ?? ''),
-        type: this.getServiceTypeDisplayName(parsed.serviceType ?? ''),
+        platform: this.orderParser.getPlatformDisplayName(parsed.platform ?? ''),
+        type: this.orderParser.getServiceTypeDisplayName(parsed.serviceType ?? ''),
         quality: `${service.quality} Quality`,
         speed: `${service.speed} Speed`
       },
@@ -322,175 +235,6 @@ export class DashboardOrderSection {
         this.successMessage.set(null);
       }
     });
-  }
-
-  // -------------------------------------------------------------------------
-  // Input Parsing
-  // -------------------------------------------------------------------------
-
-  /**
-   * Parse user input to extract order details
-   */
-  private parseInput(input: string): ParsedOrder {
-    const text = input.toLowerCase().trim();
-
-    if (!text) {
-      return {
-        quantity: null,
-        platform: null,
-        serviceType: null,
-        target: null,
-        matchPercentage: 0
-      };
-    }
-
-    const quantity = this.extractQuantity(text);
-    const platform = this.extractPlatform(text);
-    const serviceType = this.extractServiceType(text);
-    const target = this.extractTarget(input);
-
-    let matchPercentage = 0;
-    if (quantity) matchPercentage += 25;
-    if (platform) matchPercentage += 25;
-    if (serviceType) matchPercentage += 25;
-    if (target) matchPercentage += 18;
-
-    if (quantity && platform && serviceType) {
-      matchPercentage = Math.min(matchPercentage + 7, 100);
-    }
-
-    return { quantity, platform, serviceType, target, matchPercentage };
-  }
-
-  /**
-   * Extract quantity from text
-   * Supports: 1000, 1k, 50k, 1m, 1.5k
-   * Excludes numbers that are part of URLs or @usernames
-   */
-  private extractQuantity(text: string): number | null {
-    // Remove URLs and usernames before extracting quantity
-    // This prevents matching numbers in @naruto2 or instagram.com/12489510248
-    let cleanText = text;
-
-    // Remove URLs with protocol (https://instagram.com/12489510248/12903)
-    cleanText = cleanText.replace(/https?:\/\/[^\s]+/gi, '');
-
-    // Remove URLs without protocol (instagram.com/naruto2, www.example.com/path)
-    cleanText = cleanText.replace(
-      /(?:www\.)?[\w-]+\.(?:com|net|org|io|co|me|tv|app|dev|link|bio|page)(?:\/[^\s]*)?/gi,
-      ''
-    );
-
-    // Remove @usernames (@naruto2, @user.name)
-    cleanText = cleanText.replace(/@[\w.]+/g, '');
-
-    // Now extract quantity from clean text
-    // Match patterns like: 1000, 1k, 50k, 1.5k, 1m
-    const match = cleanText.match(/(\d+(?:\.\d+)?)\s*(k|m)?/i);
-
-    if (!match) return null;
-
-    let value = parseFloat(match[1]);
-    const suffix = match[2]?.toLowerCase();
-
-    if (suffix === 'k') value *= 1000;
-    else if (suffix === 'm') value *= 1000000;
-
-    return Math.round(value);
-  }
-
-  private extractPlatform(text: string): string | null {
-    const words = text.split(/\s+/);
-    for (const word of words) {
-      const platform = PLATFORM_KEYWORDS[word];
-      if (platform) return platform;
-    }
-    for (const [keyword, platform] of Object.entries(PLATFORM_KEYWORDS)) {
-      if (text.includes(keyword)) return platform;
-    }
-    return null;
-  }
-
-  /**
-   * Extract service type from text
-   * Handles compound types like "company followers" and "profile followers"
-   */
-  private extractServiceType(text: string): string | null {
-    const lowerText = text.toLowerCase();
-
-    // Check compound types FIRST (before single words)
-    // "company followers" should match as company-followers, not just followers
-    if (lowerText.includes('company') && lowerText.includes('followers')) {
-      return 'company-followers';
-    }
-    // "profile followers" = regular followers
-    if (lowerText.includes('profile') && lowerText.includes('followers')) {
-      return 'followers';
-    }
-
-    // Then check single keywords
-    const words = text.split(/\s+/);
-    for (const word of words) {
-      const serviceType = SERVICE_TYPE_KEYWORDS[word];
-      if (serviceType) return serviceType;
-    }
-    for (const [keyword, serviceType] of Object.entries(SERVICE_TYPE_KEYWORDS)) {
-      if (text.includes(keyword)) return serviceType;
-    }
-    return null;
-  }
-
-  /**
-   * Extract target (@username or URL) from text
-   * Priority: Full URL > URL without protocol > @username
-   * This ensures URLs like https://tiktok.com/@user/video/123 are captured fully
-   */
-  private extractTarget(text: string): string | null {
-    // Priority 1: Match URL pattern with protocol (captures TikTok @username in URL)
-    const urlWithProtocol = text.match(/https?:\/\/[^\s]+/i);
-    if (urlWithProtocol) return urlWithProtocol[0];
-
-    // Priority 2: Match URL pattern without protocol
-    const urlWithoutProtocol = text.match(
-      /(?:www\.)?[\w-]+\.(?:com|net|org|io|co|me|tv|app|dev|link|bio|page)(?:\/[^\s]*)?/i
-    );
-    if (urlWithoutProtocol) return urlWithoutProtocol[0];
-
-    // Priority 3: Match @username pattern (only if no URL found)
-    const usernameMatch = text.match(/@[\w.]+/);
-    if (usernameMatch) return usernameMatch[0];
-
-    return null;
-  }
-
-  private getPlatformDisplayName(slug: string): string {
-    const names: Record<string, string> = {
-      instagram: 'INSTAGRAM',
-      tiktok: 'TIKTOK',
-      twitter: 'TWITTER/X',
-      youtube: 'YOUTUBE',
-      snapchat: 'SNAPCHAT',
-      facebook: 'FACEBOOK',
-      discord: 'DISCORD',
-      linkedin: 'LINKEDIN'
-    };
-    return names[slug] ?? slug.toUpperCase();
-  }
-
-  private getServiceTypeDisplayName(slug: string): string {
-    const names: Record<string, string> = {
-      followers: 'Followers',
-      likes: 'Likes',
-      comments: 'Comments',
-      views: 'Views',
-      subscribers: 'Subscribers',
-      shares: 'Shares',
-      retweets: 'Retweets',
-      connections: 'Connections',
-      reposts: 'Reposts',
-      'company-followers': 'Company Followers'
-    };
-    return names[slug] ?? slug.charAt(0).toUpperCase() + slug.slice(1);
   }
 
   // -------------------------------------------------------------------------

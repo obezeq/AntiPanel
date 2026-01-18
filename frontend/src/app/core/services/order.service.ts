@@ -92,6 +92,31 @@ export interface InsufficientBalanceError {
   message: string;
 }
 
+/**
+ * Refill status enum matching backend RefillStatus
+ */
+export type RefillStatus = 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'REJECTED' | 'CANCELLED';
+
+/**
+ * Request to create a refill
+ */
+export interface OrderRefillCreateRequest {
+  orderId: number;
+}
+
+/**
+ * Response from refill creation or retrieval
+ */
+export interface OrderRefillResponse {
+  id: number;
+  orderId: number;
+  providerRefillId: string | null;
+  quantity: number;
+  status: RefillStatus;
+  createdAt: string;
+  completedAt: string | null;
+}
+
 // ============================================================================
 // Service
 // ============================================================================
@@ -215,6 +240,46 @@ export class OrderService {
     return this.http.get<OrderResponse[]>(`${this.baseUrl}/refillable`).pipe(
       retry(this.retryConfig)
     );
+  }
+
+  // -------------------------------------------------------------------------
+  // Refill Operations
+  // -------------------------------------------------------------------------
+
+  /**
+   * Requests a refill for an order.
+   * Creates a refill request that is submitted to the provider.
+   *
+   * @param orderId - The ID of the order to refill
+   * @returns Observable with the refill response
+   * @throws HTTP 400 if order is not eligible for refill
+   * @throws HTTP 404 if order not found
+   */
+  requestRefill(orderId: number): Observable<OrderRefillResponse> {
+    return this.http.post<OrderRefillResponse>(
+      `${environment.apiUrl}/refills`,
+      { orderId }
+    ).pipe(
+      catchError(this.handleRefillError)
+    );
+  }
+
+  /**
+   * Handles HTTP errors for refill operations.
+   */
+  private handleRefillError(error: HttpErrorResponse): Observable<never> {
+    let errorMessage = 'An error occurred while processing your refill request.';
+
+    if (error.status === 400) {
+      errorMessage = error.error?.message || 'Order is not eligible for refill.';
+    } else if (error.status === 404) {
+      errorMessage = 'Order not found.';
+    } else if (error.status === 503) {
+      errorMessage = 'Provider service is temporarily unavailable. Please try again later.';
+    }
+
+    console.error('Refill error:', errorMessage, error);
+    return throwError(() => error);
   }
 
   // -------------------------------------------------------------------------

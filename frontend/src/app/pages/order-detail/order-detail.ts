@@ -66,6 +66,9 @@ export class OrderDetail implements OnInit {
   /** User balance for header */
   protected readonly balance = signal('$0.00');
 
+  /** Refill request loading state */
+  protected readonly isRefillLoading = signal(false);
+
   // ---------------------------------------------------------------------------
   // Status Mapping
   // ---------------------------------------------------------------------------
@@ -291,6 +294,39 @@ export class OrderDetail implements OnInit {
    */
   protected onBack(): void {
     this.router.navigate(['/orders']);
+  }
+
+  /**
+   * Handle refill request action.
+   * Submits refill request to provider and shows feedback.
+   */
+  protected onRequestRefill(): void {
+    const orderId = this.order()?.id;
+    if (!orderId || this.isRefillLoading()) return;
+
+    this.isRefillLoading.set(true);
+
+    this.orderService.requestRefill(orderId).pipe(
+      take(1),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
+      next: () => {
+        this.notificationService.success('Refill request submitted successfully', {
+          title: 'Refill Requested',
+          duration: 4000
+        });
+        this.isRefillLoading.set(false);
+        // Refresh order to update status
+        this.refreshOrderStatus();
+      },
+      error: (error) => {
+        const message = error?.error?.message || 'Failed to submit refill request. Please try again.';
+        this.notificationService.error(message, {
+          title: 'Refill Failed'
+        });
+        this.isRefillLoading.set(false);
+      }
+    });
   }
 
   // ---------------------------------------------------------------------------

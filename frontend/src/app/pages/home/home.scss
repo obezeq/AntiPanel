@@ -24,6 +24,7 @@
   min-height: 100vh;
   padding-top: var(--header-height);
   padding-bottom: var(--spacing-16);
+  overflow: hidden;
 
   // CRITICAL: Force into compositor layer + create stacking context
   // This makes z-index: -1 work for ::before/::after in Chrome!

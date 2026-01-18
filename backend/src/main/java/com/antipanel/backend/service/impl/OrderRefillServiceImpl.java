@@ -13,9 +13,10 @@ import com.antipanel.backend.mapper.OrderRefillMapper;
 import com.antipanel.backend.mapper.PageMapper;
 import com.antipanel.backend.repository.OrderRefillRepository;
 import com.antipanel.backend.repository.OrderRepository;
+import com.antipanel.backend.service.ExternalOrderService;
 import com.antipanel.backend.service.OrderRefillService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,6 @@ import java.util.List;
  * Handles refill request creation, status management, and queries.
  */
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Slf4j
 public class OrderRefillServiceImpl implements OrderRefillService {
@@ -38,6 +38,23 @@ public class OrderRefillServiceImpl implements OrderRefillService {
     private final OrderRepository orderRepository;
     private final OrderRefillMapper orderRefillMapper;
     private final PageMapper pageMapper;
+    private final ExternalOrderService externalOrderService;
+
+    /**
+     * Constructor with @Lazy on ExternalOrderService to break circular dependency.
+     */
+    public OrderRefillServiceImpl(
+            OrderRefillRepository orderRefillRepository,
+            OrderRepository orderRepository,
+            OrderRefillMapper orderRefillMapper,
+            PageMapper pageMapper,
+            @Lazy ExternalOrderService externalOrderService) {
+        this.orderRefillRepository = orderRefillRepository;
+        this.orderRepository = orderRepository;
+        this.orderRefillMapper = orderRefillMapper;
+        this.pageMapper = pageMapper;
+        this.externalOrderService = externalOrderService;
+    }
 
     // ============ CREATE OPERATIONS ============
 
@@ -74,7 +91,20 @@ public class OrderRefillServiceImpl implements OrderRefillService {
 
         OrderRefill saved = orderRefillRepository.save(refill);
         log.info("Created refill ID: {} for order ID: {}", saved.getId(), order.getId());
-        return orderRefillMapper.toResponse(saved);
+
+        // Submit refill to provider and update status
+        try {
+            String providerRefillId = externalOrderService.requestRefill(order.getId());
+            log.info("Provider returned refill ID: {} for order ID: {}", providerRefillId, order.getId());
+
+            // Mark as processing with provider refill ID
+            return markAsProcessing(saved.getId(), providerRefillId);
+        } catch (Exception e) {
+            log.error("Failed to submit refill to provider for order ID: {}. Error: {}",
+                    order.getId(), e.getMessage());
+            // Keep refill in PENDING state for retry, return current state
+            return orderRefillMapper.toResponse(saved);
+        }
     }
 
     // ============ READ OPERATIONS ============

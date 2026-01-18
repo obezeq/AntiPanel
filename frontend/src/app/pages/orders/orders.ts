@@ -130,7 +130,7 @@ export class Orders implements OnInit {
     if (query) {
       result = result.filter(order =>
         order.serviceName.toLowerCase().includes(query) ||
-        order.id.includes(query) ||
+        String(order.id).includes(query) ||
         order.targetUrl?.toLowerCase().includes(query)
       );
     }
@@ -214,14 +214,15 @@ export class Orders implements OnInit {
    */
   private mapOrders(orders: OrderResponse[]): OrderCardData[] {
     return orders.map(order => ({
-      id: order.id.toString(),
+      id: order.id,
       serviceName: order.serviceName,
       targetUrl: order.target || undefined,
       quantity: order.quantity,
       remains: order.remains,
       price: order.totalCharge,
       status: this.mapStatus(order.status),
-      createdAt: new Date(order.createdAt)
+      createdAt: new Date(order.createdAt),
+      canRequestRefill: order.canRequestRefill
     }));
   }
 
@@ -310,11 +311,34 @@ export class Orders implements OnInit {
 
   /**
    * Handle refill action.
-   * TODO: Implement refill request API
+   * Submits refill request to provider and shows feedback.
    */
   protected onRefill(order: OrderCardData): void {
-    console.log('Refill requested for order:', order.id);
-    // TODO: Call refill API endpoint
+    // Prevent duplicate requests while processing
+    if (this.isLoading()) return;
+
+    this.isLoading.set(true);
+
+    this.orderService.requestRefill(order.id).pipe(
+      take(1),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
+      next: () => {
+        this.notificationService.success('Refill request submitted successfully', {
+          title: 'Refill Requested',
+          duration: 4000
+        });
+        // Refresh orders to update any status changes
+        this.loadOrders();
+      },
+      error: (error) => {
+        const message = error?.error?.message || 'Failed to submit refill request. Please try again.';
+        this.notificationService.error(message, {
+          title: 'Refill Failed'
+        });
+        this.isLoading.set(false);
+      }
+    });
   }
 
   /**
@@ -391,7 +415,7 @@ export class Orders implements OnInit {
     let hasChanges = false;
 
     updatedOrders.forEach(updated => {
-      const existing = currentOrders.find(o => o.id === updated.id.toString());
+      const existing = currentOrders.find(o => o.id === updated.id);
       if (existing && existing.status !== this.mapStatus(updated.status)) {
         hasChanges = true;
 

@@ -69,7 +69,7 @@ public enum OrderStatus {
      * Verifica si la orden está en un estado final
      */
     public boolean isFinal() {
-        return this == COMPLETED || this == CANCELLED || this == REFUNDED || this == FAILED;
+        return this == COMPLETED || this == PARTIAL || this == CANCELLED || this == REFUNDED || this == FAILED;
     }
 
     /**

@@ -984,3 +984,100 @@
 
   @include focus-visible;
 }
+
+// =============================================================================
+// RESPONSIVE IMAGES SECTION
+// =============================================================================
+
+.style-guide__image-demo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+
+  picture {
+    display: block;
+    max-width: 100%;
+  }
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+    border: var(--border-width-thin) solid var(--color-border);
+  }
+
+  figcaption {
+    font-size: var(--font-size-small);
+    color: var(--color-text-muted);
+    text-align: center;
+    font-family: var(--font-secondary);
+  }
+}
+
+.style-guide__image-demo--constrained {
+  max-width: 60rem; // 960px - matches our max image size (1920w) for 2x retina
+  margin-inline: auto;
+}
+
+.style-guide__image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-6);
+}
+
+.style-guide__code-summary {
+  background-color: var(--color-tiny-info);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-6);
+  border: var(--border-width-thin) solid var(--color-border);
+}
+
+.style-guide__tech-list {
+  display: grid;
+  gap: var(--spacing-4);
+
+  dt {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+    font-size: var(--font-size-small);
+  }
+
+  dd {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-small);
+    padding-inline-start: var(--spacing-4);
+    margin-block-end: var(--spacing-2);
+
+    code {
+      background-color: var(--color-background);
+      padding: var(--spacing-1) var(--spacing-2);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-secondary);
+      font-size: var(--font-size-tiny);
+    }
+  }
+}
+
+.style-guide__debug-box {
+  display: inline-block;
+  padding: var(--spacing-3) var(--spacing-4);
+  background-color: var(--color-stats-blue);
+  color: var(--color-background);
+  border-radius: var(--radius-md);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-small);
+  cursor: pointer;
+  transition: var(--transition-colors);
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  code {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: var(--spacing-1) var(--spacing-2);
+    border-radius: var(--radius-sm);
+    font-weight: var(--font-weight-semibold);
+  }
+}
