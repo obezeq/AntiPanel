@@ -10,7 +10,7 @@ export type OrderStatus = 'pending' | 'processing' | 'completed' | 'cancelled' |
  */
 export interface OrderCardData {
   /** Unique order identifier */
-  id: string;
+  id: number;
   /** Service name and description */
   serviceName: string;
   /** Target URL for the service */
@@ -25,6 +25,8 @@ export interface OrderCardData {
   status: OrderStatus;
   /** Order creation date */
   createdAt: Date;
+  /** Whether the order can currently request a refill (from API) */
+  canRequestRefill?: boolean;
 }
 
 /**
@@ -69,11 +71,7 @@ export class OrderCard {
   /** Formatted order ID with leading zeros */
   protected readonly formattedId = computed(() => {
     const id = this.order().id;
-    // If numeric, pad with zeros
-    if (/^\d+$/.test(id)) {
-      return id.padStart(5, '0');
-    }
-    return id;
+    return String(id).padStart(5, '0');
   });
 
   /** Status label for display */
@@ -125,10 +123,9 @@ export class OrderCard {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   });
 
-  /** Whether refill action should be available */
+  /** Whether refill action should be available (uses API canRequestRefill field) */
   protected readonly canRefill = computed(() => {
-    const status = this.order().status;
-    return status === 'completed' || status === 'partial';
+    return this.order().canRequestRefill ?? false;
   });
 
   // ---------------------------------------------------------------------------

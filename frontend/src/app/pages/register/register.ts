@@ -42,16 +42,20 @@ export class Register implements HasUnsavedChanges {
   /** Server error message to display */
   protected readonly serverError = signal('');
 
+  /** Tracks if form was successfully submitted (prevents unsaved changes prompt) */
+  private readonly formSubmitted = signal(false);
+
   /**
    * Check if form has unsaved changes.
    * Used by pendingChangesGuard to prompt before navigation.
    */
   hasUnsavedChanges(): boolean {
-    const authForm = this.authForm();
+    // Don't prompt if form was successfully submitted
+    if (this.formSubmitted()) return false;
     // Don't prompt if currently submitting (loading state)
     if (this.isLoading()) return false;
     // Check if form exists and has been modified
-    return authForm?.isDirty ?? false;
+    return this.authForm()?.isDirty ?? false;
   }
 
   /**
@@ -68,6 +72,8 @@ export class Register implements HasUnsavedChanges {
       role: 'USER'
     }).subscribe({
       next: () => {
+        // Mark as submitted BEFORE navigation to prevent unsaved changes prompt
+        this.formSubmitted.set(true);
         this.isLoading.set(false);
         // Redirect to login with success message
         this.router.navigate(['/login'], {

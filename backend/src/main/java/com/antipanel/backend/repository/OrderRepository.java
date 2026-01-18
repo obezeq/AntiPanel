@@ -67,7 +67,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
      * @return List of active orders
      */
     @Query("SELECT o FROM Order o WHERE o.user.id = :userId " +
-           "AND o.status NOT IN ('COMPLETED', 'CANCELLED', 'REFUNDED') " +
+           "AND o.status NOT IN ('COMPLETED', 'PARTIAL', 'CANCELLED', 'REFUNDED', 'FAILED') " +
            "ORDER BY o.createdAt DESC")
     List<Order> findActiveOrdersByUser(@Param("userId") Long userId);
 

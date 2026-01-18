@@ -239,6 +239,16 @@ public interface OrderService {
     OrderResponse completeOrder(Long id);
 
     /**
+     * Mark order as partial.
+     * Calculates and issues a partial refund for undelivered quantity.
+     *
+     * @param id      Order ID
+     * @param remains Remaining (undelivered) quantity from provider
+     * @return Updated order response
+     */
+    OrderResponse markAsPartial(Long id, Integer remains);
+
+    /**
      * Cancel order.
      *
      * @param id Order ID

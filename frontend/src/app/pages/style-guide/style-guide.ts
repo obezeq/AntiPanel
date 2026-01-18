@@ -358,54 +358,59 @@ export class StyleGuide implements OnInit {
   // Full order cards demo (orders page)
   protected readonly fullOrders: OrderCardData[] = [
     {
-      id: '00001',
+      id: 1,
       serviceName: 'EXAMPLE FOLLOWERS. FAST. HIGH QUALITY.',
       targetUrl: 'https://example.com/username',
       quantity: 3000,
       remains: 0,
       price: 3.69,
       status: 'completed',
-      createdAt: new Date('2025-03-03T13:00:00')
+      createdAt: new Date('2025-03-03T13:00:00'),
+      canRequestRefill: true
     },
     {
-      id: '00002',
+      id: 2,
       serviceName: 'Instagram Likes [Premium]',
       targetUrl: 'https://instagram.com/p/example123',
       quantity: 5000,
       remains: 2500,
       price: 12.50,
       status: 'processing',
-      createdAt: new Date('2025-03-02T10:30:00')
+      createdAt: new Date('2025-03-02T10:30:00'),
+      canRequestRefill: false
     },
     {
-      id: '00003',
+      id: 3,
       serviceName: 'YouTube Views [High Retention]',
       targetUrl: 'https://youtube.com/watch?v=example',
       quantity: 10000,
       remains: 10000,
       price: 25.00,
       status: 'pending',
-      createdAt: new Date('2025-03-01T08:15:00')
+      createdAt: new Date('2025-03-01T08:15:00'),
+      canRequestRefill: false
     },
     {
-      id: '00004',
+      id: 4,
       serviceName: 'Twitter Followers',
       targetUrl: 'https://twitter.com/example_user',
       quantity: 500,
       remains: 500,
       price: 3.99,
       status: 'cancelled',
-      createdAt: new Date('2025-02-28T16:45:00')
+      createdAt: new Date('2025-02-28T16:45:00'),
+      canRequestRefill: false
     },
     {
-      id: '00005',
+      id: 5,
       serviceName: 'Facebook Page Likes',
       targetUrl: 'https://facebook.com/example_page',
       quantity: 2000,
       remains: 450,
       price: 35.00,
       status: 'partial',
-      createdAt: new Date('2025-02-27T14:20:00')
+      createdAt: new Date('2025-02-27T14:20:00'),
+      canRequestRefill: true
     }
   ];
 

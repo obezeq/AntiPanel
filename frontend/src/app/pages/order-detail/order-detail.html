@@ -161,8 +161,14 @@
           <button
             type="button"
             class="order-detail__action order-detail__action--secondary"
+            [disabled]="isRefillLoading()"
+            (click)="onRequestRefill()"
           >
-            Request Refill
+            @if (isRefillLoading()) {
+              Requesting...
+            } @else {
+              Request Refill
+            }
           </button>
         }
       </footer>

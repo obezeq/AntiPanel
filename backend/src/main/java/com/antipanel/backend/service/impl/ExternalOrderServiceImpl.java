@@ -258,6 +258,10 @@ public class ExternalOrderServiceImpl implements ExternalOrderService {
 
             if (newStatus == OrderStatus.COMPLETED) {
                 return orderService.completeOrder(order.getId());
+            } else if (newStatus == OrderStatus.PARTIAL) {
+                // Partial orders: some quantity delivered, some not
+                // 'remains' from provider indicates undelivered quantity
+                return orderService.markAsPartial(order.getId(), remains);
             } else if (newStatus == OrderStatus.CANCELLED) {
                 return orderService.cancelOrder(order.getId());
             } else {

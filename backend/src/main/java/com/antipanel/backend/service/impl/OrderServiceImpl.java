@@ -428,6 +428,81 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
+    public OrderResponse markAsPartial(Long id, Integer remains) {
+        log.debug("Marking order ID: {} as partial with remains: {}", id, remains);
+        Order order = findOrderById(id);
+
+        if (order.isFinal()) {
+            throw new BadRequestException("Cannot mark order in final state as partial");
+        }
+
+        // Calculate refund amount for undelivered quantity
+        // remains = quantity that was NOT delivered
+        // Cap remains to order quantity to prevent over-refunding from malformed provider responses
+        int effectiveRemains = remains != null ? Math.min(remains, order.getQuantity()) : 0;
+        int deliveredQuantity = order.getQuantity() - effectiveRemains;
+
+        if (remains != null && remains > order.getQuantity()) {
+            log.warn("Provider returned remains ({}) > quantity ({}) for order {}. Capping to quantity.",
+                    remains, order.getQuantity(), id);
+        }
+
+        // Calculate refund for undelivered portion
+        BigDecimal refundAmount = BigDecimal.ZERO;
+        if (effectiveRemains > 0) {
+            refundAmount = order.getPricePerK()
+                    .multiply(BigDecimal.valueOf(effectiveRemains))
+                    .divide(BigDecimal.valueOf(1000), 4, RoundingMode.HALF_UP);
+
+            // Ensure refund does not exceed original charge (safety check)
+            if (refundAmount.compareTo(order.getTotalCharge()) > 0) {
+                log.warn("Calculated refund {} exceeds total charge {} for order {}. Capping to total charge.",
+                        refundAmount, order.getTotalCharge(), id);
+                refundAmount = order.getTotalCharge();
+            }
+        }
+
+        // Update order status and remains (use effective remains for consistency)
+        order.setStatus(OrderStatus.PARTIAL);
+        order.setRemains(effectiveRemains);
+        order.setCompletedAt(LocalDateTime.now());
+
+        // Refill is not applicable for partial orders
+        order.setIsRefillable(false);
+        order.setRefillDeadline(null);
+
+        // Process partial refund if there's an amount to refund
+        if (refundAmount.compareTo(BigDecimal.ZERO) > 0) {
+            User user = order.getUser();
+            BigDecimal balanceBefore = user.getBalance();
+            BigDecimal balanceAfter = balanceBefore.add(refundAmount);
+            user.setBalance(balanceAfter);
+            userRepository.save(user);
+
+            Transaction transaction = Transaction.builder()
+                    .user(user)
+                    .type(TransactionType.REFUND)
+                    .amount(refundAmount)
+                    .balanceBefore(balanceBefore)
+                    .balanceAfter(balanceAfter)
+                    .referenceType("ORDER")
+                    .referenceId(order.getId())
+                    .description("Order #" + order.getId() + " partial - refund for " + remains + " undelivered")
+                    .build();
+            transactionRepository.save(transaction);
+
+            log.info("Partial refund of {} issued for order ID: {} ({} undelivered)",
+                    refundAmount, id, remains);
+        }
+
+        Order saved = orderRepository.save(order);
+        log.info("Marked order ID: {} as PARTIAL. Delivered: {}, Remains: {}",
+                id, deliveredQuantity, remains);
+        return orderMapper.toResponse(saved);
+    }
+
+    @Override
+    @Transactional
     public OrderResponse cancelOrder(Long id) {
         log.debug("Cancelling order ID: {}", id);
         Order order = findOrderById(id);
