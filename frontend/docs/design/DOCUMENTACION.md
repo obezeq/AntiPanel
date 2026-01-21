@@ -2725,9 +2725,12 @@ Y el SCSS maneja todo con pseudo-elementos:
 
 4. **Los DevTools de Chrome ayudan** - en la pestaña Layers se puede ver qué elementos están en qué capas GPU.
 
-#### Referencias
-
-- [surma.dev - Layers and how to force them](https://surma.dev/things/forcing-layers/)
-- [Aerotwist - On translate3d and layer creation hacks](https://aerotwist.com/blog/on-translate3d-and-layer-creation-hacks/)
-
 ---
+
+## Conclusion
+
+Este documento recoge todo el trabajo realizado en el frontend de AntiPanel a lo largo de las 7 fases del proyecto. Desde la arquitectura CSS con ITCSS y BEM, pasando por el HTML semantico, los componentes UI reutilizables, la estrategia responsive mobile-first, la optimizacion multimedia con SVGs, el sistema de temas dark/light, hasta el despliegue final en produccion.
+
+He intentado aplicar las mejores practicas que he ido aprendiendo: usar CSS Custom Properties para temas, HSL para manipular colores de forma intuitiva, mixins SCSS para evitar repeticion, y mantener una estructura de archivos clara y escalable. Tambien he documentado los problemas que me he encontrado y como los he solucionado, porque creo que eso es tan importante como el codigo final.
+
+El proyecto esta desplegado en [antipanel.tech](https://antipanel.tech) y todo el codigo fuente esta disponible en el repositorio.
