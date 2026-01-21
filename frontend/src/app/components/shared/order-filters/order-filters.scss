@@ -152,7 +152,7 @@
   padding: var(--spacing-2) var(--spacing-8);
   background-color: var(--color-background);
   border-radius: var(--radius-full);
-  border: var(--border-with-thick) solid var(--color-secondary);
+  border: var(--border-width-thick) solid var(--color-secondary);
   font-family: var(--font-secondary);
   font-size: var(--font-size-h5);
   font-weight: var(--font-weight-semibold);
@@ -169,11 +169,12 @@
   }
 
   &:hover {
-    border: var(--border-with-thick) solid var(--color-foreground);
+    border: var(--border-width-thick) solid var(--color-foreground);
   }
 
   &:focus {
-    background-color: var(--color-text);
+    border-color: var(--color-text);
+    color: var(--color-text);
   }
 }
 
