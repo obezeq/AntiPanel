@@ -6,6 +6,7 @@
 // ==========================================================================
 
 @use 'sass:list';
+@use 'sass:map';
 @use '../00-settings/variables' as *;
 
 // ---------------------------------------------------------------------------
@@ -18,8 +19,8 @@
 //   @include respond-to('lg') { ... }
 
 @mixin respond-to($breakpoint) {
-  @if map-has-key($breakpoints, $breakpoint) {
-    @media screen and (min-width: map-get($breakpoints, $breakpoint)) {
+  @if map.has-key($breakpoints, $breakpoint) {
+    @media screen and (min-width: map.get($breakpoints, $breakpoint)) {
       @content;
     }
   } @else {
@@ -29,8 +30,8 @@
 
 // Max-width queries (desktop-first, use sparingly)
 @mixin respond-below($breakpoint) {
-  @if map-has-key($breakpoints, $breakpoint) {
-    @media screen and (max-width: (map-get($breakpoints, $breakpoint) - 1px)) {
+  @if map.has-key($breakpoints, $breakpoint) {
+    @media screen and (max-width: (map.get($breakpoints, $breakpoint) - 1px)) {
       @content;
     }
   } @else {
