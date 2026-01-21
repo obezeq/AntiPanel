@@ -79,6 +79,10 @@
    - 4.3 Mixins Responsive (RA4.a)
    - 4.4 Componentes Responsive (RA4.e)
    - 4.5 Patrones de Layout Adaptativos
+   - 4.6 Container Queries
+   - 4.7 Testing Responsive Multi-Viewport
+   - 4.8 Paginas Responsive Implementadas
+   - 4.9 Screenshots Comparativos Responsive
 
 5. [Optimizacion Multimedia](#5-optimizacion-multimedia) — **Fase 5**
    - 5.1 Imagenes SVG Implementadas (RA3.b)
@@ -103,23 +107,26 @@
    - 6.6 Data Attribute [data-theme] (RA2.d)
    - 6.7 Theme Toggle Implementado (RA2.e)
    - 6.8 Como Activar Light Mode en el Futuro
+   - 6.9 Capturas Comparativas de Temas
 
 7. [Aplicacion Completa y Despliegue](#7-informe-de-accesibilidad) — **Fase 7**
-   - 7.1 Nivel de Conformidad WCAG
-   - 7.2 Contraste de Colores (RA1.a)
-   - 7.3 Navegacion por Teclado
-   - 7.4 Focus Visible y Skip Links
-   - 7.5 ARIA Attributes Utilizados (RA2.f)
-   - 7.6 Reduced Motion Support
-   - 7.7 Semantic HTML Landmarks (RA2.f)
-   - 7.8 Formularios Accesibles (RA2.f)
-   - 7.9 Checklist de Accesibilidad
-   - 7.10 Verificacion Lighthouse (RA4.a)
-   - 7.11 Testing Multi-Viewport
-   - 7.12 Testing en Dispositivos Reales
-   - 7.13 Verificacion Multi-Navegador
-   - 7.14 Resultados Lighthouse en Produccion
-   - 7.15 Problemas Conocidos y Mejoras Futuras
+   - 7.1 Paginas y Funcionalidades Implementadas
+   - 7.2 Nivel de Conformidad WCAG
+   - 7.3 Contraste de Colores (RA1.a)
+   - 7.4 Navegacion por Teclado
+   - 7.5 Focus Visible y Skip Links
+   - 7.6 ARIA Attributes Utilizados (RA2.f)
+   - 7.7 Reduced Motion Support
+   - 7.8 Semantic HTML Landmarks (RA2.f)
+   - 7.9 Formularios Accesibles (RA2.f)
+   - 7.10 Checklist de Accesibilidad
+   - 7.11 Verificacion Lighthouse (RA4.a)
+   - 7.12 Testing Multi-Viewport
+   - 7.13 Testing en Dispositivos Reales
+   - 7.14 Verificacion Multi-Navegador
+   - 7.15 Resultados Lighthouse en Produccion
+   - 7.16 Problemas Conocidos y Mejoras Futuras
+   - 7.17 Caso de Estudio: Grid 3D
 
 ---
 
@@ -223,19 +230,21 @@ A continuación se muestran capturas del diseño original en Figma demostrando l
 
 Defini la siguiente paleta de colores para el modo oscuro:
 
-| Token | Valor | Uso |
-|-------|-------|-----|
-| `--color-background` | `#0A0A0A` | Fondo principal |
-| `--color-text` | `#FAFAFA` | Texto principal |
-| `--color-high-contrast` | `#FFFFFF` | Texto alto contraste |
-| `--color-foreground` | `#A1A1A1` | Texto secundario |
-| `--color-secondary` | `#666666` | Borders, texto terciario |
-| `--color-information` | `#393939` | Borders, separadores |
-| `--color-tiny-info` | `#1C1C1C` | Fondos secundarios |
-| `--color-success` | `#00DC33` | Exito, CTA principal |
-| `--color-error` | `#FF4444` | Errores |
-| `--color-status-yellow` | `#F0B100` | Pendiente, warning |
-| `--color-stats-blue` | `#00A5FF` | Estadisticas |
+| Token | HEX | HSL | Uso |
+|-------|-----|-----|-----|
+| `--color-background` | `#0A0A0A` | `hsl(0, 0%, 3.93%)` | Fondo principal |
+| `--color-text` | `#FAFAFA` | `hsl(0, 0%, 98%)` | Texto principal |
+| `--color-high-contrast` | `#FFFFFF` | `hsl(0, 0%, 100%)` | Texto alto contraste |
+| `--color-foreground` | `#A1A1A1` | `hsl(0, 0%, 63%)` | Texto secundario |
+| `--color-secondary` | `#666666` | `hsl(0, 0%, 40%)` | Borders, texto terciario |
+| `--color-information` | `#393939` | `hsl(0, 0%, 22.35%)` | Borders, separadores |
+| `--color-tiny-info` | `#1C1C1C` | `hsl(0, 0%, 11%)` | Fondos secundarios |
+| `--color-success` | `#00DC33` | `hsl(134, 100%, 43%)` | Exito, CTA principal |
+| `--color-error` | `#FF4444` | `hsl(0, 100%, 63.33%)` | Errores |
+| `--color-status-yellow` | `#F0B100` | `hsl(44, 100%, 47%)` | Pendiente, warning |
+| `--color-stats-blue` | `#00A5FF` | `hsl(200, 100%, 50%)` | Estadisticas |
+
+> **¿Por que HSL en vez de HEX?** Decidi usar HSL (Hue, Saturation, Lightness) en las variables CSS porque me permite manipular los colores de forma mas intuitiva. Con HSL puedo crear variantes de un color simplemente ajustando la luminosidad (por ejemplo, `--color-success-dark` reduce el lightness de 43% a 38.5% manteniendo el mismo tono). Ademas, todos los grises comparten el mismo hue (0) y saturation (0%), variando solo en lightness, lo que hace el sistema mas coherente y facil de mantener.
 
 **Tipografia**
 
@@ -795,6 +804,8 @@ Respeto las preferencias de usuario:
 }
 ```
 
+> **¿Por que uso `!important` aqui?** Aunque generalmente evito usar `!important` porque rompe la cascada CSS, en este caso es necesario y esta justificado. El `!important` garantiza que las preferencias de accesibilidad del usuario siempre se respeten, sin importar que animaciones o transiciones definan los componentes. Es el unico caso donde `!important` es una buena practica segun el W3C, ya que la accesibilidad debe tener prioridad absoluta sobre cualquier estilo visual.
+
 ---
 
 ## 3. Sistema de Componentes UI
@@ -1095,7 +1106,7 @@ A continuación se muestran capturas de pantalla de la página Style Guide mostr
 
 **Colores**
 ![Colors](screenshots/style-guide/website-style-guide-colors.png)
-> **AntiPanel** adopta la oscuridad como su fundamento. Donde los paneles tradicionales abruman con ruido visual, nosotros eliminamos las distracciones. Nuestra paleta monocromática crea profundidad a través de gradaciones sutiles, desde **negro puro** hasta *grises suaves*, permitiendo que el contenido respire y las acciones hablen con claridad. Los colores de acento se utilizan con precisión quirúrgica: verde confirma, rojo alerta, amarillo indica progreso y azul guía. Esta es la estética anti-panel: minimalista, confiada y indiscutiblemente enfocada. Made with <3
+> **AntiPanel** adopta la oscuridad como su fundamento. Donde los paneles tradicionales abruman con ruido visual, nosotros eliminamos las distracciones. Nuestra paleta monocromática crea profundidad a través de gradaciones sutiles, desde **negro puro** hasta *grises suaves*, permitiendo que el contenido respire y las acciones hablen con claridad. Los colores de acento se utilizan con precisión quirúrgica: verde confirma, rojo alerta, amarillo indica progreso y azul guía. Esta es la estética anti-panel: minimalista, confiada y indiscutiblemente enfocada.
 
 
 **Botones y Alertas**
@@ -1491,6 +1502,8 @@ Todos los estilos base los disene para moviles, y los estilos para pantallas mas
 }
 ```
 
+> **¿Por que uso `!important` en estas utilidades?** Las clases utility de visibilidad necesitan `!important` porque su proposito es sobrescribir cualquier valor de `display` que tenga el elemento. Por ejemplo, si un componente tiene `display: flex`, sin `!important` la clase `.hide-mobile` no funcionaria. Este es el mismo patron que usan frameworks como Bootstrap y Tailwind CSS. Es uno de los pocos casos donde `!important` es aceptable: clases utility que deben tener la maxima prioridad por diseño.
+
 ### 4.6 Container Queries
 
 Ademas de las media queries tradicionales basadas en viewport, implemente Container Queries en componentes clave. Esta tecnica permite que los componentes se adapten basandose en el tamano de su contenedor padre, no del viewport.
@@ -1578,9 +1591,30 @@ Para cada viewport verifique:
 | Wallet | `/wallet` | Billetera del usuario | Balance card, historial de transacciones responsive |
 | Style Guide | `/style-guide` | Catalogo de componentes | Grid responsive para cada seccion de componentes |
 | Terms | `/terms` | Terminos y condiciones | Contenido narrow para legibilidad optima |
-| Admin | `/admin/*` | Panel de administracion | Sidebar sticky/drawer, tablas responsive |
 
-**Nota sobre screenshots:** Los screenshots comparativos de mobile (375px), tablet (768px) y desktop (1280px) se encuentran en la carpeta `screenshots/responsive/` una vez que el usuario los capture manualmente usando Chrome DevTools.
+### 4.9 Screenshots Comparativos Responsive
+
+A continuacion se muestran capturas comparativas de las paginas principales en los 3 breakpoints clave:
+
+**Home Page:**
+
+| Mobile (375px) | Tablet (768px) | Desktop (1280px) |
+|:-:|:-:|:-:|
+| ![Home Mobile](screenshots/responsive/home-375.png) | ![Home Tablet](screenshots/responsive/home-768.png) | ![Home Desktop](screenshots/responsive/home-1280.png) |
+
+**Dashboard:**
+
+| Mobile (375px) | Tablet (768px) | Desktop (1280px) |
+|:-:|:-:|:-:|
+| ![Dashboard Mobile](screenshots/responsive/dashboard-375.png) | ![Dashboard Tablet](screenshots/responsive/dashboard-768.png) | ![Dashboard Desktop](screenshots/responsive/dashboard-1280.png) |
+
+**Orders:**
+
+| Mobile (375px) | Tablet (768px) | Desktop (1280px) |
+|:-:|:-:|:-:|
+| ![Orders Mobile](screenshots/responsive/orders-375.png) | ![Orders Tablet](screenshots/responsive/orders-768.png) | ![Orders Desktop](screenshots/responsive/orders-1280.png) |
+
+> **Nota:** Estas capturas se realizan con Chrome DevTools usando Device Mode en los viewports indicados.
 
 ---
 
@@ -2138,6 +2172,30 @@ Se podria crear un servicio global de temas con signals que gestione el tema en 
 
 La implementacion actual en `/style-guide` usa este patron pero sin servicio global (solo en esa pagina).
 
+### 6.9 Capturas Comparativas de Temas
+
+A continuacion se muestran capturas de las paginas principales en modo Dark y Light:
+
+**Home Page:**
+
+| Dark Mode | Light Mode |
+|:-:|:-:|
+| ![Home Dark](screenshots/themes/home-dark.png) | ![Home Light](screenshots/themes/home-light.png) |
+
+**Dashboard:**
+
+| Dark Mode | Light Mode |
+|:-:|:-:|
+| ![Dashboard Dark](screenshots/themes/dashboard-dark.png) | ![Dashboard Light](screenshots/themes/dashboard-light.png) |
+
+**Style Guide:**
+
+| Dark Mode | Light Mode |
+|:-:|:-:|
+| ![Style Guide Dark](screenshots/themes/style-guide-dark.png) | ![Style Guide Light](screenshots/themes/style-guide-light.png) |
+
+> **Nota:** Para cambiar entre temas, usar el toggle en `/style-guide` o modificar `data-theme` en `<html>`.
+
 ---
 
 ## 7. Informe de Accesibilidad
@@ -2150,7 +2208,31 @@ La implementacion actual en `/style-guide` usa este patron pero sin servicio glo
 
 En esta seccion documento las practicas de accesibilidad que implemente en AntiPanel siguiendo las pautas WCAG 2.1.
 
-### 7.1 Nivel de Conformidad WCAG
+### 7.1 Paginas y Funcionalidades Implementadas
+
+La aplicacion AntiPanel incluye las siguientes paginas funcionales:
+
+| Pagina | Ruta | Funcionalidades Principales |
+|--------|------|----------------------------|
+| Home | `/` | Landing page con hero section, order input, grid de servicios por plataforma |
+| Dashboard | `/dashboard` | Panel principal con stats cards, orden rapida, ordenes recientes |
+| Orders | `/orders` | Historial completo de ordenes con filtros, busqueda y paginacion |
+| Wallet | `/wallet` | Balance del usuario, historial de transacciones, anadir fondos |
+| Login | `/login` | Autenticacion con formulario validado y mensajes de error |
+| Register | `/register` | Registro con validacion de email y contrasena |
+| Style Guide | `/style-guide` | Catalogo de todos los componentes con toggle de tema dark/light |
+| Terms | `/terms` | Terminos y condiciones en formato narrow para legibilidad |
+
+**Componentes reutilizables implementados:** 24 componentes (ver seccion 3.1)
+
+**Funcionalidades transversales:**
+- Sistema de temas dark/light con persistencia en localStorage
+- Navegacion responsive con menu hamburguesa en mobile
+- Formularios con validacion reactiva y mensajes de error accesibles
+- Animaciones CSS optimizadas (solo transform/opacity)
+- Soporte para prefers-reduced-motion
+
+### 7.2 Nivel de Conformidad WCAG
 
 Mi objetivo es alcanzar conformidad **WCAG 2.1 Nivel AA**, que incluye:
 
@@ -2166,7 +2248,7 @@ Mi objetivo es alcanzar conformidad **WCAG 2.1 Nivel AA**, que incluye:
 - 2.4.7 Foco visible (Nivel AA)
 - 4.1.2 Nombre, rol, valor (Nivel A)
 
-### 7.2 Contraste de Colores
+### 7.3 Contraste de Colores
 
 Todos los colores de texto que elegi cumplen con los ratios WCAG AA:
 
@@ -2187,7 +2269,7 @@ Todos los colores de texto que elegi cumplen con los ratios WCAG AA:
 - [Success (#00DC33) sobre Background | **10.63:1**](https://webaim.org/resources/contrastchecker/?fcolor=00DC33&bcolor=0A0A0A)
 - [ Error (#FF4444) sobre Background | **5.8:1**](https://webaim.org/resources/contrastchecker/?fcolor=FF4444&bcolor=0A0A0A)
 
-### 7.3 Navegacion por Teclado
+### 7.4 Navegacion por Teclado
 
 Todos los elementos interactivos son accesibles via teclado:
 
@@ -2205,7 +2287,7 @@ Todos los elementos interactivos son accesibles via teclado:
 - Skip link como primer elemento focusable
 - No hay "tab traps" (excepto modales activos)
 
-### 7.4 Focus Visible y Skip Links
+### 7.5 Focus Visible y Skip Links
 
 **Focus Ring:**
 
@@ -2254,7 +2336,7 @@ Implemente el siguiente mixin para focus visible:
 }
 ```
 
-### 7.5 ARIA Attributes Utilizados
+### 7.6 ARIA Attributes Utilizados
 
 **Landmarks:**
 
@@ -2290,7 +2372,7 @@ Implemente el siguiente mixin para focus visible:
 <div role="alert" aria-live="polite">Guardado exitosamente</div>
 ```
 
-### 7.6 Reduced Motion Support
+### 7.7 Reduced Motion Support
 
 Respeto la preferencia de movimiento reducido con este codigo:
 
@@ -2317,7 +2399,7 @@ html {
 }
 ```
 
-### 7.7 Semantic HTML Landmarks
+### 7.8 Semantic HTML Landmarks
 
 Utilizo elementos semanticos HTML5:
 
@@ -2331,7 +2413,7 @@ Utilizo elementos semanticos HTML5:
 | `<article>` | Contenido independiente | Multiples |
 | `<section>` | Seccion generica con heading | Multiples |
 
-### 7.8 Formularios Accesibles
+### 7.9 Formularios Accesibles
 
 **Estructura de Form Input:**
 
@@ -2371,7 +2453,7 @@ Disene los formularios con esta estructura accesible:
 - `role="alert"` para errores dinamicos
 - Texto "(requerido)" para screen readers
 
-### 7.9 Checklist de Accesibilidad
+### 7.10 Checklist de Accesibilidad
 
 **Antes de cada release, verifico:**
 
@@ -2394,7 +2476,7 @@ Disene los formularios con esta estructura accesible:
 - WAVE Web Accessibility Evaluator
 - NVDA / VoiceOver para testing con screen reader
 
-### 7.10 Verificacion Lighthouse
+### 7.11 Verificacion Lighthouse
 
 Para verificar los scores de accesibilidad y rendimiento, ejecuto Lighthouse en el Style Guide:
 
@@ -2436,7 +2518,7 @@ He ejecutado Lighthouse en la URL de produccion y guardado el reporte completo.
 
 Todos los scores superan los requisitos del proyecto (Performance >80, Accessibility >90).
 
-### 7.11 Testing Multi-Viewport
+### 7.12 Testing Multi-Viewport
 
 He verificado la aplicacion en 5 viewports diferentes para asegurar que el diseño responsive funciona correctamente:
 
@@ -2457,7 +2539,7 @@ He verificado la aplicacion en 5 viewports diferentes para asegurar que el dise�
 - En 1024px+ el grid de stats cards muestra 3-4 columnas
 - En 1280px+ el diseño desktop completo con todos los elementos visibles
 
-### 7.12 Testing en Dispositivos Reales
+### 7.13 Testing en Dispositivos Reales
 
 Ademas del testing en DevTools, he probado la aplicacion en dispositivos fisicos:
 
@@ -2476,7 +2558,7 @@ Ademas del testing en DevTools, he probado la aplicacion en dispositivos fisicos
 4. Comprobe que el tema toggle funciona correctamente
 5. Valide que las animaciones respetan `prefers-reduced-motion`
 
-### 7.13 Verificacion Multi-Navegador
+### 7.14 Verificacion Multi-Navegador
 
 He verificado la compatibilidad con los principales navegadores:
 
@@ -2493,7 +2575,7 @@ He verificado la compatibilidad con los principales navegadores:
 - Las animaciones CSS son compatibles en todos los navegadores probados
 - `prefers-reduced-motion` es respetado en todos los navegadores modernos
 
-### 7.14 Resultados Lighthouse en Produccion
+### 7.15 Resultados Lighthouse en Produccion
 
 He ejecutado Lighthouse en la URL de produccion (https://antipanel.tech) y estos son los scores oficiales:
 
@@ -2519,7 +2601,7 @@ He ejecutado Lighthouse en la URL de produccion (https://antipanel.tech) y estos
 - Fuentes preconectadas y optimizadas
 - Tree-shaking activo para iconos ng-icons
 
-### 7.15 Problemas Conocidos y Mejoras Futuras
+### 7.16 Problemas Conocidos y Mejoras Futuras
 
 **Problemas Menores Identificados:**
 
@@ -2543,7 +2625,7 @@ He ejecutado Lighthouse en la URL de produccion (https://antipanel.tech) y estos
 
 ---
 
-### 7.16 Caso de Estudio: Grid 3D con Perspectiva y Compatibilidad Chrome/Firefox
+### 7.17 Caso de Estudio: Grid 3D con Perspectiva y Compatibilidad Chrome/Firefox
 
 Me encontré con un bug bastante frustrante durante el desarrollo y quiero dejarlo documentado porque tardé un buen rato en entender qué pasaba.
 
