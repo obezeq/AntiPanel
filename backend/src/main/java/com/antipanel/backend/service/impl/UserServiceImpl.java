@@ -2,6 +2,7 @@ package com.antipanel.backend.service.impl;
 
 import com.antipanel.backend.dto.common.PageResponse;
 import com.antipanel.backend.dto.user.UserCreateRequest;
+import com.antipanel.backend.dto.user.UserProfileUpdateRequest;
 import com.antipanel.backend.dto.user.UserResponse;
 import com.antipanel.backend.dto.user.UserSummary;
 import com.antipanel.backend.dto.user.UserUpdateRequest;
@@ -106,6 +107,34 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    public UserResponse updateProfile(Long id, UserProfileUpdateRequest request) {
+        log.debug("Updating profile for user ID: {}", id);
+
+        User user = findUserById(id);
+
+        // Check email uniqueness if email is being changed
+        if (request.getEmail() != null && !request.getEmail().equals(user.getEmail())) {
+            if (userRepository.existsByEmail(request.getEmail())) {
+                throw new ConflictException("Email already exists: " + request.getEmail());
+            }
+        }
+
+        // SECURITY: Uses updateProfileFromDto which only maps safe fields
+        userMapper.updateProfileFromDto(request, user);
+
+        // Handle password update separately
+        if (request.getPassword() != null && !request.getPassword().isBlank()) {
+            user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+        }
+
+        User saved = userRepository.save(user);
+        log.info("Updated profile for user ID: {}", saved.getId());
+
+        return userMapper.toResponse(saved);
+    }
+
+    @Override
+    @Transactional
     public void delete(Long id) {
         log.debug("Deleting user with ID: {}", id);
         User user = findUserById(id);
@@ -141,6 +170,19 @@ public class UserServiceImpl implements UserService {
         log.debug("Getting users by banned status: {}", isBanned);
         Page<User> page = userRepository.findByIsBanned(isBanned, pageable);
         return pageMapper.toPageResponse(page, userMapper::toResponse);
+    }
+
+    // ============ ROLE OPERATIONS ============
+
+    @Override
+    @Transactional
+    public UserResponse changeRole(Long id, UserRole role) {
+        log.debug("Changing role for user ID: {} to: {}", id, role);
+        User user = findUserById(id);
+        user.setRole(role);
+        User saved = userRepository.save(user);
+        log.info("Changed role for user ID: {} to: {}", id, role);
+        return userMapper.toResponse(saved);
     }
 
     // ============ BAN OPERATIONS ============
