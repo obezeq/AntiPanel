@@ -62,8 +62,7 @@ public class PaymentoWebhookController {
             @RequestBody String rawPayload) {
 
         log.info("Received Paymento webhook callback");
-        log.debug("Webhook signature: {}", signature);
-        log.debug("Webhook payload: {}", rawPayload);
+        // SECURITY: Do not log signature or payload contents (sensitive data)
 
         try {
             // Get Paymento processor for API secret
@@ -79,16 +78,20 @@ public class PaymentoWebhookController {
             // Verify HMAC signature
             // SECURITY: Environment variable takes priority over database
             String apiSecret = getApiSecret(processor);
-            if (apiSecret != null && !apiSecret.isBlank()) {
-                if (!verifySignature(rawPayload, signature, apiSecret)) {
-                    log.warn("Invalid webhook signature received");
-                    return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                            .body("Invalid signature");
-                }
-                log.debug("Webhook signature verified successfully");
-            } else {
-                log.warn("No API secret configured for Paymento - skipping signature verification");
+
+            // SECURITY FIX: Fail-secure - reject webhooks if signature verification is not possible
+            if (apiSecret == null || apiSecret.isBlank()) {
+                log.error("SECURITY: No API secret configured for Paymento - rejecting webhook (fail-secure)");
+                return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                        .body("Webhook verification not configured");
             }
+
+            if (!verifySignature(rawPayload, signature, apiSecret)) {
+                log.warn("Invalid webhook signature received - possible attack attempt");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("Invalid signature");
+            }
+            log.debug("Webhook signature verified successfully");
 
             // Parse payload
             PaymentoWebhookPayload payload = objectMapper.readValue(

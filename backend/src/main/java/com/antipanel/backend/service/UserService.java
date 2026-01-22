@@ -2,6 +2,7 @@ package com.antipanel.backend.service;
 
 import com.antipanel.backend.dto.common.PageResponse;
 import com.antipanel.backend.dto.user.UserCreateRequest;
+import com.antipanel.backend.dto.user.UserProfileUpdateRequest;
 import com.antipanel.backend.dto.user.UserResponse;
 import com.antipanel.backend.dto.user.UserSummary;
 import com.antipanel.backend.dto.user.UserUpdateRequest;
@@ -43,13 +44,24 @@ public interface UserService {
     UserResponse getByEmail(String email);
 
     /**
-     * Update user.
+     * Update user (admin operation).
      *
      * @param id      User ID
      * @param request Update data
      * @return Updated user response
      */
     UserResponse update(Long id, UserUpdateRequest request);
+
+    /**
+     * Update user profile (user self-update).
+     * SECURITY: This method only allows safe field updates (email, password, department).
+     * Sensitive fields (role, isBanned) cannot be modified through this method.
+     *
+     * @param id      User ID
+     * @param request Profile update data
+     * @return Updated user response
+     */
+    UserResponse updateProfile(Long id, UserProfileUpdateRequest request);
 
     /**
      * Delete user by ID.
@@ -94,6 +106,18 @@ public interface UserService {
      * @return Page of user responses
      */
     PageResponse<UserResponse> getByBannedStatus(Boolean isBanned, Pageable pageable);
+
+    // ============ ROLE OPERATIONS ============
+
+    /**
+     * Change user role (admin operation).
+     * SECURITY: This is a privileged operation that should only be called from admin endpoints.
+     *
+     * @param id   User ID
+     * @param role New role
+     * @return Updated user response
+     */
+    UserResponse changeRole(Long id, UserRole role);
 
     // ============ BAN OPERATIONS ============
 

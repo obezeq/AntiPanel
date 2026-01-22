@@ -1,7 +1,7 @@
 package com.antipanel.backend.controller;
 
+import com.antipanel.backend.dto.user.UserProfileUpdateRequest;
 import com.antipanel.backend.dto.user.UserResponse;
-import com.antipanel.backend.dto.user.UserUpdateRequest;
 import com.antipanel.backend.security.CurrentUser;
 import com.antipanel.backend.security.CustomUserDetails;
 import com.antipanel.backend.service.UserService;
@@ -60,9 +60,10 @@ public class UserController {
     @PutMapping("/me")
     public ResponseEntity<UserResponse> updateCurrentUser(
             @CurrentUser CustomUserDetails currentUser,
-            @Valid @RequestBody UserUpdateRequest request) {
+            @Valid @RequestBody UserProfileUpdateRequest request) {
         log.debug("Updating profile for user ID: {}", currentUser.getUserId());
-        UserResponse response = userService.update(currentUser.getUserId(), request);
+        // SECURITY: Uses updateProfile which only allows safe field updates
+        UserResponse response = userService.updateProfile(currentUser.getUserId(), request);
         return ResponseEntity.ok(response);
     }
 }

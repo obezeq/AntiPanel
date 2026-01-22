@@ -212,6 +212,26 @@ public class AdminUserController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Change user role",
+            description = "Changes a user's role (USER or ADMIN)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Role changed successfully",
+                    content = @Content(schema = @Schema(implementation = UserResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Not authenticated"),
+            @ApiResponse(responseCode = "403", description = "Access denied - requires ADMIN role"),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
+    @PatchMapping("/{id}/role")
+    public ResponseEntity<UserResponse> changeRole(
+            @Parameter(description = "User ID", example = "1")
+            @PathVariable Long id,
+            @Parameter(description = "New role", example = "ADMIN")
+            @RequestParam UserRole role) {
+        log.debug("Admin: Changing role for user ID: {} to: {}", id, role);
+        UserResponse response = userService.changeRole(id, role);
+        return ResponseEntity.ok(response);
+    }
+
     @Operation(summary = "Adjust user balance",
             description = "Manually adjusts a user's balance (positive or negative)")
     @ApiResponses({
