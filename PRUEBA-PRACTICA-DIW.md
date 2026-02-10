@@ -1,5 +1,15 @@
 # Justificación DIW
 
+He hecho una pagina donde muestra las analiticas de todos los usuarios, ruta /analysis.
+- Dentro de esa página presento componentes que engloba (analysis header component y analysis content component).
+- Dentro del analysis content component presento las cards de las analiticas globales de todos los usuarios utilizando grid como se ha pedido en los criterios para alinear las cards por columnas responsive, y en cada card utilizo flex para alinear elementos dentro de la card.
+- Los estilos implementados que he utilizado en los componentes se encuentran en este archivo `frontend/src/styles/00-settings/_variables.scss` y he implementado los siguientes colores:
+
+```scss
+--color-analysis-text: hsl(0, 0, 69%); // ESTE ES LA NUEVA VARIANTE DE COLOR PARA UTILIZAR EN EL COMPONENTE: COLOR TEXTO
+--color-analysis-bg: hsl(134, 100%, 33%); // ESTE ES LA NUEVA VARIANTE DE COLOR PARA UTILIZAR EN EL COMPONENTE NUEVO: COLOR BACKGROUND
+```
+
 
 ## Arquitectura:
 **¿Por qué has colocado tus variables en la capa Settings y tus estilos en Components?**
@@ -21,3 +31,4 @@ Explica una ventaja real que te haya aportado usar BEM en este examen frente a u
 - https://stackoverflow.com/questions/64573177/unable-to-resolve-dependency-tree-error-when-installing-npm-packages
 - https://angular.dev/
 - https://damiandeluca.com.ar/10-ejemplos-de-css-grid
+- https://www.toptal.com/designers/htmlarrows/symbols/white-heart-suit/
