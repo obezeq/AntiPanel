@@ -1,5 +1,9 @@
 # Justificación DWES
 
+- Nombre: Ezequiel Ortega
+- Curso: 2ºDAW
+- Fecha: 10/02/2026
+
 ## a) Qué endpoint has creado y por qué.
 
 He creado un endpoint GET `/api/v1/analytics` que devuelve estadísticas globales de toda la plataforma en formato JSON. El endpoint retorna un array de objetos `AnalyticResponse`, donde cada objeto contiene:

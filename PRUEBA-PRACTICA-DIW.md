@@ -1,5 +1,9 @@
 # Justificación DIW
 
+- Nombre: Ezequiel Ortega
+- Curso: 2ºDAW
+- Fecha: 10/02/2026
+
 He hecho una pagina donde muestra las analiticas de todos los usuarios, ruta /analysis.
 - Dentro de esa página presento componentes que engloba (analysis header component y analysis content component).
 - Dentro del analysis content component presento las cards de las analiticas globales de todos los usuarios utilizando grid como se ha pedido en los criterios para alinear las cards por columnas responsive, y en cada card utilizo flex para alinear elementos dentro de la card.
