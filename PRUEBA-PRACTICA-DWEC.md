@@ -20,6 +20,18 @@ He hecho una pagina donde muestra las analiticas de todos los usuarios, ruta /an
 - El archivo donde se ha especificado las rutas es `frontend/src/app/app.routes.ts`
 - Se ha implementado la navegación activa en toda la app.
 
+**@Component({standalone: true})**
+- Como este proyecto esta utilizando Angular 21, los componentes tienen automaticamente el `{standalone: true}` en TODOS los componentes. Aunque no se especifique explicitamente en el decorador @Component, SIEMPE se utiliza standalone true, porque Angular 21 lo añade automaticamente.
+
+**templateUrl + styleUrls**
+- Se ha implementado el templateUrl + styleUrl en todos los componentes, incluyendo en los componentes creados en `frontend/src/app/pages/analysis` y 2 componentes funcionales:
+    - `frontend/src/app/pages/analysis/analysis-content-section`: La seccion donde se encuentra el contenido y las cards de los analisis globales de la web.
+    - `frontend/src/app/pages/analysis/analysis-header-section`: El header de la sección Analisis
+    - A la hora de crear cualquier componente se utilizo el `ng g c` (ng generate component) con un historial de commits claro.
+
+**Arquitectura Standalone Implecable**
+- Se ha implementado el Header/Footer/Item 100% reutilizables/independientes, 2+ componentes nuevos bien estructurados en Git (ng g c + workflow profesional), módulos auto-contenidos y escalables.
+
 ## Jerarquía y arquitectura
 - El servicio llama al endpoint del backend y recibe un `Array<Analysis>`, cada analisis presenta información del backend de todos los usuarios globales (Title, Amount)
 - El componente
