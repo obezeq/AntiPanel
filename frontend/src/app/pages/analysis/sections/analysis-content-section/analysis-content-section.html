@@ -1,16 +1,25 @@
 <section class="analysis-content" aria-label="Analysis">
 
     <article class="analysis__stat">
-        <h2 class="analysis__title">Money Spent</h2>
-        <span class="analysis__amount">$369.33</span>
+        <div class="analysis__container">
+            <figure class="analysis__icon" aria-hidden="true">$</figure>
+            <h2 class="analysis__title">Money Spent</h2>
+        </div>
+        <span class="analysis__amount">${{ money() }}</span>
     </article>
     <article class="analysis__stat">
-        <h2 class="analysis__title">Orders Made</h2>
-        <span class="analysis__amount">33</span>
+        <div class="analysis__container">
+            <figure class="analysis__icon" aria-hidden="true">♡</figure>
+            <h2 class="analysis__title">Orders Made</h2>
+        </div>
+        <span class="analysis__amount">{{ orders() }}</span>
     </article>
     <article class="analysis__stat">
-        <h2 class="analysis__title">Users Registered</h2>
-        <span class="analysis__amount">33</span>
+        <div class="analysis__container">
+            <figure class="analysis__icon" aria-hidden="true">☺</figure>
+            <h2 class="analysis__title">Users Registered</h2>
+        </div>
+        <span class="analysis__amount">{{ users() }}</span>
     </article>
 
 </section>
