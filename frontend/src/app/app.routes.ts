@@ -91,9 +91,9 @@ export const routes: Routes = [
     canDeactivate: [pendingChangesGuard]
   },
   {
-    path: 'terms',
+    path: 'analysis',
     loadComponent: () =>
-      import('./pages/terms/terms').then(m => m.Terms)
+      import('./pages/analysis/analysis').then(m => m.Analysis)
   },
   {
     path: 'support',
