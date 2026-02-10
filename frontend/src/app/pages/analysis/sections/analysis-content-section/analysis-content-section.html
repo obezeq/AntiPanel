@@ -1,39 +1,23 @@
 <section class="analysis-content" aria-label="Analysis">
 
-    <!-- Analisis Stat Card -->
-    <article class="analysis__stat">
-        <!-- Aqui aplico un <div> simplemente para que yo pueda utilizar estilizar un flex -->
-        <div class="analysis__container">
-            <!-- Etiqueta figure donde adentro va el "icono", normalmente con ng-icons pero tuve problemas con dependencias de npm, y use un icono ASCII -->
-            <figure class="analysis__icon" aria-hidden="true">$</figure>
-            <h2 class="analysis__title">Money Spent</h2>
-        </div>
-        <!-- Amount del Analisis -->
-        <span class="analysis__amount">${{ money() }}</span>
-    </article>
 
-    <!-- Analisis Stat Card -->
-    <article class="analysis__stat">
-        <!-- Aqui aplico un <div> simplemente para que yo pueda utilizar estilizar un flex -->
-        <div class="analysis__container">
-            <!-- Etiqueta figure donde adentro va el "icono", normalmente con ng-icons pero tuve problemas con dependencias de npm, y use un icono ASCII -->
-            <figure class="analysis__icon" aria-hidden="true">♡</figure>
-            <h2 class="analysis__title">Orders Made</h2>
-        </div>
-        <!-- Amount del Analisis -->
-        <span class="analysis__amount">{{ orders() }}</span>
-    </article>
+    
+    <!-- Analisis Stat Card - Money Spent -->
+    <app-analysis-card
+        [icon]="'$'"
+        [title]="'Money Spent'"
+        [amount]="'$' + money()" />
 
-    <!-- Analisis Stat Card -->
-    <article class="analysis__stat">
-        <!-- Aqui aplico un <div> simplemente para que yo pueda utilizar estilizar un flex -->
-        <div class="analysis__container">
-            <!-- Etiqueta figure donde adentro va el "icono", normalmente con ng-icons pero tuve problemas con dependencias de npm, y use un icono ASCII -->
-            <figure class="analysis__icon" aria-hidden="true">☺</figure>
-            <h2 class="analysis__title">Users Registered</h2>
-        </div>
-        <!-- Amount del Analisis -->
-        <span class="analysis__amount">{{ users() }}</span>
-    </article>
+    <!-- Analisis Stat Card - Orders Made -->
+    <app-analysis-card
+        [icon]="'♡'"
+        [title]="'Orders Made'"
+        [amount]="orders()" />
+
+    <!-- Analisis Stat Card - Users Registered -->
+    <app-analysis-card
+        [icon]="'☺'"
+        [title]="'Users Registered'"
+        [amount]="users()" />
 
 </section>

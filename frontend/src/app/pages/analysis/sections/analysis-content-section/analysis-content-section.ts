@@ -1,20 +1,20 @@
-import { Component, ChangeDetectionStrategy, signal, computed, input, output } from '@angular/core';
-import { NgIcon } from '@ng-icons/core';
+import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import { AnalysisCard } from '../../../../components/shared/analysis-card/analysis-card';
 // import type { UsersAnalyisisResponse } from '../../../../core/services/analysis.service';
 
 @Component({
   selector: 'app-analysis-content-section',
-  imports: [NgIcon],
+  imports: [AnalysisCard],
   templateUrl: './analysis-content-section.html',
   styleUrl: './analysis-content-section.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AnalysisContentSection {
-  
 
   /** Stats data */
   // readonly stats = input.required<StatsCardData>();
 
+  /** Datos mock para los analysis cards */
   readonly money = signal("369.33");
   readonly orders = signal("33");
   readonly users = signal("69");

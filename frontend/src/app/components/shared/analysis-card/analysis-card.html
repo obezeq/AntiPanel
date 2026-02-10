@@ -1,7 +1,11 @@
+<!-- Analisis Stat Card -->
 <article class="analysis__stat">
+    <!-- Aqui aplico un <div> simplemente para que yo pueda utilizar estilizar un flex -->
     <div class="analysis__container">
-        <figure class="analysis__icon" aria-hidden="true">Icon</figure>
-        <h2 class="analysis__title">Title</h2>
+        <!-- Etiqueta figure donde adentro va el "icono", normalmente con ng-icons pero tuve problemas con dependencias de npm, y use un icono ASCII -->
+        <figure class="analysis__icon" aria-hidden="true">{{ icon() }}</figure>
+        <h2 class="analysis__title">{{ title() }}</h2>
     </div>
-    <span class="analysis__amount">Amount</span>
+    <!-- Amount del Analisis -->
+    <span class="analysis__amount">{{ amount() }}</span>
 </article>

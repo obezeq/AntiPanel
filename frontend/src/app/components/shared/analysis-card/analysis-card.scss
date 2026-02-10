@@ -1,0 +1,48 @@
+// ==========================================================================
+// ANALYSIS CARD
+// ==========================================================================
+// Card component for displaying analysis statistics.
+// Features icon, title, and amount with hover effect.
+// ==========================================================================
+
+// Hago la importación de mixins y variables
+@use '../../../../../styles/01-tools/mixins' as *;
+@use '../../../../../styles/00-settings/variables';
+
+.analysis__stat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+    padding: var(--spacing-6) var(--spacing-8);
+    border: var(--border-width-thick) solid var(--color-analysis-bg);
+    border-color: var(--color-analysis-bg);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-background);
+    color: var(--color-analysis-text);
+
+    &:hover {
+        box-shadow: 0 0 30px rgba(var(--color-success-rgb),.12),0 0 60px rgba(var(--color-success-rgb),.06);
+    }
+}
+
+.analysis__container {
+    display: flex;
+    gap: var(--spacing-4);
+    align-items: center;
+}
+
+.analysis__title {
+    font-size: var(--font-size-h5);
+}
+
+.analysis__amount {
+    font-size: var(--font-size-h4);
+    color: var(--color-analysis-bg);
+    font-weight: bold;
+}
+
+.analysis__icon {
+    color: var(--color-analysis-bg);
+    font-weight: bold;
+    font-size: var(--font-size-h4);
+}
