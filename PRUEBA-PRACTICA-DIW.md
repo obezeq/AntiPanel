@@ -10,8 +10,27 @@ He hecho una pagina donde muestra las analiticas de todos los usuarios, ruta /an
 --color-analysis-bg: hsl(134, 100%, 33%); // ESTE ES LA NUEVA VARIANTE DE COLOR PARA UTILIZAR EN EL COMPONENTE NUEVO: COLOR BACKGROUND
 ```
 
+## Justificación explica con precisión técnica conceptos de cascada y especificidad.
+- Aplico una cascada natural: Las variables fluyen por el DOM naturalmente.
+- Tambien aplico el ITCSS como ya se sabe que me permite tener capas ordenadas por especificidad y organizar estilos de forma escalable.
+
+```
+src/styles/
+|── 00-settings/     # Variables SCSS y CSS Custom Properties
+├── 01-tools/        # Mixins y funciones
+├── 02-generic/      # Reset y normalize
+├── 03-elements/     # Estilos base HTML (sin clases)
+└── 04-layout/       # Grid system y layouts
+```
 
 ## Arquitectura:
+
+**Localización archivos**:
+- `frontend/src/app/pages/analysis`: aquí se ha especificado la página de /analysis que es la que se referencia en la ruta.
+- Dentro de aqui nos encontramos las 2 secciones implementadas (2 componentes) que añadimos en la pagina de `analysis`
+    - `frontend/src/app/pages/analysis/analysis-content-section`: La seccion donde se encuentra el contenido y las cards de los analisis globales de la web.
+    - `frontend/src/app/pages/analysis/analysis-header-section`: El header de la sección Analisis
+
 **¿Por qué has colocado tus variables en la capa Settings y tus estilos en Components?**
 - Porque en mi proyecto he elegido la arquitectura ITCSS + BEN + Emulated. Uso las características que proporciona Angular Emulated. En la arquitectura ITCSS defino las variables en `00-settings` porque voy de lo menos específico a lo mas específico, por motivos de especificidad y tenerlo claro con una buena arquitectura. Angular Emulated dice que los estilos tengo que hacerlo en la carpeta de cada componente.
 

@@ -16,11 +16,13 @@ He hecho una pagina donde muestra las analiticas de todos los usuarios, ruta /an
         import('./pages/analysis/analysis').then(m => m.Analysis)
 }
 ```
+- Como se observa aqui he hecho la nueva ruta especificando la pagina `./pages/analysis/analysis`.
+- El archivo donde se ha especificado las rutas es `frontend/src/app/app.routes.ts`
+- Se ha implementado la navegación activa en toda la app.
 
 ## Jerarquía y arquitectura
 - El servicio llama al endpoint del backend y recibe un `Array<Analysis>`, cada analisis presenta información del backend de todos los usuarios globales (Title, Amount)
 - El componente
-- Para este pr
 
 ## Instrucciones de ejecución
 
@@ -30,14 +32,14 @@ cd frontend
 ```
 
 ### Instalar dependencias
-**Con npm**
+**Con npm (NodeJS Package Manager)**
 ```bash
 npm install
 ```
 
-**Con bun**
+**Con Bun.sh**
 ```bash
-bun intsall
+bun install
 ```
 
 
@@ -47,4 +49,4 @@ bun intsall
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Cuando el servidor de cliente este corriendo pueds abrir el navegador y navegar a `http://localhost:4200/` y la aplicación se cargara automaticamente cuando se haga algun cambio en los source files.
