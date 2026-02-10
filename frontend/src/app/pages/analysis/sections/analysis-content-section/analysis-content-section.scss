@@ -13,10 +13,16 @@
     grid-template-columns: repeat(3, 1fr);
     gap: var(--spacing-24);
     padding: var(--spacing-8) var(--spacing-4);
+
+    @include respond-below('md') {
+        grid-template-columns: repeat(1, 1fr);
+    }
 }
 
 .analysis__stat {
     display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
     padding: 1rem 2rem;
     border: var(--border-width-thick) solid var(--color-analysis-bg);
     border-color: var(--color-analysis-bg);
@@ -26,5 +32,11 @@
 }
 
 .analysis__title {
+    font-size: var(--font-size-h5);
+}
+
+.analysis__amount {
     font-size: var(--font-size-h6);
+    color: var(--color-analysis-bg);
+    font-weight: bold;
 }
