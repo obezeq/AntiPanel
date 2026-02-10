@@ -9,6 +9,22 @@
 @use '../../../../../styles//00-settings/variables';
 
 .analysis-content {
-    @include flex-center;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: var(--spacing-24);
+    padding: var(--spacing-8) var(--spacing-4);
+}
+
+.analysis__stat {
+    display: flex;
+    padding: 1rem 2rem;
+    border: var(--border-width-thick) solid var(--color-analysis-bg);
+    border-color: var(--color-analysis-bg);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-background);
+    color: var(--color-analysis-text);
+}
+
+.analysis__title {
+    font-size: var(--font-size-h6);
 }

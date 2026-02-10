@@ -20,3 +20,4 @@ Explica una ventaja real que te haya aportado usar BEM en este examen frente a u
 - https://stackoverflow.com/questions/75156126/using-css-variable-with-styled-components#75156172
 - https://stackoverflow.com/questions/64573177/unable-to-resolve-dependency-tree-error-when-installing-npm-packages
 - https://angular.dev/
+- https://damiandeluca.com.ar/10-ejemplos-de-css-grid

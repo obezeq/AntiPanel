@@ -13,9 +13,5 @@ import { AnalysisContentSection } from './sections/analysis-content-section/anal
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Analysis {
-  /*
-  protected readonly headerVariant = computed<HeaderVariant>(() =>
-    this.authService.isAuthenticated() ? 'loggedIn' : 'home'
-  );
-  */
+  
 }
