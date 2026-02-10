@@ -34,9 +34,19 @@ He hecho una pagina donde muestra las analiticas de todos los usuarios, ruta /an
 **Arquitectura Standalone Implecable**
 - Se ha implementado el Header/Footer/Item 100% reutilizables/independientes, 2+ componentes nuevos bien estructurados en Git (ng g c + workflow profesional), módulos auto-contenidos y escalables.
 
+**Integración completa frontend-backend**:
+- Con el servicio `AnalysisService` estoy consumiento el endpoint de los analisis con un retry logic, como hago con otros componentes para errores 5xx. 
+- Tengo la interfaz de TypeScript donde ahi añado la respuesta que obtengo en la peticion http `AnalyticResponse`
+
+**Manejo eventos**
+- Hago un buen uso de manejo compleo de los eventos de navegacion, usando routerLink para navegacion declarativa. Y (click) tipado y reutilizable typescript como he comentado anteriormente.
+- Como mi proyecto usa Angular 21, me comunico entre los componentes aprovechando las ultimas tecnologisa de signals y outputs.
+
 ## Jerarquía y arquitectura
 - El servicio llama al endpoint del backend y recibe un `Array<Analysis>`, cada analisis presenta información del backend de todos los usuarios globales (Title, Amount)
-- El componente
+
+1. Con el servicio que he hecho de AnalysisService lanzo una peticion get a la api del backend. 
+2. El backend obtiene la analiticas globales de todos los usuarios. Obtengo un observable de la response analitica. Lo obtiene el componente analisis y lo muestro en la pagina gracias al apoyo de flex y grid en el html.
 
 ## Instrucciones de ejecución
 
