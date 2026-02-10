@@ -18,3 +18,4 @@ Explica una ventaja real que te haya aportado usar BEM en este examen frente a u
 - https://lenguajehtml.com/
 - https://lenguajecss.com/
 - https://stackoverflow.com/questions/75156126/using-css-variable-with-styled-components#75156172
+- https://stackoverflow.com/questions/64573177/unable-to-resolve-dependency-tree-error-when-installing-npm-packages
