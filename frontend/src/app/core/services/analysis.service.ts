@@ -8,18 +8,11 @@ import { environment } from '../../../environments/environment';
 // Types
 // ============================================================================
 
-export interface Analysis {
-    title: string,
-    amount: number
-}
-
-/**
- * Response from the user statistics endpoint.
- * Contains order counts and balance for the dashboard.
- */
-export interface AnalyisisResponse {
-  /** Total Array list of Analysis from all the users */
-  totalAnalysis: Array<Analysis>;
+export interface AnalyticResponse {
+  // El titulo de las metricas analisis
+  title: string;
+  // La metrica amount del valor de ese analisis
+  amount: number;
 }
 
 // ============================================================================
@@ -27,15 +20,16 @@ export interface AnalyisisResponse {
 // ============================================================================
 
 /**
- * Service for user-related operations.
- * Provides methods for fetching user statistics and profile data.
+ * Service for global analytics operations.
+ * Provides methods for fetching global statistics accessible to all users.
  *
  * @example
  * ```typescript
  * const analysisService = inject(AnalysisService);
  *
- * analysisService.getAnalysis().subscribe(stats => {
- *   console.log('Array Analysis List:', stats.totalAnalysis);
+ * analysisService.getGlobalAnalytics().subscribe(analytics => {
+ *   console.log('Global Analytics:', analytics);
+ *   // Expected: [{ title: "Money Spent", amount: 15420.50 }, ...]
  * });
  * ```
  */
@@ -44,7 +38,7 @@ export interface AnalyisisResponse {
 })
 export class AnalysisService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiUrl}/analysis`;
+  private readonly baseUrl = `${environment.apiUrl}/analytics`;
 
   /** Retry configuration for GET requests */
   private readonly retryConfig = {
@@ -60,18 +54,19 @@ export class AnalysisService {
   };
 
   // -------------------------------------------------------------------------
-  // Analysis
+  // Global Analytics
   // -------------------------------------------------------------------------
 
   /**
-   * Fetches analysis from all the users
-   * Includes an array with all the analysis
+   * Fetches global analytics visible to all users.
+   * Returns array of metrics: Money Spent, Orders Made, Users Registered.
+   * No authentication required - public endpoint.
    * Includes retry logic for temporary failures.
    *
-   * @returns Observable with user statistics
+   * @returns Observable with array of global analytics
    */
-  getAnalysis(): Observable<AnalyisisResponse> {
-    return this.http.get<AnalyisisResponse>(`${this.baseUrl}/analysis`).pipe(
+  getGlobalAnalytics(): Observable<AnalyticResponse[]> {
+    return this.http.get<AnalyticResponse[]>(this.baseUrl).pipe(
       retry(this.retryConfig)
     );
   }
