@@ -1,0 +1,20 @@
+# Justificación DIW
+
+
+## Arquitectura:
+**¿Por qué has colocado tus variables en la capa Settings y tus estilos en Components?**
+- Porque en mi proyecto he elegido la arquitectura ITCSS + BEN + Emulated. Uso las características que proporciona Angular Emulated. En la arquitectura ITCSS defino las variables en `00-settings` porque voy de lo menos específico a lo mas específico, por motivos de especificidad y tenerlo claro con una buena arquitectura. Angular Emulated dice que los estilos tengo que hacerlo en la carpeta de cada componente.
+
+**¿Qué pasaría si importaras Components antes que Settings en el manifiesto?**
+- No pasaría nada siempre y cuando los componentes pueden herederas las variables de css (custom properties), mientras se definan las variables en el :root selector en html no habra problema haran que las varibles esten disponibles en todos lados.
+
+## Metodología: 
+Explica una ventaja real que te haya aportado usar BEM en este examen frente a usar selectores de etiqueta anidados (ej: div > button).
+- La principal ventaja que he notado a la hora de escribir el codigo utilizando la metodología bem, es la facilidad que me da a mi como desarrollador de encontrar los estilos de forma clara, cuando estoy en el inspeccionar de los navegadores puedo claramente encontrar la clase del elemento de html, y luego en cualquier editor de codigo puedo irme a la barra de busqueda y buscar la clase especificamente, permitiendome editar los estilos de forma rapida.
+- Ademas tambien me aporta tener una clara **especificidad** lo cual es muy importante a la hora de hacer codigo CSS. Si aumentamos mucho la especificidad, hay un problema debido a que cada vez necesitaremos ir aumentando mas y mas la especificidad, tentando al desarrollador a usar !important, y cosas similares las cuales no son buena practico, bajo casos muy muy muy especificos, como los que tengo en mi proyecto, por motivos de navegadores (por ejemplo el background ese que tengo en forma como con reticulas, tuve que usar !important por motivos de incompatibilidad de navegador Chrome 🖖 . )
+
+## Documentación consultada:
+- https://envasador.github.io/diseno-interfaces-web/
+- https://lenguajehtml.com/
+- https://lenguajecss.com/
+- https://stackoverflow.com/questions/75156126/using-css-variable-with-styled-components#75156172
