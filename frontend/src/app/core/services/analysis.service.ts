@@ -8,15 +8,18 @@ import { environment } from '../../../environments/environment';
 // Types
 // ============================================================================
 
+export interface Analysis {
+    title: string,
+    amount: number
+}
+
 /**
  * Response from the user statistics endpoint.
  * Contains order counts and balance for the dashboard.
  */
-export interface UsersAnalyisisResponse {
-  /** Total number of money spent by all the users */
-  totalUsersSpent: number;
-  /** Total Orders processed by all the users */
-  totalUsersOrders: number;
+export interface AnalyisisResponse {
+  /** Total Array list of Analysis from all the users */
+  totalAnalysis: Array<Analysis>;
 }
 
 // ============================================================================
@@ -31,9 +34,8 @@ export interface UsersAnalyisisResponse {
  * ```typescript
  * const analysisService = inject(AnalysisService);
  *
- * analysisService.getStatistics().subscribe(stats => {
- *   console.log('Total Money Spent by all the users:', stats.totalUsersSpent);
- *   console.log('Total Users Orders made by all the users:', stats.totalUsersOrders);
+ * analysisService.getAnalysis().subscribe(stats => {
+ *   console.log('Array Analysis List:', stats.totalAnalysis);
  * });
  * ```
  */
@@ -58,24 +60,18 @@ export class AnalysisService {
   };
 
   // -------------------------------------------------------------------------
-  // Statistics
+  // Analysis
   // -------------------------------------------------------------------------
 
   /**
-   * Fetches statistics for the authenticated user's dashboard.
-   * Includes order counts by status and current balance.
+   * Fetches analysis from all the users
+   * Includes an array with all the analysis
    * Includes retry logic for temporary failures.
    *
    * @returns Observable with user statistics
    */
-  getMoneyAnalysis(): Observable<UsersAnalyisisResponse> {
-    return this.http.get<UsersAnalyisisResponse>(`${this.baseUrl}/money`).pipe(
-      retry(this.retryConfig)
-    );
-  }
-
-  getOrdersAnalysis(): Observable<UsersAnalyisisResponse> {
-    return this.http.get<UsersAnalyisisResponse>(`${this.baseUrl}/orders`).pipe(
+  getAnalysis(): Observable<AnalyisisResponse> {
+    return this.http.get<AnalyisisResponse>(`${this.baseUrl}/analysis`).pipe(
       retry(this.retryConfig)
     );
   }
