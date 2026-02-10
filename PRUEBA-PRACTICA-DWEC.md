@@ -9,6 +9,7 @@ He hecho una pagina donde muestra las analiticas de todos los usuarios, ruta /an
 - Dentro de esa página presento componentes que engloba (analysis header component y analysis content component).
 - Dentro del analysis content component presento las cards de las analiticas globales de todos los usuarios utilizando grid como se ha pedido en los criterios para alinear las cards por columnas responsive, y en cada card utilizo flex para alinear elementos dentro de la card.
 - He creado un routing avanzando añadiendo 1 ruta nueva como se especifica, cumpliendo este criterio añadiendo la ruta `/analysis`
+
 ```typescript
 {
     path: 'analysis',
@@ -16,6 +17,7 @@ He hecho una pagina donde muestra las analiticas de todos los usuarios, ruta /an
         import('./pages/analysis/analysis').then(m => m.Analysis)
 }
 ```
+
 - Como se observa aqui he hecho la nueva ruta especificando la pagina `./pages/analysis/analysis`.
 - El archivo donde se ha especificado las rutas es `frontend/src/app/app.routes.ts`
 - Se ha implementado la navegación activa en toda la app.
