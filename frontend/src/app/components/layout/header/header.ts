@@ -147,7 +147,7 @@ export class Header implements AfterViewInit {
   /** Whether to show navigation items (admin has NO navigation) */
   protected readonly showNavigation = computed(() => {
     const variant = this.variant();
-    return variant === 'dashboard' || variant === 'loggedIn';
+    return variant === 'home' || variant === 'dashboard' || variant === 'loggedIn';
   });
 
   /** Whether to show mobile menu (hamburger + sidebar) */
@@ -177,20 +177,27 @@ export class Header implements AfterViewInit {
     const variant = this.variant();
 
     switch (variant) {
+      case 'home':
+        // Home page: ANALYSIS link for public access
+        return [
+          { label: 'ANALYSIS', path: '/analysis' }
+        ];
       case 'dashboard':
-        // Dashboard: NEW ORDER, SERVICES, SUPPORT
+        // Dashboard: NEW ORDER, SERVICES, ANALYSIS, SUPPORT
         // NEW ORDER and SERVICES scroll to sections within dashboard
         return [
           { label: 'NEW ORDER', path: '/dashboard', fragment: 'order-section' },
           { label: 'SERVICES', path: '/dashboard', fragment: 'services-section' },
+          { label: 'ANALYSIS', path: '/analysis' },
           { label: 'SUPPORT', path: '/support' }
         ];
       case 'loggedIn':
-        // Logged In (non-dashboard): DASHBOARD, NEW ORDER, SERVICES, SUPPORT
+        // Logged In (non-dashboard): DASHBOARD, NEW ORDER, SERVICES, ANALYSIS, SUPPORT
         return [
           { label: 'DASHBOARD', path: '/dashboard' },
           { label: 'NEW ORDER', path: '/dashboard', fragment: 'order-section' },
           { label: 'SERVICES', path: '/dashboard', fragment: 'services-section' },
+          { label: 'ANALYSIS', path: '/analysis' },
           { label: 'SUPPORT', path: '/support' }
         ];
       default:
