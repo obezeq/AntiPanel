@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-analysis-card',
   imports: [],
   templateUrl: './analysis-card.html',
-  styleUrl: './analysis-card.scss',
+  styleUrl: './analysis-card.scss'
 })
 export class AnalysisCard {
 
