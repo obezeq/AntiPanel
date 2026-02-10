@@ -14,7 +14,12 @@
     gap: var(--spacing-24);
     padding: var(--spacing-8) var(--spacing-4);
 
-    @include respond-below('md') {
+    @include respond-below('lg') {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-12);
+    }
+
+    @include respond-below('sm') {
         grid-template-columns: repeat(1, 1fr);
         gap: var(--spacing-12);
     }
