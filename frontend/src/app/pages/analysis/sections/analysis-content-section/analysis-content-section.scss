@@ -5,30 +5,31 @@
 // Features a subtle white glow effect behind the title.
 // ==========================================================================
 
+// Hago la importación de mixins y variables
 @use '../../../../../styles/01-tools/mixins' as *;
 @use '../../../../../styles//00-settings/variables';
 
-
-
 .analysis-content {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr); // Grid para 3 columnas
     gap: var(--spacing-24);
     padding: var(--spacing-8) var(--spacing-4);
 
+    // Tablet landscape / Small desktop
     @include respond-below('lg') {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, 1fr); // Grid para 2 columnas
         gap: var(--spacing-12);
     }
 
+    // Mobile landscape / Large phone
     @include respond-below('sm') {
-        grid-template-columns: repeat(1, 1fr);
+        grid-template-columns: repeat(1, 1fr); // Grid para 1 columna
         gap: var(--spacing-12);
     }
     
 }
 
-.analysis-content__stat {
+.analysis__stat {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-4);
