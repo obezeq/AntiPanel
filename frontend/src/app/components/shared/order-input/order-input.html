@@ -1,7 +1,9 @@
-<fieldset
+<div
   class="order-input"
   [class.order-input--focused]="isFocused()"
   [class.order-input--disabled]="disabled()"
+  role="group"
+  aria-label="Order input"
 >
   <span class="order-input__icon" aria-hidden="true">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -39,4 +41,4 @@
       <polyline points="12 5 19 12 12 19"/>
     </svg>
   </button>
-</fieldset>
+</div>

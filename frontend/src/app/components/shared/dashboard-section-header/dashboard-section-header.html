@@ -4,7 +4,7 @@
   [class.dashboard-section-header--right]="align() === 'right'"
   [attr.aria-label]="title() + (subtitle() ? ': ' + subtitle() : '')"
 >
-  <h2 class="dashboard-section-header__title">
+  <h2 class="dashboard-section-header__title" [id]="titleId()">
     {{ title() }}
   </h2>
 

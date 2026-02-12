@@ -26,4 +26,7 @@ export class DashboardSectionHeader {
 
   /** Text alignment */
   readonly align = input<'left' | 'center' | 'right'>('center');
+
+  /** Optional id for the h2 element (used with aria-labelledby on parent sections) */
+  readonly titleId = input<string>();
 }
