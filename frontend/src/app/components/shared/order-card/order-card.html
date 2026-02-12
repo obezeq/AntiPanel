@@ -1,7 +1,11 @@
 <article
   class="order-card"
   [attr.aria-label]="'Order ' + formattedId() + ': ' + order().serviceName"
+  tabindex="0"
+  role="button"
   (click)="onClick()"
+  (keydown.enter)="onClick()"
+  (keydown.space)="onClick()"
 >
   <!-- =========================================================================
        ROW 1: ORDER TYPE (Status, ID, Service Name, URL)
