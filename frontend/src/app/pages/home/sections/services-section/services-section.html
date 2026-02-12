@@ -32,11 +32,7 @@
 
     <!-- Platform Cards Grid -->
     @if (!isLoadingCategories() && categories().length > 0) {
-      <div
-        class="services-section__grid"
-        role="list"
-        aria-label="Social media platforms"
-      >
+      <div class="services-section__grid">
         @for (category of categories(); track category.id) {
           <app-service-card
             [service]="mapCategoryToServiceCardData(category)"
@@ -93,11 +89,7 @@
 
     <!-- Services List -->
     @if (!isLoadingServices() && categoryServices().length > 0) {
-      <div
-        class="services-section__services-list"
-        role="list"
-        [attr.aria-label]="selectedCategory()!.name + ' services'"
-      >
+      <div class="services-section__services-list">
         @for (service of categoryServices(); track service.id) {
           <app-service-item-card
             [service]="mapServiceToItemData(service)"
