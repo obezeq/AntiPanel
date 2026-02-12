@@ -1,10 +1,13 @@
-<fieldset
+<div
   class="form-textarea"
   [class.form-textarea--focused]="isFocused()"
   [class.form-textarea--error]="showError()"
   [class.form-textarea--disabled]="isDisabled()"
+  role="group"
+  [attr.aria-labelledby]="textareaId() + '-label'"
 >
   <label
+    [id]="textareaId() + '-label'"
     [for]="textareaId()"
     class="form-textarea__label"
   >
@@ -55,4 +58,4 @@
       </p>
     }
   </footer>
-</fieldset>
+</div>

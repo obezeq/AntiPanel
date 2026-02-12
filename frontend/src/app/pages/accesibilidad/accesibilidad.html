@@ -1,0 +1,52 @@
+<app-header [variant]="headerVariant()" />
+
+<main class="accesibilidad" id="main-content">
+  <header class="accesibilidad__header" aria-labelledby="accesibilidad-title">
+    <h1 id="accesibilidad-title" class="accesibilidad__title">
+      ACCESIBILIDAD
+    </h1>
+    <p class="accesibilidad__subtitle">
+      Galería de Imágenes
+    </p>
+  </header>
+
+  <section class="accesibilidad__gallery" aria-label="Project showcase gallery">
+    @for (image of galleryImages; track image.baseName; let i = $index) {
+      <figure class="accesibilidad__item">
+        <picture>
+          <!-- Mobile (<=480px): 400w -->
+          <source media="(max-width: 480px)" type="image/avif" [srcset]="'assets/images/showcase/' + image.baseName + '-400w.avif'" />
+          <source media="(max-width: 480px)" type="image/webp" [srcset]="'assets/images/showcase/' + image.baseName + '-400w.webp'" />
+
+          <!-- Tablet (<=768px): 800w -->
+          <source media="(max-width: 768px)" type="image/avif" [srcset]="'assets/images/showcase/' + image.baseName + '-800w.avif'" />
+          <source media="(max-width: 768px)" type="image/webp" [srcset]="'assets/images/showcase/' + image.baseName + '-800w.webp'" />
+
+          <!-- Laptop (<=1200px): 1200w -->
+          <source media="(max-width: 1200px)" type="image/avif" [srcset]="'assets/images/showcase/' + image.baseName + '-1200w.avif'" />
+          <source media="(max-width: 1200px)" type="image/webp" [srcset]="'assets/images/showcase/' + image.baseName + '-1200w.webp'" />
+
+          <!-- Desktop (>1200px): 1920w -->
+          <source type="image/avif" [srcset]="'assets/images/showcase/' + image.baseName + '-1920w.avif'" />
+          <source type="image/webp" [srcset]="'assets/images/showcase/' + image.baseName + '-1920w.webp'" />
+
+          <!-- Fallback JPG -->
+          <img
+            [src]="'assets/images/showcase/' + image.baseName + '-800w.jpg'"
+            [alt]="image.alt"
+            width="800"
+            height="450"
+            [loading]="i === 0 ? 'eager' : 'lazy'"
+            decoding="async"
+            class="accesibilidad__image"
+          />
+        </picture>
+        <figcaption class="accesibilidad__caption">
+          {{ image.caption }}
+        </figcaption>
+      </figure>
+    }
+  </section>
+</main>
+
+<app-footer />

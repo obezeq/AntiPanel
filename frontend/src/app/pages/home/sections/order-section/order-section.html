@@ -5,13 +5,16 @@
   <!-- Section Header -->
   <app-dashboard-section-header
     title="ORDER"
+    titleId="order-title"
     subtitle="Tell us what you want in plain language. No forms, no complexity."
   />
 
   <!-- Order Input -->
-  <fieldset
+  <div
     class="order-section__input-wrapper"
     [class.order-section__input-wrapper--focused]="isInputFocused()"
+    role="group"
+    aria-label="Order input"
   >
     <span class="order-section__input-icon" aria-hidden="true">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -35,7 +38,7 @@
       (blur)="onInputBlur()"
       (keydown.enter)="onInputSubmit()"
     />
-  </fieldset>
+  </div>
 
   <!-- Order Preview (shown when we have enough data) -->
   @if (showOrderReady() && orderReadyData()) {
