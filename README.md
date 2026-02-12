@@ -184,6 +184,9 @@ docker compose -f docker-compose.yml -f docker-compose.test.yml up --build --abo
 - [🗄️ Data Model](backend/docs/modelo_de_datos.md) - Database schema
 - [🔄 Spring Boot 4 Migration](backend/docs/SPRING_BOOT_4_MIGRATION.md) - Migration guide
 
+### Accesibilidad (Proyecto 4)
+- [Analisis de Accesibilidad](frontend/docs/accesibilidad/README.md) - Auditoria WCAG 2.1 AA, errores corregidos, verificacion manual
+
 ### Docker
 - [📋 Quick Start](DOCKER_QUICKSTART.md)
 - [📖 Docker Guide](docs/DOCKER_GUIDE.md)
@@ -191,6 +194,44 @@ docker compose -f docker-compose.yml -f docker-compose.test.yml up --build --abo
 
 ### General
 - [🎯 Entender el Problema](frontend/docs/design/entender_el_problema_real.md)
+
+---
+
+## Proyecto 4 — Accesibilidad y Multimedia
+
+### Componente Multimedia Agregado
+
+**Tipo:** Galeria de imagenes responsiva
+**Descripcion:** Galeria de 6 imagenes del proyecto con `<figure>`/`<figcaption>`, formatos AVIF/WebP/JPG via `<picture>`, y `loading="lazy"`.
+**Ruta:** `/accesibilidad`
+
+### Resultados de Auditoria de Accesibilidad
+
+| Herramienta | Inicial | Final | Mejora |
+|-------------|---------|-------|--------|
+| Lighthouse | 95/100 | 100/100 | +5 |
+| WAVE | 2 errores, 4 alertas | 0 errores, 2 alertas | -2 errores, -2 alertas |
+| TAW | 4 problemas, 4 advertencias | 0 problemas, 2 advertencias | -4 problemas, -2 advertencias |
+
+**Nivel de Conformidad:** WCAG 2.1 AA
+
+### Documentacion Completa
+
+[Analisis completo de accesibilidad](./frontend/docs/accesibilidad/README.md)
+
+### Verificacion Realizada
+
+- Auditoria Lighthouse, WAVE, TAW
+- Test con lector de pantalla (Orca)
+- Test de navegacion por teclado
+- Cross-browser (Chrome, Firefox, Edge)
+
+### Tecnologias (Proyecto 4)
+
+- HTML5 semantico (`<figure>`, `<picture>`, `<main>`, `<nav>`, `<header>`, `<footer>`)
+- CSS3 con media queries de accesibilidad (`prefers-reduced-motion`, `prefers-color-scheme`)
+- ARIA attributes (roles, states, properties)
+- Angular 21 (standalone components, signals, router title strategy)
 
 ---
 
