@@ -1,10 +1,13 @@
-<fieldset
+<div
   class="form-input"
   [class.form-input--focused]="isFocused()"
   [class.form-input--error]="showError()"
   [class.form-input--disabled]="isDisabled()"
+  role="group"
+  [attr.aria-labelledby]="inputId() + '-label'"
 >
   <label
+    [id]="inputId() + '-label'"
     [for]="inputId()"
     class="form-input__label"
     [class.form-input__label--hidden]="hideLabel()"
@@ -48,4 +51,4 @@
       {{ hint() }}
     </p>
   }
-</fieldset>
+</div>
